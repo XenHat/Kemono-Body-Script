@@ -145,11 +145,6 @@ xlSafeGenitalToggle(string name,integer showit)
             string vag_2 = llList2String(s_FittedVagooState,2);
             string vag_3 = llList2String(s_FittedVagooState,3);
             list wet = [
-                    // ,PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,0)
-                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,1))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,1)
-                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,2))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,2)
-                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,3))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,3)
-                    // ];
                     PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_0),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_0
                     ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_1
                     ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_2),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_2
@@ -170,7 +165,6 @@ xlSafeGenitalToggle(string name,integer showit)
                     g_State_PG = FALSE;
                 }
             }
-            // llWhisper(DEBUG_CHANNEL, "HIDEBLADE:" + (string)(name==BLADE_BREASTS));
             if (name==BLADE_NIPS||name==BLADE_BREASTS)
             {
                 float showit_alpha = (name==BLADE_NIPS) * !showit * g_Config_MaximumOpacity;
@@ -478,12 +472,6 @@ xlProcessCommand(string message)
                             )
         )
         {
-        //    llSetLinkPrimitiveParamsFast(xlGetLinkByBladeName(part_wanted_s),[PRIM_COLOR, ALL_SIDES, <1,1,1>, showit]);
-        //    // blank nipple + current bit state
-        //}
-        // else
-        // {
-            /*wat*/
             xlSafeGenitalToggle(part_wanted_s,showit);
         }
         else
