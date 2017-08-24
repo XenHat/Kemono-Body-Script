@@ -1,4 +1,4 @@
 # Kemono-Body-Script
-[![License: CC BY-NC 4.0](https://licensebuttons.net/l/by-nc/4.0/80x15.png)](https://creativecommons.org/licenses/by-nc/4.0/)
+[![License](https://img.shields.io/badge/license-AFPL-blue.svg)](https://ghostscript.com/doc/8.54/Public.htm)
 
 Aftermarket replacement for Utilizator's Kemono Body in Second Life
