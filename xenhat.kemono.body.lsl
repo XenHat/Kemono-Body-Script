@@ -254,7 +254,14 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_THIGH_L_L){
         if(FITTED_COMBO)
         {
-            return [7];
+            if(human_mode)
+            {
+                return [1];
+            }
+            else
+            {
+                return [7];
+            }
         }
         if(human_mode){
             return [6];
@@ -266,7 +273,14 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_THIGH_L_R){
         if(FITTED_COMBO)
         {
-            return [6];
+            if(human_mode)
+            {
+                return [0];
+            }
+            else
+            {
+                return [6];
+            }
         }
         if(human_mode){
             return [6];
@@ -339,9 +353,27 @@ string xlGetPrimNameByBladeName(string name)
     if(name==BLADE_VAG) jump mesh_pg;
     if(name==BLADE_WRIST_L) jump mesh_arms;
     if(name==BLADE_WRIST_R) jump mesh_arms;
-    /* TODO: Human/Animal mode toggle*/
-    if(name==BLADE_THIGH_L_R)jump mesh_leg_r;
-    if(name==BLADE_THIGH_L_L)jump mesh_leg_l;
+    if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
+    if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
+    
+    @mesh_leg_thigh_low_r;
+    @mesh_leg_thigh_low_l;
+    if(FITTED_COMBO)
+    {
+        if(human_mode)
+        {
+            return "HumanLegs";
+        }
+        else
+        {
+            return "TorsoEtc";
+        }
+    }
+    else
+    {
+        llOwnerSay("unimplemented!");
+        return "WAT";
+    }
 
     @mesh_pg;
     return MESH_PG_LAYER;
@@ -354,20 +386,24 @@ string xlGetPrimNameByBladeName(string name)
     return MESH_HAND_LEFT;
     @mesh_hand_r;
     return MESH_HAND_RIGHT;
-    @mesh_leg_r;
-    if(FITTED_COMBO)
-    {
-        return "TorsoEtc";
-    }
     @mesh_knee_r;
-    return MESH_LEG_RIGHT_HUMAN;
-    @mesh_leg_l;
-    if(FITTED_COMBO)
+    if(human_mode)
     {
-        return "TorsoEtc";
+        return MESH_LEG_RIGHT_HUMAN;
+    }
+    else
+    {
+        return MESH_LEG_RIGHT_ANIMAL;
     }
     @mesh_knee_l;
-    return MESH_LEG_LEFT_HUMAN;
+    if(human_mode)
+    {
+        return MESH_LEG_LEFT_HUMAN;
+    }
+    else
+    {
+        return MESH_LEG_LEFT_ANIMAL;
+    }
     @mesh_hips;
     if(FITTED_COMBO) return "TorsoEtc";
     return MESH_HIPS;
@@ -377,9 +413,8 @@ string xlGetPrimNameByBladeName(string name)
         return "TorsoChest";
     }
     return MESH_BODY;
-    // Fallback
-    //return name;
 }
+
 xlProcessCommand(string message)
 {
     list data = llParseStringKeepNulls(message,[":"],[]);
@@ -484,6 +519,7 @@ default {
                 /* We are linked with starnya's Fitted Torso*/
                 FITTED_COMBO=TRUE;
                 name=MESH_FITTED_TORSO;
+                // if(~llSubStringIndex(name, MESH_FITTED_TORSO))
             }
             g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
         }
@@ -538,20 +574,21 @@ default {
             }
         }
         if (message=="Hlegs"){
-            human_mode=FALSE;
-            xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            human_mode=TRUE;
-            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            if(!human_mode)
+            {
+                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                human_mode=TRUE;
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            }
         }
-        /* TODO: furry legs toggle*/
-        #ifdef FUR_MODE_DONE
         else if(message=="Flegs"){
-            human_mode=TRUE;
-            xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            human_mode=FALSE;
-            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            if(human_mode)
+            {
+                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                human_mode=FALSE;
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            }
         }
-        #endif
         /* Restore compatibility with old scripts*/
         else if(message=="resetA"){
             //llOwnerSay("AAAAAAAAAAAAAAAAA");
