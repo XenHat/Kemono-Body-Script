@@ -117,7 +117,7 @@ integer FITTED_COMBO = FALSE;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
-integer g_CurrentFittedBitState=1;
+integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedNipState=0;
 list s_FittedVagooState=["BitState0","BitState1", "BitState2", "BitState3"];
 /* NipAlpha unused with Kemono API; requires Starbright hud, which is a job for later*/
@@ -130,37 +130,61 @@ PG ON:
     NipState0 = VISIBLE
     TorsoEtc;face_list=[0,1] = INVISIBLE
 */
+#define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
 xlSafeGenitalToggle(string name,integer showit)
 {
     integer link_id;
     if(FITTED_COMBO)
     {
-        
-        if (name==BLADE_NIPS)
+        if(name==BLADE_VAG)
         {
-            if(!showit)
-            {
-                g_State_PG=TRUE;
-            }
-            else
-            {
-                g_State_PG = FALSE;
-            }
-        }
-        // llWhisper(DEBUG_CHANNEL, "HIDEBLADE:" + (string)(name==BLADE_BREASTS));
-        if (name==BLADE_NIPS||name==BLADE_BREASTS)
-        {
-            float showit_alpha = (name==BLADE_NIPS) * !showit * g_Config_MaximumOpacity;
-            // Note: My attempts at inlining these into a macro resulted in garbage code.
-            integer wat = llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,["TorsoEtc"])+1);
+            // TODO: Efficiency
+            string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            string vag_0 = llList2String(s_FittedVagooState,0);
+            string vag_1 = llList2String(s_FittedVagooState,1);
+            string vag_2 = llList2String(s_FittedVagooState,2);
+            string vag_3 = llList2String(s_FittedVagooState,3);
             list wet = [
-                PRIM_COLOR,0,<1,1,1>,showit * g_Config_MaximumOpacity
-                ,PRIM_COLOR,1,<1,1,1>,showit * g_Config_MaximumOpacity
-                ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState0"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit_alpha
-                ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipAlpha"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
-                ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState1"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
-                ];
-            xlSetLinkPrimitiveParamsFast(wat,wet);
+                    // ,PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,0)
+                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,1))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,1)
+                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,2))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,2)
+                    // ,PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,(integer)(llList2String(s_FittedVagooState,3))),PRIM_COLOR,ALL_SIDES,<1,1,1>,g_CurrentFittedVagState==llList2String(s_FittedVagooState,3)
+                    // ];
+                    PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_0),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_0
+                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_1
+                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_2),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_2
+                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_3),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_3
+                    ];
+            xlSetLinkPrimitiveParamsFast(LINK_THIS,wet);
+        }
+        else
+        {
+            if (name==BLADE_NIPS)
+            {
+                if(!showit)
+                {
+                    g_State_PG=TRUE;
+                }
+                else
+                {
+                    g_State_PG = FALSE;
+                }
+            }
+            // llWhisper(DEBUG_CHANNEL, "HIDEBLADE:" + (string)(name==BLADE_BREASTS));
+            if (name==BLADE_NIPS||name==BLADE_BREASTS)
+            {
+                float showit_alpha = (name==BLADE_NIPS) * !showit * g_Config_MaximumOpacity;
+                // Note: My attempts at inlining these into a macro resulted in garbage code.
+                integer wat = llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,["TorsoEtc"])+1);
+                list wet = [
+                    PRIM_COLOR,0,<1,1,1>,showit * g_Config_MaximumOpacity
+                    ,PRIM_COLOR,1,<1,1,1>,showit * g_Config_MaximumOpacity
+                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState0"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit_alpha
+                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipAlpha"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
+                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState1"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
+                    ];
+                xlSetLinkPrimitiveParamsFast(wat,wet);
+            }
         }
     }
     else
@@ -170,7 +194,7 @@ xlSafeGenitalToggle(string name,integer showit)
 }
 integer xlGetLinkByBladeName(string name)
 {
-    #ifdef DEBUG
+    #ifdef DEBUG_FACE_SELECT
     integer index = llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)]);
     integer id = llList2Integer(g_LinkDB_l,index+1);
     llOwnerSay("Wanted:"+name+"\n"+
@@ -301,58 +325,60 @@ list xlGetFacesByBladeName(string name)
 }
 string xlGetPrimNameByBladeName(string name)
 {
-    if(name==BLADE_ABS) jump mesh_body;
-    if(name==BLADE_ANKLE_L) jump mesh_knee_l;
-    if(name==BLADE_ANKLE_R) jump mesh_knee_r;
     if(name==BLADE_ARM_L_L) jump mesh_arms;
     if(name==BLADE_ARM_L_R) jump mesh_arms;
     if(name==BLADE_ARM_U_L) jump mesh_arms;
     if(name==BLADE_ARM_U_R) jump mesh_arms;
-    if(name==BLADE_BELLY) jump mesh_hips;
-    if(name==BLADE_BODY) jump mesh_body;
-    if(name==BLADE_BREASTS)jump mesh_body;
-    if(name==BLADE_CALF_L) jump mesh_knee_l;
-    if(name==BLADE_CALF_R) jump mesh_knee_r;
-    if(name==BLADE_CHEST)jump mesh_body;
-    if(name==BLADE_COLLAR) jump mesh_neck;
     if(name==BLADE_ELBOW_L) jump mesh_arms;
     if(name==BLADE_ELBOW_R) jump mesh_arms;
-    if(name==BLADE_FOOT_L) jump mesh_knee_l;
-    if(name==BLADE_FOOT_R) jump mesh_knee_r;
+    if(name==BLADE_WRIST_L) jump mesh_arms;
+    if(name==BLADE_WRIST_R) jump mesh_arms;
+    if(name==BLADE_RIBS)jump mesh_body;
+    if(name==BLADE_ABS) jump mesh_body;
+    if(name==BLADE_BODY) jump mesh_body;
+    if(name==BLADE_BREASTS)jump mesh_body;
+    if(name==BLADE_CHEST)jump mesh_body;
+    if(name==BLADE_COLLAR) jump mesh_neck;
     if(name==BLADE_HAND_LEFT) jump mesh_hand_l;
     if(name==BLADE_HAND_RIGHT) jump mesh_hand_r;
     if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(FITTED_COMBO)
         {
-            return llList2String(s_FittedVagooState,g_CurrentFittedBitState);
+            jump vagoo;
         }
         jump mesh_hips;
     }
-    if(name==BLADE_KNEE_L) jump mesh_knee_l;
-    if(name==BLADE_KNEE_R) jump mesh_knee_r;
     if(name==BLADE_NECK) jump mesh_neck;
-    if(name==BLADE_NIPS) jump mesh_pg;
     if(name==BLADE_PELVIS){
         if(FITTED_COMBO)
         {
-            return llList2String(s_FittedVagooState,g_CurrentFittedBitState);
+            jump vagoo;
         }
         jump mesh_hips;
     }
-    if(name==BLADE_RIBS)jump mesh_body;
-    if(name==BLADE_SHIN_L_L) jump mesh_knee_l;
-    if(name==BLADE_SHIN_L_R) jump mesh_knee_r;
-    if(name==BLADE_SHIN_U_L) jump mesh_knee_l;
+    if(name==BLADE_KNEE_R) jump mesh_knee_r;
+    if(name==BLADE_FOOT_R) jump mesh_knee_r;
+    if(name==BLADE_ANKLE_R) jump mesh_knee_r;
     if(name==BLADE_SHIN_U_R) jump mesh_knee_r;
+    if(name==BLADE_CALF_R) jump mesh_knee_r;
+    if(name==BLADE_SHIN_L_R) jump mesh_knee_r;
+
+    if(name==BLADE_CALF_L) jump mesh_knee_l;
+    if(name==BLADE_ANKLE_L) jump mesh_knee_l;
+    if(name==BLADE_FOOT_L) jump mesh_knee_l;
+    if(name==BLADE_KNEE_L) jump mesh_knee_l;
+    if(name==BLADE_SHIN_L_L) jump mesh_knee_l;
+    if(name==BLADE_SHIN_U_L) jump mesh_knee_l;
+
     if(name==BLADE_SHOULDER_L_L) jump mesh_neck;
     if(name==BLADE_SHOULDER_L_R) jump mesh_neck;
     if(name==BLADE_SHOULDER_U_L) jump mesh_neck;
     if(name==BLADE_SHOULDER_U_R) jump mesh_neck;
     if(name==BLADE_THIGH_U_L) jump mesh_hips;
     if(name==BLADE_THIGH_U_R) jump mesh_hips;
-    if(name==BLADE_VAG) jump mesh_pg;
-    if(name==BLADE_WRIST_L) jump mesh_arms;
-    if(name==BLADE_WRIST_R) jump mesh_arms;
+    if(name==BLADE_BELLY) jump mesh_hips;
+    if(name==BLADE_NIPS) jump vagoo;
+    if(name==BLADE_VAG) jump vagoo;
     if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
     if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
     
@@ -375,7 +401,11 @@ string xlGetPrimNameByBladeName(string name)
         return "WAT";
     }
 
-    @mesh_pg;
+    @vagoo;
+    if(FITTED_COMBO)
+    {
+        return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+    }
     return MESH_PG_LAYER;
     @mesh_neck;
     if(FITTED_COMBO) return MESH_FITTED_TORSO;
@@ -431,12 +461,6 @@ xlProcessCommand(string message)
         return;
     }
     command="";
-    /* Straight up ignore the Fitted Torso's generic "fix body" command */
-    // if(FITTED_COMBO)
-    {
-        // if (message=="hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
-        // return;
-    }
     integer part_in = llGetListLength(data) - 1;
     list params;
     for(;part_in >= 1; --part_in) /* skip first element*/
@@ -446,38 +470,41 @@ xlProcessCommand(string message)
         * to "fix" the stock body
         */
         string part_wanted_s = llList2String(data, part_in);
-        if(part_wanted_s==BLADE_NIPS || part_wanted_s==BLADE_BREASTS)
+        // TODO: Write a better handling of this because we need to handle genitals
+        // very carefully
+        if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
+                            || part_wanted_s==BLADE_BREASTS
+                            || part_wanted_s==BLADE_VAG
+                            )
+        )
         {
-            if(FITTED_COMBO)
-            {
-               xlSafeGenitalToggle(part_wanted_s,showit);
-            }
-            // if(part_wanted_s==
+        //    llSetLinkPrimitiveParamsFast(xlGetLinkByBladeName(part_wanted_s),[PRIM_COLOR, ALL_SIDES, <1,1,1>, showit]);
+        //    // blank nipple + current bit state
+        //}
+        // else
+        // {
+            /*wat*/
+            xlSafeGenitalToggle(part_wanted_s,showit);
         }
-        //else NO.
+        else
         {
-            // TODO: Write a better handling of this because we need to handle genitals
-            // very carefully
-            list faces_l = xlGetFacesByBladeName(part_wanted_s);
-            integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("Faces List:"+llList2CSV(faces_l));
-            llOwnerSay("Link ID  :"+(string)link_id);
-            #endif
-            integer faces = llGetListLength(faces_l) - 1;
-            integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s);
-            float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
-            params+=[PRIM_LINK_TARGET,link_id];
-            for(;faces>=0;--faces) {
-                params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOW_FOR_REAL];
-            }
+                list faces_l = xlGetFacesByBladeName(part_wanted_s);
+                integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
+                #ifdef DEBUG_FACE_SELECT
+                llOwnerSay("Faces List:"+llList2CSV(faces_l));
+                llOwnerSay("Link ID  :"+(string)link_id);
+                #endif
+                integer faces = llGetListLength(faces_l) - 1;
+                integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
+                float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
+                params+=[PRIM_LINK_TARGET,link_id];
+                for(;faces>=0;--faces) {
+                    params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOW_FOR_REAL];
+                }
         }
     }
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("params list:"+llList2CSV(params));
-    #endif
     if(params!=[]) {
-        llSetLinkPrimitiveParamsFast(LINK_SET, params);
+        xlSetLinkPrimitiveParamsFast(LINK_SET, params);
         params=[];
     }
 }
@@ -526,8 +553,6 @@ default {
         #ifdef DEBUG
         llOwnerSay(llList2CSV(g_LinkDB_l));
         #endif
-        llSetLinkPrimitiveParamsFast(xlGetLinkByBladeName(BLADE_VAG),[PRIM_TEXTURE,4,TEXTURE_TRANSPARENT,<1,1,0>,<0,0,0>,0.0,
-            PRIM_ALPHA_MODE,4,PRIM_ALPHA_MODE_MASK, 1]);
         llListen(KEMONO_COM_CH,"","","");
     }
     listen( integer channel, string name, key id, string message ) {
