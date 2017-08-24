@@ -78,6 +78,6 @@ This License is governed by the laws of the State of California, U.S.A., excludi
 
 If any part of this License is found to be in conflict with the law, that part shall be interpreted in its broadest meaning consistent with the law, and no other parts of the License shall be affected.
 
-For United States Government users, the Program is provided with RESTRICTED RIGHTS. If you are a unit or agency of the United States Government or are acquiring the Program for any such unit or agency, the following apply:
+For United States Government users, the Program is provided with **RESTRICTED RIGHTS**. If you are a unit or agency of the United States Government or are acquiring the Program for any such unit or agency, the following apply:
 
 If the unit or agency is the Department of Defense ("DOD"), the Program and its documentation are classified as "commercial computer software" and "commercial computer software documentation" respectively and, pursuant to DFAR Section 227.7202, the Government is acquiring the Program and its documentation in accordance with the terms of this License. If the unit or agency is other than DOD, the Program and its documentation are classified as "commercial computer software" and "commercial computer software documentation" respectively and, pursuant to FAR Section 12.212, the Government is acquiring the Program and its documentation in accordance with the terms of this License.
