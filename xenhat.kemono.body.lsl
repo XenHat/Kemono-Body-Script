@@ -2,7 +2,7 @@
 /* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
 
 Licensed under the Aladdin Free Public License Version 9 
-For the Full license, see https://ghostscript.com/doc/8.54/Public.htm
+For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
 
 The short human readable version of this licence for the befit of the reader is:
 
