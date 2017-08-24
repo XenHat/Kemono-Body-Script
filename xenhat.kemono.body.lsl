@@ -239,14 +239,7 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_THIGH_L_L){
         if(FITTED_COMBO)
         {
-            if(human_mode)
-            {
-                return [1];
-            }
-            else
-            {
-                return [7];
-            }
+            return [7];
         }
         if(human_mode){
             return [6];
@@ -258,14 +251,7 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_THIGH_L_R){
         if(FITTED_COMBO)
         {
-            if(human_mode)
-            {
-                return [0];
-            }
-            else
-            {
-                return [6];
-            }
+            return [6];
         }
         if(human_mode){
             return [6];
@@ -356,28 +342,14 @@ string xlGetPrimNameByBladeName(string name)
     @mesh_leg_r;
     if(FITTED_COMBO)
     {
-        if(human_mode)
-        {
-            return "HumanLegs";
-        }
-        else
-        {
-            return "TorsoEtc";
-        }
+        return "TorsoEtc";
     }
     @mesh_knee_r;
     return MESH_LEG_RIGHT_HUMAN;
     @mesh_leg_l;
     if(FITTED_COMBO)
     {
-        if(human_mode)
-        {
-            return "HumanLegs";
-        }
-        else
-        {
-            return "TorsoEtc";
-        }
+        return "TorsoEtc";
     }
     @mesh_knee_l;
     return MESH_LEG_LEFT_HUMAN;
