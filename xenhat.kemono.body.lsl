@@ -26,14 +26,24 @@ https://tldrlegal.com/license/aladdin-free-public-license
 */
 
 /* SCRIPT BEGINS HERE */
+/* Runtime User Config starts here */
+float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
+/* Runtime User Config ends here */
+/* Defines */
 // #define DEBUG
 // #define DEBUG_LISTEN
+// #define DEBUG_PARAMS
+// #define DEBUG_FACE_SELECT
 // #define DEBUG_LISTEN_PROCESS
 // #define DEBUG_WHO
 // #define AUTH_ANYWAY
-//#define DEBUG_MEMORY
+// #define DEBUG_MEMORY
 // End of debug defines
-
+#ifdef DEBUG_PARAMS
+#define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("LINK:"+(string)a+"\nPARAMS:"+llList2CSV(b));llSetLinkPrimitiveParamsFast(a,b)
+#else
+#define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
+#endif
 /* TODO:
     - Stock kemono nipples sync
     - Fitted Torso vagina PG mode
@@ -120,8 +130,6 @@ PG ON:
     NipState0 = VISIBLE
     TorsoEtc;face_list=[0,1] = INVISIBLE
 */
-/* Runtime User Config starts here */
-float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 xlSafeGenitalToggle(string name,integer showit)
 {
     integer link_id;
@@ -143,14 +151,21 @@ xlSafeGenitalToggle(string name,integer showit)
         if (name==BLADE_NIPS||name==BLADE_BREASTS)
         {
             float showit_alpha = (name==BLADE_NIPS) * !showit * g_Config_MaximumOpacity;
-            llSetLinkPrimitiveParamsFast(llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,["TorsoEtc"])+1),[
+            // Note: My attempts at inlining these into a macro resulted in garbage code.
+            integer wat = llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,["TorsoEtc"])+1);
+            list wet = [
                 PRIM_COLOR,0,<1,1,1>,showit * g_Config_MaximumOpacity
                 ,PRIM_COLOR,1,<1,1,1>,showit * g_Config_MaximumOpacity
                 ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState0"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit_alpha
                 ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipAlpha"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
                 ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState1"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
-                ]);
+                ];
+            xlSetLinkPrimitiveParamsFast(wat,wet);
         }
+    }
+    else
+    {
+        llOwnerSay("unimplemented!");
     }
 }
 integer xlGetLinkByBladeName(string name)
@@ -378,7 +393,6 @@ xlProcessCommand(string message)
     }
     else
     {
-        command="";
         return;
     }
     command="";
@@ -407,9 +421,11 @@ xlProcessCommand(string message)
         }
         //else NO.
         {
+            // TODO: Write a better handling of this because we need to handle genitals
+            // very carefully
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
             integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-            #ifdef DEBUG
+            #ifdef DEBUG_FACE_SELECT
             llOwnerSay("Faces List:"+llList2CSV(faces_l));
             llOwnerSay("Link ID  :"+(string)link_id);
             #endif
@@ -422,7 +438,7 @@ xlProcessCommand(string message)
             }
         }
     }
-    #ifdef DEBUG
+    #ifdef DEBUG_PARAMS
     llOwnerSay("params list:"+llList2CSV(params));
     #endif
     if(params!=[]) {
@@ -486,8 +502,16 @@ default {
         #ifdef DEBUG_WHO
         knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
         #endif
-        llOwnerSay(knp+"ATTEMPTS ["+message+"]");
+        llOwnerSay(knp+"input ["+message+"]");
         #endif
+        /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
+        if(FITTED_COMBO)
+        {
+            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
+            {
+                return;
+            }
+        }
         /*If we can't get a valid owner...*/
         if(owner_key == id) {
             /*And if they aren't in the auth list, ignore them.*/
