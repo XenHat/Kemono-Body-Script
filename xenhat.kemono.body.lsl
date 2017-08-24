@@ -139,13 +139,14 @@ xlSafeGenitalToggle(string name,integer showit)
         if(name==BLADE_VAG)
         {
             // TODO: Efficiency
+            // TODO: Restore last state (enhancement from stock behavior)
             string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             string vag_0 = llList2String(s_FittedVagooState,0);
             string vag_1 = llList2String(s_FittedVagooState,1);
             string vag_2 = llList2String(s_FittedVagooState,2);
             string vag_3 = llList2String(s_FittedVagooState,3);
             list wet = [
-                    PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_0),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_0
+                    PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_0),PRIM_COLOR,ALL_SIDES,<1,1,1>,!showit
                     ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_1
                     ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_2),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_2
                     ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_3),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_3
