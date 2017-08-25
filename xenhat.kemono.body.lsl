@@ -4,7 +4,7 @@
 Licensed under the Aladdin Free Public License Version 9 
 For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
 
-The short human readable version of this licence for the befit of the reader is:
+The short human readable version of this licence for the benefit of the reader is:
 
 You CAN:
  Modify 
