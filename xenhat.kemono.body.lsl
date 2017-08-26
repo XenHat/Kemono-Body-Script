@@ -1,25 +1,25 @@
 /*<<<-------------------------Enlarge window so you see this on only one line for better visibility ------------------>>>>>*/
 /* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
 
-Licensed under the Aladdin Free Public License Version 9 
+Licensed under the Aladdin Free Public License Version 9
 For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
 
 The short human readable version of this licence for the benefit of the reader is:
 
 You CAN:
- Modify 
- Distribute 
+ Modify
+ Distribute
 
 You CANNOT:
- Hold Liable 
- Sublicense 
- Place Warranty 
- Commercial Use 
+ Hold Liable
+ Sublicense
+ Place Warranty
+ Commercial Use
 
 You MUST:
- Include License 
- Include Original 
- State Changes 
+ Include License
+ Include Original
+ State Changes
 
 An online version of the human-readable version of the AFPL can be found at:
 https://tldrlegal.com/license/aladdin-free-public-license
@@ -373,7 +373,7 @@ string xlGetPrimNameByBladeName(string name)
     if(name==BLADE_VAG) jump vagoo;
     if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
     if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
-    
+
     @mesh_leg_thigh_low_r;
     @mesh_leg_thigh_low_l;
     if(FITTED_COMBO)
