@@ -121,16 +121,34 @@ integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedNipState=0;
 list s_FittedVagooState=["BitState0","BitState1", "BitState2", "BitState3"];
 /* NipAlpha unused with Kemono API; requires Starbright hud, which is a job for later*/
-list s_FittedNipsState=["NipState0","NipAlpha","NipState1"];
-// list s_FittedNipsState=["NipState0","NipState1"];
+list s_FittedNipsState=["NipState0","Etc","NipState1"];
 // Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
 // list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
-/* 
-PG ON:
-    NipState0 = VISIBLE
-    TorsoEtc;face_list=[0,1] = INVISIBLE
-*/
 #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
+// OPTIMIZATION TODO: Use integer to pick list instead of passing list
+lsShowOnlyIndex(list data, integer index)
+{// Function by LogicShrimp
+    list params = [];
+    if(data == s_FittedNipsState)
+    {
+        list faces = xlGetFacesByBladeName(BLADE_NIPS);
+        integer prim_id = xlGetLinkByBladeName(BLADE_NIPS);
+        #ifdef DEBUG_FACE_SELECT
+        llOwnerSay("FACES:"+llList2CSV(faces)+"\nPRIM_ID:"+(string)prim_id);
+        #endif
+        params += [PRIM_LINK_TARGET,prim_id,PRIM_COLOR,llList2Integer(faces,0),<1,1,1>,(index == 1)
+                                            ,PRIM_COLOR,llList2Integer(faces,1),<1,1,1>,(index == 1)];
+    }
+    params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,index)),PRIM_COLOR,ALL_SIDES,<1,1,1>,TRUE];
+    integer n = (data!=[]);//List length
+    integer i = 1;
+    for(;i < n; i++)
+    {
+        params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,(index + i) % n)),PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE];
+
+    }
+    xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
+}
 xlSafeGenitalToggle(string name,integer showit)
 {
     integer link_id;
@@ -138,48 +156,20 @@ xlSafeGenitalToggle(string name,integer showit)
     {
         if(name==BLADE_VAG)
         {
-            // TODO: Efficiency
             // TODO: Restore last state (enhancement from stock behavior)
             string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-            string vag_0 = llList2String(s_FittedVagooState,0);
-            string vag_1 = llList2String(s_FittedVagooState,1);
-            string vag_2 = llList2String(s_FittedVagooState,2);
-            string vag_3 = llList2String(s_FittedVagooState,3);
-            list wet = [
-                    PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_0),PRIM_COLOR,ALL_SIDES,<1,1,1>,!showit
-                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_1
-                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_2),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_2
-                    ,PRIM_LINK_TARGET,xlGetLinkByPrimName(vag_3),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit&&current_vag==vag_3
-                    ];
-            xlSetLinkPrimitiveParamsFast(LINK_THIS,wet);
+            lsShowOnlyIndex(s_FittedVagooState,showit);
         }
-        else
+        else if (BLADE_NIPS)
         {
-            if (name==BLADE_NIPS)
-            {
-                if(!showit)
-                {
-                    g_State_PG=TRUE;
-                }
-                else
-                {
-                    g_State_PG = FALSE;
-                }
-            }
-            if (name==BLADE_NIPS||name==BLADE_BREASTS)
-            {
-                float showit_alpha = (name==BLADE_NIPS) * !showit * g_Config_MaximumOpacity;
-                // Note: My attempts at inlining these into a macro resulted in garbage code.
-                integer wat = llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,["TorsoEtc"])+1);
-                list wet = [
-                    PRIM_COLOR,0,<1,1,1>,showit * g_Config_MaximumOpacity
-                    ,PRIM_COLOR,1,<1,1,1>,showit * g_Config_MaximumOpacity
-                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState0"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,showit_alpha
-                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipAlpha"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
-                    ,PRIM_LINK_TARGET,(integer)llList2String(g_LinkDB_l,(integer)llListFindList(g_LinkDB_l,["NipState1"])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0
-                    ];
-                xlSetLinkPrimitiveParamsFast(wat,wet);
-            }
+            /* Stock Body script:
+            setnip0 == NipState0
+            setnip1 == TorsoEtc[0,1]
+            setnip2 == NipState1
+
+            NipAlpha == ????
+            */
+            lsShowOnlyIndex(s_FittedNipsState,showit);
         }
     }
     else
@@ -247,7 +237,14 @@ list xlGetFacesByBladeName(string name)
         if(FITTED_COMBO) return [0,1];
         return [2,5];
     }
-    if(name==BLADE_NIPS)return [2,3];
+    if(name==BLADE_NIPS)
+    {
+        if (FITTED_COMBO)
+        {
+            return [0,1];
+        }
+        return [2,3];
+    }
     if(name==BLADE_PELVIS){
         if(FITTED_COMBO) return [0,1,2,3];
         return [0,1];
@@ -372,7 +369,7 @@ string xlGetPrimNameByBladeName(string name)
     if(name==BLADE_THIGH_U_L) jump mesh_hips;
     if(name==BLADE_THIGH_U_R) jump mesh_hips;
     if(name==BLADE_BELLY) jump mesh_hips;
-    if(name==BLADE_NIPS) jump vagoo;
+    if(name==BLADE_NIPS) jump nips;
     if(name==BLADE_VAG) jump vagoo;
     if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
     if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
@@ -387,7 +384,7 @@ string xlGetPrimNameByBladeName(string name)
         }
         else
         {
-            return "TorsoEtc";
+            jump nips;
         }
     }
     else
@@ -396,10 +393,13 @@ string xlGetPrimNameByBladeName(string name)
         return "WAT";
     }
 
+    @nips;
     @vagoo;
     if(FITTED_COMBO)
     {
-        return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+        // TODO: Restore current state (Improvement)
+        // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+        return "TorsoEtc";
     }
     return MESH_PG_LAYER;
     @mesh_neck;
@@ -451,20 +451,38 @@ xlProcessCommand(string message)
     else if(command == "hide"){
         showit = FALSE;
     }
+    else if(command=="setvag")
+    {
+        if (!FITTED_COMBO)
+        {
+            return;
+        }
+        lsShowOnlyIndex(s_FittedVagooState,llList2Integer(data,1));
+        return;
+    }
+    else if(command=="setnip")
+    {
+        if (!FITTED_COMBO)
+        {
+            return;
+        }
+        lsShowOnlyIndex(s_FittedNipsState,llList2Integer(data,1));
+        return;
+    }
     else
     {
         return;
     }
     command="";
-    integer part_in = llGetListLength(data) - 1;
     list params;
-    for(;part_in >= 1; --part_in) /* skip first element*/
+    integer list_size = llGetListLength(data) - 1;
+    for(;list_size >= 1; --list_size) /* skip first element*/
     {
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso
         *  to avoid endless toggling as the fitted torso requests hiding of the faces it replaces
         * to "fix" the stock body
         */
-        string part_wanted_s = llList2String(data, part_in);
+        string part_wanted_s = llList2String(data, list_size);
         // TODO: Write a better handling of this because we need to handle genitals
         // very carefully
         if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
@@ -498,12 +516,14 @@ xlProcessCommand(string message)
     }
 }
 default {
+    #ifdef DEBUG_FACE_SELECT
     touch_start(integer total_number){
         key tk = llDetectedKey(0);
         if(tk!=g_Owner_k)return;
         llRegionSayTo(tk,0,
             "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["+(string)llDetectedTouchFace(0)+"];break;");
     }
+    #endif
     changed(integer change) {
         if (change & CHANGED_OWNER) {
             llOwnerSay("The owner of the object has changed, resetting...");
@@ -511,6 +531,7 @@ default {
         }
         if(change & CHANGED_LINK)
         {
+            llOwnerSay("Link changed, resetting..."); // should really just recalculate
             llResetScript();
         }
     }
