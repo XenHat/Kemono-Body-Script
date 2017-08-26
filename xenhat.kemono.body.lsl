@@ -615,6 +615,7 @@ default {
                 human_mode=TRUE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
+            return;
         }
         else if(message=="Flegs"){
             if(human_mode)
@@ -623,23 +624,21 @@ default {
                 human_mode=FALSE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
-        }
-        /* Restore compatibility with old scripts*/
-        else if(message=="resetA"){
-            //llOwnerSay("AAAAAAAAAAAAAAAAA");
-            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+            return;
         }
         else if(message=="resetB"){
-            //llOwnerSay("AAAAAAAAAAAAAAAAA");
-            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
             g_RemConfirmKeys_l=[];
+            /* fall through because no return */
+        }
+        else if(message=="resetA"){
+            /* fall through because no return */
         }
         else {
             xlProcessCommand(message);
-            #ifdef DEBUG_LISTEN_PROCESS
-            llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
-            #endif
+            return;
         }
+        /* Arrive here from either reset */
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
     }
     run_time_permissions(integer perm) {
         if (perm & PERMISSION_TRIGGER_ANIMATION) {
