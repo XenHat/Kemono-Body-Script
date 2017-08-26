@@ -1,30 +1,23 @@
 /*<<<-------------------------Enlarge window so you see this on only one line for better visibility ------------------>>>>>*/
 /* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
-
 Licensed under the Aladdin Free Public License Version 9
 For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
-
 The short human readable version of this licence for the benefit of the reader is:
-
 You CAN:
  Modify
  Distribute
-
 You CANNOT:
  Hold Liable
  Sublicense
  Place Warranty
  Commercial Use
-
 You MUST:
  Include License
  Include Original
  State Changes
-
 An online version of the human-readable version of the AFPL can be found at:
 https://tldrlegal.com/license/aladdin-free-public-license
 */
-
 /* SCRIPT BEGINS HERE */
 /* Runtime User Config starts here */
 float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
@@ -145,7 +138,6 @@ lsShowOnlyIndex(list data, integer index)
     for(;i < n; i++)
     {
         params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,(index + i) % n)),PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE];
-
     }
     xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
 }
@@ -166,7 +158,6 @@ xlSafeGenitalToggle(string name,integer showit)
             setnip0 == NipState0
             setnip1 == TorsoEtc[0,1]
             setnip2 == NipState1
-
             NipAlpha == ????
             */
             lsShowOnlyIndex(s_FittedNipsState,showit);
@@ -405,7 +396,6 @@ string xlGetPrimNameByBladeName(string name)
         if(FITTED_COMBO) return "TorsoEtc";
         return MESH_HIPS;
     }
-
     if(name==BLADE_KNEE_R)
     {
         if(human_mode)
@@ -472,7 +462,6 @@ string xlGetPrimNameByBladeName(string name)
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-
     if(name==BLADE_CALF_L)
     {
         if(human_mode)
@@ -483,7 +472,6 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
     if(name==BLADE_ANKLE_L)
     {
@@ -495,7 +483,6 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
     if(name==BLADE_FOOT_L)
     {
@@ -507,7 +494,6 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
     if(name==BLADE_KNEE_L)
     {
@@ -519,7 +505,6 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
     if(name==BLADE_SHIN_L_L)
     {
@@ -531,7 +516,6 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
     if(name==BLADE_SHIN_U_L)
     {
@@ -543,9 +527,7 @@ string xlGetPrimNameByBladeName(string name)
         {
             return MESH_LEG_LEFT_ANIMAL;
         }
-
     }
-
     if(name==BLADE_SHOULDER_L_L){
         if(FITTED_COMBO) return MESH_FITTED_TORSO;
         return MESH_NECK;
@@ -633,11 +615,9 @@ string xlGetPrimNameByBladeName(string name)
             return "WAT";
         }
     }
-
     llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     return "WAT";
 }
-
 xlProcessCommand(string message)
 {
     list data = llParseStringKeepNulls(message,[":"],[]);
@@ -739,7 +719,6 @@ default {
 #else
         llScriptProfiler(PROFILE_NONE);
 #endif
-
         llSetText("",<0,0,0>,0.0);
         g_Owner_k = llGetOwner();
         llSetTimerEvent(3);
