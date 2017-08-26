@@ -140,8 +140,7 @@ lsShowOnlyIndex(list data, integer index)
                                             ,PRIM_COLOR,llList2Integer(faces,1),<1,1,1>,(index == 1)];
     }
     params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,index)),PRIM_COLOR,ALL_SIDES,<1,1,1>,TRUE];
-    // integer n = (data!=[]);//List length
-    integer n = (data!=[]) + (index == -1);//if -1, is 1; else is 0
+    integer n = (data!=[]);//List length
     integer i = 1;
     for(;i < n; i++)
     {
@@ -150,131 +149,47 @@ lsShowOnlyIndex(list data, integer index)
     }
     xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
 }
-integer xlGetLinkByBladeName(string name)
+xlSafeGenitalToggle(string name,integer showit)
 {
-    string wat;;
-    if(name==BLADE_ARM_L_L) jump mesh_arms;
-    if(name==BLADE_ARM_L_R) jump mesh_arms;
-    if(name==BLADE_ARM_U_L) jump mesh_arms;
-    if(name==BLADE_ARM_U_R) jump mesh_arms;
-    if(name==BLADE_ELBOW_L) jump mesh_arms;
-    if(name==BLADE_ELBOW_R) jump mesh_arms;
-    if(name==BLADE_WRIST_L) jump mesh_arms;
-    if(name==BLADE_WRIST_R) jump mesh_arms;
-    if(name==BLADE_RIBS)jump mesh_body;
-    if(name==BLADE_ABS) jump mesh_body;
-    if(name==BLADE_BODY) jump mesh_body;
-    if(name==BLADE_BREASTS)jump mesh_body;
-    if(name==BLADE_CHEST)jump mesh_body;
-    if(name==BLADE_COLLAR) jump mesh_neck;
-    if(name==BLADE_HAND_LEFT) jump mesh_hand_l;
-    if(name==BLADE_HAND_RIGHT) jump mesh_hand_r;
-    if(name==BLADE_HIP_L || name==BLADE_HIP_R){
-        if(FITTED_COMBO)
-        {
-            jump vagoo;
-        }
-        jump mesh_hips;
-    }
-    if(name==BLADE_NECK) jump mesh_neck;
-    if(name==BLADE_PELVIS){
-        if(FITTED_COMBO)
-        {
-            jump vagoo;
-        }
-        jump mesh_hips;
-    }
-    if(name==BLADE_KNEE_R) jump mesh_knee_r;
-    if(name==BLADE_FOOT_R) jump mesh_knee_r;
-    if(name==BLADE_ANKLE_R) jump mesh_knee_r;
-    if(name==BLADE_SHIN_U_R) jump mesh_knee_r;
-    if(name==BLADE_CALF_R) jump mesh_knee_r;
-    if(name==BLADE_SHIN_L_R) jump mesh_knee_r;
-
-    if(name==BLADE_CALF_L) jump mesh_knee_l;
-    if(name==BLADE_ANKLE_L) jump mesh_knee_l;
-    if(name==BLADE_FOOT_L) jump mesh_knee_l;
-    if(name==BLADE_KNEE_L) jump mesh_knee_l;
-    if(name==BLADE_SHIN_L_L) jump mesh_knee_l;
-    if(name==BLADE_SHIN_U_L) jump mesh_knee_l;
-
-    if(name==BLADE_SHOULDER_L_L) jump mesh_neck;
-    if(name==BLADE_SHOULDER_L_R) jump mesh_neck;
-    if(name==BLADE_SHOULDER_U_L) jump mesh_neck;
-    if(name==BLADE_SHOULDER_U_R) jump mesh_neck;
-    if(name==BLADE_THIGH_U_L) jump mesh_hips;
-    if(name==BLADE_THIGH_U_R) jump mesh_hips;
-    if(name==BLADE_BELLY) jump mesh_hips;
-    if(name==BLADE_NIPS) jump nips;
-    if(name==BLADE_VAG) jump vagoo;
-    if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
-    if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
-
-    @mesh_leg_thigh_low_r;
-    @mesh_leg_thigh_low_l;
+    integer link_id;
     if(FITTED_COMBO)
     {
-        if(human_mode)
+        if(name==BLADE_VAG)
         {
-            wat = "HumanLegs";
+            // TODO: Restore last state (enhancement from stock behavior)
+            string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            lsShowOnlyIndex(s_FittedVagooState,showit);
         }
-        else
+        else if (BLADE_NIPS)
         {
-            jump nips;
+            /* Stock Body script:
+            setnip0 == NipState0
+            setnip1 == TorsoEtc[0,1]
+            setnip2 == NipState1
+
+            NipAlpha == ????
+            */
+            lsShowOnlyIndex(s_FittedNipsState,showit);
         }
     }
     else
     {
         llOwnerSay("unimplemented!");
-        wat =  "WAT";
     }
-
-    @nips;
-    @vagoo;
-    if(FITTED_COMBO)
-    {
-        // TODO: Restore current state (Improvement)
-        // wat =  llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-        wat =  "TorsoEtc";
-    }
-    wat =  MESH_PG_LAYER;
-    @mesh_neck;
-    if(FITTED_COMBO) wat =  MESH_FITTED_TORSO;
-    wat =  MESH_NECK;
-    @mesh_arms;
-    wat =  MESH_ARMS;
-    @mesh_hand_l;
-    wat =  MESH_HAND_LEFT;
-    @mesh_hand_r;
-    wat =  MESH_HAND_RIGHT;
-    @mesh_knee_r;
-    if(human_mode)
-    {
-        wat =  MESH_LEG_RIGHT_HUMAN;
-    }
-    else
-    {
-        wat =  MESH_LEG_RIGHT_ANIMAL;
-    }
-    @mesh_knee_l;
-    if(human_mode)
-    {
-        wat =  MESH_LEG_LEFT_HUMAN;
-    }
-    else
-    {
-        wat =  MESH_LEG_LEFT_ANIMAL;
-    }
-    @mesh_hips;
-    if(FITTED_COMBO) wat =  "TorsoEtc";
-    wat =  MESH_HIPS;
-    @mesh_body;
-    if(FITTED_COMBO)
-    {
-        wat =  "TorsoChest";
-    }
-    wat =  MESH_BODY;
-    return llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[wat])+1);
+}
+integer xlGetLinkByBladeName(string name)
+{
+    #ifdef DEBUG_FACE_SELECT
+    integer index = llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)]);
+    integer id = llList2Integer(g_LinkDB_l,index+1);
+    llOwnerSay("Wanted:"+name+"\n"+
+    "Index: :"+(string)index+"\n"+
+    "Returning ID:"+(string)id+"\n"+
+    "List:"+llList2CSV(g_LinkDB_l));
+    return id;
+    #else
+        return llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)])+1);
+    #endif
 }
 integer human_mode = TRUE;
 list xlGetFacesByBladeName(string name)
@@ -400,7 +315,130 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_WRIST_R)return [1];
     return [];
 }
+string xlGetPrimNameByBladeName(string name)
+{
+    if(name==BLADE_ARM_L_L) jump mesh_arms;
+    if(name==BLADE_ARM_L_R) jump mesh_arms;
+    if(name==BLADE_ARM_U_L) jump mesh_arms;
+    if(name==BLADE_ARM_U_R) jump mesh_arms;
+    if(name==BLADE_ELBOW_L) jump mesh_arms;
+    if(name==BLADE_ELBOW_R) jump mesh_arms;
+    if(name==BLADE_WRIST_L) jump mesh_arms;
+    if(name==BLADE_WRIST_R) jump mesh_arms;
+    if(name==BLADE_RIBS)jump mesh_body;
+    if(name==BLADE_ABS) jump mesh_body;
+    if(name==BLADE_BODY) jump mesh_body;
+    if(name==BLADE_BREASTS)jump mesh_body;
+    if(name==BLADE_CHEST)jump mesh_body;
+    if(name==BLADE_COLLAR) jump mesh_neck;
+    if(name==BLADE_HAND_LEFT) jump mesh_hand_l;
+    if(name==BLADE_HAND_RIGHT) jump mesh_hand_r;
+    if(name==BLADE_HIP_L || name==BLADE_HIP_R){
+        if(FITTED_COMBO)
+        {
+            jump vagoo;
+        }
+        jump mesh_hips;
+    }
+    if(name==BLADE_NECK) jump mesh_neck;
+    if(name==BLADE_PELVIS){
+        if(FITTED_COMBO)
+        {
+            jump vagoo;
+        }
+        jump mesh_hips;
+    }
+    if(name==BLADE_KNEE_R) jump mesh_knee_r;
+    if(name==BLADE_FOOT_R) jump mesh_knee_r;
+    if(name==BLADE_ANKLE_R) jump mesh_knee_r;
+    if(name==BLADE_SHIN_U_R) jump mesh_knee_r;
+    if(name==BLADE_CALF_R) jump mesh_knee_r;
+    if(name==BLADE_SHIN_L_R) jump mesh_knee_r;
 
+    if(name==BLADE_CALF_L) jump mesh_knee_l;
+    if(name==BLADE_ANKLE_L) jump mesh_knee_l;
+    if(name==BLADE_FOOT_L) jump mesh_knee_l;
+    if(name==BLADE_KNEE_L) jump mesh_knee_l;
+    if(name==BLADE_SHIN_L_L) jump mesh_knee_l;
+    if(name==BLADE_SHIN_U_L) jump mesh_knee_l;
+
+    if(name==BLADE_SHOULDER_L_L) jump mesh_neck;
+    if(name==BLADE_SHOULDER_L_R) jump mesh_neck;
+    if(name==BLADE_SHOULDER_U_L) jump mesh_neck;
+    if(name==BLADE_SHOULDER_U_R) jump mesh_neck;
+    if(name==BLADE_THIGH_U_L) jump mesh_hips;
+    if(name==BLADE_THIGH_U_R) jump mesh_hips;
+    if(name==BLADE_BELLY) jump mesh_hips;
+    if(name==BLADE_NIPS) jump nips;
+    if(name==BLADE_VAG) jump vagoo;
+    if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
+    if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
+
+    @mesh_leg_thigh_low_r;
+    @mesh_leg_thigh_low_l;
+    if(FITTED_COMBO)
+    {
+        if(human_mode)
+        {
+            return "HumanLegs";
+        }
+        else
+        {
+            jump nips;
+        }
+    }
+    else
+    {
+        llOwnerSay("unimplemented!");
+        return "WAT";
+    }
+
+    @nips;
+    @vagoo;
+    if(FITTED_COMBO)
+    {
+        // TODO: Restore current state (Improvement)
+        // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+        return "TorsoEtc";
+    }
+    return MESH_PG_LAYER;
+    @mesh_neck;
+    if(FITTED_COMBO) return MESH_FITTED_TORSO;
+    return MESH_NECK;
+    @mesh_arms;
+    return MESH_ARMS;
+    @mesh_hand_l;
+    return MESH_HAND_LEFT;
+    @mesh_hand_r;
+    return MESH_HAND_RIGHT;
+    @mesh_knee_r;
+    if(human_mode)
+    {
+        return MESH_LEG_RIGHT_HUMAN;
+    }
+    else
+    {
+        return MESH_LEG_RIGHT_ANIMAL;
+    }
+    @mesh_knee_l;
+    if(human_mode)
+    {
+        return MESH_LEG_LEFT_HUMAN;
+    }
+    else
+    {
+        return MESH_LEG_LEFT_ANIMAL;
+    }
+    @mesh_hips;
+    if(FITTED_COMBO) return "TorsoEtc";
+    return MESH_HIPS;
+    @mesh_body;
+    if(FITTED_COMBO)
+    {
+        return "TorsoChest";
+    }
+    return MESH_BODY;
+}
 
 xlProcessCommand(string message)
 {
@@ -447,42 +485,14 @@ xlProcessCommand(string message)
         string part_wanted_s = llList2String(data, list_size);
         // TODO: Write a better handling of this because we need to handle genitals
         // very carefully
-        //if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
-        //                    || part_wanted_s==BLADE_BREASTS
-        //                    || part_wanted_s==BLADE_VAG
-        //                    )
-        //)
-        //{
-        //    // Toggle the PG Layers
-        //    if(part_wanted_s==BLADE_VAG)
-        //    {
-        //        // TODO: Restore last state (enhancement from stock behavior)
-        //        string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-        //        lsShowOnlyIndex(s_FittedVagooState,showit);
-        //    }
-        //    else if (part_wanted_s==BLADE_NIPS)
-        //    {
-        //        /* Stock Body script:
-        //        setnip0 == NipState0
-        //        setnip1 == TorsoEtc[0,1]
-        //        setnip2 == NipState1
-        //        NipAlpha == ????
-        //        */
-        //        lsShowOnlyIndex(s_FittedNipsState,showit);
-        //    }
-        //}
-        if(part_wanted_s==BLADE_NIPS)
-            {
-                lsShowOnlyIndex(s_FittedNipsState,showit);
-            }
-            else if(BLADE_BREASTS)
-            {
-                lsShowOnlyIndex(s_FittedNipsState,showit);
-            }
-            else if(part_wanted_s==BLADE_VAG)
-            {
-                lsShowOnlyIndex(s_FittedVagooState,showit);
-            }
+        if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
+                            || part_wanted_s==BLADE_BREASTS
+                            || part_wanted_s==BLADE_VAG
+                            )
+        )
+        {
+            xlSafeGenitalToggle(part_wanted_s,showit);
+        }
         else
         {
                 list faces_l = xlGetFacesByBladeName(part_wanted_s);
