@@ -149,34 +149,6 @@ lsShowOnlyIndex(list data, integer index)
     }
     xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
 }
-xlSafeGenitalToggle(string name,integer showit)
-{
-    integer link_id;
-    if(FITTED_COMBO)
-    {
-        if(name==BLADE_VAG)
-        {
-            // TODO: Restore last state (enhancement from stock behavior)
-            string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-            lsShowOnlyIndex(s_FittedVagooState,showit);
-        }
-        else if (BLADE_NIPS)
-        {
-            /* Stock Body script:
-            setnip0 == NipState0
-            setnip1 == TorsoEtc[0,1]
-            setnip2 == NipState1
-
-            NipAlpha == ????
-            */
-            lsShowOnlyIndex(s_FittedNipsState,showit);
-        }
-    }
-    else
-    {
-        llOwnerSay("unimplemented!");
-    }
-}
 integer xlGetLinkByBladeName(string name)
 {
     #ifdef DEBUG_FACE_SELECT
@@ -491,7 +463,23 @@ xlProcessCommand(string message)
                             )
         )
         {
-            xlSafeGenitalToggle(part_wanted_s,showit);
+            // Toggle the PG Layers
+            if(part_wanted_s==BLADE_VAG)
+            {
+                // TODO: Restore last state (enhancement from stock behavior)
+                string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+                lsShowOnlyIndex(s_FittedVagooState,showit);
+            }
+            else if (part_wanted_s==BLADE_NIPS)
+            {
+                /* Stock Body script:
+                setnip0 == NipState0
+                setnip1 == TorsoEtc[0,1]
+                setnip2 == NipState1
+                NipAlpha == ????
+                */
+                lsShowOnlyIndex(s_FittedNipsState,showit);
+            }
         }
         else
         {
