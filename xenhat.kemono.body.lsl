@@ -204,6 +204,7 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_BELLY)return [2,3];
     if(name==BLADE_BODY)return [0];
     if(name==BLADE_BREASTS){
+        // FIXME BUG: hides nipples instead of chest blade
         if(FITTED_COMBO) return [2,3];
         return [2,5];
     }
@@ -246,6 +247,7 @@ list xlGetFacesByBladeName(string name)
         return [2,3];
     }
     if(name==BLADE_PELVIS){
+        // FIXME BUG: Hides nipples as well
         if(FITTED_COMBO) return [0,1,2,3];
         return [0,1];
     }
@@ -317,127 +319,323 @@ list xlGetFacesByBladeName(string name)
 }
 string xlGetPrimNameByBladeName(string name)
 {
-    if(name==BLADE_ARM_L_L) jump mesh_arms;
-    if(name==BLADE_ARM_L_R) jump mesh_arms;
-    if(name==BLADE_ARM_U_L) jump mesh_arms;
-    if(name==BLADE_ARM_U_R) jump mesh_arms;
-    if(name==BLADE_ELBOW_L) jump mesh_arms;
-    if(name==BLADE_ELBOW_R) jump mesh_arms;
-    if(name==BLADE_WRIST_L) jump mesh_arms;
-    if(name==BLADE_WRIST_R) jump mesh_arms;
-    if(name==BLADE_RIBS)jump mesh_body;
-    if(name==BLADE_ABS) jump mesh_body;
-    if(name==BLADE_BODY) jump mesh_body;
-    if(name==BLADE_BREASTS)jump mesh_body;
-    if(name==BLADE_CHEST)jump mesh_body;
-    if(name==BLADE_COLLAR) jump mesh_neck;
-    if(name==BLADE_HAND_LEFT) jump mesh_hand_l;
-    if(name==BLADE_HAND_RIGHT) jump mesh_hand_r;
+    if(name==BLADE_ARM_L_L) return MESH_ARMS;
+    if(name==BLADE_ARM_L_R) return MESH_ARMS;
+    if(name==BLADE_ARM_U_L) return MESH_ARMS;
+    if(name==BLADE_ARM_U_R) return MESH_ARMS;
+    if(name==BLADE_ELBOW_L) return MESH_ARMS;
+    if(name==BLADE_ELBOW_R) return MESH_ARMS;
+    if(name==BLADE_WRIST_L) return MESH_ARMS;
+    if(name==BLADE_WRIST_R) return MESH_ARMS;
+    if(name==BLADE_RIBS)
+    {
+        if(FITTED_COMBO)
+        {
+            return "TorsoChest";
+        }
+        else{
+            return MESH_BODY;
+        }
+    }
+    if(name==BLADE_ABS)
+    {
+        if(FITTED_COMBO)
+        {
+            return "TorsoChest";
+        }
+        else{
+            return MESH_BODY;
+        }
+    }
+    if(name==BLADE_BODY)
+    {
+        if(FITTED_COMBO)
+        {
+            return "TorsoChest";
+        }
+        else{
+            return MESH_BODY;
+        }
+    }
+    if(name==BLADE_BREASTS)
+    {
+        if(FITTED_COMBO)
+        {
+            return "TorsoChest";
+        }
+        else{
+            return MESH_BODY;
+        }
+    }
+    if(name==BLADE_CHEST)
+    {
+        if(FITTED_COMBO)
+        {
+            return "TorsoChest";
+        }
+        else{
+            return MESH_BODY;
+        }
+    }
+    if(name==BLADE_COLLAR)
+    {
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
+    if(name==BLADE_HAND_LEFT) return MESH_HAND_LEFT;
+    if(name==BLADE_HAND_RIGHT) return MESH_HAND_RIGHT;
     if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(FITTED_COMBO)
         {
-            jump vagoo;
+            if(FITTED_COMBO)
+            {
+            // TODO: Restore current state (Improvement)
+            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+                return "TorsoEtc";
+            }
         }
-        jump mesh_hips;
+        return MESH_HIPS;
     }
-    if(name==BLADE_NECK) jump mesh_neck;
+    if(name==BLADE_NECK)
+    {
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
     if(name==BLADE_PELVIS){
-        if(FITTED_COMBO)
-        {
-            jump vagoo;
-        }
-        jump mesh_hips;
+        if(FITTED_COMBO) return "TorsoEtc";
+        return MESH_HIPS;
     }
-    if(name==BLADE_KNEE_R) jump mesh_knee_r;
-    if(name==BLADE_FOOT_R) jump mesh_knee_r;
-    if(name==BLADE_ANKLE_R) jump mesh_knee_r;
-    if(name==BLADE_SHIN_U_R) jump mesh_knee_r;
-    if(name==BLADE_CALF_R) jump mesh_knee_r;
-    if(name==BLADE_SHIN_L_R) jump mesh_knee_r;
 
-    if(name==BLADE_CALF_L) jump mesh_knee_l;
-    if(name==BLADE_ANKLE_L) jump mesh_knee_l;
-    if(name==BLADE_FOOT_L) jump mesh_knee_l;
-    if(name==BLADE_KNEE_L) jump mesh_knee_l;
-    if(name==BLADE_SHIN_L_L) jump mesh_knee_l;
-    if(name==BLADE_SHIN_U_L) jump mesh_knee_l;
-
-    if(name==BLADE_SHOULDER_L_L) jump mesh_neck;
-    if(name==BLADE_SHOULDER_L_R) jump mesh_neck;
-    if(name==BLADE_SHOULDER_U_L) jump mesh_neck;
-    if(name==BLADE_SHOULDER_U_R) jump mesh_neck;
-    if(name==BLADE_THIGH_U_L) jump mesh_hips;
-    if(name==BLADE_THIGH_U_R) jump mesh_hips;
-    if(name==BLADE_BELLY) jump mesh_hips;
-    if(name==BLADE_NIPS) jump nips;
-    if(name==BLADE_VAG) jump vagoo;
-    if(name==BLADE_THIGH_L_R)jump mesh_leg_thigh_low_r;
-    if(name==BLADE_THIGH_L_L)jump mesh_leg_thigh_low_l;
-
-    @mesh_leg_thigh_low_r;
-    @mesh_leg_thigh_low_l;
-    if(FITTED_COMBO)
+    if(name==BLADE_KNEE_R)
     {
         if(human_mode)
         {
-            return "HumanLegs";
+            return MESH_LEG_RIGHT_HUMAN;
         }
         else
         {
-            jump nips;
+            return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    else
+    if(name==BLADE_FOOT_R)
     {
-        llOwnerSay("unimplemented!");
-        return "WAT";
+        if(human_mode)
+        {
+            return MESH_LEG_RIGHT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_RIGHT_ANIMAL;
+        }
+    }
+    if(name==BLADE_ANKLE_R)
+    {
+        if(human_mode)
+        {
+            return MESH_LEG_RIGHT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_RIGHT_ANIMAL;
+        }
+    }
+    if(name==BLADE_SHIN_U_R)
+    {
+        if(human_mode)
+        {
+            return MESH_LEG_RIGHT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_RIGHT_ANIMAL;
+        }
+    }
+    if(name==BLADE_CALF_R)
+    {
+        if(human_mode)
+        {
+            return MESH_LEG_RIGHT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_RIGHT_ANIMAL;
+        }
+    }
+    if(name==BLADE_SHIN_L_R)
+    {
+        if(human_mode)
+        {
+            return MESH_LEG_RIGHT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_RIGHT_ANIMAL;
+        }
     }
 
-    @nips;
-    @vagoo;
-    if(FITTED_COMBO)
+    if(name==BLADE_CALF_L)
     {
-        // TODO: Restore current state (Improvement)
-        // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-        return "TorsoEtc";
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    return MESH_PG_LAYER;
-    @mesh_neck;
-    if(FITTED_COMBO) return MESH_FITTED_TORSO;
-    return MESH_NECK;
-    @mesh_arms;
-    return MESH_ARMS;
-    @mesh_hand_l;
-    return MESH_HAND_LEFT;
-    @mesh_hand_r;
-    return MESH_HAND_RIGHT;
-    @mesh_knee_r;
-    if(human_mode)
+    if(name==BLADE_ANKLE_L)
     {
-        return MESH_LEG_RIGHT_HUMAN;
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    else
+    if(name==BLADE_FOOT_L)
     {
-        return MESH_LEG_RIGHT_ANIMAL;
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    @mesh_knee_l;
-    if(human_mode)
+    if(name==BLADE_KNEE_L)
     {
-        return MESH_LEG_LEFT_HUMAN;
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    else
+    if(name==BLADE_SHIN_L_L)
     {
-        return MESH_LEG_LEFT_ANIMAL;
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    @mesh_hips;
-    if(FITTED_COMBO) return "TorsoEtc";
-    return MESH_HIPS;
-    @mesh_body;
-    if(FITTED_COMBO)
+    if(name==BLADE_SHIN_U_L)
     {
-        return "TorsoChest";
+        if(human_mode)
+        {
+            return MESH_LEG_LEFT_HUMAN;
+        }
+        else
+        {
+            return MESH_LEG_LEFT_ANIMAL;
+        }
+
     }
-    return MESH_BODY;
+
+    if(name==BLADE_SHOULDER_L_L){
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
+    if(name==BLADE_SHOULDER_L_R){
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
+    if(name==BLADE_SHOULDER_U_L){
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
+    if(name==BLADE_SHOULDER_U_R){
+        if(FITTED_COMBO) return MESH_FITTED_TORSO;
+        return MESH_NECK;
+    }
+    if(name==BLADE_THIGH_U_L){
+        if(FITTED_COMBO) return "TorsoEtc";
+        return MESH_HIPS;
+    }
+    if(name==BLADE_THIGH_U_R){
+        if(FITTED_COMBO) return "TorsoEtc";
+        return MESH_HIPS;
+    }
+    if(name==BLADE_BELLY)
+    {
+        if(FITTED_COMBO) return "TorsoEtc";
+        return MESH_HIPS;
+    }
+    if(name==BLADE_NIPS)
+    {
+        if(FITTED_COMBO)
+        {
+            // TODO: Restore current state (Improvement)
+            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            return "TorsoEtc";
+        }
+        return MESH_PG_LAYER;
+    }
+    if(name==BLADE_VAG)
+    {
+        if(FITTED_COMBO)
+        {
+            // TODO: Restore current state (Improvement)
+            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            return "TorsoEtc";
+        }
+        return MESH_PG_LAYER;
+    }
+    if(name==BLADE_THIGH_L_R)
+    {
+        if(FITTED_COMBO)
+        {
+            if(human_mode)
+            {
+                return "HumanLegs";
+            }
+            else
+            {
+                return MESH_HIPS;
+            }
+        }
+        else
+        {
+            llOwnerSay("unimplemented!");
+            return "WAT";
+        }
+    }
+    if(name==BLADE_THIGH_L_L)
+    {
+        if(FITTED_COMBO)
+        {
+            if(human_mode)
+            {
+                return "HumanLegs";
+            }
+            else
+            {
+                return MESH_HIPS;
+            }
+        }
+        else
+        {
+            llOwnerSay("unimplemented!");
+            return "WAT";
+        }
+    }
+
+    llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+    return "WAT";
 }
 
 xlProcessCommand(string message)
