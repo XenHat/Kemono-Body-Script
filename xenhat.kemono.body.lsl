@@ -378,12 +378,9 @@ string xlGetPrimNameByBladeName(string name)
     if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(FITTED_COMBO)
         {
-            if(FITTED_COMBO)
-            {
             // TODO: Restore current state (Improvement)
-            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
-                return "TorsoEtc";
-            }
+            // return "TorsoEtc";
+            return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
         }
         return MESH_HIPS;
     }
@@ -393,7 +390,12 @@ string xlGetPrimNameByBladeName(string name)
         return MESH_NECK;
     }
     if(name==BLADE_PELVIS){
-        if(FITTED_COMBO) return "TorsoEtc";
+        // if(FITTED_COMBO) return "TorsoEtc";
+        if(FITTED_COMBO){
+            // TODO: Restore current state (Improvement)
+            return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            // return "TorsoEtc";
+        }
         return MESH_HIPS;
     }
     if(name==BLADE_KNEE_R)
@@ -587,13 +589,14 @@ string xlGetPrimNameByBladeName(string name)
             }
             else
             {
-                return MESH_HIPS;
+                return "TorsoEtc";
             }
         }
         else
         {
-            llOwnerSay("unimplemented!");
-            return "WAT";
+            // llOwnerSay("unimplemented!");
+            return "WAT";?
+            return MESH_HIPS;
         }
     }
     if(name==BLADE_THIGH_L_L)
@@ -606,13 +609,14 @@ string xlGetPrimNameByBladeName(string name)
             }
             else
             {
-                return MESH_HIPS;
+                return "TorsoEtc";
             }
         }
         else
         {
-            llOwnerSay("unimplemented!");
-            return "WAT";
+            // llOwnerSay("unimplemented!");
+            // return "WAT";
+            return MESH_HIPS;
         }
     }
     llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
