@@ -151,11 +151,9 @@ list s_FittedNipsState=["NipState0","Etc","NipState1"];
 // list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
 #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
 // OPTIMIZATION TODO: Use integer to pick list instead of passing list
-lsShowOnlyIndex(list data, integer index)
-{// Function by LogicShrimp
+lsShowOnlyIndex(list data, integer index){/* Function by LogicShrimp*/
     list params = [];
-    if(data == s_FittedNipsState)
-    {
+    if(data == s_FittedNipsState){
         list faces = xlGetFacesByBladeName(BLADE_NIPS);
         integer prim_id = xlGetLinkByBladeName(BLADE_NIPS);
         #ifdef DEBUG_FACE_SELECT
@@ -167,25 +165,20 @@ lsShowOnlyIndex(list data, integer index)
     params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,index)),PRIM_COLOR,ALL_SIDES,<1,1,1>,TRUE];
     integer n = (data!=[]);//List length
     integer i = 1;
-    for(;i < n; i++)
-    {
+    for(;i < n; i++){
         params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,(index + i) % n)),PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE];
     }
     xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
 }
-xlSafeGenitalToggle(string name,integer showit)
-{
+xlSafeGenitalToggle(string name,integer showit){
     integer link_id;
-    if(FITTED_COMBO)
-    {
-        if(name==BLADE_VAG)
-        {
+    if(FITTED_COMBO){
+        if(name==BLADE_VAG){
             // TODO: Restore last state (enhancement from stock behavior)
             string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             lsShowOnlyIndex(s_FittedVagooState,showit);
         }
-        else if (BLADE_NIPS)
-        {
+        else if (BLADE_NIPS){
             /* Stock Body script:
             setnip0 == NipState0
             setnip1 == TorsoEtc[0,1]
@@ -195,13 +188,11 @@ xlSafeGenitalToggle(string name,integer showit)
             lsShowOnlyIndex(s_FittedNipsState,showit);
         }
     }
-    else
-    {
+    else{
         llOwnerSay("unimplemented!");
     }
 }
-integer xlGetLinkByBladeName(string name)
-{
+integer xlGetLinkByBladeName(string name){
     #ifdef DEBUG_FACE_SELECT
     integer index = llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)]);
     integer id = llList2Integer(g_LinkDB_l,index+1);
@@ -215,8 +206,7 @@ integer xlGetLinkByBladeName(string name)
     #endif
 }
 integer human_mode = TRUE;
-list xlGetFacesByBladeName(string name)
-{
+list xlGetFacesByBladeName(string name){
     if(name==BLADE_ABS)return [6,7];
     if(name==BLADE_ANKLE_L)return [1];
     if(name==BLADE_ANKLE_R)return [1];
@@ -261,10 +251,8 @@ list xlGetFacesByBladeName(string name)
         if(FITTED_COMBO) return [0,1];
         return [2,5];
     }
-    if(name==BLADE_NIPS)
-    {
-        if (FITTED_COMBO)
-        {
+    if(name==BLADE_NIPS){
+        if (FITTED_COMBO){
             return [0,1];
         }
         return [2,3];
@@ -293,14 +281,11 @@ list xlGetFacesByBladeName(string name)
     }
     if(name==BLADE_SHOULDER_U_R)return [4];
     if(name==BLADE_THIGH_L_L){
-        if(FITTED_COMBO)
-        {
-            if(human_mode)
-            {
+        if(FITTED_COMBO){
+            if(human_mode){
                 return [1];
             }
-            else
-            {
+            else{
                 return [7];
             }
         }
@@ -312,14 +297,11 @@ list xlGetFacesByBladeName(string name)
         }
     }
     if(name==BLADE_THIGH_L_R){
-        if(FITTED_COMBO)
-        {
-            if(human_mode)
-            {
+        if(FITTED_COMBO){
+            if(human_mode){
                 return [0];
             }
-            else
-            {
+            else{
                 return [6];
             }
         }
@@ -340,8 +322,7 @@ list xlGetFacesByBladeName(string name)
     if(name==BLADE_WRIST_R)return [1];
     return [];
 }
-string xlGetPrimNameByBladeName(string name)
-{
+string xlGetPrimNameByBladeName(string name){
     if(name==BLADE_ARM_L_L) return MESH_ARMS;
     if(name==BLADE_ARM_L_R) return MESH_ARMS;
     if(name==BLADE_ARM_U_L) return MESH_ARMS;
@@ -350,74 +331,61 @@ string xlGetPrimNameByBladeName(string name)
     if(name==BLADE_ELBOW_R) return MESH_ARMS;
     if(name==BLADE_WRIST_L) return MESH_ARMS;
     if(name==BLADE_WRIST_R) return MESH_ARMS;
-    if(name==BLADE_RIBS)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_RIBS){
+        if(FITTED_COMBO){
             return "TorsoChest";
         }
         else{
             return MESH_BODY;
         }
     }
-    if(name==BLADE_ABS)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_ABS){
+        if(FITTED_COMBO){
             return "TorsoChest";
         }
         else{
             return MESH_BODY;
         }
     }
-    if(name==BLADE_BODY)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_BODY){
+        if(FITTED_COMBO){
             return "TorsoChest";
         }
         else{
             return MESH_BODY;
         }
     }
-    if(name==BLADE_BREASTS)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_BREASTS){
+        if(FITTED_COMBO){
             return "TorsoChest";
         }
         else{
             return MESH_BODY;
         }
     }
-    if(name==BLADE_CHEST)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_CHEST){
+        if(FITTED_COMBO){
             return "TorsoChest";
         }
         else{
             return MESH_BODY;
         }
     }
-    if(name==BLADE_COLLAR)
-    {
+    if(name==BLADE_COLLAR){
         if(FITTED_COMBO) return MESH_FITTED_TORSO;
         return MESH_NECK;
     }
     if(name==BLADE_HAND_LEFT) return MESH_HAND_LEFT;
     if(name==BLADE_HAND_RIGHT) return MESH_HAND_RIGHT;
     if(name==BLADE_HIP_L || name==BLADE_HIP_R){
-        if(FITTED_COMBO)
-        {
+        if(FITTED_COMBO){
             // TODO: Restore current state (Improvement)
             // return "TorsoEtc";
             return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
         }
         return MESH_HIPS;
     }
-    if(name==BLADE_NECK)
-    {
+    if(name==BLADE_NECK){
         if(FITTED_COMBO) return MESH_FITTED_TORSO;
         return MESH_NECK;
     }
@@ -430,135 +398,99 @@ string xlGetPrimNameByBladeName(string name)
         }
         return MESH_HIPS;
     }
-    if(name==BLADE_KNEE_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_KNEE_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_FOOT_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_FOOT_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_ANKLE_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_ANKLE_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_SHIN_U_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_SHIN_U_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_CALF_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_CALF_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_SHIN_L_R)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_SHIN_L_R){
+        if(human_mode){
             return MESH_LEG_RIGHT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_RIGHT_ANIMAL;
         }
     }
-    if(name==BLADE_CALF_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_CALF_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
-    if(name==BLADE_ANKLE_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_ANKLE_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
-    if(name==BLADE_FOOT_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_FOOT_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
-    if(name==BLADE_KNEE_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_KNEE_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
-    if(name==BLADE_SHIN_L_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_SHIN_L_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
-    if(name==BLADE_SHIN_U_L)
-    {
-        if(human_mode)
-        {
+    if(name==BLADE_SHIN_U_L){
+        if(human_mode){
             return MESH_LEG_LEFT_HUMAN;
         }
-        else
-        {
+        else{
             return MESH_LEG_LEFT_ANIMAL;
         }
     }
@@ -586,66 +518,51 @@ string xlGetPrimNameByBladeName(string name)
         if(FITTED_COMBO) return "TorsoEtc";
         return MESH_HIPS;
     }
-    if(name==BLADE_BELLY)
-    {
+    if(name==BLADE_BELLY){
         if(FITTED_COMBO) return "TorsoEtc";
         return MESH_HIPS;
     }
-    if(name==BLADE_NIPS)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_NIPS){
+        if(FITTED_COMBO){
             // TODO: Restore current state (Improvement)
             // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             return "TorsoEtc";
         }
         return MESH_PG_LAYER;
     }
-    if(name==BLADE_VAG)
-    {
-        if(FITTED_COMBO)
-        {
+    if(name==BLADE_VAG){
+        if(FITTED_COMBO){
             // TODO: Restore current state (Improvement)
             // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             return "TorsoEtc";
         }
         return MESH_PG_LAYER;
     }
-    if(name==BLADE_THIGH_L_R)
-    {
-        if(FITTED_COMBO)
-        {
-            if(human_mode)
-            {
+    if(name==BLADE_THIGH_L_R){
+        if(FITTED_COMBO){
+            if(human_mode){
                 return "HumanLegs";
             }
-            else
-            {
+            else{
                 return "TorsoEtc";
             }
         }
-        else
-        {
+        else{
             // llOwnerSay("unimplemented!");
             return "WAT";?
             return MESH_HIPS;
         }
     }
-    if(name==BLADE_THIGH_L_L)
-    {
-        if(FITTED_COMBO)
-        {
-            if(human_mode)
-            {
+    if(name==BLADE_THIGH_L_L){
+        if(FITTED_COMBO){
+            if(human_mode){
                 return "HumanLegs";
             }
-            else
-            {
+            else{
                 return "TorsoEtc";
             }
         }
-        else
-        {
+        else{
             // llOwnerSay("unimplemented!");
             // return "WAT";
             return MESH_HIPS;
@@ -654,8 +571,7 @@ string xlGetPrimNameByBladeName(string name)
     llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     return "WAT";
 }
-xlProcessCommand(string message)
-{
+xlProcessCommand(string message){
     list data = llParseStringKeepNulls(message,[":"],[]);
     integer showit;
     string command = llList2String(data,0);
@@ -665,33 +581,27 @@ xlProcessCommand(string message)
     else if(command == "hide"){
         showit = FALSE;
     }
-    else if(command=="setvag")
-    {
-        if (!FITTED_COMBO)
-        {
+    else if(command=="setvag"){
+        if (!FITTED_COMBO){
             return;
         }
         lsShowOnlyIndex(s_FittedVagooState,llList2Integer(data,1));
         return;
     }
-    else if(command=="setnip")
-    {
-        if (!FITTED_COMBO)
-        {
+    else if(command=="setnip"){
+        if (!FITTED_COMBO){
             return;
         }
         lsShowOnlyIndex(s_FittedNipsState,llList2Integer(data,1));
         return;
     }
-    else
-    {
+    else{
         return;
     }
     command="";
     list params;
     integer list_size = llGetListLength(data) - 1;
-    for(;list_size >= 1; --list_size) /* skip first element*/
-    {
+    for(;list_size >= 1; --list_size) /* skip first element*/{
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso
         *  to avoid endless toggling as the fitted torso requests hiding of the faces it replaces
         * to "fix" the stock body
@@ -703,12 +613,10 @@ xlProcessCommand(string message)
                             || part_wanted_s==BLADE_BREASTS
                             || part_wanted_s==BLADE_VAG
                             )
-        )
-        {
+        ){
             xlSafeGenitalToggle(part_wanted_s,showit);
         }
-        else
-        {
+        else{
                 list faces_l = xlGetFacesByBladeName(part_wanted_s);
                 integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
                 #ifdef DEBUG_FACE_SELECT
@@ -719,12 +627,12 @@ xlProcessCommand(string message)
                 integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
                 float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
                 params+=[PRIM_LINK_TARGET,link_id];
-                for(;faces>=0;--faces) {
+                for(;faces>=0;--faces){
                     params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOW_FOR_REAL];
                 }
         }
     }
-    if(params!=[]) {
+    if(params!=[]){
         xlSetLinkPrimitiveParamsFast(LINK_SET, params);
         params=[];
     }
@@ -738,18 +646,17 @@ default {
             "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["+(string)llDetectedTouchFace(0)+"];break;");
     }
     #endif
-    changed(integer change) {
-        if (change & CHANGED_OWNER) {
+    changed(integer change){
+        if (change & CHANGED_OWNER){
             llOwnerSay("The owner of the object has changed, resetting...");
             llResetScript();
         }
-        if(change & CHANGED_LINK)
-        {
+        if(change & CHANGED_LINK){
             llOwnerSay("Link changed, resetting..."); // should really just recalculate
             llResetScript();
         }
     }
-    state_entry() {
+    state_entry(){
 #ifdef DEBUG_MEMORY
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #else
@@ -765,21 +672,21 @@ default {
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture = texture != "";
         list prim_params_to_apply = [];
-        for (; part > 0; --part) {
+        for (; part > 0; --part){
             string name = llGetLinkName(part);
             llSetText("\n \n \n \n \n \nProcessing " + name + "...",<0,0,0>,1.0);
             integer fitted_torso_string_index = llSubStringIndex(name, MESH_FITTED_TORSO);
-            if(fitted_torso_string_index != -1) {
+            if(fitted_torso_string_index != -1){
                 /* Look if this really is a fitted torso or an accessory for it */
-                if(fitted_torso_string_index == 6 || fitted_torso_string_index == 7) {
+                if(fitted_torso_string_index == 6 || fitted_torso_string_index == 7){
                     /* We are linked with starnya's Fitted Torso*/
                     FITTED_COMBO=TRUE;
                     name=MESH_FITTED_TORSO;
                 }
             }
-            if(llListFindList(g_supported_meshes, [name])!= 1) {
+            if(llListFindList(g_supported_meshes, [name])!= 1){
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
-                if(retexture) {
+                if(retexture){
                     prim_params_to_apply+= [PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0]; // LL, Standards plz...
                 }
                 g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
@@ -791,7 +698,7 @@ default {
         #endif
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some
             viewers, which is preferable. */
-        if(llGetAttached()) {
+        if(llGetAttached()){
             llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);
         }
         else {
@@ -802,7 +709,7 @@ default {
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",<0,0,0>,0.0);
     }
-    listen( integer channel, string name, key id, string message ) {
+    listen( integer channel, string name, key id, string message ){
         key owner_key = llGetOwnerKey(id);
         if (id == llGetKey()) return;
         #ifdef DEBUG_LISTEN
@@ -813,27 +720,25 @@ default {
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-        if(FITTED_COMBO)
-        {
-            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
-            {
+        if(FITTED_COMBO){
+            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3){
                 return;
             }
         }
         /*If we can't get a valid owner...*/
-        if(owner_key == id) {
+        if(owner_key == id){
             /*And if they aren't in the auth list, ignore them.*/
-            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1) {
+            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1){
                 return;
             }
         }
         /*If they don't have the same owner, ignore them.*/
-        else if(owner_key != g_Owner_k) {
+        else if(owner_key != g_Owner_k){
             return;
         }
         if(message == "add"){
             /*And if they aren't in the auth list, add them.*/
-            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1) {
+            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1){
                 g_RemConfirmKeys_l += [id];
                 return;
             }
@@ -841,21 +746,19 @@ default {
         if(message == "remove"){
             /*If the are in the list, remove them.*/
             integer placeinlist = llListFindList(g_RemConfirmKeys_l, [(key)id]);
-            if (placeinlist != -1) {
+            if (placeinlist != -1){
                 g_RemConfirmKeys_l = llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
             }
         }
         if (message=="Hlegs"){
-            if(!human_mode)
-            {
+            if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=TRUE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
         else if(message=="Flegs"){
-            if(human_mode)
-            {
+            if(human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=FALSE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
@@ -878,9 +781,9 @@ default {
             #endif
         }
     }
-    run_time_permissions(integer perm) {
-        if (perm & PERMISSION_TRIGGER_ANIMATION) {
-            if(llGetAttached()) {
+    run_time_permissions(integer perm){
+        if (perm & PERMISSION_TRIGGER_ANIMATION){
+            if(llGetAttached()){
                 llStartAnimation("Kem-body-deform");
             }
             else {
@@ -890,7 +793,7 @@ default {
             }
         }
     }
-    timer() {
+    timer(){
         if(llGetAttached())llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
 #ifdef DEBUG_MEMORY
         llSetText((string)llGetUsedMemory()+"B\n["+(string)llGetSPMaxMemory()+"B]\n-----------\n"+(string)llGetMemoryLimit()+"B\n-----------\n"+(string)llGetListLength(g_RemConfirmKeys_l)+" Keys\nAttached:"+(string)llGetAttached(),<1,1,1>,1.0);
