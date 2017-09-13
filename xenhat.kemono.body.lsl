@@ -28,16 +28,18 @@ https://tldrlegal.com/license/aladdin-free-public-license
 float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 /* Runtime User Config ends here */
 /* Defines */
-// #define DEBUG
-// #define DEBUG_LISTEN
-// #define DEBUG_PARAMS
-// #define DEBUG_FACE_SELECT
-// #define DEBUG_LISTEN_PROCESS
-// #define DEBUG_WHO
-// #define AUTH_ANYWAY
-// #define DEBUG_MEMORY
+#define DEBUG 0
+#define DEBUG_LISTEN 0
+#define DEBUG_PARAMS 0
+#define DEBUG_FACE_SELECT 0
+#define DEBUG_LISTEN_PROCESS 0
+#define DEBUG_WHO 0
+#define AUTH_ANYWAY 0
+#define DEBUG_MEMORY 0
 // End of debug defines
-#ifdef DEBUG_PARAMS
+#define HOVER_TEXT_COLOR <0.25,0.25,0.25>
+#define HOVER_TEXT_ALPHA 0.75
+#if DEBUG_PARAMS
 #define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("LINK:"+(string)a+"\nPARAMS:"+llList2CSV(b));llSetLinkPrimitiveParamsFast(a,b)
 #else
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
@@ -139,11 +141,12 @@ MESH_FITTED_TORSO,
 
 integer g_State_PG = TRUE;
 integer FITTED_COMBO = FALSE;
+integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
 integer g_CurrentFittedVagState=1;
-integer g_CurrentFittedNipState=0;
+integer g_CurrentFittedNipState=1;
 list s_FittedVagooState=["BitState0","BitState1", "BitState2", "BitState3"];
 /* NipAlpha unused with Kemono API; requires Starbright hud, which is a job for later*/
 list s_FittedNipsState=["NipState0","Etc","NipState1"];
@@ -154,13 +157,13 @@ list s_FittedNipsState=["NipState0","Etc","NipState1"];
 lsShowOnlyIndex(list data, integer index){/* Function by LogicShrimp*/
     list params = [];
     if(data == s_FittedNipsState){
-        list faces = xlGetFacesByBladeName(BLADE_NIPS);
+        list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
         integer prim_id = xlGetLinkByBladeName(BLADE_NIPS);
-        #ifdef DEBUG_FACE_SELECT
-        llOwnerSay("FACES:"+llList2CSV(faces)+"\nPRIM_ID:"+(string)prim_id);
+        #if DEBUG_FACE_SELECT
+        llOwnerSay("NAME:"+llList2CSV(data)+"\nFACES:"+llList2CSV(faces_l)+"\nPRIM_ID:"+(string)prim_id);
         #endif
-        params += [PRIM_LINK_TARGET,prim_id,PRIM_COLOR,llList2Integer(faces,0),<1,1,1>,(index == 1)
-                                            ,PRIM_COLOR,llList2Integer(faces,1),<1,1,1>,(index == 1)];
+        params += [PRIM_LINK_TARGET,prim_id,PRIM_COLOR,llList2Integer(faces_l,0),<1,1,1>,(index = 1)
+                                            ,PRIM_COLOR,llList2Integer(faces_l,1),<1,1,1>,(index == 1)];
     }
     params += [PRIM_LINK_TARGET,xlGetLinkByPrimName(llList2String(data,index)),PRIM_COLOR,ALL_SIDES,<1,1,1>,TRUE];
     integer n = (data!=[]);//List length
@@ -172,34 +175,34 @@ lsShowOnlyIndex(list data, integer index){/* Function by LogicShrimp*/
 }
 xlSafeGenitalToggle(string name,integer showit){
     integer link_id;
-    if(FITTED_COMBO){
-        if(name==BLADE_VAG){
+    if(FITTED_COMBO && name==BLADE_VAG){
             // TODO: Restore last state (enhancement from stock behavior)
             string current_vag = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             lsShowOnlyIndex(s_FittedVagooState,showit);
         }
-        else if (BLADE_NIPS){
+    else if (FITTED_COMBO && (name==BLADE_NIPS || name==BLADE_BREASTS)){
             /* Stock Body script:
             setnip0 == NipState0
             setnip1 == TorsoEtc[0,1]
             setnip2 == NipState1
             NipAlpha == ????
             */
+            // lsShowOnlyIndex(s_FittedNipsState,showit * g_CurrentFittedNipState);
+            // lsShowOnlyIndex(s_FittedNipsState,1);
             lsShowOnlyIndex(s_FittedNipsState,showit);
+            // lsShowOnlyIndex(s_FittedNipsState,3);
         }
-    }
     else{
-        llOwnerSay("unimplemented!");
+        llOwnerSay("unimplemented!:" + name);
     }
 }
 integer xlGetLinkByBladeName(string name){
-    #ifdef DEBUG_FACE_SELECT
+    #if DEBUG_FACE_SELECT
     integer index = llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)]);
     integer id = llList2Integer(g_LinkDB_l,index+1);
     llOwnerSay("Wanted:"+name+"\n"+
     "Index: :"+(string)index+"\n"+
-    "Returning ID:"+(string)id+"\n"+
-    "List:"+llList2CSV(g_LinkDB_l));
+    "Returning ID:"+(string)id+"\n");
     return id;
     #else
         return llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[xlGetPrimNameByBladeName(name)])+1);
@@ -218,7 +221,7 @@ list xlGetFacesByBladeName(string name){
     if(name==BLADE_BODY)return [0];
     if(name==BLADE_BREASTS){
         // FIXME BUG: hides nipples instead of chest blade
-        if(FITTED_COMBO) return [2,3];
+        if(FITTED_COMBO) return [0,1,2,3];
         return [2,5];
     }
     if(name==BLADE_CALF_L)return [4];
@@ -253,6 +256,9 @@ list xlGetFacesByBladeName(string name){
     }
     if(name==BLADE_NIPS){
         if (FITTED_COMBO){
+            /* Note: Before changing this again, create a different way of handling
+                the request that doesn't match. This is configured properly for the whole
+                Fitted Torso chest mesh*/
             return [0,1];
         }
         return [2,3];
@@ -524,16 +530,12 @@ string xlGetPrimNameByBladeName(string name){
     }
     if(name==BLADE_NIPS){
         if(FITTED_COMBO){
-            // TODO: Restore current state (Improvement)
-            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             return "TorsoEtc";
         }
         return MESH_PG_LAYER;
     }
     if(name==BLADE_VAG){
         if(FITTED_COMBO){
-            // TODO: Restore current state (Improvement)
-            // return llList2String(s_FittedVagooState,g_CurrentFittedVagState);
             return "TorsoEtc";
         }
         return MESH_PG_LAYER;
@@ -548,8 +550,6 @@ string xlGetPrimNameByBladeName(string name){
             }
         }
         else{
-            // llOwnerSay("unimplemented!");
-            return "WAT";?
             return MESH_HIPS;
         }
     }
@@ -563,8 +563,6 @@ string xlGetPrimNameByBladeName(string name){
             }
         }
         else{
-            // llOwnerSay("unimplemented!");
-            // return "WAT";
             return MESH_HIPS;
         }
     }
@@ -607,19 +605,10 @@ xlProcessCommand(string message){
         * to "fix" the stock body
         */
         string part_wanted_s = llList2String(data, list_size);
-        // TODO: Write a better handling of this because we need to handle genitals
-        // very carefully
-        if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
-                            || part_wanted_s==BLADE_BREASTS
-                            || part_wanted_s==BLADE_VAG
-                            )
-        ){
-            xlSafeGenitalToggle(part_wanted_s,showit);
-        }
-        else{
+        // else{
                 list faces_l = xlGetFacesByBladeName(part_wanted_s);
                 integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-                #ifdef DEBUG_FACE_SELECT
+                #if DEBUG_FACE_SELECT
                 llOwnerSay("Faces List:"+llList2CSV(faces_l));
                 llOwnerSay("Link ID  :"+(string)link_id);
                 #endif
@@ -630,6 +619,15 @@ xlProcessCommand(string message){
                 for(;faces>=0;--faces){
                     params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOW_FOR_REAL];
                 }
+        // }
+        // TODO: Write a better handling of this because we need to handle genitals
+        // very carefully
+        if(FITTED_COMBO && (part_wanted_s==BLADE_NIPS
+                            || part_wanted_s==BLADE_BREASTS
+                            || part_wanted_s==BLADE_VAG
+                            )
+        ){
+            xlSafeGenitalToggle(part_wanted_s,showit);
         }
     }
     if(params!=[]){
@@ -638,7 +636,7 @@ xlProcessCommand(string message){
     }
 }
 default {
-    #ifdef DEBUG_FACE_SELECT
+    #if DEBUG_FACE_SELECT
     touch_start(integer total_number){
         key tk = llDetectedKey(0);
         if(tk!=g_Owner_k)return;
@@ -657,15 +655,15 @@ default {
         }
     }
     state_entry(){
-#ifdef DEBUG_MEMORY
+#if DEBUG_MEMORY
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #else
         llScriptProfiler(PROFILE_NONE);
 #endif
-        llSetText("Please wait...",<0,0,0>,1.0);
+        llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
         llSetTimerEvent(3);
-        #ifdef DEBUG
+        #if DEBUG
         llOwnerSay("Counting");
         #endif
         human_mode=(integer)llGetObjectDesc();
@@ -694,7 +692,7 @@ default {
             }
         }
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
-        #ifdef DEBUG
+        #if DEBUG
         llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
         #endif
         /* The Starbright body Stripper has an option to leave the human legs out,
@@ -721,14 +719,14 @@ default {
         /* Reset faces*/
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llListen(KEMONO_COM_CH,"","","");
-        llSetText("",<0,0,0>,0.0);
+        llSetText("",HOVER_TEXT_COLOR,0.0);
     }
     listen( integer channel, string name, key id, string message ){
         key owner_key = llGetOwnerKey(id);
         if (id == llGetKey()) return;
-        #ifdef DEBUG_LISTEN
+        #if DEBUG_LISTEN
         string knp;
-        #ifdef DEBUG_WHO
+        #if DEBUG_WHO
         knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
         #endif
         llOwnerSay(knp+"input ["+message+"]");
@@ -782,24 +780,24 @@ default {
         }
         /* Restore compatibility with old scripts*/
         else if(message=="resetA"){
-            //llOwnerSay("AAAAAAAAAAAAAAAAA");
             xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         }
         else if(message=="resetB"){
-            //llOwnerSay("AAAAAAAAAAAAAAAAA");
             xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
             g_RemConfirmKeys_l=[];
         }
         else {
             xlProcessCommand(message);
-            #ifdef DEBUG_LISTEN_PROCESS
+            #if DEBUG_LISTEN_PROCESS
             llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
             #endif
         }
     }
     run_time_permissions(integer perm){
         if (perm & PERMISSION_TRIGGER_ANIMATION){
+            g_HasAnimPerms=TRUE;
             if(llGetAttached()){
+                llSetText("Applying Deform Animation...", HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
                 llStartAnimation("Kem-body-deform");
             }
             else {
@@ -809,10 +807,27 @@ default {
             }
         }
     }
+    attach(key id) {
+        if(id == NULL_KEY)
+        {
+            if(g_HasAnimPerms)
+            {
+                llStopAnimation("Kem-body-deform");
+                llStartAnimation("Kem-body-undeform");
+                llStopAnimation("Kem-body-undeform");
+            }
+        }
+    }
     timer(){
-        if(llGetAttached())llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-#ifdef DEBUG_MEMORY
-        llSetText((string)llGetUsedMemory()+"B\n["+(string)llGetSPMaxMemory()+"B]\n-----------\n"+(string)llGetMemoryLimit()+"B\n-----------\n"+(string)llGetListLength(g_RemConfirmKeys_l)+" Keys\nAttached:"+(string)llGetAttached(),<1,1,1>,1.0);
+        if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY){
+            llSetText("[DEBUG]", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+        }else{
+            llSetText("", HOVER_TEXT_COLOR, 0.0);
+        }
+        g_HasAnimPerms = llGetPermissions();
+        if(llGetAttached() && !g_HasAnimPerms)llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+#if DEBUG_MEMORY
+        llSetText((string)llGetUsedMemory()+"B\n["+(string)llGetSPMaxMemory()+"B]\n-----------\n"+(string)llGetMemoryLimit()+"B\n-----------\n"+(string)llGetListLength(g_RemConfirmKeys_l)+" Keys\nAttached:"+(string)llGetAttached(),HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
 #else
         //if(!llSetMemoryLimit(llGetUsedMemory()+256))
         //{
