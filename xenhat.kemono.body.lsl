@@ -728,28 +728,52 @@ default {
 #else
         llScriptProfiler(PROFILE_NONE);
 #endif
-        llSetText("",<0,0,0>,0.0);
+        llSetText("Please wait...",<0,0,0>,1.0);
         g_Owner_k = llGetOwner();
         llSetTimerEvent(3);
         #ifdef DEBUG
         llOwnerSay("Counting");
         #endif
         integer part = llGetNumberOfPrims();
+        string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
+        integer retexture = texture != "";
+        list prim_params_to_apply = [];
         for (; part > 0; --part) {
             string name = llGetLinkName(part);
-            if(~llSubStringIndex(name, MESH_FITTED_TORSO))
-            {
-                /* We are linked with starnya's Fitted Torso*/
-                FITTED_COMBO=TRUE;
-                name=MESH_FITTED_TORSO;
-                // if(~llSubStringIndex(name, MESH_FITTED_TORSO))
+            llSetText("\n \n \n \n \n \nProcessing " + name + "...",<0,0,0>,1.0);
+            integer fitted_torso_string_index = llSubStringIndex(name, MESH_FITTED_TORSO);
+            if(fitted_torso_string_index != -1) {
+                /* Look if this really is a fitted torso or an accessory for it */
+                if(fitted_torso_string_index == 6 || fitted_torso_string_index == 7) {
+                    /* We are linked with starnya's Fitted Torso*/
+                    FITTED_COMBO=TRUE;
+                    name=MESH_FITTED_TORSO;
+                }
             }
-            g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
+            if(llListFindList(g_supported_meshes, [name])!= 1) {
+                prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+                if(retexture) {
+                    prim_params_to_apply+= [PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0]; // LL, Standards plz...
+                }
+                g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
+            }
         }
+        llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
         #ifdef DEBUG
-        llOwnerSay(llList2CSV(g_LinkDB_l));
+        llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
         #endif
+        /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some
+            viewers, which is preferable. */
+        if(llGetAttached()) {
+            llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);
+        }
+        else {
+            llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);
+        }
+        /* Reset faces*/
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llListen(KEMONO_COM_CH,"","","");
+        llSetText("",<0,0,0>,0.0);
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
