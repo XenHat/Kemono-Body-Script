@@ -110,6 +110,33 @@ float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 #define BLADE_WRIST_R "wristR"
 #define BLADE_FOOT_R "footR"
 #define BLADE_FOOT_L "footL"
+
+list g_supported_meshes = [
+MESH_ARMS,
+MESH_BODY,
+MESH_HAND_LEFT,
+MESH_HAND_RIGHT,
+MESH_HIPS,
+MESH_LEG_LEFT_ANIMAL,
+MESH_LEG_LEFT_HUMAN,
+MESH_LEG_RIGHT_ANIMAL,
+MESH_LEG_RIGHT_HUMAN,
+MESH_NECK,
+MESH_PG_LAYER,
+MESH_ROOT,
+MESH_FITTED_TORSO,
+"BitState0",
+"BitState1",
+"BitState2",
+"BitState3",
+"NipState0",
+"Etc",
+"NipState1",
+"cumButtS1",
+"cumButtS2",
+"cumButtS3"
+];
+
 integer g_State_PG = TRUE;
 integer FITTED_COMBO = FALSE;
 key g_Owner_k;
