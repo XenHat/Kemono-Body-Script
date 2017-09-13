@@ -668,6 +668,7 @@ default {
         #ifdef DEBUG
         llOwnerSay("Counting");
         #endif
+        human_mode=(integer)llGetObjectDesc();
         integer part = llGetNumberOfPrims();
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture = texture != "";
@@ -696,6 +697,19 @@ default {
         #ifdef DEBUG
         llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
         #endif
+        /* The Starbright body Stripper has an option to leave the human legs out,
+            so check if these are present at all*/
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1)
+        {
+            /* Forcefully set to human mode if the animal legs aren't found*/
+            human_mode=FALSE;
+        }
+        else if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1)
+        {
+            /* Forcefully set to animal mode if the human legs aren't found*/
+            human_mode=TRUE;
+        }
+        /* FIXME: Undefined behavior if no legs from kemono body */
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some
             viewers, which is preferable. */
         if(llGetAttached()){
@@ -754,6 +768,7 @@ default {
             if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=TRUE;
+                llSetObjectDesc("1");
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
@@ -762,6 +777,7 @@ default {
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=FALSE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                llSetObjectDesc("0");
             }
         }
         /* Restore compatibility with old scripts*/
