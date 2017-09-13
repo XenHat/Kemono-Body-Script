@@ -3,21 +3,26 @@
 Licensed under the Aladdin Free Public License Version 9
 For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
 The short human readable version of this licence for the benefit of the reader is:
+
 You CAN:
  Modify
  Distribute
+
 You CANNOT:
  Hold Liable
  Sublicense
  Place Warranty
  Commercial Use
+
 You MUST:
  Include License
  Include Original
  State Changes
+
 An online version of the human-readable version of the AFPL can be found at:
 https://tldrlegal.com/license/aladdin-free-public-license
 */
+
 /* SCRIPT BEGINS HERE */
 /* Runtime User Config starts here */
 float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
