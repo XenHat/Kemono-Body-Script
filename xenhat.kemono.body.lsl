@@ -605,6 +605,7 @@ xlProcessCommand(string message){
     if(part_wanted_s == BLADE_NIPS)
     {
         g_PGState_Nips = !showit;
+        llSetObjectDesc((string)g_PGState_Nips);
     }
     for(;list_size >= 1; --list_size){ /* skip first element*/
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso
