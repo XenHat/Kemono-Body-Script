@@ -691,9 +691,11 @@ default {
         #endif
         human_mode=(integer)llGetObjectDesc();
         integer part = llGetNumberOfPrims();
+        #if DEBUG_ENTIRE_BODY_ALPHA
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture = texture != "";
         list prim_params_to_apply = [];
+        #endif
         for (; part > 0; --part){
             string name = llGetLinkName(part);
             llSetText("\n \n \n \n \n \nProcessing " + name + "...",<0,0,0>,1.0);
@@ -707,19 +709,30 @@ default {
                 }
             }
             if(llListFindList(g_supported_meshes, [name])!= 1){
+                #if DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
                 if(retexture){
                     prim_params_to_apply+= [PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0]; // LL, Standards plz...
                 }
+                #endif
                 g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
             }
         }
-        llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
         #if DEBUG
         llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
         #endif
+        #if DEBUG_ENTIRE_BODY_ALPHA
+        llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
+        /* Reset faces*/
+        /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
+        /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
+        // xlProcessCommand("show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        xlProcessCommand("show:nips:vagoo");
+        #endif
         /* The Starbright body Stripper has an option to leave the human legs out,
             so check if these are present at all*/
+        /* FIXME: Undefined behavior if no legs from kemono body */
         if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1)
         {
             /* Forcefully set to human mode if the animal legs aren't found*/
@@ -730,7 +743,6 @@ default {
             /* Forcefully set to animal mode if the human legs aren't found*/
             human_mode=TRUE;
         }
-        /* FIXME: Undefined behavior if no legs from kemono body */
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some
             viewers, which is preferable. */
         if(llGetAttached()){
@@ -739,14 +751,6 @@ default {
         else {
             llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);
         }
-        /* Reset faces*/
-        /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
-        /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
-        #if DEBUG_ENTIRE_BODY_ALPHA
-        // xlProcessCommand("show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        xlProcessCommand("show:nips:vagoo");
-        #endif
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
     }
