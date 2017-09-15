@@ -26,6 +26,7 @@ float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 /* Runtime User Config ends here */
 /* Defines */
 #define DEBUG 0
+#define DEBUG_ENTIRE_BODY_ALPHA 0
 #define DEBUG_LISTEN 0
 #define DEBUG_PARAMS 0
 #define DEBUG_FACE_SELECT 0
@@ -740,9 +741,12 @@ default {
         }
         /* Reset faces*/
         /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
+        /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
+        #if DEBUG_ENTIRE_BODY_ALPHA
         // xlProcessCommand("show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         xlProcessCommand("show:nips:vagoo");
+        #endif
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
     }
