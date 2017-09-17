@@ -1,5 +1,6 @@
 /*<<<-------------------------Enlarge window so you see this on only one line for better visibility ------------------>>>>>*/
 /* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
+ * Original creation date: 6/06/2017 22:52:37
  * Licensed under the Aladdin Free Public License Version 9
  * For the Full license, see https://tldrlegal.com/license/aladdin-free-public-license#fulltext
  * The short human readable version of this licence for the benefit of the reader is:
@@ -35,7 +36,7 @@ float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 #define AUTH_ANYWAY 0
 #define DEBUG_MEMORY 0
 // End of debug defines
-#define HOVER_TEXT_COLOR <0.25,0.25,0.25>
+#define HOVER_TEXT_COLOR <0.825,0.825,0.825>
 #define HOVER_TEXT_ALPHA 0.75
 #if DEBUG_PARAMS
 #define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("LINK:"+(string)a+"\nPARAMS:"+llList2CSV(b));llSetLinkPrimitiveParamsFast(a,b)
@@ -686,7 +687,6 @@ default {
 #endif
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
-        llSetTimerEvent(3);
         #if DEBUG
         llOwnerSay("Counting");
         #endif
@@ -754,6 +754,7 @@ default {
         }
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
+        llSetTimerEvent(0.1);
     }
     listen( integer channel, string name, key id, string message ){
         key owner_key = llGetOwnerKey(id);
@@ -827,46 +828,45 @@ default {
             #endif
         }
     }
-    run_time_permissions(integer perm){
-        if (perm & PERMISSION_TRIGGER_ANIMATION){
-            g_HasAnimPerms=TRUE;
-            if(llGetAttached()){
-                llSetText("Applying Deform Animation...", HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-                llStartAnimation("Kem-body-deform");
-            }
-            else {
-                llStopAnimation("Kem-body-deform");
-                llStartAnimation("Kem-body-undeform");
-                llStopAnimation("Kem-body-undeform");
-            }
-        }
-    }
     attach(key id) {
         if(id == NULL_KEY)
         {
-            if(g_HasAnimPerms)
-            {
+            // if(g_HasAnimPerms) {/* Proper, but we're running against the clock here */
                 llStopAnimation("Kem-body-deform");
                 llStartAnimation("Kem-body-undeform");
                 llStopAnimation("Kem-body-undeform");
-            }
+                return;
+            //}
+        }
+        llSetTimerEvent(0.1);
+    }
+    run_time_permissions(integer perm){
+        if (perm & PERMISSION_TRIGGER_ANIMATION){
+            g_HasAnimPerms=TRUE;
+            llSetText("Applying Deform Animation...", HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+            llStartAnimation("Kem-body-deform");
         }
     }
+
     timer(){
         if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY){
-            llSetText("[DEBUG]", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+        string text = "[DEBUG]";
+#if DEBUG_MEMORY
+            integer used_memory = llGetUsedMemory();
+            integer max_memory = llGetSPMaxMemory();
+            text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B"
+                + "\n--------"
+                +"\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+        /*if(!llSetMemoryLimit(max_memory+1024)){
+            llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");
+        }*/
+#endif // DEBUG_MEMORY
+            llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         }else{
             llSetText("", HOVER_TEXT_COLOR, 0.0);
         }
         g_HasAnimPerms = llGetPermissions();
         if(llGetAttached() && !g_HasAnimPerms)llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-#if DEBUG_MEMORY
-        llSetText((string)llGetUsedMemory()+"B\n["+(string)llGetSPMaxMemory()+"B]\n-----------\n"+(string)llGetMemoryLimit()+"B\n-----------\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\nAttached:"+(string)llGetAttached(),HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-#else
-        //if(!llSetMemoryLimit(llGetUsedMemory()+256))
-        //{
-        //    llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");
-        //}
-#endif
+        llSetTimerEvent(3);
     }
 }
