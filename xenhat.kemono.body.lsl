@@ -130,8 +130,9 @@ MESH_FITTED_TORSO,
 "BitState2",
 "BitState3",
 "NipState0",
-"Etc",
+"TorsoEtc",
 "NipState1",
+"NipAlpha",
 "cumButtS1",
 "cumButtS2",
 "cumButtS3"
@@ -142,11 +143,21 @@ integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
+
+list s_FittedNipsMeshNames=[
+"NipState0", /* PG */
+"TorsoEtc", /* Adult, idle */
+"NipState1", /* Adult, puffy */
+"NipAlpha" /* Used in Starbright HUD/API */
+];
+list s_FittedVagooState=[
+"BitState0", /* PG */
+"BitState1", /* Adult, idle */
+"BitState2", /* Adult, aroused */
+"BitState3" /* Adult, gaping */
+];
+integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
-integer g_CurrentFittedNipState=1; // 0 = Adult Nipples Flat
-list s_FittedVagooState=["BitState0","BitState1", "BitState2", "BitState3"];
-/* NipAlpha unused with Kemono API; requires Starbright hud, which is a job for later*/
-list s_FittedNipsMeshNames=["NipState0","TorsoEtc","NipState1"];
 // Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
 // list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
 // #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
@@ -582,8 +593,9 @@ xlProcessCommand(string message){
         if (!FITTED_COMBO){
             return;
         }
+        /* FIXME: Toggles the entire mesh instead of the upper faces */
         g_CurrentFittedVagState = llList2Integer(data,1);
-        list params = lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,BLADE_VAG, showit);
+        list params = lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,BLADE_VAG, TRUE);
         xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
         return;
     }
@@ -592,7 +604,7 @@ xlProcessCommand(string message){
             return;
         }
         g_CurrentFittedNipState = llList2Integer(data,1);
-        list params = lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState,BLADE_VAG,showit);
+        list params = lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState,BLADE_NIPS,TRUE);
         xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
         return;
     }
@@ -630,13 +642,18 @@ xlProcessCommand(string message){
             setnip2 == NipState1
             NipAlpha == ????
             */
-            /* Note: Custom handling of PG state here: SHOW pg layer if hiding nips */
-            if(!showit){
-                params = lsShowOnlyIndex(s_FittedNipsMeshNames,0, part_wanted_s, TRUE);
-            }
-            else {
-                params = lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState, part_wanted_s, showit);
-            }
+            /* Note: The Starbright stock behavior is the following:
+                * Show PG layer when hiding nipples
+                * Forcefully set the current nipple type to Adult, idle on PG disable
+            */
+            /* Should be dynamic index, but let's save some precious cycles*/
+            // if(!showit){
+                params = lsShowOnlyIndex(s_FittedNipsMeshNames,showit, part_wanted_s, TRUE);
+            // }
+            // else{
+                
+                // params = lsShowOnlyIndex(s_FittedNipsMeshNames,1, part_wanted_s, FALSE);
+            // }
         }
         else if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS){
            lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState, part_wanted_s, showit);
