@@ -138,6 +138,7 @@ MESH_FITTED_TORSO,
 "cumButtS3"
 ];
 integer g_PGState_Nips = FALSE;
+integer g_PGState_Vago = FALSE;
 integer FITTED_COMBO = FALSE;
 integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
@@ -156,8 +157,15 @@ list s_FittedVagooState=[
 "BitState2", /* Adult, aroused */
 "BitState3" /* Adult, gaping */
 ];
+list s_FittedButtState=[
+"BitState0", /* PG */
+"BitState1", /* Adult, idle */
+"BitState2", /* Adult, aroused */
+"BitState3" /* Adult, gaping */
+];
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
+integer g_CurrentFittedButState=1;
 // Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
 // list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
 // #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
@@ -178,6 +186,9 @@ list xlGetBladeToggleParams(list data, integer index, string bladename, integer 
     {
         params+=[PRIM_COLOR,llList2Integer(faces_l,len), <1,1,1>, showit];
     }
+    #if DEBUG_FACE_SELECT
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
     return params;
 }
 // OPTIMIZATION TODO: Use integer to pick list instead of passing list
@@ -250,6 +261,7 @@ integer xlGetLinkByBladeName(string name){
     else if(name==BLADE_HAND_RIGHT) prim_name = MESH_HAND_RIGHT;
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(FITTED_COMBO){
+            /* TODO: Handle PG/vagoo/butt states properly */
             prim_name = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
         }
         else{prim_name = MESH_HIPS;}
@@ -260,6 +272,7 @@ integer xlGetLinkByBladeName(string name){
     }
     else if(name==BLADE_PELVIS){
         if(FITTED_COMBO){
+            /* TODO: Handle PG/vagoo/butt states properly */
             prim_name = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
         }
         else{
@@ -398,8 +411,12 @@ integer xlGetLinkByBladeName(string name){
     }
     else if(name==BLADE_NIPS){
         if(FITTED_COMBO){
-            /* TODO: use current nipple state */
-            prim_name = "TorsoEtc";
+            if(g_PGState_Vago){
+                prim_name = llList2String(s_FittedNipsMeshNames, 0);
+            }
+            else{
+                prim_name = llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState);
+            }
         }
         else {
             prim_name = MESH_PG_LAYER;
@@ -407,8 +424,12 @@ integer xlGetLinkByBladeName(string name){
     }
     else if(name==BLADE_VAG){
         if(FITTED_COMBO){
-            // prim_name = "TorsoEtc";
-            prim_name = llList2String(s_FittedVagooState, g_CurrentFittedVagState);
+            if(g_PGState_Vago){
+                prim_name = llList2String(s_FittedVagooState, 0);
+            }
+            else{
+                prim_name = llList2String(s_FittedVagooState, g_CurrentFittedVagState);
+            }
         }
         else {
             prim_name = MESH_PG_LAYER;
@@ -567,7 +588,17 @@ list xlGetFacesByBladeName(string name){
     if(name==BLADE_THIGH_U_R)return [4];
     if(name==BLADE_VAG) {
         if(FITTED_COMBO){
-            return [0,1,2,3,4,5];
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
+                The bottom hip mesh half is controlled independently using setbutt
+            */
+            if(g_PGState_Vago){
+                llOwnerSay("uuuuuuuuu");
+                return [0,1,2,3,4,5];
+            }
+            else{
+                llOwnerSay("eeeeeee");
+                return [0,1];
+            }
         }
         else
         {
@@ -633,7 +664,16 @@ xlProcessCommand(string message){
         llOwnerSay("part wanted:"+part_wanted_s);
         #endif
         if(FITTED_COMBO && part_wanted_s==BLADE_VAG){
-            lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,part_wanted_s, showit);
+            // Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
+            if(!showit && !g_PGState_Vago){
+                llOwnerSay("TOGGLING TO PG");
+                g_PGState_Vago = TRUE;
+            }
+            lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,BLADE_VAG, TRUE);
+            if(showit && g_PGState_Vago){
+                llOwnerSay("TOGGLING FROM PG");
+                g_PGState_Vago = FALSE;
+            }
         }
         else if (FITTED_COMBO && part_wanted_s==BLADE_NIPS){
             /* Stock Fitted Torso script:
@@ -665,11 +705,11 @@ xlProcessCommand(string message){
         llOwnerSay("Link ID  :"+(string)link_id);
         #endif
         integer faces = xlGetListLength(faces_l) - 1;
-        integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
-        float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
+        // integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
+        // float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
         params+=[PRIM_LINK_TARGET,link_id];
         for(;faces>=0;--faces){
-            params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOW_FOR_REAL];
+            params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
         }
     }
     if(params!=[]){
@@ -866,24 +906,35 @@ default {
     }
 
     timer(){
-        if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY){
-        string text = "[DEBUG]";
+    string text = "";
+    if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY){
+        text = "[DEBUG]";
 #if DEBUG_MEMORY
-            integer used_memory = llGetUsedMemory();
-            integer max_memory = llGetSPMaxMemory();
-            text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B"
-                + "\n--------"
-                +"\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+        integer used_memory = llGetUsedMemory();
+        integer max_memory = llGetSPMaxMemory();
         /*if(!llSetMemoryLimit(max_memory+1024)){
             llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");
         }*/
-#endif // DEBUG_MEMORY
+
+        text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
+#endif
+#if DEBUG_FACE_SELECT
+            text+="\nPG_n:"+(string)g_PGState_Nips;
+            text+="\nPG_v:"+(string)g_PGState_Vago;
+#endif
+            text+= "\n--------";
+            text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
             llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
-        }else{
+        }
+        else{
             llSetText("", HOVER_TEXT_COLOR, 0.0);
         }
         g_HasAnimPerms = llGetPermissions();
-        if(llGetAttached() && !g_HasAnimPerms)llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        if(llGetAttached()){
+            if(!g_HasAnimPerms){
+                llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+            }
+        }
         llSetTimerEvent(3);
     }
 }
