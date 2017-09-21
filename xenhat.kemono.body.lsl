@@ -54,8 +54,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 #endif
 /* TODO:
     - Stock kemono nipples sync
-    - Fitted Torso vagina PG mode
-    - Human/Animal mode toggle
+    - Fitted Torso nipples alpha setting
 */
 #define KEMONO_COM_CH -34525475
 #define MESH_ARMS "arms"
