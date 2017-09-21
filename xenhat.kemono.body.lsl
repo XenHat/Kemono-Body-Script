@@ -876,9 +876,9 @@ xlProcessCommand(string message) {
             #endif
             g_PGState_Vago = FALSE;
         }
-        // #if DEBUG_COMMAND
+        #if DEBUG_COMMAND
         llOwnerSay("PG Mode:"+(string)g_PGState_Vago);
-        // #endif
+        #endif
     }
     for(;list_size >= 1; --list_size) { /* skip first element, which is the command*/
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
@@ -887,8 +887,6 @@ xlProcessCommand(string message) {
         #if DEBUG_COMMAND
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
-        // else {
-            /* TODO: Make this work on stock kemono body too */
             if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS) {
                 g_ForceHideNips = !showit;
                 params += xlSetNip();
@@ -900,26 +898,18 @@ xlProcessCommand(string message) {
             else if (!FITTED_COMBO && part_wanted_s==BLADE_PELVIS) {
                 params += xlGetBladeToggleParams(BLADE_VAG,showit * !g_PGState_Vago);
             }
-            // /* TODO: use xlGetBladeToggleParams? (Don't forget to set a fallback) */
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
             integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-            // #if DEBUG_FACE_SELECT
+            #if DEBUG_FACE_SELECT
             llOwnerSay("Faces List:"+llList2CSV(faces_l));
             llOwnerSay("Link ID  :"+(string)prim_id);
-            // #endif
+            #endif
             integer faces = xlGetListLength(faces_l) - 1;
             params+=[PRIM_LINK_TARGET,prim_id];
-            //if(part_wanted_s == BLADE_VAG) {
-            //        showit = !showit;
-            //    }
             integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==part_wanted_s);
             for(;faces>=0;--faces) {
                 params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOWIT_VAGOO * g_Config_MaximumOpacity];
             }
-            //if(part_wanted_s == BLADE_VAG) {
-            //    showit = !showit;
-            //}
-        // }
     }
     if(params!=[]) {
         xlSetLinkPrimitiveParamsFast(LINK_SET, params);
