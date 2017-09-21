@@ -31,7 +31,7 @@
 */
 /* SCRIPT BEGINS HERE */
 /* Runtime User Config starts here */
-float g_Config_MaximumOpacity = 0.85; // 0.8 // for goo
+float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /* Runtime User Config ends here */
 /* Defines */
 #define DEBUG 0
@@ -922,13 +922,16 @@ default {
             human_mode=TRUE;
         }
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some
-            viewers, which is preferable. */
+         * viewers, which is preferable.
+        */
+        /* TODO: Validate that the root prim is not a body part then scrub and hide it
         if(llGetAttached()){
             llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);
         }
         else {
             llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);
         }
+        */
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
         llSetTimerEvent(0.1);
