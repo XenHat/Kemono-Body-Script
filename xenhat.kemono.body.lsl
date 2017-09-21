@@ -184,6 +184,7 @@ list s_FittedButtState=[
 "BitState3" /* Adult, gaping */
 ];
 integer g_ForceHideNips=0;
+integer g_ForceHideVago=0;
 integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
@@ -262,7 +263,7 @@ list xlSetVag() {
 		integer mesh_i;
 		integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
 		for(;mesh_i < meshes_count; ++mesh_i) {
-			integer visible = (mesh_i == g_CurrentFittedVagState);
+			integer visible = !g_ForceHideVago * (mesh_i == g_CurrentFittedVagState);
 			/* Process each nipple mesh one by one */
 			list faces_l = xlGetFacesByBladeName(BLADE_VAG);
 			string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
@@ -884,9 +885,13 @@ xlProcessCommand(string message) {
 			}
 		}
 		else {
+			/* TODO: Make this work on stock kemono body too */
 			if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS) {
 				g_ForceHideNips = !showit;
 				params += xlSetNip();
+			}
+			else if (part_wanted_s==BLADE_PELVIS) {
+
 			}
 			/* TODO: use xlGetBladeToggleParams? (Don't forget to set a fallback) */
 			list faces_l = xlGetFacesByBladeName(part_wanted_s);
