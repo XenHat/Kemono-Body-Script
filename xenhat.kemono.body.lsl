@@ -628,11 +628,11 @@ list xlGetFacesByBladeName(string name){
                 The bottom hip mesh half is controlled independently using setbutt
             */
             if(g_PGState_Vago){
-                llOwnerSay("uuuuuuuuu");
+                // llOwnerSay("uuuuuuuuu");
                 return [0,1,2,3,4,5];
             }
             else{
-                llOwnerSay("eeeeeee");
+                // llOwnerSay("eeeeeee");
                 return [0,1];
             }
         }
@@ -714,12 +714,12 @@ xlProcessCommand(string message){
         if(FITTED_COMBO && part_wanted_s==BLADE_VAG){
             // Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
             if(!showit && !g_PGState_Vago){
-                llOwnerSay("TOGGLING TO PG");
+                // llOwnerSay("TOGGLING TO PG");
                 g_PGState_Vago = TRUE;
             }
             // xlGetBladeToggleParamsForcedIndex(s_FittedVagooState,BLADE_VAG, TRUE,g_CurrentFittedVagState);
             if(showit && g_PGState_Vago){
-                llOwnerSay("TOGGLING FROM PG");
+                // llOwnerSay("TOGGLING FROM PG");
                 g_PGState_Vago = FALSE;
             }
         }
