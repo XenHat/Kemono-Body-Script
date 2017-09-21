@@ -578,8 +578,8 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     integer findresult = llListFindList(g_LinkDB_l,[prim_name]);
-    #if DEBUG_FACE_SELECT
     integer ReturnValue = llList2Integer(g_LinkDB_l,findresult+1);
+    #if DEBUG_FACE_SELECT
     llOwnerSay("Blade To Prim Adapter Result:"+prim_name+"\nFindResult:"+(string)findresult+"\nReturnValue:"+(string)ReturnValue);
     #endif
     return ReturnValue;
