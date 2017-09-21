@@ -21,9 +21,17 @@
  * An online version of the human-readable version of the AFPL can be found at:
  * https://tldrlegal.com/license/aladdin-free-public-license
  */
+/* WARNING: Currently the script does not allow custom coloring to be retained
+ * due to the way I preserve texturing without needing an applier script.
+ *
+ * Please contact the author of this script if you wish to trade that functionality
+ * for custom coloring support (You will need a full-perm copy of your skin for the
+ * texturing to work at all.
+ * This is because I do not have the info required to support the kApp applier.
+*/
 /* SCRIPT BEGINS HERE */
 /* Runtime User Config starts here */
-float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
+float g_Config_MaximumOpacity = 0.85; // 0.8 // for goo
 /* Runtime User Config ends here */
 /* Defines */
 #define DEBUG 0
@@ -183,7 +191,7 @@ list xlGetBladeToggleParams(list data, string bladename, integer showit)
     #endif
     for(;len > -1;len--)
     {
-        params+=[PRIM_COLOR,llList2Integer(faces_l,len), <1,1,1>, showit];
+        params+=[PRIM_COLOR,llList2Integer(faces_l,len), <1,1,1>, showit * g_Config_MaximumOpacity];
     }
     #if DEBUG_FACE_SELECT
     llOwnerSay("Params out:" + llList2CSV(params));
@@ -220,7 +228,7 @@ list xlSetNip(){
         #endif
         for(;faces_count > -1;--faces_count)
         {
-            params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible];
+            params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
         }
     }
     #if DEBUG_FACE_SELECT
