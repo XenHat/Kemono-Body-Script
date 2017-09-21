@@ -195,24 +195,20 @@ list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
 (llListFindList(g_LinkDB_l,[(string)a])+1))
 */
 #define xlGetListLength(a) (a!=[])
-/* TODO: use integer-based pseudo-pointer instead of passing the list by copy */
-list xlGetBladeToggleParams(list data, string bladename, integer showit)
+/* Note: This version doesn't do any fixing for the genitals, intentioanlly */
+list xlGetBladeToggleParams(string part_wanted_s, integer showit)
 {
-	list faces_l = xlGetFacesByBladeName(bladename);
-	integer prim_id = xlGetLinkByBladeName(llList2String(data,showit));
+	list faces_l = xlGetFacesByBladeName(part_wanted_s);
+	integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
+	#if DEBUG_FACE_SELECT
+	llOwnerSay("Faces List:"+llList2CSV(faces_l));
+	llOwnerSay("Link ID  :"+(string)prim_id);
+	#endif
+	integer faces = xlGetListLength(faces_l) - 1;
 	list params = [PRIM_LINK_TARGET,prim_id];
-	integer len = xlGetListLength(faces_l);
-	#if DEBUG_FACE_SELECT
-	llOwnerSay("DATA:"+llList2CSV(data)+"\nSHOW:"+(string)showit+"\nBLADENAME:"
-		+bladename+"\nFACES:"+llList2CSV(faces_l)+"\nPRIM_ID:"+(string)prim_id);
-	#endif
-	for(;len > -1;len--) {
-		params+=[PRIM_COLOR,llList2Integer(faces_l,len), <1,1,1>,
-		showit * g_Config_MaximumOpacity];
+	for(;faces>=0;--faces) {
+		params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
 	}
-	#if DEBUG_FACE_SELECT
-	llOwnerSay("Params out:" + llList2CSV(params));
-	#endif
 	return params;
 }
 /* Stock Fitted Torso script:
@@ -716,10 +712,10 @@ list xlGetFacesByBladeName(string name) {
 		}
 	}
 	if(name==BLADE_SHIN_U_L) {
-			return [3];
+		return [3];
 	}
 	if(name==BLADE_SHIN_U_R) {
-			return [3];
+		return [3];
 	}
 	if(name==BLADE_SHOULDER_L_L) return [3];
 	if(name==BLADE_SHOULDER_L_R) {
@@ -741,7 +737,7 @@ list xlGetFacesByBladeName(string name) {
 			}
 		}
 		else {
-				return [6];
+			return [6];
 		}
 	}
 	if(name==BLADE_THIGH_L_R) {
@@ -754,7 +750,7 @@ list xlGetFacesByBladeName(string name) {
 			}
 		}
 		else {
-				return [6];
+			return [6];
 		}
 	}
 	if(name==BLADE_THIGH_U_L) {
@@ -866,46 +862,64 @@ xlProcessCommand(string message) {
 			return;
 		}
 	}
-	for(;list_size >= 1; --list_size) { /* skip first element*/
+	else if(part_wanted_s==BLADE_VAG) {
+		/* Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
+		if(!showit && !g_PGState_Vago) {
+			#if DEBUG_COMMAND
+			llOwnerSay("TOGGLING TO PG");
+			#endif
+			g_PGState_Vago = TRUE;
+		}
+		if(showit && g_PGState_Vago) {
+			#if DEBUG_COMMAND
+			llOwnerSay("TOGGLING FROM PG");
+			#endif
+			g_PGState_Vago = FALSE;
+		}
+		// #if DEBUG_COMMAND
+		llOwnerSay("PG Mode:"+(string)g_PGState_Vago);
+		// #endif
+	}
+	for(;list_size >= 1; --list_size) { /* skip first element, which is the command*/
 		/* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
 		/* TODO: Optimize the param creation logic to not include redundant changes. This implies making it so that there is no post-loop "fixing" happening. */
 		part_wanted_s = llList2String(data, list_size);
-		#if DEBUG_FACE_SELECT
-		llOwnerSay("part wanted:"+part_wanted_s);
+		#if DEBUG_COMMAND
+		llOwnerSay("Processing:"+part_wanted_s);
 		#endif
-		if(FITTED_COMBO && part_wanted_s==BLADE_VAG) {
-			/* Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
-			if(!showit && !g_PGState_Vago) {
-				/* llOwnerSay("TOGGLING TO PG"); */
-				g_PGState_Vago = TRUE;
-			}
-			if(showit && g_PGState_Vago) {
-				/* llOwnerSay("TOGGLING FROM PG"); */
-				g_PGState_Vago = FALSE;
-			}
-		}
-		else {
+		// else {
 			/* TODO: Make this work on stock kemono body too */
 			if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS) {
 				g_ForceHideNips = !showit;
 				params += xlSetNip();
 			}
-			else if (part_wanted_s==BLADE_PELVIS) {
-
+			else if (FITTED_COMBO && part_wanted_s==BLADE_PELVIS) {
+				g_ForceHideVago = !showit;
+				params += xlSetVag();
 			}
-			/* TODO: use xlGetBladeToggleParams? (Don't forget to set a fallback) */
+			else if (!FITTED_COMBO && part_wanted_s==BLADE_PELVIS) {
+				params += xlGetBladeToggleParams(BLADE_VAG,showit * !g_PGState_Vago);
+			}
+			// /* TODO: use xlGetBladeToggleParams? (Don't forget to set a fallback) */
 			list faces_l = xlGetFacesByBladeName(part_wanted_s);
 			integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-			#if DEBUG_FACE_SELECT
+			// #if DEBUG_FACE_SELECT
 			llOwnerSay("Faces List:"+llList2CSV(faces_l));
 			llOwnerSay("Link ID  :"+(string)prim_id);
-			#endif
+			// #endif
 			integer faces = xlGetListLength(faces_l) - 1;
 			params+=[PRIM_LINK_TARGET,prim_id];
+			//if(part_wanted_s == BLADE_VAG) {
+			//        showit = !showit;
+			//    }
+			integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==part_wanted_s);
 			for(;faces>=0;--faces) {
-				params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
+				params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, SHOWIT_VAGOO * g_Config_MaximumOpacity];
 			}
-		}
+			//if(part_wanted_s == BLADE_VAG) {
+			//    showit = !showit;
+			//}
+		// }
 	}
 	if(params!=[]) {
 		xlSetLinkPrimitiveParamsFast(LINK_SET, params);
