@@ -163,6 +163,7 @@ list s_FittedButtState=[
 "BitState2", /* Adult, aroused */
 "BitState3" /* Adult, gaping */
 ];
+integer g_ForceHideNips=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
@@ -204,7 +205,7 @@ list xlSetNip(){
     integer meshes_count = xlGetListLength(s_FittedNipsMeshNames) - 1; /* todo: hard-code */
     list params;
     for(;mesh_i < meshes_count; ++mesh_i){
-        integer visible = (mesh_i == g_CurrentFittedNipState);
+        integer visible = !g_ForceHideNips * (mesh_i == g_CurrentFittedNipState);
         // visible = FALSE;
         /* Process each nipple mesh one by one */
         list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
@@ -229,6 +230,7 @@ list xlSetNip(){
     #endif
     return params;
 }
+/* TODO: Inline */
 integer xlGetLinkByBladeName(string name){
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
     string prim_name = "UNIMPLEMENTED";
@@ -506,8 +508,6 @@ list xlGetFacesByBladeName(string name){
     if(name==BLADE_BELLY)return [2,3];
     if(name==BLADE_BODY)return [0];
     if(name==BLADE_BREASTS){
-        // FIXME BUG: Nipples not in sync
-        // if(FITTED_COMBO) return [0,1,2,3];
         if(FITTED_COMBO) return [2,3];
         else{return [2,5];}
     }
@@ -715,29 +715,24 @@ xlProcessCommand(string message){
                 g_PGState_Vago = FALSE;
             }
         }
-        //else if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS){
-        //   //params += xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState, part_wanted_s, showit);
-        //   params = xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,showit, part_wanted_s, TRUE);
-        //   // params += xlGetBladeToggleParams(list data, integer index, string bladename, integer showit)
-        //}
         else
         {
-            /* TODO: use xlGetBladeToggleParams */
+            if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS){
+                g_ForceHideNips = !showit;
+                params += xlSetNip();
+            }
+            /* TODO: use xlGetBladeToggleParams? (Don't forget to set a fallback) */
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
-            integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
+            integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
             #if DEBUG_FACE_SELECT
             llOwnerSay("Faces List:"+llList2CSV(faces_l));
-            llOwnerSay("Link ID  :"+(string)link_id);
+            llOwnerSay("Link ID  :"+(string)prim_id);
             #endif
             integer faces = xlGetListLength(faces_l) - 1;
-            // integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
-            // float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
-            params+=[PRIM_LINK_TARGET,link_id];
+            params+=[PRIM_LINK_TARGET,prim_id];
             for(;faces>=0;--faces){
                 params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
             }
-            // params += list xlGetBladeToggleParams(list data, integer index, string bladename, integer showit)
-            // params += xlGetBladeToggleParams(g_LinkDB_l, , string bladename, integer showit)
         }
     }
     if(params!=[]){
