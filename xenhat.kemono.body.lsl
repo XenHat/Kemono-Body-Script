@@ -56,6 +56,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 #define DEBUG_COMMAND 0
 #define DEBUG_PARAMS 0
 #define DEBUG_FACE_SELECT 0
+#define DEBUG_FACE_TOUCH 0
 #define DEBUG_LISTEN_PROCESS 0
 #define DEBUG_WHO 0
 #define AUTH_ANYWAY 0
@@ -110,10 +111,6 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_HIP_R "hipR"
 #define BLADE_KNEE_L "kneeL"
 #define BLADE_KNEE_R "kneeR"
-#define BLADE_LEG_LEFT_ANIMAL "LFleg"
-#define BLADE_LEG_LEFT_HUMAN "LHleg"
-#define BLADE_LEG_RIGHT_ANIMAL "RFleg"
-#define BLADE_LEG_RIGHT_HUMAN "RHleg"
 #define BLADE_NECK "neck"
 #define BLADE_NIPS "nips"
 #define BLADE_PELVIS "pelvis"
@@ -589,8 +586,22 @@ integer xlGetLinkByBladeName(string name) {
 integer human_mode = FALSE;
 list xlGetFacesByBladeName(string name) {
 	if(name==BLADE_ABS) return [6,7];
-	if(name==BLADE_ANKLE_L) return [1];
-	if(name==BLADE_ANKLE_R) return [1];
+	if(name==BLADE_ANKLE_L) {
+		if (human_mode) {
+			return [1];
+		}
+		else {
+			return [5];
+		}
+	}
+	if(name==BLADE_ANKLE_R) {
+		if (human_mode) {
+			return [1];
+		}
+		else {
+			return [5];
+		}
+	}
 	if(name==BLADE_ARM_L_L) return [7];
 	if(name==BLADE_ARM_L_R) return [2];
 	if(name==BLADE_ARM_U_L) return [0];
@@ -605,14 +616,33 @@ list xlGetFacesByBladeName(string name) {
 			return [2,5];
 		}
 	}
-	if(name==BLADE_CALF_L) return [4];
-	if(name==BLADE_CALF_R) return [4];
+	if(name==BLADE_CALF_L) {
+		if(human_mode) {
+			return [4];
+		}
+		else {
+			return [2];
+		}
+	}
+	if(name==BLADE_CALF_R) {
+		if(human_mode) {
+			return [4];
+		}
+		else {
+			return [2];
+		}
+	}
 	if(name==BLADE_CHEST) {
 		if(FITTED_COMBO) {
 			return [0,1];
 		}
 		else {
-			return [0,4];
+			if(human_mode) {
+				return [0,4];
+			}
+			else {
+				return [0,4];
+			}
 		}
 	}
 	if(name==BLADE_COLLAR) {
@@ -631,8 +661,22 @@ list xlGetFacesByBladeName(string name) {
 		if(FITTED_COMBO) return [4];
 		else {return [5];}
 	}
-	if(name==BLADE_KNEE_L) return [5];
-	if(name==BLADE_KNEE_R) return [5];
+	if(name==BLADE_KNEE_L) {
+		if(human_mode) {
+			return [5];
+		}
+		else {
+			return [1];
+		}
+	}
+	if(name==BLADE_KNEE_R) {
+		if(human_mode) {
+			return [5];
+		}
+		else {
+			return [1];
+		}
+	}
 	if(name==BLADE_HAND_LEFT) return [-1];
 	if(name==BLADE_HAND_RIGHT) return [-1];
 	if(name==BLADE_NECK) {
@@ -654,10 +698,28 @@ list xlGetFacesByBladeName(string name) {
 		if(FITTED_COMBO) return [4,5];
 		else {return [1,3];}
 	}
-	if(name==BLADE_SHIN_L_L) return [2];
-	if(name==BLADE_SHIN_L_R) return [2];
-	if(name==BLADE_SHIN_U_L) return [3];
-	if(name==BLADE_SHIN_U_R) return [3];
+	if(name==BLADE_SHIN_L_L) {
+		if (human_mode) {
+			return [2];
+		}
+		else {
+			return [4];
+		}
+	}
+	if(name==BLADE_SHIN_L_R) {
+		if (human_mode) {
+			return [2];
+		}
+		else {
+			return [4];
+		}
+	}
+	if(name==BLADE_SHIN_U_L) {
+			return [3];
+	}
+	if(name==BLADE_SHIN_U_R) {
+			return [3];
+	}
 	if(name==BLADE_SHOULDER_L_L) return [3];
 	if(name==BLADE_SHOULDER_L_R) {
 		if(FITTED_COMBO) return [2];
@@ -678,12 +740,7 @@ list xlGetFacesByBladeName(string name) {
 			}
 		}
 		else {
-			if(human_mode) {
 				return [6];
-			}
-			else {
-				return [];
-			}
 		}
 	}
 	if(name==BLADE_THIGH_L_R) {
@@ -696,17 +753,16 @@ list xlGetFacesByBladeName(string name) {
 			}
 		}
 		else {
-			if(human_mode) {
 				return [6];
-			}
-			else {
-				return [];
-			}
 		}
 	}
 	if(name==BLADE_THIGH_U_L) {
-		if(FITTED_COMBO) return [5];
-		else {return [7];}
+		if(FITTED_COMBO) {
+			return [5];
+		}
+		else {
+			return [7];
+		}
 	}
 	if(name==BLADE_THIGH_U_R) return [4];
 	if(name==BLADE_VAG) {
@@ -852,7 +908,7 @@ xlProcessCommand(string message) {
 	}
 }
 default {
-	#if DEBUG_FACE_SELECT
+	#if DEBUG_FACE_TOUCH
 	touch_start(integer total_number) {
 		key tk = llDetectedKey(0);
 		if(tk!=g_Owner_k) return;
