@@ -201,8 +201,8 @@ list xlGetBladeToggleParams(string part_wanted_s, integer showit)
     list faces_l = xlGetFacesByBladeName(part_wanted_s);
     integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
     #if DEBUG_FACE_SELECT
-    llOwnerSay("Faces List:"+llList2CSV(faces_l));
-    llOwnerSay("Link ID  :"+(string)prim_id);
+    llOwnerSay("Faces List 2:"+llList2CSV(faces_l));
+    llOwnerSay("Link ID 2   :"+(string)prim_id);
     #endif
     integer faces = xlGetListLength(faces_l) - 1;
     list params = [PRIM_LINK_TARGET,prim_id];
@@ -306,10 +306,12 @@ list xlSetVag() {
     #endif
     return params;
 }
-/* TODO: Inline */
 integer xlGetLinkByBladeName(string name) {
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
     string prim_name = "UNIMPLEMENTED";
+    #if DEBUG_FACE_SELECT
+    llOwnerSay("xlGetLinkByBladeName("+name+")");
+    #endif
     if(name==BLADE_ARM_L_L) prim_name = MESH_ARMS;
     else if(name==BLADE_ARM_L_R) prim_name = MESH_ARMS;
     else if(name==BLADE_ARM_U_L) prim_name = MESH_ARMS;
@@ -575,10 +577,12 @@ integer xlGetLinkByBladeName(string name) {
             }
         }
     }
+    integer findresult = llListFindList(g_LinkDB_l,[prim_name]);
     #if DEBUG_FACE_SELECT
-    llOwnerSay("Blade To Prim Adapter Result:"+prim_name);
+    integer ReturnValue = llList2Integer(g_LinkDB_l,findresult+1);
+    llOwnerSay("Blade To Prim Adapter Result:"+prim_name+"\nFindResult:"+(string)findresult+"\nReturnValue:"+(string)ReturnValue);
     #endif
-    return llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[prim_name])+1);
+    return ReturnValue;
 }
 integer human_mode = FALSE;
 list xlGetFacesByBladeName(string name) {
