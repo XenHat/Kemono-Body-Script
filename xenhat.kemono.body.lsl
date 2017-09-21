@@ -116,6 +116,7 @@ float g_Config_MaximumOpacity = 0.85; // 0.8 // for goo
 #define BLADE_THIGH_U_L "thighUL"
 #define BLADE_THIGH_U_R "thighUR"
 #define BLADE_VAG "vagoo"
+#define BLADE_VIRTUAL_BUTT "butt"
 #define BLADE_WRIST_L "wristL"
 #define BLADE_WRIST_R "wristR"
 #define BLADE_FOOT_R "footR"
@@ -146,8 +147,6 @@ MESH_FITTED_TORSO,
 "cumButtS2",
 "cumButtS3"
 ];
-integer g_PGState_Nips = FALSE;
-integer g_PGState_Vago = FALSE;
 integer FITTED_COMBO = FALSE;
 integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
@@ -159,7 +158,7 @@ list s_FittedNipsMeshNames=[
 "NipState1", /* Adult, puffy */
 "NipAlpha" /* Used in Starbright HUD/API */
 ];
-list s_FittedVagooState=[
+list s_FittedVagoMeshNames=[
 "BitState0", /* PG */
 "BitState1", /* Adult, idle */
 "BitState2", /* Adult, aroused */
@@ -172,6 +171,7 @@ list s_FittedButtState=[
 "BitState3" /* Adult, gaping */
 ];
 integer g_ForceHideNips=0;
+integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
@@ -210,7 +210,7 @@ list xlSetNip(){
  * Forcefully set the current nipple type to Adult, idle on PG disable
 */
     integer mesh_i;
-    integer meshes_count = xlGetListLength(s_FittedNipsMeshNames) - 1; /* todo: hard-code */
+    integer meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
     list params;
     for(;mesh_i < meshes_count; ++mesh_i){
         integer visible = !g_ForceHideNips * (mesh_i == g_CurrentFittedNipState);
@@ -231,6 +231,67 @@ list xlSetNip(){
             params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
         }
     }
+    #if DEBUG_FACE_SELECT
+    #if DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
+    #endif
+    return params;
+}
+list xlSetVag(){
+/* Note: The Starbright stock behavior is the following:
+ * Show PG layer when hiding vagoo
+ * Forcefully set the current vagoo type to Adult, idle on PG disable
+*/
+list params;
+/* Vagoo meshes */
+{
+    integer mesh_i;
+    integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
+    for(;mesh_i < meshes_count; ++mesh_i){
+        integer visible = (mesh_i == g_CurrentFittedVagState);
+        // visible = FALSE;
+        /* Process each nipple mesh one by one */
+        list faces_l = xlGetFacesByBladeName(BLADE_VAG);
+        string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
+        integer prim_id = xlGetLinkByPrimName(mesh_name);
+        params += [PRIM_LINK_TARGET,prim_id];
+        integer faces_count = xlGetListLength(faces_l) - 1;
+        #if DEBUG_FACE_SELECT
+        llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
+            +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
+            +"\nvisible:"+(string)visible);
+        #endif
+        for(;faces_count > -1;--faces_count)
+        {
+            params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+        }
+    }
+}
+    /* Butt meshes */
+{
+    integer mesh_i;
+    integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
+    for(;mesh_i < meshes_count; ++mesh_i){
+        integer visible = (mesh_i == g_CurrentFittedButState);
+        // visible = FALSE;
+        /* Process each nipple mesh one by one */
+        list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
+        string mesh_name = llList2String(s_FittedButtState,mesh_i);
+        integer prim_id = xlGetLinkByPrimName(mesh_name);
+        params += [PRIM_LINK_TARGET,prim_id];
+        integer faces_count = xlGetListLength(faces_l) - 1;
+        #if DEBUG_FACE_SELECT
+        llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
+            +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
+            +"\nvisible:"+(string)visible);
+        #endif
+        for(;faces_count > -1;--faces_count)
+        {
+            params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+        }
+    }
+}
     #if DEBUG_FACE_SELECT
     #if DEBUG_PARAMS
     llOwnerSay("Params out:" + llList2CSV(params));
@@ -299,7 +360,7 @@ integer xlGetLinkByBladeName(string name){
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(FITTED_COMBO){
             /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            prim_name = llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState);
         }
         else{prim_name = MESH_HIPS;}
     }
@@ -310,7 +371,7 @@ integer xlGetLinkByBladeName(string name){
     else if(name==BLADE_PELVIS){
         if(FITTED_COMBO){
             /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = llList2String(s_FittedVagooState,g_CurrentFittedVagState);
+            prim_name = llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState);
         }
         else{
             prim_name = MESH_HIPS;
@@ -448,13 +509,7 @@ integer xlGetLinkByBladeName(string name){
     }
     else if(name==BLADE_NIPS){
         if(FITTED_COMBO){
-            // TODO: FIXME: PG Layer Selection
-            if(g_PGState_Nips){
-                prim_name = llList2String(s_FittedNipsMeshNames, 0);
-            }
-            else{
-                prim_name = llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState);
-            }
+            prim_name = llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState);
         }
         else {
             prim_name = MESH_PG_LAYER;
@@ -463,10 +518,10 @@ integer xlGetLinkByBladeName(string name){
     else if(name==BLADE_VAG){
         if(FITTED_COMBO){
             if(g_PGState_Vago){
-                prim_name = llList2String(s_FittedVagooState, 0);
+                prim_name = llList2String(s_FittedVagoMeshNames, 0);
             }
             else{
-                prim_name = llList2String(s_FittedVagooState, g_CurrentFittedVagState);
+                prim_name = llList2String(s_FittedVagoMeshNames, g_CurrentFittedVagState);
             }
         }
         else {
@@ -628,17 +683,44 @@ list xlGetFacesByBladeName(string name){
                 The bottom hip mesh half is controlled independently using setbutt
             */
             if(g_PGState_Vago){
-                // llOwnerSay("uuuuuuuuu");
+                #if DEBUG_COMMAND
+                llOwnerSay("uuuuuuuuu");
+                #endif
                 return [0,1,2,3,4,5];
             }
             else{
-                // llOwnerSay("eeeeeee");
+                #if DEBUG_COMMAND
+                llOwnerSay("eeeeeee");
+                #endif
                 return [0,1];
             }
         }
         else
         {
             return [0,1];
+        }
+    }
+    if(name==BLADE_VIRTUAL_BUTT) {
+        if(FITTED_COMBO){
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
+                The bottom hip mesh half is controlled independently using setbutt
+            */
+            if(g_PGState_Vago){
+                #if DEBUG_COMMAND
+                llOwnerSay("uuuuuuuuu");
+                #endif
+                return [0,1,2,3,4,5];
+            }
+            else{
+                #if DEBUG_COMMAND
+                llOwnerSay("eeeeeee");
+                #endif
+                return [2,3,4,5];
+            }
+        }
+        else
+        {
+            return [];
         }
     }
     if(name==BLADE_WRIST_L)return [3];
@@ -651,37 +733,38 @@ xlProcessCommand(string message){
     #if DEBUG_COMMAND
     llOwnerSay(llList2CSV(data));
     #endif
-    integer showit = TRUE; // Fix bug with Fitted Torso hud
+    // integer showit = TRUE; // Fix bug with Fitted Torso hud ... What bug?
+    integer showit;
     string command = llList2String(data,0);
+/* -------- filter out and process commands */
     if(command == "show"){
         showit = TRUE;
     }
     else if(command == "hide"){
         showit = FALSE;
     }
-    else if(command=="setvag"){
-        if (!FITTED_COMBO){
-            return;
-        }
-        /* TODO: FIXME: Toggles the entire mesh instead of the upper faces */
-        g_CurrentFittedVagState = llList2Integer(data,1);
-        // list params = xlGetBladeToggleParamsForcedIndex(s_FittedVagooState,BLADE_VAG, TRUE, g_CurrentFittedVagState);
-        // xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
+    else
+    if(FITTED_COMBO && command=="setbutt"){
+        g_CurrentFittedButState = llList2Integer(data,1);
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
         return;
     }
-    else if(command=="setnip"){
-        if (!FITTED_COMBO){
-            return;
-        }
+    else if(FITTED_COMBO && command=="setvag"){
+        /* TODO: FIXME: Toggles the entire mesh instead of the upper faces */
+        // Vagoo
+        g_CurrentFittedVagState = llList2Integer(data,1);
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+        return;
+    }
+    else if(FITTED_COMBO && command=="setnip"){
         g_CurrentFittedNipState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
-        // list params = xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,BLADE_NIPS,TRUE, g_CurrentFittedNipState);
-        // xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
         return;
     }
     else{
         return;
     }
+/* -------- */
     command="";
     list params;
     integer list_size = xlGetListLength(data) - 1;
@@ -691,11 +774,17 @@ xlProcessCommand(string message){
     #endif
     if(part_wanted_s == BLADE_NIPS)
     {
-        g_PGState_Nips = !showit;
-        // llSetObjectDesc((string)g_PGState_Nips);
         if(FITTED_COMBO){
             g_CurrentFittedNipState = showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+            return;
+        }
+    }
+    else if(part_wanted_s == BLADE_VAG)
+    {
+        if(FITTED_COMBO){
+            g_CurrentFittedVagState = showit;
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
             return;
         }
     }
@@ -717,7 +806,7 @@ xlProcessCommand(string message){
                 // llOwnerSay("TOGGLING TO PG");
                 g_PGState_Vago = TRUE;
             }
-            // xlGetBladeToggleParamsForcedIndex(s_FittedVagooState,BLADE_VAG, TRUE,g_CurrentFittedVagState);
+            // xlGetBladeToggleParamsForcedIndex(s_FittedVagoMeshNames,BLADE_VAG, TRUE,g_CurrentFittedVagState);
             if(showit && g_PGState_Vago){
                 // llOwnerSay("TOGGLING FROM PG");
                 g_PGState_Vago = FALSE;
@@ -948,7 +1037,6 @@ default {
         text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
 #endif
 #if DEBUG_FACE_SELECT
-            text+="\nPG_n:"+(string)g_PGState_Nips;
             text+="\nPG_v:"+(string)g_PGState_Vago;
 #endif
             text+= "\n--------";
