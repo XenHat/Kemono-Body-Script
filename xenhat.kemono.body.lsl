@@ -29,6 +29,7 @@ float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 #define DEBUG 0
 #define DEBUG_ENTIRE_BODY_ALPHA 0
 #define DEBUG_LISTEN 0
+#define DEBUG_COMMAND 0
 #define DEBUG_PARAMS 0
 #define DEBUG_FACE_SELECT 0
 #define DEBUG_LISTEN_PROCESS 0
@@ -39,7 +40,7 @@ float g_Config_MaximumOpacity = 1.0; // 0.8 // for goo
 #define HOVER_TEXT_COLOR <0.825,0.825,0.825>
 #define HOVER_TEXT_ALPHA 0.75
 #if DEBUG_PARAMS
-#define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("LINK:"+(string)a+"\nPARAMS:"+llList2CSV(b));llSetLinkPrimitiveParamsFast(a,b)
+#define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("PARAMS:"+llList2CSV(b));llSetLinkPrimitiveParamsFast(a,b)
 #else
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
@@ -144,7 +145,6 @@ integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
-
 list s_FittedNipsMeshNames=[
 "NipState0", /* PG */
 "TorsoEtc", /* Adult, idle */
@@ -168,19 +168,17 @@ integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
 // Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
 // list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
-// #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
-integer xlGetLinkByPrimName(string a) {
-    return llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[a])+1));
-}
+#define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)(llListFindList(g_LinkDB_l,[(string)a])+1))
 #define xlGetListLength(a) (a!=[])
-list xlGetBladeToggleParams(list data, integer index, string bladename, integer showit)
+// TODO: use integer-based pseudo-pointer instead of passing the list by copy
+list xlGetBladeToggleParams(list data, string bladename, integer showit)
 {
     list faces_l = xlGetFacesByBladeName(bladename);
-    integer prim_id = xlGetLinkByPrimName(llList2String(data,index));
+    integer prim_id = xlGetLinkByPrimName(llList2String(data,showit)); // WAT?!?!?!?
     list params = [PRIM_LINK_TARGET,prim_id];
     integer len = xlGetListLength(faces_l);
     #if DEBUG_FACE_SELECT
-    llOwnerSay("DATA:"+llList2CSV(data)+"\nINDEX:"+(string)index+"\nBLADENAME:"+bladename+"\nFACES:"+llList2CSV(faces_l)+"\nPRIM_ID:"+(string)prim_id+"\nSHOW:"+(string)showit);
+    llOwnerSay("DATA:"+llList2CSV(data)+"\nSHOW:"+(string)showit+"\nBLADENAME:"+bladename+"\nFACES:"+llList2CSV(faces_l)+"\nPRIM_ID:"+(string)prim_id);
     #endif
     for(;len > -1;len--)
     {
@@ -191,15 +189,44 @@ list xlGetBladeToggleParams(list data, integer index, string bladename, integer 
     #endif
     return params;
 }
-// OPTIMIZATION TODO: Use integer to pick list instead of passing list
-list lsShowOnlyIndex(list data, integer index, string bladename, integer showit){/* Function by LogicShrimp*/
-    list params = [];
-    params += xlGetBladeToggleParams(data,index,bladename, showit);
-    integer n = (data!=[]);//List length
-    integer i = 1;
-    for(;i < n; i++){
-        params += xlGetBladeToggleParams(data,((index + i) % n),bladename, FALSE);
+list xlSetNip(){
+/* Stock Fitted Torso script:
+ * setnip0 == NipState0
+ * setnip1 == TorsoEtc[0,1]
+ * setnip2 == NipState1
+ * NipAlpha == ????
+*/
+/* Note: The Starbright stock behavior is the following:
+ * Show PG layer when hiding nipples
+ * Forcefully set the current nipple type to Adult, idle on PG disable
+*/
+    integer mesh_i;
+    integer meshes_count = xlGetListLength(s_FittedNipsMeshNames) - 1; /* todo: hard-code */
+    list params;
+    for(;mesh_i < meshes_count; ++mesh_i){
+        integer visible = (mesh_i == g_CurrentFittedNipState);
+        // visible = FALSE;
+        /* Process each nipple mesh one by one */
+        list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
+        string mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
+        integer prim_id = xlGetLinkByPrimName(mesh_name);
+        params += [PRIM_LINK_TARGET,prim_id];
+        integer faces_count = xlGetListLength(faces_l) - 1;
+        #if DEBUG_FACE_SELECT
+        llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
+            +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
+            +"\nvisible:"+(string)visible);
+        #endif
+        for(;faces_count > -1;--faces_count)
+        {
+            params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible];
+        }
     }
+    #if DEBUG_FACE_SELECT
+    #if DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
+    #endif
     return params;
 }
 integer xlGetLinkByBladeName(string name){
@@ -411,7 +438,8 @@ integer xlGetLinkByBladeName(string name){
     }
     else if(name==BLADE_NIPS){
         if(FITTED_COMBO){
-            if(g_PGState_Vago){
+            // TODO: FIXME: PG Layer Selection
+            if(g_PGState_Nips){
                 prim_name = llList2String(s_FittedNipsMeshNames, 0);
             }
             else{
@@ -612,6 +640,9 @@ list xlGetFacesByBladeName(string name){
 }
 xlProcessCommand(string message){
     list data = llParseStringKeepNulls(message,[":"],[]);
+    #if DEBUG_COMMAND
+    llOwnerSay(llList2CSV(data));
+    #endif
     integer showit = TRUE; // Fix bug with Fitted Torso hud
     string command = llList2String(data,0);
     if(command == "show"){
@@ -624,10 +655,10 @@ xlProcessCommand(string message){
         if (!FITTED_COMBO){
             return;
         }
-        /* FIXME: Toggles the entire mesh instead of the upper faces */
+        /* TODO: FIXME: Toggles the entire mesh instead of the upper faces */
         g_CurrentFittedVagState = llList2Integer(data,1);
-        list params = lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,BLADE_VAG, TRUE);
-        xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
+        // list params = xlGetBladeToggleParamsForcedIndex(s_FittedVagooState,BLADE_VAG, TRUE, g_CurrentFittedVagState);
+        // xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
         return;
     }
     else if(command=="setnip"){
@@ -635,8 +666,9 @@ xlProcessCommand(string message){
             return;
         }
         g_CurrentFittedNipState = llList2Integer(data,1);
-        list params = lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState,BLADE_NIPS,TRUE);
-        xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+        // list params = xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,BLADE_NIPS,TRUE, g_CurrentFittedNipState);
+        // xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
         return;
     }
     else{
@@ -645,11 +677,19 @@ xlProcessCommand(string message){
     command="";
     list params;
     integer list_size = xlGetListLength(data) - 1;
-    string part_wanted_s = llList2String(data, 0);
+    string part_wanted_s = llList2String(data, 1);
+    #if DEBUG_COMMAND
+    llOwnerSay("part wanted:" + part_wanted_s);
+    #endif
     if(part_wanted_s == BLADE_NIPS)
     {
         g_PGState_Nips = !showit;
-        llSetObjectDesc((string)g_PGState_Nips);
+        // llSetObjectDesc((string)g_PGState_Nips);
+        if(FITTED_COMBO){
+            g_CurrentFittedNipState = showit;
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+            return;
+        }
     }
     for(;list_size >= 1; --list_size){ /* skip first element*/
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso
@@ -669,47 +709,35 @@ xlProcessCommand(string message){
                 llOwnerSay("TOGGLING TO PG");
                 g_PGState_Vago = TRUE;
             }
-            lsShowOnlyIndex(s_FittedVagooState,g_CurrentFittedVagState,BLADE_VAG, TRUE);
+            // xlGetBladeToggleParamsForcedIndex(s_FittedVagooState,BLADE_VAG, TRUE,g_CurrentFittedVagState);
             if(showit && g_PGState_Vago){
                 llOwnerSay("TOGGLING FROM PG");
                 g_PGState_Vago = FALSE;
             }
         }
-        else if (FITTED_COMBO && part_wanted_s==BLADE_NIPS){
-            /* Stock Fitted Torso script:
-            setnip0 == NipState0
-            setnip1 == TorsoEtc[0,1]
-            setnip2 == NipState1
-            NipAlpha == ????
-            */
-            /* Note: The Starbright stock behavior is the following:
-                * Show PG layer when hiding nipples
-                * Forcefully set the current nipple type to Adult, idle on PG disable
-            */
-            /* Should be dynamic index, but let's save some precious cycles*/
-            // if(!showit){
-                params = lsShowOnlyIndex(s_FittedNipsMeshNames,showit, part_wanted_s, TRUE);
-            // }
-            // else{
-                
-                // params = lsShowOnlyIndex(s_FittedNipsMeshNames,1, part_wanted_s, FALSE);
-            // }
-        }
-        else if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS){
-           lsShowOnlyIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState, part_wanted_s, showit);
-        }
-        list faces_l = xlGetFacesByBladeName(part_wanted_s);
-        integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-        #if DEBUG_FACE_SELECT
-        llOwnerSay("Faces List:"+llList2CSV(faces_l));
-        llOwnerSay("Link ID  :"+(string)link_id);
-        #endif
-        integer faces = xlGetListLength(faces_l) - 1;
-        // integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
-        // float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
-        params+=[PRIM_LINK_TARGET,link_id];
-        for(;faces>=0;--faces){
-            params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
+        //else if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS){
+        //   //params += xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,g_CurrentFittedNipState, part_wanted_s, showit);
+        //   params = xlGetBladeToggleParamsForcedIndex(s_FittedNipsMeshNames,showit, part_wanted_s, TRUE);
+        //   // params += xlGetBladeToggleParams(list data, integer index, string bladename, integer showit)
+        //}
+        else
+        {
+            /* TODO: use xlGetBladeToggleParams */
+            list faces_l = xlGetFacesByBladeName(part_wanted_s);
+            integer link_id = (integer)xlGetLinkByBladeName(part_wanted_s);
+            #if DEBUG_FACE_SELECT
+            llOwnerSay("Faces List:"+llList2CSV(faces_l));
+            llOwnerSay("Link ID  :"+(string)link_id);
+            #endif
+            integer faces = xlGetListLength(faces_l) - 1;
+            // integer SHOW_WITH_VAGOO = showit ^ (BLADE_VAG==part_wanted_s); // No longer needed, is it?
+            // float SHOW_FOR_REAL = (SHOW_WITH_VAGOO * g_Config_MaximumOpacity);
+            params+=[PRIM_LINK_TARGET,link_id];
+            for(;faces>=0;--faces){
+                params+=[PRIM_COLOR, llList2Integer(faces_l,faces), <1,1,1>, showit * g_Config_MaximumOpacity];
+            }
+            // params += list xlGetBladeToggleParams(list data, integer index, string bladename, integer showit)
+            // params += xlGetBladeToggleParams(g_LinkDB_l, , string bladename, integer showit)
         }
     }
     if(params!=[]){
@@ -747,7 +775,7 @@ default {
         #if DEBUG
         llOwnerSay("Counting");
         #endif
-        human_mode=(integer)llGetObjectDesc();
+        // human_mode=(integer)llGetObjectDesc();
         integer part = llGetNumberOfPrims();
         #if DEBUG_ENTIRE_BODY_ALPHA
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
@@ -790,7 +818,7 @@ default {
         #endif
         /* The Starbright body Stripper has an option to leave the human legs out,
             so check if these are present at all*/
-        /* FIXME: Undefined behavior if no legs from kemono body */
+        /* TODO: FIXME: Undefined behavior if no legs from kemono body */
         if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1)
         {
             /* Forcefully set to human mode if the animal legs aren't found*/
@@ -858,7 +886,7 @@ default {
             if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=TRUE;
-                llSetObjectDesc("1");
+                // llSetObjectDesc("1");
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
@@ -867,7 +895,7 @@ default {
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=FALSE;
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                llSetObjectDesc("0");
+                // llSetObjectDesc("0");
             }
         }
         /* Restore compatibility with old scripts*/
@@ -904,7 +932,6 @@ default {
             llStartAnimation("Kem-body-deform");
         }
     }
-
     timer(){
     string text = "";
     if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY){
@@ -915,7 +942,6 @@ default {
         /*if(!llSetMemoryLimit(max_memory+1024)){
             llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");
         }*/
-
         text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
 #endif
 #if DEBUG_FACE_SELECT
