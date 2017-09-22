@@ -188,6 +188,8 @@ integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
+string g_AnimDeform;
+string g_AnimUndeform;
 /* Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
 list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
 #define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)\
@@ -1017,6 +1019,12 @@ default {
         /* else {llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);} */
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
+        g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
+        g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
+        #if DEBUG
+        llOwnerSay("Deform:"+g_AnimDeform);
+        llOwnerSay("Undeform:"+g_AnimUndeform);
+        #endif
         llSetTimerEvent(0.1);
     }
     listen( integer channel, string name, key id, string message ) {
@@ -1090,20 +1098,15 @@ default {
         }
     }
     attach(key id) {
-        if(id == NULL_KEY) {
-            llStopAnimation("Kem-body-deform");
-            llStartAnimation("Kem-body-undeform");
-            llStopAnimation("Kem-body-undeform");
+        if(id == (string)NULL_KEY) {
+            llStartAnimation(g_AnimUndeform);
             return;
         }
         llSetTimerEvent(0.1);
     }
     run_time_permissions(integer perm) {
-        if (perm & PERMISSION_TRIGGER_ANIMATION) {
-            g_HasAnimPerms=TRUE;
-            llSetText("Applying Deform Animation...", HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-            llStartAnimation("Kem-body-deform");
-        }
+        g_HasAnimPerms=TRUE;
+        llStartAnimation(g_AnimDeform);
     }
     timer() {
         string text = "";
@@ -1125,12 +1128,11 @@ default {
         else {
             llSetText("", HOVER_TEXT_COLOR, 0.0);
         }
-        g_HasAnimPerms = llGetPermissions();
         if(llGetAttached()) {
             if(!g_HasAnimPerms) {
                 llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
             }
         }
-        llSetTimerEvent(3);
+        llSetTimerEvent(30);
     }
 }
