@@ -71,7 +71,6 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
 /* TODO:
-- Stock kemono nipples sync
 - Fitted Torso nipples alpha setting
 */
 #define KEMONO_COM_CH -34525475
@@ -223,13 +222,26 @@ Forcefully set the current nipple type to Adult, idle on PG disable
 */
 list xlSetNip() {
     integer mesh_i;
-    integer meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
+    integer meshes_count;
+    if(!FITTED_COMBO) {
+        meshes_count++; /* 1 */
+    }
+    else {
+        meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
+    }
     list params;
     for(;mesh_i < meshes_count; ++mesh_i) {
-        integer visible = !g_ForceHideNips * (mesh_i == g_CurrentFittedNipState);
+        integer visible = !g_ForceHideNips;
+        string mesh_name;
+        if(!FITTED_COMBO) {
+            mesh_name = BLADE_NIPS;
+        }
+        else {
+            visible *= (mesh_i == g_CurrentFittedNipState);
+            mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
+        }
         /* Process each nipple mesh one by one */
         list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
-        string mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
         integer prim_id = xlGetLinkByBladeName(mesh_name);
         params += [PRIM_LINK_TARGET,prim_id];
         integer faces_count = xlGetListLength(faces_l) - 1;
@@ -891,7 +903,7 @@ xlProcessCommand(string message) {
         #if DEBUG_COMMAND
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
-            if (FITTED_COMBO && part_wanted_s==BLADE_BREASTS) {
+            if (/*FITTED_COMBO && */part_wanted_s==BLADE_BREASTS) {
                 g_ForceHideNips = !showit;
                 params += xlSetNip();
             }
