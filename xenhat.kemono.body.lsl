@@ -968,7 +968,7 @@ default {
                     name=MESH_FITTED_TORSO;
                 }
             }
-            if(llListFindList(g_supported_meshes, [name])!= 1) {
+            if(llListFindList(g_supported_meshes, [name])!= -1) {
                 #if DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
                 if(retexture) {
