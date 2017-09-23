@@ -1147,6 +1147,6 @@ default {
                 llStartAnimation(g_AnimDeform);
             }
         }
-        llSetTimerEvent(1);
+        llSetTimerEvent(10);
     }
 }
