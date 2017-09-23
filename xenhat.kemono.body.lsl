@@ -1110,12 +1110,20 @@ default {
             #endif
         }
     }
+    on_rez(integer start_param) {
+        if(!llGetAttached()) {
+            return;
+        }
+        llSleep(1);
+        if(!g_HasAnimPerms) {
+            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        }
+    }
     attach(key id) {
         if(id == (string)NULL_KEY) {
             llStartAnimation(g_AnimUndeform);
             return;
         }
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     }
     run_time_permissions(integer perm) {
         g_HasAnimPerms=TRUE;
