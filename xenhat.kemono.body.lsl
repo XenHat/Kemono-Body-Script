@@ -72,6 +72,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #endif
 /* TODO:
 - Fitted Torso nipples alpha setting
+- Reply to reqCLdat and such
 */
 #define KEMONO_COM_CH -34525475
 #define MESH_ARMS "arms"
@@ -1027,7 +1028,7 @@ default {
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
-        llSetTimerEvent(0.1);
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
@@ -1104,15 +1105,15 @@ default {
             llStartAnimation(g_AnimUndeform);
             return;
         }
-        llSetTimerEvent(0.1);
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     }
     run_time_permissions(integer perm) {
         g_HasAnimPerms=TRUE;
-        llStartAnimation(g_AnimDeform);
+        llSetTimerEvent(0.1);
     }
     timer() {
         string text = "";
-        if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY) {
+        if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS || DEBUG_COMMAND ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY) {
             text = "[DEBUG]";
             #if DEBUG_MEMORY
             integer used_memory = llGetUsedMemory();
@@ -1125,6 +1126,14 @@ default {
             #endif
             text+= "\n--------";
             text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+            list animList = llGetAnimationList(g_Owner_k);
+            integer index;
+            integer len = xlGetListLength(animList) - 1;
+            list animNamesList;
+            for(;index < len;++index) {
+                animNamesList += llKey2Name(llList2Key(animList,index));
+            }
+            text+=llList2CSV(animNamesList);
             llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         }
         else {
@@ -1134,7 +1143,10 @@ default {
             if(!g_HasAnimPerms) {
                 llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
             }
+            else {
+                llStartAnimation(g_AnimDeform);
+            }
         }
-        llSetTimerEvent(30);
+        llSetTimerEvent(1);
     }
 }
