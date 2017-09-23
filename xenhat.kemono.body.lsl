@@ -87,6 +87,8 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define MESH_NECK "neck"
 #define MESH_PG_LAYER "PG"
 #define MESH_ROOT "Kemono - Body"
+#define MESH_FITTED_TORSO_ETC "TorsoEtc"
+#define MESH_FITTED_TORSO_HLEGS "HumanLegs"
 #define MESH_FITTED_TORSO_CHEST "TorsoChest"
 #define MESH_FITTED_TORSO "Fitted Kemono Torso"
 #define BLADE_ABS "abs"
@@ -148,6 +150,7 @@ MESH_LEG_RIGHT_HUMAN,
 MESH_NECK,
 MESH_PG_LAYER,
 MESH_ROOT,
+MESH_FITTED_TORSO_HLEGS,
 MESH_FITTED_TORSO_CHEST,
 MESH_FITTED_TORSO,
 "BitState0",
@@ -155,7 +158,7 @@ MESH_FITTED_TORSO,
 "BitState2",
 "BitState3",
 "NipState0",
-"TorsoEtc",
+MESH_FITTED_TORSO_ETC,
 "NipState1",
 "NipAlpha",
 "cumButtS1",
@@ -169,7 +172,7 @@ list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
 list s_FittedNipsMeshNames=[
 "NipState0", /* PG */
-"TorsoEtc", /* Adult, idle */
+MESH_FITTED_TORSO_ETC, /* Adult, idle */
 "NipState1", /* Adult, puffy */
 "NipAlpha" /* Used in Starbright HUD/API */
 ];
@@ -520,19 +523,19 @@ integer xlGetLinkByBladeName(string name) {
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_THIGH_U_L) {
-        if(FITTED_COMBO) prim_name = "TorsoEtc";
+        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
     }
     else if(name==BLADE_THIGH_U_R) {
-        if(FITTED_COMBO) prim_name = "TorsoEtc";
+        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
     }
     else if(name==BLADE_BELLY) {
-        if(FITTED_COMBO) prim_name = "TorsoEtc";
+        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
@@ -561,10 +564,10 @@ integer xlGetLinkByBladeName(string name) {
     else if(name==BLADE_THIGH_L_R) {
         if(FITTED_COMBO) {
             if(human_mode) {
-                prim_name = "HumanLegs";
+                prim_name = MESH_FITTED_TORSO_HLEGS;
             }
             else {
-                prim_name = "TorsoEtc";
+                prim_name = MESH_FITTED_TORSO_ETC;
             }
         }
         else {
@@ -579,10 +582,10 @@ integer xlGetLinkByBladeName(string name) {
     else if(name==BLADE_THIGH_L_L) {
         if(FITTED_COMBO) {
             if(human_mode) {
-                prim_name = "HumanLegs";
+               prim_name = MESH_FITTED_TORSO_HLEGS;
             }
             else {
-                prim_name = "TorsoEtc";
+                prim_name = MESH_FITTED_TORSO_ETC;
             }
         }
         else {
@@ -1015,6 +1018,13 @@ default {
         else if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1) {
             /* Forcefully set to animal mode if the human legs aren't found*/
             human_mode=TRUE;
+        }
+        /* Hide the leg thigh blades since the fitted torso overrides those */
+        if(FITTED_COMBO) {
+            FITTED_COMBO=FALSE;
+            list params = xlGetBladeToggleParams(BLADE_THIGH_L_L,FALSE) + xlGetBladeToggleParams(BLADE_THIGH_L_R,FALSE);
+            xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
+            FITTED_COMBO=TRUE;
         }
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some viewers, which is preferable.*/
         /* TODO: Validate that the root prim is not a body part then scrub and hide it */
