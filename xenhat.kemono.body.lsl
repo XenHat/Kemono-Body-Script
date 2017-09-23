@@ -1126,14 +1126,6 @@ default {
             #endif
             text+= "\n--------";
             text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
-            list animList = llGetAnimationList(g_Owner_k);
-            integer index;
-            integer len = xlGetListLength(animList) - 1;
-            list animNamesList;
-            for(;index < len;++index) {
-                animNamesList += llKey2Name(llList2Key(animList,index));
-            }
-            text+=llList2CSV(animNamesList);
             llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         }
         else {
