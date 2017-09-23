@@ -86,6 +86,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define MESH_NECK "neck"
 #define MESH_PG_LAYER "PG"
 #define MESH_ROOT "Kemono - Body"
+#define MESH_FITTED_TORSO_CHEST "TorsoChest"
 #define MESH_FITTED_TORSO "Fitted Kemono Torso"
 #define BLADE_ABS "abs"
 #define BLADE_ANKLE_L "ankleL"
@@ -146,6 +147,7 @@ MESH_LEG_RIGHT_HUMAN,
 MESH_NECK,
 MESH_PG_LAYER,
 MESH_ROOT,
+MESH_FITTED_TORSO_CHEST,
 MESH_FITTED_TORSO,
 "BitState0",
 "BitState1",
@@ -336,7 +338,7 @@ integer xlGetLinkByBladeName(string name) {
     else if(name==BLADE_WRIST_R) prim_name = MESH_ARMS;
     else if(name==BLADE_RIBS) {
         if(FITTED_COMBO) {
-            prim_name = "TorsoChest";
+            prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
             prim_name = MESH_BODY;
@@ -344,7 +346,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     else if(name==BLADE_ABS) {
         if(FITTED_COMBO) {
-            prim_name = "TorsoChest";
+            prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
             prim_name = MESH_BODY;
@@ -352,7 +354,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     else if(name==BLADE_BODY) {
         if(FITTED_COMBO) {
-            prim_name = "TorsoChest";
+            prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
             prim_name = MESH_BODY;
@@ -360,7 +362,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     else if(name==BLADE_BREASTS) {
         if(FITTED_COMBO) {
-            prim_name = "TorsoChest";
+            prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
             prim_name = MESH_BODY;
@@ -368,7 +370,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     else if(name==BLADE_CHEST) {
         if(FITTED_COMBO) {
-            prim_name = "TorsoChest";
+            prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
             prim_name = MESH_BODY;
