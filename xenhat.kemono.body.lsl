@@ -324,7 +324,7 @@ list xlSetVag() {
 }
 integer xlGetLinkByBladeName(string name) {
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
-    string prim_name = "UNIMPLEMENTED";
+    string prim_name = name;
     #if DEBUG_FACE_SELECT
     llOwnerSay("xlGetLinkByBladeName("+name+")");
     #endif
