@@ -183,11 +183,7 @@ list s_FittedButtState=[
 "BitState2", /* Adult, aroused */
 "BitState3" /* Adult, gaping */
 ];
-// integer FITTED_COMBO = FALSE;
 integer g_HasAnimPerms = FALSE;
-// integer g_ForceHideNips=0;
-// integer g_ForceHideVago=0;
-// integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
@@ -213,11 +209,6 @@ integer g_RuntimeBodyStateSettings;
 #define getBit(a,b) (a >> b) & 1
 string g_AnimDeform;
 string g_AnimUndeform;
-/* Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
-list s_FittedCumLayers_Butt=["cumButtS1","cumButtS2","cumButtS3"];
-#define xlGetLinkByPrimName(a) llList2Integer(g_LinkDB_l,(integer)\
-(llListFindList(g_LinkDB_l,[(string)a])+1))
-*/
 #define xlGetListLength(a) (a!=[])
 /* Note: This version doesn't do any fixing for the genitals, intentioanlly */
 list xlGetBladeToggleParams(string part_wanted_s, integer showit)
@@ -285,10 +276,6 @@ list xlSetNip() {
     #endif
     return params;
 }
-/* Note: The Starbright stock behavior is the following:
-Show PG layer when hiding vagoo
-Forcefully set the current vagoo type to Adult, idle on PG disable
-*/
 list xlSetVag() {
     list params;
     /* Vagoo meshes */
@@ -868,7 +855,6 @@ xlProcessCommand(string message) {
         return;
     }
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setvag") {
-        /* TODO: FIXME: Toggles the entire mesh instead of the upper faces */
         /* Vagoo */
         g_CurrentFittedVagState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
@@ -1008,7 +994,7 @@ default {
                     prim_params_to_apply+= [PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0];
                 }
                 #endif
-                g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
+                g_LinkDB_l+=[name,part];
             }
         }
         #ifdef DEBUG
