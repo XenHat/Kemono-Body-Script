@@ -922,7 +922,7 @@ xlProcessCommand(string message) {
             chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,FALSE);
         }
         #ifdef DEBUG_COMMAND
-        llOwnerSay("PG Mode:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE));
+        llOwnerSay("PG Mode:"+(string)(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)));
         #endif
     }
     for(;list_size >= 1; --list_size) { /* skip first element, which is the command*/
