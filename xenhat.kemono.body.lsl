@@ -165,8 +165,6 @@ MESH_FITTED_TORSO_ETC,
 "cumButtS2",
 "cumButtS3"
 ];
-integer FITTED_COMBO = FALSE;
-integer g_HasAnimPerms = FALSE;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
@@ -188,6 +186,8 @@ list s_FittedButtState=[
 "BitState2", /* Adult, aroused */
 "BitState3" /* Adult, gaping */
 ];
+integer FITTED_COMBO = FALSE;
+integer g_HasAnimPerms = FALSE;
 integer g_ForceHideNips=0;
 integer g_ForceHideVago=0;
 integer g_PGState_Vago=0;
