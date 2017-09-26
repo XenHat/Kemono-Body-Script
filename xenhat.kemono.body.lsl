@@ -51,7 +51,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 /* Defines */
 //#define DEBUG
-//#define DEBUG_TEXT
+// #define DEBUG_TEXT
 //#define DEBUG_ENTIRE_BODY_ALPHA
 //#define DEBUG_LISTEN
 //#define DEBUG_COMMAND
@@ -1151,9 +1151,8 @@ default {
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
         #endif
-        text+= "\n--------";
         text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
-        text+="\n \n \n \n ";
+        text+="\n \n \n \n \n \n ";
 #endif
         llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         if(llGetAttached()) {
