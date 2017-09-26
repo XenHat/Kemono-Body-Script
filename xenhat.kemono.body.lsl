@@ -186,7 +186,7 @@ list s_FittedButtState=[
 "BitState2", /* Adult, aroused */
 "BitState3" /* Adult, gaping */
 ];
-integer FITTED_COMBO = FALSE;
+// integer FITTED_COMBO = FALSE;
 integer g_HasAnimPerms = FALSE;
 integer g_ForceHideNips=0;
 integer g_ForceHideVago=0;
@@ -194,6 +194,26 @@ integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
+#define FKT_PRESENT 0x00000001
+#define FKT_STATE_B 0x00000010
+#define FKT_STATE_N 0x00000100
+#define FKT_STATE_V 0x00001000
+#define FKT_FHIDE_B 0x00010000
+#define FKT_FHIDE_N 0x00100000
+#define FKT_FHIDE_V 0x01000000
+integer g_RuntimeBodyStateSettings;
+/* usage:
+    a = variable/set
+    b = bit (define, see above)
+*/
+/* Some shorthand operators are not allowed in LSL */
+// #define setBit(a,b) a |= 1 << b
+// #define clrBit(a,b) a &= ~(1 << b)
+#define clrBit(a,b) a = a & (~(1 << b))
+#define setBit(a,b) a = a | (1 << b)
+#define togBit(a,b) a ^= 1 << b
+/* Note: This one can be used inline */
+#define getBit(a,b) (a >> b) & 1
 string g_AnimDeform;
 string g_AnimUndeform;
 /* Fitted Kemono Bits Add-On by Starbright (unimplemented ATM)
@@ -231,7 +251,7 @@ Forcefully set the current nipple type to Adult, idle on PG disable
 list xlSetNip() {
     integer mesh_i;
     integer meshes_count;
-    if(!FITTED_COMBO) {
+    if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
         meshes_count++; /* 1 */
     }
     else {
@@ -241,7 +261,7 @@ list xlSetNip() {
     for(;mesh_i < meshes_count; ++mesh_i) {
         integer visible = !g_ForceHideNips;
         string mesh_name;
-        if(!FITTED_COMBO) {
+        if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mesh_name = BLADE_NIPS;
         }
         else {
@@ -341,7 +361,7 @@ integer xlGetLinkByBladeName(string name) {
     else if(name==BLADE_WRIST_L) prim_name = MESH_ARMS;
     else if(name==BLADE_WRIST_R) prim_name = MESH_ARMS;
     else if(name==BLADE_RIBS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
@@ -349,7 +369,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_ABS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
@@ -357,7 +377,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_BODY) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
@@ -365,7 +385,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_BREASTS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
@@ -373,7 +393,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_CHEST) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = MESH_FITTED_TORSO_CHEST;
         }
         else {
@@ -381,7 +401,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_COLLAR) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {
             prim_name = MESH_NECK;
         }
@@ -389,7 +409,7 @@ integer xlGetLinkByBladeName(string name) {
     else if(name==BLADE_HAND_LEFT) prim_name = MESH_HAND_LEFT;
     else if(name==BLADE_HAND_RIGHT) prim_name = MESH_HAND_RIGHT;
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* TODO: Handle PG/vagoo/butt states properly */
             prim_name = llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState);
         }
@@ -398,11 +418,11 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_NECK) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_PELVIS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* TODO: Handle PG/vagoo/butt states properly */
             prim_name = llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState);
         }
@@ -507,41 +527,41 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_SHOULDER_L_L) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_SHOULDER_L_R) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_SHOULDER_U_L) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_SHOULDER_U_R) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO;
         else {prim_name = MESH_NECK;}
     }
     else if(name==BLADE_THIGH_U_L) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
     }
     else if(name==BLADE_THIGH_U_R) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
     }
     else if(name==BLADE_BELLY) {
-        if(FITTED_COMBO) prim_name = MESH_FITTED_TORSO_ETC;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = MESH_FITTED_TORSO_ETC;
         else {
             prim_name = MESH_HIPS;
         }
     }
     else if(name==BLADE_NIPS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             prim_name = llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState);
         }
         else {
@@ -549,7 +569,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_VAG) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(g_PGState_Vago) {
                 prim_name = llList2String(s_FittedVagoMeshNames, 0);
             }
@@ -562,7 +582,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_THIGH_L_R) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(human_mode) {
                 prim_name = MESH_FITTED_TORSO_HLEGS;
             }
@@ -580,7 +600,7 @@ integer xlGetLinkByBladeName(string name) {
         }
     }
     else if(name==BLADE_THIGH_L_L) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(human_mode) {
                prim_name = MESH_FITTED_TORSO_HLEGS;
             }
@@ -630,7 +650,7 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_BELLY) return [2,3];
     if(name==BLADE_BODY) return [0];
     if(name==BLADE_BREASTS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             return [2,3];
         }
         else {
@@ -654,7 +674,7 @@ list xlGetFacesByBladeName(string name) {
         }
     }
     if(name==BLADE_CHEST) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             return [0,1];
         }
         else {
@@ -667,7 +687,7 @@ list xlGetFacesByBladeName(string name) {
         }
     }
     if(name==BLADE_COLLAR) {
-        if(FITTED_COMBO) return [6,7];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [6,7];
         else {return [1,6];}
     }
     if(name==BLADE_ELBOW_L) return [4];
@@ -675,11 +695,11 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_FOOT_L) return [0];
     if(name==BLADE_FOOT_R) return [0];
     if(name==BLADE_HIP_L) {
-        if(FITTED_COMBO) return [5];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
         else {return [6];}
     }
     if(name==BLADE_HIP_R) {
-        if(FITTED_COMBO) return [4];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4];
         else {return [5];}
     }
     if(name==BLADE_KNEE_L) {
@@ -701,22 +721,22 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_HAND_LEFT) return [-1];
     if(name==BLADE_HAND_RIGHT) return [-1];
     if(name==BLADE_NECK) {
-        if(FITTED_COMBO) return [0,1];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1];
         else {return [2,5];}
     }
     if(name==BLADE_NIPS) {
-        if (FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
             return [0,1];
         }
         else {return [2,3];}
     }
     if(name==BLADE_PELVIS) {
-        if(FITTED_COMBO) return [0,1,2,3];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1,2,3];
         else {return [0,1];}
     }
     if(name==BLADE_RIBS) {
-        if(FITTED_COMBO) return [4,5];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4,5];
         else {return [1,3];}
     }
     if(name==BLADE_SHIN_L_L) {
@@ -743,16 +763,16 @@ list xlGetFacesByBladeName(string name) {
     }
     if(name==BLADE_SHOULDER_L_L) return [3];
     if(name==BLADE_SHOULDER_L_R) {
-        if(FITTED_COMBO) return [2];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [2];
         else {return [0];}
     }
     if(name==BLADE_SHOULDER_U_L) {
-        if(FITTED_COMBO) return [5];
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
         else {return [7];}
     }
     if(name==BLADE_SHOULDER_U_R) return [4];
     if(name==BLADE_THIGH_L_L) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(human_mode) {
                 return [1];
             }
@@ -765,7 +785,7 @@ list xlGetFacesByBladeName(string name) {
         }
     }
     if(name==BLADE_THIGH_L_R) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(human_mode) {
                 return [0];
             }
@@ -778,7 +798,7 @@ list xlGetFacesByBladeName(string name) {
         }
     }
     if(name==BLADE_THIGH_U_L) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             return [5];
         }
         else {
@@ -787,7 +807,7 @@ list xlGetFacesByBladeName(string name) {
     }
     if(name==BLADE_THIGH_U_R) return [4];
     if(name==BLADE_VAG) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             if(g_PGState_Vago) {
                 #if DEBUG_COMMAND
@@ -807,7 +827,7 @@ list xlGetFacesByBladeName(string name) {
         }
     }
     if(name==BLADE_VIRTUAL_BUTT) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             if(g_PGState_Vago) {
                 #if DEBUG_COMMAND
@@ -845,19 +865,19 @@ xlProcessCommand(string message) {
     else if(command == "hide") {
         showit = FALSE;
     }
-    else if(FITTED_COMBO && command=="setbutt") {
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setbutt") {
         g_CurrentFittedButState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
         return;
     }
-    else if(FITTED_COMBO && command=="setvag") {
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setvag") {
         /* TODO: FIXME: Toggles the entire mesh instead of the upper faces */
         /* Vagoo */
         g_CurrentFittedVagState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
         return;
     }
-    else if(FITTED_COMBO && command=="setnip") {
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setnip") {
         g_CurrentFittedNipState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
         return;
@@ -873,14 +893,14 @@ xlProcessCommand(string message) {
     llOwnerSay("part wanted:" + part_wanted_s);
     #endif
     if(part_wanted_s == BLADE_NIPS) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedNipState = showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
             return;
         }
     }
     else if(part_wanted_s == BLADE_VAG) {
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedVagState = showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
             return;
@@ -915,11 +935,11 @@ xlProcessCommand(string message) {
                 g_ForceHideNips = !showit;
                 params += xlSetNip();
             }
-            else if (FITTED_COMBO && part_wanted_s==BLADE_PELVIS) {
+            else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
                 g_ForceHideVago = !showit;
                 params += xlSetVag();
             }
-            else if (!FITTED_COMBO && part_wanted_s==BLADE_PELVIS) {
+            else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
                 params += xlGetBladeToggleParams(BLADE_VAG,showit * !g_PGState_Vago);
             }
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
@@ -980,7 +1000,7 @@ default {
                 /* Look if this really is a fitted torso or an accessory for it */
                 if(fitted_torso_string_index == 6 || fitted_torso_string_index == 7) {
                     /* We are linked with starnya's Fitted Torso*/
-                    FITTED_COMBO=TRUE;
+                    setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
                     name=MESH_FITTED_TORSO;
                 }
             }
@@ -1016,11 +1036,11 @@ default {
             human_mode=TRUE;
         }
         /* Hide the leg thigh blades since the fitted torso overrides those */
-        if(FITTED_COMBO) {
-            FITTED_COMBO=FALSE;
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            clrBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
             list params = xlGetBladeToggleParams(BLADE_THIGH_L_L,FALSE) + xlGetBladeToggleParams(BLADE_THIGH_L_R,FALSE);
             xlSetLinkPrimitiveParamsFast(LINK_THIS,params);
-            FITTED_COMBO=TRUE;
+            setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
         }
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some viewers, which is preferable.*/
         /* TODO: Validate that the root prim is not a body part then scrub and hide it */
@@ -1047,7 +1067,7 @@ default {
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-        if(FITTED_COMBO) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3) {
                 return;
             }
@@ -1129,7 +1149,7 @@ default {
         string text = "";
         integer used_memory = llGetUsedMemory();
         integer max_memory = llGetSPMaxMemory();
-        if(!llSetMemoryLimit(max_memory+1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
+        if(!llSetMemoryLimit(58*1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
         if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS || DEBUG_COMMAND ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY) {
             text = "[DEBUG]";
             #if DEBUG_MEMORY
