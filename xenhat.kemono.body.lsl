@@ -58,10 +58,6 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 //#define DEBUG_PARAMS
 //#define DEBUG_FACE_SELECT
 //#define DEBUG_FACE_TOUCH
-//#define DEBUG_LISTEN_PROCESS
-#define DEBUG_WHO
-#define AUTH_ANYWAY
-#define DEBUG_MEMORY
 // End of debug defines
 #define HOVER_TEXT_COLOR <0.825,0.825,0.825>
 #define HOVER_TEXT_ALPHA 0.75
@@ -1062,9 +1058,7 @@ default {
         if (id == llGetKey()) return;
         #ifdef DEBUG_LISTEN
         string knp;
-        #ifdef DEBUG_WHO
         knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
-        #endif
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
@@ -1122,7 +1116,7 @@ default {
         }
         else {
             xlProcessCommand(message);
-            #ifdef DEBUG_LISTEN_PROCESS
+            #ifdef DEBUG_COMMAND
             llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
             #endif
         }
@@ -1153,9 +1147,7 @@ default {
         if(!llSetMemoryLimit(58*1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
 #ifdef DEBUG_TEXT
         text = "[DEBUG]";
-        #ifdef DEBUG_MEMORY
         text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
-        #endif
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
         #endif
