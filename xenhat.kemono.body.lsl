@@ -188,16 +188,16 @@ list s_FittedButtState=[
 ];
 // integer FITTED_COMBO = FALSE;
 integer g_HasAnimPerms = FALSE;
-integer g_ForceHideNips=0;
-integer g_ForceHideVago=0;
+// integer g_ForceHideNips=0;
+// integer g_ForceHideVago=0;
 integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
 #define FKT_PRESENT 0x00000001
-#define FKT_STATE_B 0x00000010
-#define FKT_STATE_N 0x00000100
-#define FKT_STATE_V 0x00001000
+// #define FKT_STATE_B 0x00000010
+// #define FKT_STATE_N 0x00000100
+// #define FKT_STATE_V 0x00001000
 #define FKT_FHIDE_B 0x00010000
 #define FKT_FHIDE_N 0x00100000
 #define FKT_FHIDE_V 0x01000000
@@ -209,9 +209,12 @@ integer g_RuntimeBodyStateSettings;
 /* Some shorthand operators are not allowed in LSL */
 // #define setBit(a,b) a |= 1 << b
 // #define clrBit(a,b) a &= ~(1 << b)
+// #define chgBit(a,b,c) a ^= (-b ^ a) & (1 << c);
 #define clrBit(a,b) a = a & (~(1 << b))
 #define setBit(a,b) a = a | (1 << b)
+#define chgBit(a,b,c) a = a ^ ((-c ^ a) & (1 << b));
 #define togBit(a,b) a ^= 1 << b
+
 /* Note: This one can be used inline */
 #define getBit(a,b) (a >> b) & 1
 string g_AnimDeform;
@@ -259,7 +262,7 @@ list xlSetNip() {
     }
     list params;
     for(;mesh_i < meshes_count; ++mesh_i) {
-        integer visible = !g_ForceHideNips;
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
         string mesh_name;
         if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mesh_name = BLADE_NIPS;
@@ -299,7 +302,7 @@ list xlSetVag() {
         integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
         for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = !g_ForceHideVago * (mesh_i == g_CurrentFittedVagState);
+            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             list faces_l = xlGetFacesByBladeName(BLADE_VAG);
             string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
@@ -932,11 +935,11 @@ xlProcessCommand(string message) {
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
             if (/*FITTED_COMBO && */part_wanted_s==BLADE_BREASTS) {
-                g_ForceHideNips = !showit;
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
                 params += xlSetNip();
             }
             else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
-                g_ForceHideVago = !showit;
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
                 params += xlSetVag();
             }
             else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
