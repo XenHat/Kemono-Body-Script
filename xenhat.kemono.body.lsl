@@ -963,7 +963,9 @@ default {
         }
     }
     state_entry() {
+        #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
+        #endif
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
         #ifdef DEBUG
@@ -1127,20 +1129,6 @@ default {
         llSetTimerEvent(0.1);
     }
     timer() {
-        string text = "";
-        integer used_memory = llGetUsedMemory();
-        integer max_memory = llGetSPMaxMemory();
-        if(!llSetMemoryLimit(58*1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
-#ifdef DEBUG_TEXT
-        text = "[DEBUG]";
-        text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
-        #ifdef DEBUG_FACE_SELECT
-        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
-        #endif
-        text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
-        text+="\n \n \n \n \n \n ";
-#endif
-        llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         if(llGetAttached()) {
             if(!g_HasAnimPerms) {
                 llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
@@ -1149,6 +1137,17 @@ default {
                 llStartAnimation(g_AnimDeform);
             }
         }
+        string text = "";
+#ifdef DEBUG_TEXT
+        text = "[DEBUG]";
+        text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
+        #ifdef DEBUG_FACE_SELECT
+        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
+        #endif
+        text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+        text+="\n \n \n \n \n \n ";
+#endif
+        llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
     }
 }
