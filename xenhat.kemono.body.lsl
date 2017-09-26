@@ -190,17 +190,15 @@ list s_FittedButtState=[
 integer g_HasAnimPerms = FALSE;
 // integer g_ForceHideNips=0;
 // integer g_ForceHideVago=0;
-integer g_PGState_Vago=0;
+// integer g_PGState_Vago=0;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
 #define FKT_PRESENT 0x00000001
-// #define FKT_STATE_B 0x00000010
-// #define FKT_STATE_N 0x00000100
-// #define FKT_STATE_V 0x00001000
-#define FKT_FHIDE_B 0x00010000
-#define FKT_FHIDE_N 0x00100000
-#define FKT_FHIDE_V 0x01000000
+#define KSB_PGSTATE 0x00000010
+#define FKT_FHIDE_B 0x00000100
+#define FKT_FHIDE_N 0x00001000
+#define FKT_FHIDE_V 0x00010000
 integer g_RuntimeBodyStateSettings;
 /* usage:
     a = variable/set
@@ -573,7 +571,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     else if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(g_PGState_Vago) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
                 prim_name = llList2String(s_FittedVagoMeshNames, 0);
             }
             else {
@@ -812,7 +810,7 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(g_PGState_Vago) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
                 #if DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
@@ -832,7 +830,7 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_VIRTUAL_BUTT) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(g_PGState_Vago) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
                 #if DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
@@ -911,20 +909,20 @@ xlProcessCommand(string message) {
     }
     else if(part_wanted_s==BLADE_VAG) {
         /* Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
-        if(!showit && !g_PGState_Vago) {
+        if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
             #if DEBUG_COMMAND
             llOwnerSay("TOGGLING TO PG");
             #endif
-            g_PGState_Vago = TRUE;
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,TRUE);
         }
-        if(showit && g_PGState_Vago) {
+        if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
             #if DEBUG_COMMAND
             llOwnerSay("TOGGLING FROM PG");
             #endif
-            g_PGState_Vago = FALSE;
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,FALSE);
         }
         #if DEBUG_COMMAND
-        llOwnerSay("PG Mode:"+(string)g_PGState_Vago);
+        llOwnerSay("PG Mode:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE));
         #endif
     }
     for(;list_size >= 1; --list_size) { /* skip first element, which is the command*/
@@ -943,7 +941,7 @@ xlProcessCommand(string message) {
                 params += xlSetVag();
             }
             else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
-                params += xlGetBladeToggleParams(BLADE_VAG,showit * !g_PGState_Vago);
+                params += xlGetBladeToggleParams(BLADE_VAG,showit * !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE));
             }
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
             integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
@@ -1159,7 +1157,7 @@ default {
             text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
             #endif
             #if DEBUG_FACE_SELECT
-            text+="\nPG_v:"+(string)g_PGState_Vago;
+            text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
             #endif
             text+= "\n--------";
             text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
