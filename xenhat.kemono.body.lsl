@@ -960,11 +960,7 @@ default {
         }
     }
     state_entry() {
-        #if DEBUG_MEMORY
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
-        #else
-        llScriptProfiler(PROFILE_NONE);
-        #endif
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
         #if DEBUG
@@ -1131,12 +1127,12 @@ default {
     }
     timer() {
         string text = "";
+        integer used_memory = llGetUsedMemory();
+        integer max_memory = llGetSPMaxMemory();
+        if(!llSetMemoryLimit(max_memory+1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
         if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS || DEBUG_COMMAND ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY) {
             text = "[DEBUG]";
             #if DEBUG_MEMORY
-            integer used_memory = llGetUsedMemory();
-            integer max_memory = llGetSPMaxMemory();
-            /*if(!llSetMemoryLimit(max_memory+1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}*/
             text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
             #endif
             #if DEBUG_FACE_SELECT
@@ -1144,7 +1140,7 @@ default {
             #endif
             text+= "\n--------";
             text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
-            llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+            llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         }
         else {
             llSetText("", HOVER_TEXT_COLOR, 0.0);
