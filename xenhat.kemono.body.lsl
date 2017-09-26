@@ -50,21 +50,22 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /*----------------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 /* Defines */
-#define DEBUG 0
-#define DEBUG_ENTIRE_BODY_ALPHA 0
-#define DEBUG_LISTEN 0
-#define DEBUG_COMMAND 0
-#define DEBUG_PARAMS 0
-#define DEBUG_FACE_SELECT 0
-#define DEBUG_FACE_TOUCH 0
-#define DEBUG_LISTEN_PROCESS 0
-#define DEBUG_WHO 0
-#define AUTH_ANYWAY 0
-#define DEBUG_MEMORY 0
+//#define DEBUG
+//#define DEBUG_TEXT
+//#define DEBUG_ENTIRE_BODY_ALPHA
+//#define DEBUG_LISTEN
+//#define DEBUG_COMMAND
+//#define DEBUG_PARAMS
+//#define DEBUG_FACE_SELECT
+//#define DEBUG_FACE_TOUCH
+//#define DEBUG_LISTEN_PROCESS
+#define DEBUG_WHO
+#define AUTH_ANYWAY
+#define DEBUG_MEMORY
 // End of debug defines
 #define HOVER_TEXT_COLOR <0.825,0.825,0.825>
 #define HOVER_TEXT_ALPHA 0.75
-#if DEBUG_PARAMS
+#ifdef DEBUG_PARAMS
 #define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("PARAMS:"+llList2CSV(b));\
 llSetLinkPrimitiveParamsFast(a,b)
 #else
@@ -212,7 +213,6 @@ integer g_RuntimeBodyStateSettings;
 #define setBit(a,b) a = a | (1 << b)
 #define chgBit(a,b,c) a = a ^ ((-c ^ a) & (1 << b));
 #define togBit(a,b) a ^= 1 << b
-
 /* Note: This one can be used inline */
 #define getBit(a,b) (a >> b) & 1
 string g_AnimDeform;
@@ -228,7 +228,7 @@ list xlGetBladeToggleParams(string part_wanted_s, integer showit)
 {
     list faces_l = xlGetFacesByBladeName(part_wanted_s);
     integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-    #if DEBUG_FACE_SELECT
+    #ifdef DEBUG_FACE_SELECT
     llOwnerSay("Faces List 2:"+llList2CSV(faces_l));
     llOwnerSay("Link ID 2   :"+(string)prim_id);
     #endif
@@ -274,7 +274,7 @@ list xlSetNip() {
         integer prim_id = xlGetLinkByBladeName(mesh_name);
         params += [PRIM_LINK_TARGET,prim_id];
         integer faces_count = xlGetListLength(faces_l) - 1;
-        #if DEBUG_FACE_SELECT
+        #ifdef DEBUG_FACE_SELECT
         llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
             +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
             +"\nvisible:"+(string)visible);
@@ -284,7 +284,7 @@ list xlSetNip() {
             visible * g_Config_MaximumOpacity];
         }
     }
-    #if DEBUG_PARAMS
+    #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:" + llList2CSV(params));
     #endif
     return params;
@@ -307,7 +307,7 @@ list xlSetVag() {
             integer prim_id = xlGetLinkByBladeName(mesh_name);
             params += [PRIM_LINK_TARGET,prim_id];
             integer faces_count = xlGetListLength(faces_l) - 1;
-            #if DEBUG_FACE_SELECT
+            #ifdef DEBUG_FACE_SELECT
             llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
                 +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
                 +"\nvisible:"+(string)visible);
@@ -329,7 +329,7 @@ list xlSetVag() {
             integer prim_id = xlGetLinkByBladeName(mesh_name);
             params += [PRIM_LINK_TARGET,prim_id];
             integer faces_count = xlGetListLength(faces_l) - 1;
-            #if DEBUG_FACE_SELECT
+            #ifdef DEBUG_FACE_SELECT
             llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
                 +"\nPRIM_ID:"+(string)prim_id+"|PRIM_NAME:"+mesh_name
                 +"\nvisible:"+(string)visible);
@@ -340,8 +340,8 @@ list xlSetVag() {
             }
         }
     }
-    #if DEBUG_FACE_SELECT
-    #if DEBUG_PARAMS
+    #ifdef DEBUG_FACE_SELECT
+    #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:" + llList2CSV(params));
     #endif
     #endif
@@ -350,7 +350,7 @@ list xlSetVag() {
 integer xlGetLinkByBladeName(string name) {
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
     string prim_name = name;
-    #if DEBUG_FACE_SELECT
+    #ifdef DEBUG_FACE_SELECT
     llOwnerSay("xlGetLinkByBladeName("+name+")");
     #endif
     if(name==BLADE_ARM_L_L) prim_name = MESH_ARMS;
@@ -620,7 +620,7 @@ integer xlGetLinkByBladeName(string name) {
     }
     integer findresult = llListFindList(g_LinkDB_l,[prim_name]);
     integer ReturnValue = llList2Integer(g_LinkDB_l,findresult+1);
-    #if DEBUG_FACE_SELECT
+    #ifdef DEBUG_FACE_SELECT
     llOwnerSay("Blade To Prim Adapter Result:"+prim_name+"\nFindResult:"+(string)findresult+"\nReturnValue:"+(string)ReturnValue);
     #endif
     return ReturnValue;
@@ -811,13 +811,13 @@ list xlGetFacesByBladeName(string name) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-                #if DEBUG_COMMAND
+                #ifdef DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
                 return [0,1,2,3,4,5];
             }
             else {
-                #if DEBUG_COMMAND
+                #ifdef DEBUG_COMMAND
                 llOwnerSay("eeeeeee");
                 #endif
                 return [0,1];
@@ -831,13 +831,13 @@ list xlGetFacesByBladeName(string name) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-                #if DEBUG_COMMAND
+                #ifdef DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
                 return [0,1,2,3,4,5];
             }
             else {
-                #if DEBUG_COMMAND
+                #ifdef DEBUG_COMMAND
                 llOwnerSay("eeeeeee");
                 #endif
                 return [2,3,4,5];
@@ -854,7 +854,7 @@ list xlGetFacesByBladeName(string name) {
 }
 xlProcessCommand(string message) {
     list data = llParseStringKeepNulls(message,[":"],[]);
-    #if DEBUG_COMMAND
+    #ifdef DEBUG_COMMAND
     llOwnerSay(llList2CSV(data));
     #endif
     integer showit;
@@ -890,7 +890,7 @@ xlProcessCommand(string message) {
     list params;
     integer list_size = xlGetListLength(data) - 1;
     string part_wanted_s = llList2String(data, 1);
-    #if DEBUG_COMMAND
+    #ifdef DEBUG_COMMAND
     llOwnerSay("part wanted:" + part_wanted_s);
     #endif
     if(part_wanted_s == BLADE_NIPS) {
@@ -910,18 +910,18 @@ xlProcessCommand(string message) {
     else if(part_wanted_s==BLADE_VAG) {
         /* Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
         if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-            #if DEBUG_COMMAND
+            #ifdef DEBUG_COMMAND
             llOwnerSay("TOGGLING TO PG");
             #endif
             chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,TRUE);
         }
         if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-            #if DEBUG_COMMAND
+            #ifdef DEBUG_COMMAND
             llOwnerSay("TOGGLING FROM PG");
             #endif
             chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,FALSE);
         }
-        #if DEBUG_COMMAND
+        #ifdef DEBUG_COMMAND
         llOwnerSay("PG Mode:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE));
         #endif
     }
@@ -929,7 +929,7 @@ xlProcessCommand(string message) {
         /* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
         /* TODO: Optimize the param creation logic to not include redundant changes. This implies making it so that there is no post-loop "fixing" happening. */
         part_wanted_s = llList2String(data, list_size);
-        #if DEBUG_COMMAND
+        #ifdef DEBUG_COMMAND
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
             if (/*FITTED_COMBO && */part_wanted_s==BLADE_BREASTS) {
@@ -945,7 +945,7 @@ xlProcessCommand(string message) {
             }
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
             integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
-            #if DEBUG_FACE_SELECT
+            #ifdef DEBUG_FACE_SELECT
             llOwnerSay("Faces List:"+llList2CSV(faces_l));
             llOwnerSay("Link ID  :"+(string)prim_id);
             #endif
@@ -962,7 +962,7 @@ xlProcessCommand(string message) {
     }
 }
 default {
-    #if DEBUG_FACE_TOUCH
+    #ifdef DEBUG_FACE_TOUCH
     touch_start(integer total_number) {
         key tk = llDetectedKey(0);
         if(tk!=g_Owner_k) return;
@@ -984,11 +984,11 @@ default {
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
-        #if DEBUG
+        #ifdef DEBUG
         llOwnerSay("Counting");
         #endif
         integer part = llGetNumberOfPrims();
-        #if DEBUG_ENTIRE_BODY_ALPHA
+        #ifdef DEBUG_ENTIRE_BODY_ALPHA
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture = texture != "";
         list prim_params_to_apply = [];
@@ -1006,7 +1006,7 @@ default {
                 }
             }
             if(llListFindList(g_supported_meshes, [name])!= -1) {
-                #if DEBUG_ENTIRE_BODY_ALPHA
+                #ifdef DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
                 if(retexture) {
                     prim_params_to_apply+= [PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0];
@@ -1015,10 +1015,10 @@ default {
                 g_LinkDB_l+=[name,part];/* Typecast not optional; ensures that llList2* works as intended*/
             }
         }
-        #if DEBUG
+        #ifdef DEBUG
         llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
         #endif
-        #if DEBUG_ENTIRE_BODY_ALPHA
+        #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
         /* Reset faces*/
         /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
@@ -1051,7 +1051,7 @@ default {
         llSetText("",HOVER_TEXT_COLOR,0.0);
         g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
-        #if DEBUG
+        #ifdef DEBUG
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
@@ -1060,9 +1060,9 @@ default {
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
         if (id == llGetKey()) return;
-        #if DEBUG_LISTEN
+        #ifdef DEBUG_LISTEN
         string knp;
-        #if DEBUG_WHO
+        #ifdef DEBUG_WHO
         knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
         #endif
         llOwnerSay(knp+"input ["+message+"]");
@@ -1122,7 +1122,7 @@ default {
         }
         else {
             xlProcessCommand(message);
-            #if DEBUG_LISTEN_PROCESS
+            #ifdef DEBUG_LISTEN_PROCESS
             llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
             #endif
         }
@@ -1151,21 +1151,19 @@ default {
         integer used_memory = llGetUsedMemory();
         integer max_memory = llGetSPMaxMemory();
         if(!llSetMemoryLimit(58*1024)) {llOwnerSay("Running out of memory! You should probably mention this to secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect...");}
-        if(DEBUG ||DEBUG_LISTEN ||DEBUG_PARAMS || DEBUG_COMMAND ||DEBUG_FACE_SELECT ||DEBUG_LISTEN_PROCESS ||DEBUG_WHO ||AUTH_ANYWAY ||DEBUG_MEMORY) {
-            text = "[DEBUG]";
-            #if DEBUG_MEMORY
-            text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
-            #endif
-            #if DEBUG_FACE_SELECT
-            text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
-            #endif
-            text+= "\n--------";
-            text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
-            llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
-        }
-        else {
-            llSetText("", HOVER_TEXT_COLOR, 0.0);
-        }
+#ifdef DEBUG_TEXT
+        text = "[DEBUG]";
+        #ifdef DEBUG_MEMORY
+        text+="\nU: "+(string)used_memory+"["+(string)max_memory+"]/"+(string)llGetMemoryLimit()+"B";
+        #endif
+        #ifdef DEBUG_FACE_SELECT
+        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
+        #endif
+        text+= "\n--------";
+        text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+        text+="\n \n \n \n ";
+#endif
+        llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         if(llGetAttached()) {
             if(!g_HasAnimPerms) {
                 llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
