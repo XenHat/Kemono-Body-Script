@@ -209,6 +209,7 @@ integer g_RuntimeBodyStateSettings;
 #define getBit(a,b) (a >> b) & 1
 string g_AnimDeform;
 string g_AnimUndeform;
+string g_HoverText;
 #define xlGetListLength(a) (a!=[])
 /* Note: This version doesn't do any fixing for the genitals, intentioanlly */
 list xlGetBladeToggleParams(string part_wanted_s, integer showit)
@@ -1077,6 +1078,10 @@ default {
             /*If the are in the list, remove them.*/
             integer placeinlist = llListFindList(g_RemConfirmKeys_l, [(key)id]);
             if (placeinlist != -1) {
+                if (llGetFreeMemory() <= 2048) {
+                    g_HoverText = " Out of Memory!";
+                    return;
+                }
                 g_RemConfirmKeys_l = llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
             }
         }
@@ -1137,9 +1142,9 @@ default {
                 llStartAnimation(g_AnimDeform);
             }
         }
-        string text = "";
+        string text = g_HoverText;
 #ifdef DEBUG_TEXT
-        text = "[DEBUG]";
+        text = "[DEBUG]" + text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
