@@ -189,9 +189,11 @@ integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
 #define FKT_PRESENT 0x00000001
 #define KSB_PGSTATE 0x00000010
-#define FKT_FHIDE_B 0x00000100
-#define FKT_FHIDE_N 0x00001000
-#define FKT_FHIDE_V 0x00010000
+// #define FKT_FHIDE_B 0x00000100
+// #define FKT_FHIDE_N 0x00001000
+// #define FKT_FHIDE_V 0x00010000
+integer g_ForceHideNips = 0;
+integer g_ForceHideVago = 0;
 integer g_RuntimeBodyStateSettings;
 /* usage:
     a = variable/set
@@ -248,7 +250,8 @@ list xlSetNip() {
     }
     list params;
     for(;mesh_i < meshes_count; ++mesh_i) {
-        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
+        // integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
+        integer visible = !g_ForceHideNips;
         string mesh_name;
         if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mesh_name = BLADE_NIPS;
@@ -284,7 +287,8 @@ list xlSetVag() {
         integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
         for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
+            // integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
+            integer visible = !g_ForceHideVago  * (mesh_i == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             list faces_l = xlGetFacesByBladeName(BLADE_VAG);
             string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
@@ -306,6 +310,7 @@ list xlSetVag() {
         integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
         for(;mesh_i < meshes_count; ++mesh_i) {
+            // integer visible = (mesh_i == g_CurrentFittedButState);
             integer visible = (mesh_i == g_CurrentFittedButState);
             /* Process each nipple mesh one by one */
             list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
@@ -916,11 +921,13 @@ xlProcessCommand(string message) {
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
             if (/*FITTED_COMBO && */part_wanted_s==BLADE_BREASTS) {
-                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
+                // chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
+                g_ForceHideNips = !showit;
                 params += xlSetNip();
             }
             else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
-                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
+                // chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
+                g_ForceHideVago = !showit;
                 params += xlSetVag();
             }
             else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
