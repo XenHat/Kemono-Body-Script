@@ -198,7 +198,7 @@ integer g_RuntimeBodyStateSettings;
     b = bit (define, see above)
 */
 /* Some shorthand operators are not allowed in LSL */
-#define clrBit(a,b) a = a & (~(1 << b))
+#define clrBit(a,b) a = (a & (~b))
 #define setBit(a,b) a = (a | b)
 #define chgBit(a,b,c) a = (a & (~b)) | (b * c);
 #define togBit(a,b) a ^= 1 << b
