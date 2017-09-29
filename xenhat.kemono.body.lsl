@@ -1110,21 +1110,17 @@ default {
             #endif
         }
     }
-    on_rez(integer start_param) {
-        if(!llGetAttached()) {
-            return;
-        }
-        llSleep(1);
-        if(!g_HasAnimPerms) {
-            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        }
-    }
     attach(key id) {
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
-            which happen on rez or startup if attached */
+            which happen on rez or startup if attached.
+            Needs to be processed as fast as possible to make it before the object
+            is pruned from the Current Outfit Folder otherwise it won't fire. */
         if(id == (key)NULL_KEY) {
             llStartAnimation(g_AnimUndeform);
             return;
+        }
+        else if(!g_HasAnimPerms) {
+            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         }
     }
     run_time_permissions(integer perm) {
