@@ -1030,7 +1030,7 @@ default {
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
-        if(llGetAttached() {
+        if(llGetAttached()) {
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         }
     }
