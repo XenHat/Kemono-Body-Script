@@ -1063,6 +1063,10 @@ default {
         }
         if(message == "add") {
             /*And if they aren't in the auth list, add them.*/
+            if (llGetFreeMemory() <= 2048) {
+                g_HoverText = " Out of Memory!";
+                return;
+            }
             if(llListFindList(g_RemConfirmKeys_l,[id]) == -1) {
                 g_RemConfirmKeys_l += [id];
                 return;
@@ -1072,10 +1076,6 @@ default {
             /*If the are in the list, remove them.*/
             integer placeinlist = llListFindList(g_RemConfirmKeys_l, [(key)id]);
             if (placeinlist != -1) {
-                if (llGetFreeMemory() <= 2048) {
-                    g_HoverText = " Out of Memory!";
-                    return;
-                }
                 g_RemConfirmKeys_l = llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
             }
         }
