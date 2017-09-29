@@ -1030,7 +1030,9 @@ default {
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        if(llGetAttached() {
+            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        }
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
