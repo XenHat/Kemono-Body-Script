@@ -187,28 +187,23 @@ integer g_HasAnimPerms = FALSE;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
-#define FKT_PRESENT 0x00000001
-#define KSB_PGSTATE 0x00000010
-// #define FKT_FHIDE_B 0x00000100
-// #define FKT_FHIDE_N 0x00001000
-// #define FKT_FHIDE_V 0x00010000
-integer g_ForceHideNips = 0;
-integer g_ForceHideVago = 0;
+#define FKT_PRESENT 1
+#define KSB_PGSTATE 2
+#define FKT_FHIDE_B 4
+#define FKT_FHIDE_N 8
+#define FKT_FHIDE_V 16
 integer g_RuntimeBodyStateSettings;
 /* usage:
     a = variable/set
     b = bit (define, see above)
 */
 /* Some shorthand operators are not allowed in LSL */
-// #define setBit(a,b) a |= 1 << b
-// #define clrBit(a,b) a &= ~(1 << b)
-// #define chgBit(a,b,c) a ^= (-b ^ a) & (1 << c);
 #define clrBit(a,b) a = a & (~(1 << b))
-#define setBit(a,b) a = a | (1 << b)
-#define chgBit(a,b,c) a = a ^ ((-c ^ a) & (1 << b));
+#define setBit(a,b) a = (a | b)
+#define chgBit(a,b,c) a = (a & (~b)) | (b * c);
 #define togBit(a,b) a ^= 1 << b
 /* Note: This one can be used inline */
-#define getBit(a,b) (a >> b) & 1
+#define getBit(a,b) (!!(a & b))
 string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
@@ -241,17 +236,13 @@ Forcefully set the current nipple type to Adult, idle on PG disable
 */
 list xlSetNip() {
     integer mesh_i;
-    integer meshes_count;
-    if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-        meshes_count++; /* 1 */
-    }
-    else {
+    integer meshes_count = 1;
+    if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
         meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
     }
     list params;
     for(;mesh_i < meshes_count; ++mesh_i) {
-        // integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
-        integer visible = !g_ForceHideNips;
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
         string mesh_name;
         if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mesh_name = BLADE_NIPS;
@@ -287,8 +278,7 @@ list xlSetVag() {
         integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
         for(;mesh_i < meshes_count; ++mesh_i) {
-            // integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
-            integer visible = !g_ForceHideVago  * (mesh_i == g_CurrentFittedVagState);
+            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             list faces_l = xlGetFacesByBladeName(BLADE_VAG);
             string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
@@ -310,7 +300,6 @@ list xlSetVag() {
         integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
         for(;mesh_i < meshes_count; ++mesh_i) {
-            // integer visible = (mesh_i == g_CurrentFittedButState);
             integer visible = (mesh_i == g_CurrentFittedButState);
             /* Process each nipple mesh one by one */
             list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
@@ -896,19 +885,7 @@ xlProcessCommand(string message) {
         }
     }
     else if(part_wanted_s==BLADE_VAG) {
-        /* Note: flip PG state BEFORE when TOGGLING TO, and AFTER when TOGGLING FROM */
-        if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-            #ifdef DEBUG_COMMAND
-            llOwnerSay("TOGGLING TO PG");
-            #endif
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,TRUE);
-        }
-        if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-            #ifdef DEBUG_COMMAND
-            llOwnerSay("TOGGLING FROM PG");
-            #endif
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,FALSE);
-        }
+        g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGSTATE)) | (KSB_PGSTATE * !showit);
         #ifdef DEBUG_COMMAND
         llOwnerSay("PG Mode:"+(string)(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)));
         #endif
@@ -921,17 +898,15 @@ xlProcessCommand(string message) {
         llOwnerSay("Processing:"+part_wanted_s);
         #endif
             if (/*FITTED_COMBO && */part_wanted_s==BLADE_BREASTS) {
-                // chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-                g_ForceHideNips = !showit;
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
                 params += xlSetNip();
             }
             else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
-                // chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
-                g_ForceHideVago = !showit;
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
                 params += xlSetVag();
             }
             else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && part_wanted_s==BLADE_PELVIS) {
-                params += xlGetBladeToggleParams(BLADE_VAG,showit * !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE));
+                params += xlGetBladeToggleParams(BLADE_VAG,showit * !(g_RuntimeBodyStateSettings & KSB_PGSTATE));
             }
             list faces_l = xlGetFacesByBladeName(part_wanted_s);
             integer prim_id = (integer)xlGetLinkByBladeName(part_wanted_s);
@@ -977,6 +952,14 @@ default {
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         g_Owner_k = llGetOwner();
         #ifdef DEBUG
+        llSetText("UNIT SELF-TEST",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        llSay(0,"g_RuntimeBodyStateSettings: " + (string)g_RuntimeBodyStateSettings);
+        llSay(0,"FKT_PRESENT: " + (string)FKT_PRESENT);
+        integer test1 = getBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+        llSay(0,"Test1: " + (string)test1);
+        setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+        integer test2 = getBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+        llSay(0,"Test2: " + (string)test2);
         llOwnerSay("Counting");
         #endif
         integer part = llGetNumberOfPrims();
