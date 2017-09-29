@@ -1120,6 +1120,8 @@ default {
         }
     }
     attach(key id) {
+        /* Deform on detach, unlike the stock body. This assumes permissions are granted,
+            which happen on rez or startup if attached */
         if(id == (string)NULL_KEY) {
             llStartAnimation(g_AnimUndeform);
             return;
