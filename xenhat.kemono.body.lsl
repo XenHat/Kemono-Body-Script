@@ -1036,7 +1036,9 @@ default {
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
+        #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if (id == llGetKey()) return;
+        #endif
         #ifdef DEBUG_LISTEN
         string knp;
         knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
