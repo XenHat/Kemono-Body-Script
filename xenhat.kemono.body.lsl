@@ -134,34 +134,34 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_WRIST_R "wristR"
 #define BLADE_FOOT_R "footR"
 #define BLADE_FOOT_L "footL"
-list g_supported_meshes = [
-MESH_ARMS,
-MESH_BODY,
-MESH_HAND_LEFT,
-MESH_HAND_RIGHT,
-MESH_HIPS,
-MESH_LEG_LEFT_ANIMAL,
-MESH_LEG_LEFT_HUMAN,
-MESH_LEG_RIGHT_ANIMAL,
-MESH_LEG_RIGHT_HUMAN,
-MESH_NECK,
-MESH_PG_LAYER,
-MESH_ROOT,
-MESH_FITTED_TORSO_HLEGS,
-MESH_FITTED_TORSO_CHEST,
-MESH_FITTED_TORSO,
-"BitState0",
-"BitState1",
-"BitState2",
-"BitState3",
-"NipState0",
-MESH_FITTED_TORSO_ETC,
-"NipState1",
-"NipAlpha",
-"cumButtS1",
-"cumButtS2",
-"cumButtS3"
-];
+#define g_supported_meshes [\
+MESH_ARMS,\
+MESH_BODY,\
+MESH_HAND_LEFT,\
+MESH_HAND_RIGHT,\
+MESH_HIPS,\
+MESH_LEG_LEFT_ANIMAL,\
+MESH_LEG_LEFT_HUMAN,\
+MESH_LEG_RIGHT_ANIMAL,\
+MESH_LEG_RIGHT_HUMAN,\
+MESH_NECK,\
+MESH_PG_LAYER,\
+MESH_ROOT,\
+MESH_FITTED_TORSO_HLEGS,\
+MESH_FITTED_TORSO_CHEST,\
+MESH_FITTED_TORSO,\
+"BitState0",\
+"BitState1",\
+"BitState2",\
+"BitState3",\
+"NipState0",\
+MESH_FITTED_TORSO_ETC,\
+"NipState1",\
+"NipAlpha",\
+"cumButtS1",\
+"cumButtS2",\
+"cumButtS3"\
+]
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
