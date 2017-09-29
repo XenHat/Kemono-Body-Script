@@ -1104,7 +1104,9 @@ default {
         else {
             xlProcessCommand(message);
             #ifdef DEBUG_COMMAND
+            #ifdef DEBUG_LISTEN
             llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
+            #endif
             #endif
         }
     }
