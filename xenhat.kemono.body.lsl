@@ -210,192 +210,229 @@ string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
 #define xlGetListLength(a) (a!=[])
-/* Process a list of blade names */
-list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
-    list params;
-    /* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
-    /* TODO: Optimize the param creation logic to not include redundant changes. This implies making it so that there is no post-loop "fixing" happening. */
-    #ifdef DEBUG_COMMAND
-    llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
-    #endif
-    if (/*FITTED_COMBO && */blade_name==BLADE_BREASTS) {
-        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-        params += xlSetNip();
-    }
-    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
-        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
-        params += xlSetVag();
-    }
-    /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
-    else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
-        blade_name = BLADE_VAG;
-        showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
-    }
-    else {
-        list prim_names = xlBladeNameToPrimNames(blade_name);
-        integer blade_prim_iter = xlGetListLength(prim_names) - 1;
-        #ifdef DEBUG_DATA
-        llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
-        llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
-        #endif
-        while(blade_prim_iter>=0){
-            string this_prim_name = llList2String(prim_names,blade_prim_iter);
-            /* Fix legs automatically */
-            if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
-                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-                ];
-            }
-            else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
-                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-                ];
-            }
-            /* TODO: inline as much as possible */
-            integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
-            integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
-            #ifdef DEBUG_DATA
-            llOwnerSay("this_prim_name="+this_prim_name);
-            llOwnerSay("Database query result= Prim Name:"+llList2String(g_LinkDB_l,link_name_index)+",Prim ID:"+(string)link_id);
-            #endif
-            params+=[PRIM_LINK_TARGET,link_id];
-            list faces_l = xlGetFacesByBladeName(blade_name);
-            integer faces_index = xlGetListLength(faces_l) - 1;
-            integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==blade_name);
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
-            llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
-            llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
-            llOwnerSay("Faces Count  :"+(string)(faces_index+1));
-            llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
-            llOwnerSay("Link Name 1  :"+this_prim_name);
-            llOwnerSay("link_name_index:"+(string)link_name_index);
-            llOwnerSay("Link ID 1    :"+(string)link_id);
-            #endif
-            while(faces_index>=0) {
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("Processing Face:"+llList2String(faces_l,faces_index));
-                #endif
-                params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, SHOWIT_VAGOO * g_Config_MaximumOpacity];
-                faces_index--;
-            }
-            blade_prim_iter--;
-        }
-    }
-    return params;
-}
-/* Stock Fitted Torso script:
-setnip0 == NipState0
-setnip1 == TorsoEtc[0,1]
-setnip2 == NipState1
-NipAlpha == ????
-*/
-/* Note: The Starbright stock behavior is the following:
-Show PG layer when hiding nipples
-Forcefully set the current nipple type to Adult, idle on PG disable
-*/
-list xlSetNip() {
-    integer mesh_i;
-    integer meshes_count = 1;
-    if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-        meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
-    }
-    list params;
-    for(;mesh_i < meshes_count; ++mesh_i) {
-        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
-        string mesh_name;
-        if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            mesh_name = BLADE_NIPS;
+integer human_mode = FALSE;
+list xlGetFacesByBladeName(string name) {
+    if(name==BLADE_ABS) return [6,7];
+    if(name==BLADE_ANKLE_L) {
+        if (human_mode) {
+            return [1];
         }
         else {
-            visible *= (mesh_i == g_CurrentFittedNipState);
-            mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
+            return [5];
         }
-        /* Process each nipple mesh one by one */
-        list prim_names = xlBladeNameToPrimNames(mesh_name);
-        integer prim_count = xlGetListLength(prim_names);
-        while(prim_count>-1){
-            params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
-            list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
-            integer faces_count = xlGetListLength(faces_l) - 1;
-            for(;faces_count > -1;--faces_count) {
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>,
-                visible * g_Config_MaximumOpacity];
+    }
+    if(name==BLADE_ANKLE_R) {
+        if (human_mode) {
+            return [1];
+        }
+        else {
+            return [5];
+        }
+    }
+    if(name==BLADE_ARM_L_L) return [7];
+    if(name==BLADE_ARM_L_R) return [2];
+    if(name==BLADE_ARM_U_L) return [0];
+    if(name==BLADE_ARM_U_R) return [6];
+    if(name==BLADE_BELLY) return [2,3];
+    if(name==BLADE_BODY) return [0];
+    if(name==BLADE_BREASTS) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            return [2,3];
+        }
+        else {
+            return [2,5];
+        }
+    }
+    if(name==BLADE_CALF_L) {
+        if(human_mode) {
+            return [4];
+        }
+        else {
+            return [2];
+        }
+    }
+    if(name==BLADE_CALF_R) {
+        if(human_mode) {
+            return [4];
+        }
+        else {
+            return [2];
+        }
+    }
+    if(name==BLADE_CHEST) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            return [0,1];
+        }
+        else {
+            if(human_mode) {
+                return [0,4];
             }
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
-                +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
-                +"\nvisible:"+(string)visible);
+            else {
+                return [0,4];
+            }
+        }
+    }
+    if(name==BLADE_COLLAR) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [6,7];
+        else {return [1,6];}
+    }
+    if(name==BLADE_ELBOW_L) return [4];
+    if(name==BLADE_ELBOW_R) return [5];
+    if(name==BLADE_FOOT_L) return [0];
+    if(name==BLADE_FOOT_R) return [0];
+    if(name==BLADE_HIP_L) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
+        else {return [6];}
+    }
+    if(name==BLADE_HIP_R) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4];
+        else {return [5];}
+    }
+    if(name==BLADE_KNEE_L) {
+        if(human_mode) {
+            return [5];
+        }
+        else {
+            return [1];
+        }
+    }
+    if(name==BLADE_KNEE_R) {
+        if(human_mode) {
+            return [5];
+        }
+        else {
+            return [1];
+        }
+    }
+    if(name==BLADE_HAND_LEFT) return [-1];
+    if(name==BLADE_HAND_RIGHT) return [-1];
+    if(name==BLADE_NECK) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1];
+        else {return [2,5];}
+    }
+    if(name==BLADE_NIPS) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
+            return [0,1];
+        }
+        else {return [2,3];}
+    }
+    if(name==BLADE_PELVIS) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1,2,3];
+        else {return [0,1];}
+    }
+    if(name==BLADE_RIBS) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4,5];
+        else {return [1,3];}
+    }
+    if(name==BLADE_SHIN_L_L) {
+        if (human_mode) {
+            return [2];
+        }
+        else {
+            return [4];
+        }
+    }
+    if(name==BLADE_SHIN_L_R) {
+        if (human_mode) {
+            return [2];
+        }
+        else {
+            return [4];
+        }
+    }
+    if(name==BLADE_SHIN_U_L) {
+        return [3];
+    }
+    if(name==BLADE_SHIN_U_R) {
+        return [3];
+    }
+    if(name==BLADE_SHOULDER_L_L) return [3];
+    if(name==BLADE_SHOULDER_L_R) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [2];
+        else {return [0];}
+    }
+    if(name==BLADE_SHOULDER_U_L) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
+        else {return [7];}
+    }
+    if(name==BLADE_SHOULDER_U_R) return [4];
+    if(name==BLADE_THIGH_L_L) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            if(human_mode) {
+                return [1];
+            }
+            else {
+                return [7];
+            }
+        }
+        else {
+            return [6];
+        }
+    }
+    if(name==BLADE_THIGH_L_R) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            if(human_mode) {
+                return [0];
+            }
+            else {
+                return [6];
+            }
+        }
+        else {
+            return [6];
+        }
+    }
+    if(name==BLADE_THIGH_U_L) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            return [5];
+        }
+        else {
+            return [7];
+        }
+    }
+    if(name==BLADE_THIGH_U_R) return [4];
+    if(name==BLADE_VAG) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+                #ifdef DEBUG_COMMAND
+                llOwnerSay("uuuuuuuuu");
+                #endif
+                return [0,1,2,3,4,5];
+            }
+            else {
+                #ifdef DEBUG_COMMAND
+                llOwnerSay("eeeeeee");
+                #endif
+                return [0,1];
+            }
+        }
+        else {
+            return [0,1];
+        }
+    }
+    if(name==BLADE_VIRTUAL_BUTT) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
+            #ifdef DEBUG_COMMAND
+            llOwnerSay("uuuuuuuuu["+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)+"]");
             #endif
-            prim_count--;
-        }
-    }
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:" + llList2CSV(params));
-    #endif
-    return params;
-}
-list xlSetVag() {
-    list params;
-    /* Vagoo meshes */
-    {
-        integer mesh_i;
-        integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
-        for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
-            /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
-            list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlGetListLength(prim_names);
-            while(prim_count>-1){
-                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
-                list faces_l = xlGetFacesByBladeName(BLADE_VAG);
-                integer faces_count = xlGetListLength(faces_l) - 1;
-                for(;faces_count > -1;--faces_count) {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-                }
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
-                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
-                    +"\nvisible:"+(string)visible);
-                #endif
-                prim_count--;
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+                return [0,1,2,3,4,5];
+            }
+            else {
+                return [2,3,4,5];
             }
         }
-    }
-    /* Butt meshes */
-    {
-        integer mesh_i;
-        integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
-        for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = (mesh_i == g_CurrentFittedButState);
-            /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedButtState,mesh_i);
-            list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlGetListLength(prim_names);
-            while(prim_count>-1){
-                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
-                list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-                integer faces_count = xlGetListLength(faces_l) - 1;
-                for(;faces_count > -1;--faces_count)
-                {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-                }
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"\nPRIM_NAMES"+llList2CSV(prim_names)+"\nFACES:"+llList2CSV(faces_l)
-                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
-                    +"\nvisible:"+(string)visible);
-                #endif
-                prim_count--;
-            }
+        else {
+            return [];
         }
     }
-    #ifdef DEBUG_FACE_SELECT
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:" + llList2CSV(params));
-    #endif
-    #endif
-    return params;
+    if(name==BLADE_WRIST_L) return [3];
+    if(name==BLADE_WRIST_R) return [1];
+    llOwnerSay("UNIMPLEMENTED:"+name+"!");
+    return [];
 }
 list xlBladeNameToPrimNames(string name) {
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
@@ -670,229 +707,192 @@ list xlBladeNameToPrimNames(string name) {
     }
     return prim_name;
 }
-integer human_mode = FALSE;
-list xlGetFacesByBladeName(string name) {
-    if(name==BLADE_ABS) return [6,7];
-    if(name==BLADE_ANKLE_L) {
-        if (human_mode) {
-            return [1];
-        }
-        else {
-            return [5];
-        }
+/* Stock Fitted Torso script:
+setnip0 == NipState0
+setnip1 == TorsoEtc[0,1]
+setnip2 == NipState1
+NipAlpha == ????
+*/
+/* Note: The Starbright stock behavior is the following:
+Show PG layer when hiding nipples
+Forcefully set the current nipple type to Adult, idle on PG disable
+*/
+list xlSetNip() {
+    integer mesh_i;
+    integer meshes_count = 1;
+    if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
     }
-    if(name==BLADE_ANKLE_R) {
-        if (human_mode) {
-            return [1];
+    list params;
+    for(;mesh_i < meshes_count; ++mesh_i) {
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
+        string mesh_name;
+        if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            mesh_name = BLADE_NIPS;
         }
         else {
-            return [5];
+            visible *= (mesh_i == g_CurrentFittedNipState);
+            mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
         }
-    }
-    if(name==BLADE_ARM_L_L) return [7];
-    if(name==BLADE_ARM_L_R) return [2];
-    if(name==BLADE_ARM_U_L) return [0];
-    if(name==BLADE_ARM_U_R) return [6];
-    if(name==BLADE_BELLY) return [2,3];
-    if(name==BLADE_BODY) return [0];
-    if(name==BLADE_BREASTS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            return [2,3];
-        }
-        else {
-            return [2,5];
-        }
-    }
-    if(name==BLADE_CALF_L) {
-        if(human_mode) {
-            return [4];
-        }
-        else {
-            return [2];
-        }
-    }
-    if(name==BLADE_CALF_R) {
-        if(human_mode) {
-            return [4];
-        }
-        else {
-            return [2];
-        }
-    }
-    if(name==BLADE_CHEST) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            return [0,1];
-        }
-        else {
-            if(human_mode) {
-                return [0,4];
+        /* Process each nipple mesh one by one */
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer prim_count = xlGetListLength(prim_names);
+        while(prim_count>-1){
+            params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
+            list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
+            integer faces_count = xlGetListLength(faces_l) - 1;
+            for(;faces_count > -1;--faces_count) {
+                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>,
+                visible * g_Config_MaximumOpacity];
             }
-            else {
-                return [0,4];
-            }
-        }
-    }
-    if(name==BLADE_COLLAR) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [6,7];
-        else {return [1,6];}
-    }
-    if(name==BLADE_ELBOW_L) return [4];
-    if(name==BLADE_ELBOW_R) return [5];
-    if(name==BLADE_FOOT_L) return [0];
-    if(name==BLADE_FOOT_R) return [0];
-    if(name==BLADE_HIP_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
-        else {return [6];}
-    }
-    if(name==BLADE_HIP_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4];
-        else {return [5];}
-    }
-    if(name==BLADE_KNEE_L) {
-        if(human_mode) {
-            return [5];
-        }
-        else {
-            return [1];
-        }
-    }
-    if(name==BLADE_KNEE_R) {
-        if(human_mode) {
-            return [5];
-        }
-        else {
-            return [1];
-        }
-    }
-    if(name==BLADE_HAND_LEFT) return [-1];
-    if(name==BLADE_HAND_RIGHT) return [-1];
-    if(name==BLADE_NECK) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1];
-        else {return [2,5];}
-    }
-    if(name==BLADE_NIPS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
-            return [0,1];
-        }
-        else {return [2,3];}
-    }
-    if(name==BLADE_PELVIS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1,2,3];
-        else {return [0,1];}
-    }
-    if(name==BLADE_RIBS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4,5];
-        else {return [1,3];}
-    }
-    if(name==BLADE_SHIN_L_L) {
-        if (human_mode) {
-            return [2];
-        }
-        else {
-            return [4];
-        }
-    }
-    if(name==BLADE_SHIN_L_R) {
-        if (human_mode) {
-            return [2];
-        }
-        else {
-            return [4];
-        }
-    }
-    if(name==BLADE_SHIN_U_L) {
-        return [3];
-    }
-    if(name==BLADE_SHIN_U_R) {
-        return [3];
-    }
-    if(name==BLADE_SHOULDER_L_L) return [3];
-    if(name==BLADE_SHOULDER_L_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [2];
-        else {return [0];}
-    }
-    if(name==BLADE_SHOULDER_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
-        else {return [7];}
-    }
-    if(name==BLADE_SHOULDER_U_R) return [4];
-    if(name==BLADE_THIGH_L_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
-                return [1];
-            }
-            else {
-                return [7];
-            }
-        }
-        else {
-            return [6];
-        }
-    }
-    if(name==BLADE_THIGH_L_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
-                return [0];
-            }
-            else {
-                return [6];
-            }
-        }
-        else {
-            return [6];
-        }
-    }
-    if(name==BLADE_THIGH_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            return [5];
-        }
-        else {
-            return [7];
-        }
-    }
-    if(name==BLADE_THIGH_U_R) return [4];
-    if(name==BLADE_VAG) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-                #ifdef DEBUG_COMMAND
-                llOwnerSay("uuuuuuuuu");
-                #endif
-                return [0,1,2,3,4,5];
-            }
-            else {
-                #ifdef DEBUG_COMMAND
-                llOwnerSay("eeeeeee");
-                #endif
-                return [0,1];
-            }
-        }
-        else {
-            return [0,1];
-        }
-    }
-    if(name==BLADE_VIRTUAL_BUTT) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            #ifdef DEBUG_COMMAND
-            llOwnerSay("uuuuuuuuu["+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)+"]");
+            #ifdef DEBUG_FACE_SELECT
+            llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
+                +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
+                +"\nvisible:"+(string)visible);
             #endif
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-                return [0,1,2,3,4,5];
-            }
-            else {
-                return [2,3,4,5];
-            }
-        }
-        else {
-            return [];
+            prim_count--;
         }
     }
-    if(name==BLADE_WRIST_L) return [3];
-    if(name==BLADE_WRIST_R) return [1];
-    llOwnerSay("UNIMPLEMENTED:"+name+"!");
-    return [];
+    #ifdef DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
+    return params;
+}
+list xlSetVag() {
+    list params;
+    /* Vagoo meshes */
+    {
+        integer mesh_i;
+        integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
+        for(;mesh_i < meshes_count; ++mesh_i) {
+            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
+            /* Process each nipple mesh one by one */
+            string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
+            list prim_names = xlBladeNameToPrimNames(mesh_name);
+            integer prim_count = xlGetListLength(prim_names);
+            while(prim_count>-1){
+                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
+                list faces_l = xlGetFacesByBladeName(BLADE_VAG);
+                integer faces_count = xlGetListLength(faces_l) - 1;
+                for(;faces_count > -1;--faces_count) {
+                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+                }
+                #ifdef DEBUG_FACE_SELECT
+                llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
+                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
+                    +"\nvisible:"+(string)visible);
+                #endif
+                prim_count--;
+            }
+        }
+    }
+    /* Butt meshes */
+    {
+        integer mesh_i;
+        integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
+        for(;mesh_i < meshes_count; ++mesh_i) {
+            integer visible = (mesh_i == g_CurrentFittedButState);
+            /* Process each nipple mesh one by one */
+            string mesh_name = llList2String(s_FittedButtState,mesh_i);
+            list prim_names = xlBladeNameToPrimNames(mesh_name);
+            integer prim_count = xlGetListLength(prim_names);
+            while(prim_count>-1){
+                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
+                list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
+                integer faces_count = xlGetListLength(faces_l) - 1;
+                for(;faces_count > -1;--faces_count)
+                {
+                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+                }
+                #ifdef DEBUG_FACE_SELECT
+                llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"\nPRIM_NAMES"+llList2CSV(prim_names)+"\nFACES:"+llList2CSV(faces_l)
+                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
+                    +"\nvisible:"+(string)visible);
+                #endif
+                prim_count--;
+            }
+        }
+    }
+    #ifdef DEBUG_FACE_SELECT
+    #ifdef DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
+    #endif
+    return params;
+}
+/* Process a list of blade names */
+list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
+    list params;
+    /* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
+    /* TODO: Optimize the param creation logic to not include redundant changes. This implies making it so that there is no post-loop "fixing" happening. */
+    #ifdef DEBUG_COMMAND
+    llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
+    #endif
+    if (/*FITTED_COMBO && */blade_name==BLADE_BREASTS) {
+        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
+        params += xlSetNip();
+    }
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
+        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
+        params += xlSetVag();
+    }
+    /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
+    else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
+        blade_name = BLADE_VAG;
+        showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
+    }
+    else {
+        list prim_names = xlBladeNameToPrimNames(blade_name);
+        integer blade_prim_iter = xlGetListLength(prim_names) - 1;
+        #ifdef DEBUG_DATA
+        llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
+        llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
+        #endif
+        while(blade_prim_iter>=0){
+            string this_prim_name = llList2String(prim_names,blade_prim_iter);
+            /* Fix legs automatically */
+            if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
+                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+                ];
+            }
+            else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
+                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+                ];
+            }
+            /* TODO: inline as much as possible */
+            integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
+            integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
+            #ifdef DEBUG_DATA
+            llOwnerSay("this_prim_name="+this_prim_name);
+            llOwnerSay("Database query result= Prim Name:"+llList2String(g_LinkDB_l,link_name_index)+",Prim ID:"+(string)link_id);
+            #endif
+            params+=[PRIM_LINK_TARGET,link_id];
+            list faces_l = xlGetFacesByBladeName(blade_name);
+            integer faces_index = xlGetListLength(faces_l) - 1;
+            integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==blade_name);
+            #ifdef DEBUG_FACE_SELECT
+            llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
+            llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
+            llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
+            llOwnerSay("Faces Count  :"+(string)(faces_index+1));
+            llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
+            llOwnerSay("Link Name 1  :"+this_prim_name);
+            llOwnerSay("link_name_index:"+(string)link_name_index);
+            llOwnerSay("Link ID 1    :"+(string)link_id);
+            #endif
+            while(faces_index>=0) {
+                #ifdef DEBUG_FACE_SELECT
+                llOwnerSay("Processing Face:"+llList2String(faces_l,faces_index));
+                #endif
+                params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, SHOWIT_VAGOO * g_Config_MaximumOpacity];
+                faces_index--;
+            }
+            blade_prim_iter--;
+        }
+    }
+    return params;
 }
 xlProcessCommand(string message) {
     list data = llParseStringKeepNulls(message,[":"],[]);
