@@ -88,6 +88,9 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define MESH_ROOT "Kemono - Body"
 #define MESH_FITTED_TORSO_ETC "TorsoEtc"
 #define MESH_FITTED_TORSO_HLEGS "HumanLegs"
+#define MESH_FITTED_TORSO_NIP_0 "NipState0"
+#define MESH_FITTED_TORSO_NIP_1 "NipState1"
+#define MESH_FITTED_TORSO_NIP_A "NipAlpha"
 #define MESH_FITTED_TORSO_CHEST "TorsoChest"
 #define MESH_FITTED_TORSO "Fitted Kemono Torso"
 #define BLADE_ABS "abs"
@@ -156,10 +159,10 @@ MESH_FITTED_TORSO,\
 "BitState1",\
 "BitState2",\
 "BitState3",\
-"NipState0",\
+MESH_FITTED_TORSO_NIP_0,\
 MESH_FITTED_TORSO_ETC,\
-"NipState1",\
-"NipAlpha",\
+MESH_FITTED_TORSO_NIP_1,\
+MESH_FITTED_TORSO_NIP_A,\
 "cumButtS1",\
 "cumButtS2",\
 "cumButtS3"\
@@ -168,10 +171,10 @@ key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
 list s_FittedNipsMeshNames=[
-"NipState0", /* PG */
+MESH_FITTED_TORSO_NIP_0, /* PG */
 MESH_FITTED_TORSO_ETC, /* Adult, idle */
-"NipState1", /* Adult, puffy */
-"NipAlpha" /* Used in Starbright HUD/API */
+MESH_FITTED_TORSO_NIP_1, /* Adult, puffy */
+MESH_FITTED_TORSO_NIP_A /* Used in Starbright HUD/API */
 ];
 list s_FittedVagoMeshNames=[
 "BitState0", /* PG */
@@ -313,6 +316,7 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
+            llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
             return [0,1];
         }
         else {return [2,3];}
@@ -650,7 +654,8 @@ list xlBladeNameToPrimNames(string name) {
     }
     else if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+            llOwnerSay("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK");
+            // prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
         }
         else {
             prim_name = [MESH_PG_LAYER];
@@ -718,6 +723,9 @@ Show PG layer when hiding nipples
 Forcefully set the current nipple type to Adult, idle on PG disable
 */
 list xlSetNip() {
+    #ifdef DEBUG_FUNCTIONS
+    llOwnerSay("xlSetNip");
+    #endif
     integer mesh_i;
     integer meshes_count = 1;
     if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
@@ -727,19 +735,20 @@ list xlSetNip() {
     for(;mesh_i < meshes_count; ++mesh_i) {
         integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N);
         string mesh_name;
+        list prim_names;
         if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mesh_name = BLADE_NIPS;
+            prim_names =  xlBladeNameToPrimNames(mesh_name);
         }
         else {
             visible *= (mesh_i == g_CurrentFittedNipState);
             mesh_name = llList2String(s_FittedNipsMeshNames,mesh_i);
         }
         /* Process each nipple mesh one by one */
-        list prim_names = xlBladeNameToPrimNames(mesh_name);
         integer prim_count = xlGetListLength(prim_names);
+        list faces_l = xlGetFacesByBladeName(mesh_name);
         while(prim_count>-1){
             params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
-            list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
             integer faces_count = xlGetListLength(faces_l) - 1;
             for(;faces_count > -1;--faces_count) {
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>,
@@ -759,6 +768,9 @@ list xlSetNip() {
     return params;
 }
 list xlSetVag() {
+    #ifdef DEBUG_FUNCTIONS
+    llOwnerSay("xlSetVag");
+    #endif
     list params;
     /* Vagoo meshes */
     {
@@ -828,7 +840,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
     #ifdef DEBUG_COMMAND
     llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
     #endif
-    if (/*FITTED_COMBO && */blade_name==BLADE_BREASTS) {
+    if (/*FITTED_COMBO && */blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/) {
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
         params += xlSetNip();
     }
@@ -842,6 +854,10 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
     }
     else {
+        if(BLADE_NIPS == blade_name) {
+            llOwnerSay("GOD NO PLEASE GO AWAY!");
+            // return [];
+        }
         list prim_names = xlBladeNameToPrimNames(blade_name);
         integer blade_prim_iter = xlGetListLength(prim_names) - 1;
         #ifdef DEBUG_DATA
@@ -892,6 +908,9 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
             blade_prim_iter--;
         }
     }
+    #ifdef DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
     return params;
 }
 xlProcessCommand(string message) {
