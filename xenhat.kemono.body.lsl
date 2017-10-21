@@ -316,7 +316,9 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
+            #ifdef DEBUG_FUNCTIONS
             llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            #endif
             return [0,1];
         }
         else {return [2,3];}
@@ -435,7 +437,9 @@ list xlGetFacesByBladeName(string name) {
     }
     if(name==BLADE_WRIST_L) return [3];
     if(name==BLADE_WRIST_R) return [1];
+    #ifdef DEBUG_FUNCTIONS
     llOwnerSay("UNIMPLEMENTED:"+name+"!");
+    #endif
     return [];
 }
 list xlBladeNameToPrimNames(string name) {
@@ -654,7 +658,9 @@ list xlBladeNameToPrimNames(string name) {
     }
     else if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            #ifdef DEBUG_FUNCTIONS
             llOwnerSay("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK");
+            #endif
             // prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
         }
         else {
@@ -854,10 +860,12 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
     }
     else {
+        #ifdef DEBUG_FUNCTIONS
         if(BLADE_NIPS == blade_name) {
             llOwnerSay("GOD NO PLEASE GO AWAY!");
             // return [];
         }
+        #endif
         list prim_names = xlBladeNameToPrimNames(blade_name);
         integer blade_prim_iter = xlGetListLength(prim_names) - 1;
         #ifdef DEBUG_DATA
@@ -867,16 +875,17 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         while(blade_prim_iter>=0){
             string this_prim_name = llList2String(prim_names,blade_prim_iter);
             /* Fix legs automatically */
-            if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
-                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-                ];
-            }
-            else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
-                params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-                    PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-                ];
-            }
+            /* TODO: Be less nuclear and only fix the faces we asked for*/
+            //if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
+            //    params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+            //        PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+            //    ];
+            //}
+            //else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
+            //    params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+            //        PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+            //    ];
+            //}
             /* TODO: inline as much as possible */
             integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
             integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
