@@ -213,7 +213,7 @@ integer g_RuntimeBodyStateSettings;
 string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
-#define xlGetListLength(a) (a!=[])
+#define xlGetListLength(a) ((a!=[]) - 1)
 integer human_mode = TRUE;
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
@@ -781,27 +781,36 @@ list xlSetVag() {
     list params;
     /* Vagoo meshes */
     {
-        integer mesh_i;
         integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
-        for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (mesh_i == g_CurrentFittedVagState);
+        // llOwnerSay("meshes count:"+(string)(meshes_count+1));
+        for(;meshes_count > -1;meshes_count--) {
+            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V)
+                * (meshes_count == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedVagoMeshNames,mesh_i);
+            string mesh_name = llList2String(s_FittedVagoMeshNames,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
+            // llOwnerSay("prim names:'"+(string)(llList2CSV(prim_names))+"'");
             integer prim_count = xlGetListLength(prim_names);
-            while(prim_count>-1){
-                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
+            // llOwnerSay("prim count:"+(string)(prim_count+1));
+            // integer id = prim_count;
+            for(;prim_count> -1;prim_count--){
+                // id = ;
+                string this_prim_name = llList2String(prim_names,prim_count);
+                integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
+                integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
+                // llOwnerSay("This ID["+llList2String(prim_names,prim_count)+"]"+(string)link_id);
+                params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VAG);
                 integer faces_count = xlGetListLength(faces_l) - 1;
                 for(;faces_count > -1;--faces_count) {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
+                    * g_Config_MaximumOpacity];
                 }
                 #ifdef DEBUG_FACE_SELECT
                 llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
-                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
-                    +"\nvisible:"+(string)visible);
+                    +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                    +"|visible:"+(string)visible);
                 #endif
-                prim_count--;
             }
         }
     }
