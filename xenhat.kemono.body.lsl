@@ -861,7 +861,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         }
         #endif
         list prim_names = xlBladeNameToPrimNames(blade_name);
-        integer blade_prim_iter = xlListLen2MaxID(prim_names) - 1;
+        integer blade_prim_iter = xlListLen2MaxID(prim_names);
         #ifdef DEBUG_DATA
         llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
         llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
@@ -889,7 +889,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
             #endif
             params+=[PRIM_LINK_TARGET,link_id];
             list faces_l = xlGetFacesByBladeName(blade_name);
-            integer faces_index = xlListLen2MaxID(faces_l) - 1;
+            integer faces_index = xlListLen2MaxID(faces_l);
             integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==blade_name);
             #ifdef DEBUG_FACE_SELECT
             llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
@@ -955,7 +955,7 @@ xlProcessCommand(string message) {
     command="";
     list params;
     string part_wanted_s = llList2String(data, 1);
-    integer list_size = xlListLen2MaxID(data) - 1;
+    integer list_size = xlListLen2MaxID(data);
         #ifdef DEBUG_DATA
         llOwnerSay("Special message:" + part_wanted_s);
         #endif
