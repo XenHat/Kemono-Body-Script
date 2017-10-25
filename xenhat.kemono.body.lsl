@@ -841,19 +841,20 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
     #ifdef DEBUG_COMMAND
     llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
     #endif
+    if (blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/) {
+        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
+        params += xlSetNip();
+    }
     if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
         params += xlSetVag();
     }
     /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
-    if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
+    else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
         blade_name = BLADE_VAG;
         showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
     }
-    if (blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/) {
-        chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-        params += xlSetNip();
-    }
+    /* else */
     {
         #ifdef DEBUG_FUNCTIONS
         if(BLADE_NIPS == blade_name) {
