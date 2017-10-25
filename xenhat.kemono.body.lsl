@@ -793,7 +793,7 @@ list xlSetVag() {
                 integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
                 params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VAG);
-                integer faces_count = xlGetListLength(faces_l) - 1;
+                integer faces_count = xlGetListLength(faces_l);
                 for(;faces_count > -1;--faces_count) {
                     params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
                     * g_Config_MaximumOpacity];
