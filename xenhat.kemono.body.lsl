@@ -826,9 +826,9 @@ list xlSetVag() {
                     * g_Config_MaximumOpacity];
                 }
                 #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"\nPRIM_NAMES"+llList2CSV(prim_names)+"\nFACES:"+llList2CSV(faces_l)
-                    +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
-                    +"\nvisible:"+(string)visible);
+                llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
+                    +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                    +"|visible:"+(string)visible);
                 #endif
             }
         }
