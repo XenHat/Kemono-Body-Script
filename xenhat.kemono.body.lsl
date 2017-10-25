@@ -214,7 +214,7 @@ string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
 #define xlGetListLength(a) (a!=[])
-integer human_mode = FALSE;
+integer human_mode = TRUE;
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
     if(name==BLADE_ANKLE_L) {
@@ -1082,11 +1082,12 @@ default {
         }
         /* The Starbright body Stripper has an option to leave the human legs out, so check if these are present at all*/
         /* TODO: FIXME: Undefined behavior if no legs from kemono body */
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
-            /* Forcefully set to human mode if the animal legs aren't found*/
-            human_mode=FALSE;
-        }
-        else if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1) {
+        //if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
+        //    /* Forcefully set to human mode if the animal legs aren't found*/
+        //    human_mode=FALSE;
+        //}
+        //else
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1) {
             /* Forcefully set to animal mode if the human legs aren't found*/
             human_mode=TRUE;
         }
