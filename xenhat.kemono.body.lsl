@@ -787,6 +787,18 @@ list xlSetVag() {
             }
         }
     }
+    #ifdef DEBUG_FACE_SELECT
+    #ifdef DEBUG_PARAMS
+    llOwnerSay("Params out:" + llList2CSV(params));
+    #endif
+    #endif
+    return params;
+}
+list xlSetBut() {
+    #ifdef DEBUG_FUNCTIONS
+    llOwnerSay("xlSetBut");
+    #endif
+    list params;
     /* Butt meshes */
     {/* Essentially the same as above, but using different prim/mesh names*/
         integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
@@ -923,7 +935,7 @@ xlProcessCommand(string message) {
     }
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setbutt") {
         g_CurrentFittedButState = llList2Integer(data,1);
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetBut());
         return;
     }
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setvag") {
