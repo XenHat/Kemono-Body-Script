@@ -213,7 +213,7 @@ integer g_RuntimeBodyStateSettings;
 string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
-#define xlGetListLength(a) ((a!=[]) - 1)
+#define xlListLen2MaxID(a) ((a!=[]) - 1)
 integer human_mode = TRUE;
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
@@ -736,19 +736,19 @@ list xlSetNip() {
     list params;
     /* Nip meshes */
     {
-        integer meshes_count = xlGetListLength(s_FittedNipsMeshNames); /* todo: hard-code */
+        integer meshes_count = xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N)
                 * (meshes_count == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             string mesh_name = llList2String(s_FittedNipsMeshNames,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlGetListLength(prim_names);
+            integer prim_count = xlListLen2MaxID(prim_names);
             for(;prim_count> -1;prim_count--){
                 integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
                 params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
-                integer faces_count = xlGetListLength(faces_l);
+                integer faces_count = xlListLen2MaxID(faces_l);
                 for(;faces_count > -1;--faces_count) {
                     params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
                     * g_Config_MaximumOpacity];
@@ -773,19 +773,19 @@ list xlSetVag() {
     list params;
     /* Vagoo meshes */
     {
-        integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
+        integer meshes_count = xlListLen2MaxID(s_FittedVagoMeshNames); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V)
                 * (meshes_count == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             string mesh_name = llList2String(s_FittedVagoMeshNames,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlGetListLength(prim_names);
+            integer prim_count = xlListLen2MaxID(prim_names);
             for(;prim_count> -1;prim_count--){
                 integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
                 params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VAG);
-                integer faces_count = xlGetListLength(faces_l);
+                integer faces_count = xlListLen2MaxID(faces_l);
                 for(;faces_count > -1;--faces_count) {
                     params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
                     * g_Config_MaximumOpacity];
@@ -800,19 +800,19 @@ list xlSetVag() {
     }
     /* Butt meshes */
     {/* Essentially the same as above, but using different prim/mesh names*/
-        integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
+        integer meshes_count = xlListLen2MaxID(s_FittedButtState); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B)
                 * (meshes_count == g_CurrentFittedButState);
             /* Process each nipple mesh one by one */
             string mesh_name = llList2String(s_FittedButtState,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlGetListLength(prim_names);
+            integer prim_count = xlListLen2MaxID(prim_names);
             for(;prim_count> -1;prim_count--){
                 integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
                 params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-                integer faces_count = xlGetListLength(faces_l);
+                integer faces_count = xlListLen2MaxID(faces_l);
                 for(;faces_count > -1;--faces_count) {
                     params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
                     * g_Config_MaximumOpacity];
@@ -861,7 +861,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         }
         #endif
         list prim_names = xlBladeNameToPrimNames(blade_name);
-        integer blade_prim_iter = xlGetListLength(prim_names) - 1;
+        integer blade_prim_iter = xlListLen2MaxID(prim_names) - 1;
         #ifdef DEBUG_DATA
         llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
         llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
@@ -889,7 +889,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
             #endif
             params+=[PRIM_LINK_TARGET,link_id];
             list faces_l = xlGetFacesByBladeName(blade_name);
-            integer faces_index = xlGetListLength(faces_l) - 1;
+            integer faces_index = xlListLen2MaxID(faces_l) - 1;
             integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==blade_name);
             #ifdef DEBUG_FACE_SELECT
             llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
@@ -955,7 +955,7 @@ xlProcessCommand(string message) {
     command="";
     list params;
     string part_wanted_s = llList2String(data, 1);
-    integer list_size = xlGetListLength(data) - 1;
+    integer list_size = xlListLen2MaxID(data) - 1;
         #ifdef DEBUG_DATA
         llOwnerSay("Special message:" + part_wanted_s);
         #endif
@@ -1236,7 +1236,7 @@ default {
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
         #endif
-        text+="\n"+(string)xlGetListLength(g_RemConfirmKeys_l)+" Keys\n \n ";
+        text+="\n"+(string)xlListLen2MaxID(g_RemConfirmKeys_l)+" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
 #endif
         llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
