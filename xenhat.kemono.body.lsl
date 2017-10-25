@@ -71,7 +71,8 @@ llSetLinkPrimitiveParamsFast(a,b)
 #endif
 /* TODO:
 - Fitted Torso nipples alpha setting
-- Reply to reqCLdat and such
+- Figure out what reqCLdat is.
+- Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
 #define MESH_ARMS "arms"
@@ -1145,6 +1146,18 @@ default {
         }
         /*If they don't have the same owner, ignore them.*/
         else if(owner_key != g_Owner_k) {
+            return;
+        }
+        if("reqFTData" == message){
+            if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+                llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
+                    +(string)g_CurrentFittedNipState
+                    +":nipAlpha:0" /* TODO: Implement Alpha State*/
+                    +":nipOvrd:0" /* TODO: Implement Nipple Override */
+                    +":vagState:"+(string)g_CurrentFittedVagState
+                    +":buttState:"+(string)g_CurrentFittedButState
+                    +":humLegs:"+(string)human_mode);
+            }
             return;
         }
         if(message == "add") {
