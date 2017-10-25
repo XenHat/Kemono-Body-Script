@@ -317,9 +317,6 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
-            #ifdef DEBUG_FUNCTIONS
-            llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
-            #endif
             return [0,1];
         }
         else {return [2,3];}
@@ -659,10 +656,8 @@ list xlBladeNameToPrimNames(string name) {
     }
     else if(name==BLADE_NIPS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            #ifdef DEBUG_FUNCTIONS
-            llOwnerSay("FUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUCK");
-            #endif
-            // prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+            prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+            // return;
         }
         else {
             prim_name = [MESH_PG_LAYER];
