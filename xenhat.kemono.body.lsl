@@ -807,29 +807,29 @@ list xlSetVag() {
         }
     }
     /* Butt meshes */
-    {
-        integer mesh_i;
+    {/* Essentially the same as above, but using different prim/mesh names*/
         integer meshes_count = xlGetListLength(s_FittedButtState); /* todo: hard-code */
-        for(;mesh_i < meshes_count; ++mesh_i) {
-            integer visible = (mesh_i == g_CurrentFittedButState);
+        for(;meshes_count > -1;meshes_count--) {
+            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B)
+                * (meshes_count == g_CurrentFittedButState);
             /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedButtState,mesh_i);
+            string mesh_name = llList2String(s_FittedButtState,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
             integer prim_count = xlGetListLength(prim_names);
-            while(prim_count>-1){
-                params += [PRIM_LINK_TARGET,llList2Integer(prim_names,prim_count)];
+            for(;prim_count> -1;prim_count--){
+                integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+                params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-                integer faces_count = xlGetListLength(faces_l) - 1;
-                for(;faces_count > -1;--faces_count)
-                {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+                integer faces_count = xlGetListLength(faces_l);
+                for(;faces_count > -1;--faces_count) {
+                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
+                    * g_Config_MaximumOpacity];
                 }
                 #ifdef DEBUG_FACE_SELECT
                 llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"\nPRIM_NAMES"+llList2CSV(prim_names)+"\nFACES:"+llList2CSV(faces_l)
                     +"\nPRIM_ID:"+(string)prim_names+"|PRIM_NAME:"+mesh_name
                     +"\nvisible:"+(string)visible);
                 #endif
-                prim_count--;
             }
         }
     }
