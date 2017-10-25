@@ -782,23 +782,15 @@ list xlSetVag() {
     /* Vagoo meshes */
     {
         integer meshes_count = xlGetListLength(s_FittedVagoMeshNames); /* todo: hard-code */
-        // llOwnerSay("meshes count:"+(string)(meshes_count+1));
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V)
                 * (meshes_count == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
             string mesh_name = llList2String(s_FittedVagoMeshNames,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            // llOwnerSay("prim names:'"+(string)(llList2CSV(prim_names))+"'");
             integer prim_count = xlGetListLength(prim_names);
-            // llOwnerSay("prim count:"+(string)(prim_count+1));
-            // integer id = prim_count;
             for(;prim_count> -1;prim_count--){
-                // id = ;
-                string this_prim_name = llList2String(prim_names,prim_count);
-                integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
-                integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
-                // llOwnerSay("This ID["+llList2String(prim_names,prim_count)+"]"+(string)link_id);
+                integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
                 params += [PRIM_LINK_TARGET,link_id];
                 list faces_l = xlGetFacesByBladeName(BLADE_VAG);
                 integer faces_count = xlGetListLength(faces_l) - 1;
