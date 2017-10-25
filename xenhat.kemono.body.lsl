@@ -847,7 +847,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
     #ifdef DEBUG_COMMAND
     llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
     #endif
-    if (/*FITTED_COMBO && */blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/) {
+    if (blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/) {
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
         params += xlSetNip();
     }
