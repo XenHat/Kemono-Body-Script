@@ -177,13 +177,7 @@ MESH_FITTED_TORSO_ETC, /* Adult, idle */
 MESH_FITTED_TORSO_NIP_1, /* Adult, puffy */
 MESH_FITTED_TORSO_NIP_A /* Used in Starbright HUD/API */
 ];
-list s_FittedVagoMeshNames=[
-"BitState0", /* PG */
-"BitState1", /* Adult, idle */
-"BitState2", /* Adult, aroused */
-"BitState3" /* Adult, gaping */
-];
-list s_FittedButtState=[
+list s_KFTPelvisMeshes=[
 "BitState0", /* PG */
 "BitState1", /* Adult, idle */
 "BitState2", /* Adult, aroused */
@@ -505,7 +499,7 @@ list xlBladeNameToPrimNames(string name) {
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = [llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState)];
+            prim_name = [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
         }
         else {
             prim_name = [MESH_HIPS];
@@ -518,7 +512,7 @@ list xlBladeNameToPrimNames(string name) {
     else if(name==BLADE_PELVIS) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = [llList2String(s_FittedVagoMeshNames,g_CurrentFittedVagState)];
+            prim_name = [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
         }
         else {
             prim_name = [MESH_HIPS];
@@ -666,10 +660,10 @@ list xlBladeNameToPrimNames(string name) {
     else if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
-                prim_name = [llList2String(s_FittedVagoMeshNames, 0)];
+                prim_name = [llList2String(s_KFTPelvisMeshes, 0)];
             }
             else {
-                prim_name = [llList2String(s_FittedVagoMeshNames, g_CurrentFittedVagState)];
+                prim_name = [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
             }
         }
         else {
@@ -768,12 +762,12 @@ list xlSetVag() {
     list params;
     /* Vagoo meshes */
     {
-        integer meshes_count = xlListLen2MaxID(s_FittedVagoMeshNames); /* todo: hard-code */
+        integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V)
                 * (meshes_count == g_CurrentFittedVagState);
             /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedVagoMeshNames,meshes_count);
+            string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
             integer prim_count = xlListLen2MaxID(prim_names);
             for(;prim_count> -1;prim_count--){
@@ -795,12 +789,12 @@ list xlSetVag() {
     }
     /* Butt meshes */
     {/* Essentially the same as above, but using different prim/mesh names*/
-        integer meshes_count = xlListLen2MaxID(s_FittedButtState); /* todo: hard-code */
+        integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B)
                 * (meshes_count == g_CurrentFittedButState);
             /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedButtState,meshes_count);
+            string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
             integer prim_count = xlListLen2MaxID(prim_names);
             for(;prim_count> -1;prim_count--){
