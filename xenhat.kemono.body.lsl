@@ -848,7 +848,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
         params += xlSetNip();
     }
-    if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
         params += xlSetVag();
     }
@@ -905,7 +905,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
             llOwnerSay("link_name_index:"+(string)link_name_index);
             llOwnerSay("Link ID 1    :"+(string)link_id);
             #endif
-            while(faces_index>=0) {
+            while(faces_index > -1) {
                 #ifdef DEBUG_FACE_SELECT
                 llOwnerSay("Processing Face:"+llList2String(faces_l,faces_index));
                 #endif
@@ -966,7 +966,7 @@ xlProcessCommand(string message) {
         if(part_wanted_s == BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedNipState = showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
-            // return;
+            return;
         }
         else if(part_wanted_s == BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedVagState = showit;
