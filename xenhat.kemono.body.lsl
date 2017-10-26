@@ -946,7 +946,7 @@ xlProcessCommand(string message) {
         /* Vagoo */
         g_CurrentFittedVagState = llList2Integer(data,1);
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
-        return;
+        // return;
     }
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setnip") {
         g_CurrentFittedNipState = llList2Integer(data,1);
@@ -971,7 +971,7 @@ xlProcessCommand(string message) {
         else if(part_wanted_s == BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedVagState = showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
-            // return;
+            return;
         }
         else if(part_wanted_s==BLADE_VAG) {
             g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
@@ -1009,6 +1009,9 @@ xlProcessCommand(string message) {
         list_size--;
     } while(list_size > 0); /* skip first element, which is the command*/
     if(params!=[]) {
+        #ifdef DEBUG_COMMAND
+        llOwnerSay("Applying!");
+        #endif
         xlSetLinkPrimitiveParamsFast(LINK_SET, params);
         params=[];
     }
