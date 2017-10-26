@@ -211,7 +211,7 @@ string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
 #define xlListLen2MaxID(a) ((a!=[]) - 1)
-integer human_mode = TRUE;
+integer human_mode=TRUE; /* Prefer when available*/
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
     if(name==BLADE_ANKLE_L) {
@@ -870,20 +870,20 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
         llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
         #endif
-        while(blade_prim_iter>=0){
+        do{
             string this_prim_name = llList2String(prim_names,blade_prim_iter);
             /* Fix legs automatically */
             /* TODO: Be less nuclear and only fix the faces we asked for*/
-            //if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
-            //    params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-            //        PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-            //    ];
-            //}
-            //else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
-            //    params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-            //        PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-            //    ];
-            //}
+            // if (!human_mode && (MESH_LEG_LEFT_ANIMAL == this_prim_name || MESH_LEG_RIGHT_ANIMAL == this_prim_name)) {
+            //     params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+            //         PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+            //     ];
+            // }
+            // else if (human_mode && (MESH_LEG_LEFT_HUMAN == this_prim_name || MESH_LEG_RIGHT_HUMAN == this_prim_name)) {
+            //     params += [PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
+            //         PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
+            //     ];
+            // }
             /* TODO: inline as much as possible */
             integer link_name_index = llListFindList(g_LinkDB_l,[this_prim_name]);
             integer link_id = llList2Integer(g_LinkDB_l,link_name_index+1);
@@ -897,23 +897,25 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
             integer SHOWIT_VAGOO = showit ^ (BLADE_VAG==blade_name);
             #ifdef DEBUG_FACE_SELECT
             llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
-            llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
             llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
+            llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
             llOwnerSay("Faces Count  :"+(string)(faces_index+1));
             llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
             llOwnerSay("Link Name 1  :"+this_prim_name);
             llOwnerSay("link_name_index:"+(string)link_name_index);
             llOwnerSay("Link ID 1    :"+(string)link_id);
             #endif
-            while(faces_index > -1) {
+            do{
                 #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("Processing Face:"+llList2String(faces_l,faces_index));
+                llOwnerSay("Processing["+(string)SHOWIT_VAGOO+"] Face["+this_prim_name+"]:"+llList2String(faces_l,faces_index));
                 #endif
                 params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, SHOWIT_VAGOO * g_Config_MaximumOpacity];
                 faces_index--;
             }
+            while(faces_index > -1);
             blade_prim_iter--;
         }
+        while(blade_prim_iter> -1);
     }
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:" + llList2CSV(params));
@@ -1082,12 +1084,11 @@ default {
         }
         /* The Starbright body Stripper has an option to leave the human legs out, so check if these are present at all*/
         /* TODO: FIXME: Undefined behavior if no legs from kemono body */
-        //if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
-        //    /* Forcefully set to human mode if the animal legs aren't found*/
-        //    human_mode=FALSE;
-        //}
-        //else
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1) {
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) < 0) {
+            /* Forcefully set to human mode if the animal legs aren't found*/
+            human_mode=FALSE;
+        }
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) < 0) {
             /* Forcefully set to animal mode if the human legs aren't found*/
             human_mode=TRUE;
         }
@@ -1097,13 +1098,17 @@ default {
         #endif
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
+        #endif
         llSetText("Resetting Faces",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         /* Reset faces*/
         /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
         /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
+        human_mode=!human_mode;
+        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+        human_mode=!human_mode;
+        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         xlProcessCommand("show:nips:vagoo");
-        #endif
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some viewers, which is preferable.*/
         /* TODO: Validate that the root prim is not a body part then scrub and hide it */
         /* if(llGetAttached()) {llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);} */
@@ -1129,7 +1134,7 @@ default {
         #endif
         #ifdef DEBUG_LISTEN
         string knp;
-        knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}(secondlife:///app/agent/"+(string)llGetOwnerKey(id)+"/inspect) ";
+        knp = "["+(string)id+"]"+"{"+llKey2Name(id)+"}("+llKey2Name(llGetOwnerKey(id))+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
