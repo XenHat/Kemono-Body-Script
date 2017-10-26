@@ -187,6 +187,7 @@ integer g_HasAnimPerms = FALSE;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
+#define FKT_PRESENT 1
 /* PG States */
 #define KSB_PGVAGOO 2
 #define KSB_PGNIPLS 4
