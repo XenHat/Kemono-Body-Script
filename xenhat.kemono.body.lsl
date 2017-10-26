@@ -731,7 +731,7 @@ list xlSetNip() {
         integer meshes_count = xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
         for(;meshes_count > -1;meshes_count--) {
             integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N)
-                * (meshes_count == g_CurrentFittedVagState);
+                * (meshes_count == g_CurrentFittedNipState);
             /* Process each nipple mesh one by one */
             string mesh_name = llList2String(s_FittedNipsMeshNames,meshes_count);
             list prim_names = xlBladeNameToPrimNames(mesh_name);
