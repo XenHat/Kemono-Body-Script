@@ -187,6 +187,7 @@ integer g_HasAnimPerms = FALSE;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
+integer g_TogglingPGMeshes=FALSE;
 #define FKT_PRESENT 1
 /* PG States */
 #define KSB_PGVAGOO 2
@@ -396,17 +397,17 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
+            if(g_TogglingPGMeshes) {
                 #ifdef DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
                 return [0,1,2,3,4,5];
             }
             else {
-                #ifdef DEBUG_COMMAND
-                llOwnerSay("eeeeeee");
-                #endif
-                return [0,1];
+               #ifdef DEBUG_COMMAND
+               llOwnerSay("eeeeeee");
+               #endif
+               return [0,1];
             }
         }
         else {
@@ -417,13 +418,13 @@ list xlGetFacesByBladeName(string name) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             #ifdef DEBUG_COMMAND
-            llOwnerSay("uuuuuuuuu["+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)+"]");
+            llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
             #endif
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
+            if(g_TogglingPGMeshes) {
                 return [0,1,2,3,4,5];
             }
             else {
-                return [2,3,4,5];
+               return [2,3,4,5];
             }
         }
         else {
@@ -662,7 +663,7 @@ list xlBladeNameToPrimNames(string name) {
     }
     else if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
+            if(g_TogglingPGMeshes) {
                 prim_name = [llList2String(s_KFTPelvisMeshes, 0)];
             }
             else {
@@ -972,25 +973,27 @@ xlProcessCommand(string message) {
         }
         else if(part_wanted_s == BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             g_CurrentFittedVagState = showit;
+            g_TogglingPGMeshes=TRUE;
             xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+            g_TogglingPGMeshes=FALSE;
             return;
         }
         else if(part_wanted_s==BLADE_VAG) {
             g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
-           if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
+           if(!showit && !g_TogglingPGMeshes) {
                #ifdef DEBUG_COMMAND
                llOwnerSay("TOGGLING TO PG");
                #endif
                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
            }
-           if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
+           if(showit && g_TogglingPGMeshes) {
                #ifdef DEBUG_COMMAND
                llOwnerSay("TOGGLING FROM PG");
                #endif
                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
            }
            #ifdef DEBUG_COMMAND
-           llOwnerSay("PG Mode:"+(string)(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)));
+           llOwnerSay("PG Mode:"+(string)(g_TogglingPGMeshes));
            #endif
         }
     #ifdef DEBUG_DATA
@@ -1246,7 +1249,7 @@ default {
         text = "[DEBUG]" + text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
         #ifdef DEBUG_FACE_SELECT
-        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO);
+        text+="\nPG_v:"+(string)g_TogglingPGMeshes;
         #endif
         text+="\n"+(string)xlListLen2MaxID(g_RemConfirmKeys_l)+" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
