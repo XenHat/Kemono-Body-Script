@@ -187,11 +187,13 @@ integer g_HasAnimPerms = FALSE;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
-#define FKT_PRESENT 1
-#define KSB_PGSTATE 2
-#define FKT_FHIDE_B 4
-#define FKT_FHIDE_N 8
-#define FKT_FHIDE_V 16
+/* PG States */
+#define KSB_PGVAGOO 2
+#define KSB_PGNIPLS 4
+/* Temporary flags for blade sync purposes*/
+#define FKT_FHIDE_B 8
+#define FKT_FHIDE_N 16
+#define FKT_FHIDE_V 32
 integer g_RuntimeBodyStateSettings;
 /* usage:
     a = variable/set
@@ -393,7 +395,7 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
                 #ifdef DEBUG_COMMAND
                 llOwnerSay("uuuuuuuuu");
                 #endif
@@ -414,9 +416,9 @@ list xlGetFacesByBladeName(string name) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
             #ifdef DEBUG_COMMAND
-            llOwnerSay("uuuuuuuuu["+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)+"]");
+            llOwnerSay("uuuuuuuuu["+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)+"]");
             #endif
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
                 return [0,1,2,3,4,5];
             }
             else {
@@ -659,7 +661,7 @@ list xlBladeNameToPrimNames(string name) {
     }
     else if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+            if(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
                 prim_name = [llList2String(s_KFTPelvisMeshes, 0)];
             }
             else {
@@ -852,7 +854,7 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
     /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
     else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS) {
         blade_name = BLADE_VAG;
-        showit *= !(g_RuntimeBodyStateSettings & KSB_PGSTATE);
+        showit *= !(g_RuntimeBodyStateSettings & KSB_PGVAGOO);
     }
     /* else */
     {
@@ -971,21 +973,21 @@ xlProcessCommand(string message) {
             // return;
         }
         else if(part_wanted_s==BLADE_VAG) {
-            g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGSTATE)) | (KSB_PGSTATE * !showit);
-           if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+            g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+           if(!showit && !getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
                #ifdef DEBUG_COMMAND
                llOwnerSay("TOGGLING TO PG");
                #endif
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,TRUE);
+               chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
            }
-           if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)) {
+           if(showit && getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)) {
                #ifdef DEBUG_COMMAND
                llOwnerSay("TOGGLING FROM PG");
                #endif
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGSTATE,FALSE);
+               chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
            }
            #ifdef DEBUG_COMMAND
-           llOwnerSay("PG Mode:"+(string)(getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE)));
+           llOwnerSay("PG Mode:"+(string)(getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO)));
            #endif
         }
     #ifdef DEBUG_DATA
@@ -1235,7 +1237,7 @@ default {
         text = "[DEBUG]" + text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
         #ifdef DEBUG_FACE_SELECT
-        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGSTATE);
+        text+="\nPG_v:"+(string)getBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO);
         #endif
         text+="\n"+(string)xlListLen2MaxID(g_RemConfirmKeys_l)+" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
