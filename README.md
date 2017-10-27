@@ -23,11 +23,11 @@ This is a from-scratch, compatible and open-source implementation of the body sc
   - Fitted Torso Nipple states
   - Fitted Torso genitals states
   - Fitted Torso Butt States
+  - Fitted Torso API commands
   
   The current stock features need to be implemented:
   
   - Fitted Torso Nipple Alpha states
-  - Fitted Torso API commands
   
   **The Future**
   
