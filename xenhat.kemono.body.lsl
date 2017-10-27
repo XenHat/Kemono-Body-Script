@@ -1227,9 +1227,7 @@ default {
             llStartAnimation(g_AnimUndeform);
             return;
         }
-        else if(!g_HasAnimPerms) {
-            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        }
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     }
     run_time_permissions(integer perm) {
         g_HasAnimPerms=TRUE;
