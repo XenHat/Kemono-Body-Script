@@ -778,7 +778,6 @@ xlProcessCommand(string message) {
             return;
     else 
         return;
-
     string part_wanted_s = llList2String(data, 1);
     #ifdef DEBUG_DATA
     llOwnerSay("Special message:" + part_wanted_s);
