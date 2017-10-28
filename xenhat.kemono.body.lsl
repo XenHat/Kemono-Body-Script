@@ -992,16 +992,16 @@ default {
         @reset;
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
     }
+    on_rez(integer p) {
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+    }
     attach(key id) {
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
             which happen on rez or startup if attached.
             Needs to be processed as fast as possible to make it before the object
             is pruned from the Current Outfit Folder otherwise it won't fire. */
-        if(id == (key)NULL_KEY) {
-            llStartAnimation(g_AnimUndeform);
-            return;
-        }
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        if(id == (key)NULL_KEY)
+        llStartAnimation(g_AnimUndeform);
     }
     run_time_permissions(integer perm) {
         g_HasAnimPerms=TRUE;
@@ -1011,12 +1011,10 @@ default {
     }
     timer() {
         if(llGetAttached()) {
-            if(!g_HasAnimPerms) {
+            if(!g_HasAnimPerms)
                 llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-            }
-            else {
+            else
                 llStartAnimation(g_AnimDeform);
-            }
         }
         string text = g_HoverText;
 #ifdef DEBUG_TEXT
