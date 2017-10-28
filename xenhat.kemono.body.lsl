@@ -822,20 +822,16 @@ default {
     }
     #endif
     changed(integer change) {
-        if (change & CHANGED_OWNER) {
-            llOwnerSay("The owner of the object has changed, resetting...");
+        if (change & CHANGED_OWNER)
             llResetScript();
-        }
-        if(change & CHANGED_LINK) {
-            llOwnerSay("Link changed, resetting..."); /* TODO: should really just recalculate */
-            llResetScript();
-        }
+        else if(change & CHANGED_LINK)
+            llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry() {
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
-        #endif
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        #endif
         g_Owner_k = llGetOwner();
         #ifdef DEBUG
         llSetText("UNIT SELF-TEST",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
@@ -848,24 +844,27 @@ default {
         llSay(0,"Test2: " + (string)test2);
         llOwnerSay("Counting");
         #endif
-        integer part = llGetNumberOfPrims();
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         string texture = llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture = texture != "";
         list prim_params_to_apply = [];
         #endif
-        for (; part > 0; --part) {
+        integer part = llGetNumberOfPrims();
+        for (;part > 0;--part) {
             string name = llGetLinkName(part);
+            #ifdef DEBUG_TEXT
             llSetText("\n \n \n \n \n \n["+(string)llGetFreeMemory()+"]Processing " + name + "...",<0,0,0>,1.0);
-            integer fitted_torso_string_index = llSubStringIndex(name, MESH_FITTED_TORSO);
-            if(fitted_torso_string_index != -1) {
+            #endif
+            if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
                 /* Look if this really is a fitted torso or an accessory for it */
-                if(fitted_torso_string_index == 6 || fitted_torso_string_index == 7) {
-                    /* We are linked with starnya's Fitted Torso*/
-                    setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
-                    name=MESH_FITTED_TORSO;
-                }
+                integer fitted_torso_string_index = llSubStringIndex(name, MESH_FITTED_TORSO);
+                if(fitted_torso_string_index > 5)
+                    if(fitted_torso_string_index < 8) {
+                        setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+                        name=MESH_FITTED_TORSO;
+                    }
             }
+
             if(llListFindList(g_supported_meshes, [name])!= -1) {
                 #ifdef DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
@@ -878,14 +877,10 @@ default {
         }
         /* The Starbright body Stripper has an option to leave the human legs out, so check if these are present at all*/
         /* TODO: FIXME: Undefined behavior if no legs from kemono body */
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) < 0) {
-            /* Forcefully set to human mode if the animal legs aren't found*/
-            human_mode=FALSE;
-        }
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) < 0) {
-            /* Forcefully set to animal mode if the human legs aren't found*/
-            human_mode=TRUE;
-        }
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) < 0)
+            human_mode=FALSE; /* Forcefully set to human mode if the animal legs aren't found*/
+        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) < 0)
+            human_mode=TRUE; /* Forcefully set to animal mode if the human legs aren't found*/
         llSetText("",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         #ifdef DEBUG
         llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
@@ -893,21 +888,24 @@ default {
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
         #endif
+        #ifdef DEBUG_TEXT
         llSetText("Resetting Faces",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        #endif
         /* Reset faces*/
         /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
         /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
         human_mode=!human_mode;
         xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         human_mode=!human_mode;
-        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        xlProcessCommand("show:nips:vagoo");
+        // xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+        xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some viewers, which is preferable.*/
         /* TODO: Validate that the root prim is not a body part then scrub and hide it */
         /* if(llGetAttached()) {llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);} */
         /* else {llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);} */
+        #ifdef DEBUG_TEXT
         llSetText("Set Listeners"+BLADE_THIGH_L_R,HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        #endif
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
         g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
@@ -916,9 +914,8 @@ default {
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
-        if(llGetAttached()) {
+        if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        }
         llSetText("",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
     }
     listen( integer channel, string name, key id, string message ) {
@@ -1042,7 +1039,7 @@ default {
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)g_TogglingPGMeshes;
         #endif
-        text+="\n"+(string)xlListLen2MaxID(g_RemConfirmKeys_l)+" Keys\n \n ";
+        text+="\n"+(string)(xlListLen2MaxID(g_RemConfirmKeys_l)+1)+" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
 #endif
         llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
