@@ -216,20 +216,13 @@ integer human_mode=TRUE; /* Prefer when available*/
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
     if(name==BLADE_ANKLE_L) {
-        if (human_mode) {
-            return [1];
-        }
-        else {
-            return [5];
-        }
+        if (human_mode) return [1];
+        return [5];
     }
     if(name==BLADE_ANKLE_R) {
-        if (human_mode) {
+        if (human_mode)
             return [1];
-        }
-        else {
-            return [5];
-        }
+        return [5];
     }
     if(name==BLADE_ARM_L_L) return [7];
     if(name==BLADE_ARM_L_R) return [2];
@@ -238,181 +231,139 @@ list xlGetFacesByBladeName(string name) {
     if(name==BLADE_BELLY) return [2,3];
     if(name==BLADE_BODY) return [0];
     if(name==BLADE_BREASTS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [2,3];
-        }
-        else {
-            return [2,5];
-        }
+        return [2,5];
     }
     if(name==BLADE_CALF_L) {
-        if(human_mode) {
+        if(human_mode)
             return [4];
-        }
-        else {
-            return [2];
-        }
+        return [2];
     }
     if(name==BLADE_CALF_R) {
-        if(human_mode) {
+        if(human_mode)
             return [4];
-        }
-        else {
-            return [2];
-        }
+        return [2];
     }
     if(name==BLADE_CHEST) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [0,1];
-        }
-        else {
-            if(human_mode) {
-                return [0,4];
-            }
-            else {
-                return [0,4];
-            }
-        }
+        if(human_mode)
+            return [0,4];
+        return [0,4];
     }
     if(name==BLADE_COLLAR) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [6,7];
-        else {return [1,6];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [6,7];
+        return [1,6];
     }
     if(name==BLADE_ELBOW_L) return [4];
     if(name==BLADE_ELBOW_R) return [5];
     if(name==BLADE_FOOT_L) return [0];
     if(name==BLADE_FOOT_R) return [0];
     if(name==BLADE_HIP_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
-        else {return [6];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [5];
+        return [6];
     }
     if(name==BLADE_HIP_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4];
-        else {return [5];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [4];
+        return [5];
     }
     if(name==BLADE_KNEE_L) {
-        if(human_mode) {
+        if(human_mode)
             return [5];
-        }
-        else {
-            return [1];
-        }
+        return [1];
     }
     if(name==BLADE_KNEE_R) {
-        if(human_mode) {
+        if(human_mode)
             return [5];
-        }
-        else {
-            return [1];
-        }
+        return [1];
     }
-    if(name==BLADE_HAND_LEFT) return [-1];
-    if(name==BLADE_HAND_RIGHT) return [-1];
+    if(name==BLADE_HAND_LEFT)
+        return [-1];
+    if(name==BLADE_HAND_RIGHT)
+        return [-1];
     if(name==BLADE_NECK) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1];
-        else {return [2,5];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [0,1];
+        return [2,5];
     }
     if(name==BLADE_NIPS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
             return [0,1];
-        }
-        else {return [2,3];}
+        return [2,3];
     }
     if(name==BLADE_PELVIS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [0,1,2,3];
-        else {return [0,1];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [0,1,2,3];
+        return [0,1];
     }
     if(name==BLADE_RIBS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [4,5];
-        else {return [1,3];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [4,5];
+        return [1,3];
     }
     if(name==BLADE_SHIN_L_L) {
-        if (human_mode) {
+        if (human_mode)
             return [2];
-        }
-        else {
-            return [4];
-        }
+        return [4];
     }
     if(name==BLADE_SHIN_L_R) {
-        if (human_mode) {
+        if (human_mode)
             return [2];
-        }
-        else {
-            return [4];
-        }
+        return [4];
     }
-    if(name==BLADE_SHIN_U_L) {
+    if(name==BLADE_SHIN_U_L)
         return [3];
-    }
-    if(name==BLADE_SHIN_U_R) {
+    if(name==BLADE_SHIN_U_R)
         return [3];
-    }
-    if(name==BLADE_SHOULDER_L_L) return [3];
+    if(name==BLADE_SHOULDER_L_L)
+        return [3];
     if(name==BLADE_SHOULDER_L_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [2];
-        else {return [0];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [2];
+        return [0];
     }
     if(name==BLADE_SHOULDER_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) return [5];
-        else {return [7];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [5];
+        return [7];
     }
-    if(name==BLADE_SHOULDER_U_R) return [4];
+    if(name==BLADE_SHOULDER_U_R)
+        return [4];
     if(name==BLADE_THIGH_L_L) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
+            if(human_mode)
                 return [1];
-            }
-            else {
-                return [7];
-            }
+            return [7];
         }
-        else {
-            return [6];
-        }
+        return [6];
     }
     if(name==BLADE_THIGH_L_R) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
+            if(human_mode)
                 return [0];
-            }
-            else {
-                return [6];
-            }
-        }
-        else {
             return [6];
         }
+        return [6];
     }
     if(name==BLADE_THIGH_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [5];
-        }
-        else {
-            return [7];
-        }
+        return [7];
     }
     if(name==BLADE_THIGH_U_R) return [4];
     if(name==BLADE_VAG) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
-            if(g_TogglingPGMeshes) {
-                #ifdef DEBUG_COMMAND
-                llOwnerSay("uuuuuuuuu");
-                #endif
+            if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
-            }
-            else {
-               #ifdef DEBUG_COMMAND
-               llOwnerSay("eeeeeee");
-               #endif
-               return [0,1];
-            }
-        }
-        else {
             return [0,1];
         }
+        return [0,1];
     }
     if(name==BLADE_VIRTUAL_BUTT) {
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
@@ -420,16 +371,11 @@ list xlGetFacesByBladeName(string name) {
             #ifdef DEBUG_COMMAND
             llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
             #endif
-            if(g_TogglingPGMeshes) {
+            if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
-            }
-            else {
-               return [2,3,4,5];
-            }
+            return [2,3,4,5];
         }
-        else {
-            return [];
-        }
+        return [];
     }
     if(name==BLADE_WRIST_L) return [3];
     if(name==BLADE_WRIST_R) return [1];
