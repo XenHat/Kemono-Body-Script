@@ -587,30 +587,25 @@ list xlSetNip() {
     #endif
     list params;
     /* Nip meshes */
-    {
-        integer meshes_count = xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
-        for(;meshes_count > -1;meshes_count--) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N)
-                * (meshes_count == g_CurrentFittedNipState);
-            /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_FittedNipsMeshNames,meshes_count);
-            list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlListLen2MaxID(prim_names);
-            for(;prim_count> -1;prim_count--){
-                integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-                params += [PRIM_LINK_TARGET,link_id];
-                list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
-                integer faces_count = xlListLen2MaxID(faces_l);
-                for(;faces_count > -1;--faces_count) {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
-                    * g_Config_MaximumOpacity];
-                }
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
-                    +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
-                    +"|visible:"+(string)visible);
-                #endif
-            }
+    integer meshes_count = xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
+    for(;meshes_count > -1;meshes_count--) {
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N) * (meshes_count == g_CurrentFittedNipState);
+        /* Process each nipple mesh one by one */
+        string mesh_name = llList2String(s_FittedNipsMeshNames,meshes_count);
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer prim_count = xlListLen2MaxID(prim_names);
+        for(;prim_count> -1;prim_count--){
+            integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            params += [PRIM_LINK_TARGET,link_id];
+            list faces_l = xlGetFacesByBladeName(BLADE_NIPS);
+            integer faces_count = xlListLen2MaxID(faces_l);
+            for(;faces_count > -1;--faces_count)
+                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+            #ifdef DEBUG_FACE_SELECT
+            llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
+                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                +"|visible:"+(string)visible);
+            #endif
         }
     }
     #ifdef DEBUG_PARAMS
@@ -624,30 +619,25 @@ list xlSetVag() {
     #endif
     list params;
     /* Vagoo meshes */
-    {
-        integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
-        for(;meshes_count > -1;meshes_count--) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V)
-                * (meshes_count == g_CurrentFittedVagState);
-            /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
-            list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlListLen2MaxID(prim_names);
-            for(;prim_count> -1;prim_count--){
-                integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-                params += [PRIM_LINK_TARGET,link_id];
-                list faces_l = xlGetFacesByBladeName(BLADE_VAG);
-                integer faces_count = xlListLen2MaxID(faces_l);
-                for(;faces_count > -1;--faces_count) {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
-                    * g_Config_MaximumOpacity];
-                }
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
-                    +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
-                    +"|visible:"+(string)visible);
-                #endif
-            }
+    integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
+    for(;meshes_count > -1;meshes_count--) {
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (meshes_count == g_CurrentFittedVagState);
+        /* Process each nipple mesh one by one */
+        string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer prim_count = xlListLen2MaxID(prim_names);
+        for(;prim_count> -1;prim_count--){
+            integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            params += [PRIM_LINK_TARGET,link_id];
+            list faces_l = xlGetFacesByBladeName(BLADE_VAG);
+            integer faces_count = xlListLen2MaxID(faces_l);
+            for(;faces_count > -1;--faces_count)
+                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+            #ifdef DEBUG_FACE_SELECT
+            llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
+                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                +"|visible:"+(string)visible);
+            #endif
         }
     }
     #ifdef DEBUG_FACE_SELECT
@@ -663,30 +653,25 @@ list xlSetBut() {
     #endif
     list params;
     /* Butt meshes */
-    {/* Essentially the same as above, but using different prim/mesh names*/
-        integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
-        for(;meshes_count > -1;meshes_count--) {
-            integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B)
-                * (meshes_count == g_CurrentFittedButState);
-            /* Process each nipple mesh one by one */
-            string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
-            list prim_names = xlBladeNameToPrimNames(mesh_name);
-            integer prim_count = xlListLen2MaxID(prim_names);
-            for(;prim_count> -1;prim_count--){
-                integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-                params += [PRIM_LINK_TARGET,link_id];
-                list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-                integer faces_count = xlListLen2MaxID(faces_l);
-                for(;faces_count > -1;--faces_count) {
-                    params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible
-                    * g_Config_MaximumOpacity];
-                }
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
-                    +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
-                    +"|visible:"+(string)visible);
-                #endif
-            }
+    integer meshes_count = xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
+    for(;meshes_count > -1;meshes_count--) {
+        integer visible = !getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B) * (meshes_count == g_CurrentFittedButState);
+        /* Process each nipple mesh one by one */
+        string mesh_name = llList2String(s_KFTPelvisMeshes,meshes_count);
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer prim_count = xlListLen2MaxID(prim_names);
+        for(;prim_count> -1;prim_count--){
+            integer link_id = llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            params += [PRIM_LINK_TARGET,link_id];
+            list faces_l = xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
+            integer faces_count = xlListLen2MaxID(faces_l);
+            for(;faces_count > -1;--faces_count)
+                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+            #ifdef DEBUG_FACE_SELECT
+            llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
+                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                +"|visible:"+(string)visible);
+            #endif
         }
     }
     #ifdef DEBUG_FACE_SELECT
