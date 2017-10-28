@@ -751,101 +751,77 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
 }
 xlProcessCommand(string message) {
     list data = llParseStringKeepNulls(message,[":"],[]);
+    string command = llList2String(data,0);
     #ifdef DEBUG_COMMAND
-    llOwnerSay("==============");
-    #ifdef DEBUG_DATA
-    llOwnerSay("Command:"+llList2CSV(data));
-    #endif
+    llOwnerSay("Command:"+command);
     #endif
     integer showit;
-    string command = llList2String(data,0);
     /* filter out and process commands */
-    if(command == "show") {
+    if(command == "show")
         showit = TRUE;
-    }
-    else if(command == "hide") {
+    else if(command == "hide")
         showit = FALSE;
-    }
-    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setbutt") {
-        g_CurrentFittedButState = llList2Integer(data,1);
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetBut());
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+        if(command=="setbutt") {
+            g_CurrentFittedButState = llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetBut());
+        }
+        else if(command=="setvag") {
+            g_CurrentFittedVagState = llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+        }
+        else if(command=="setnip") {
+            g_CurrentFittedNipState = llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+        }
+        else
+            return;
+    else 
         return;
-    }
-    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setvag") {
-        /* Vagoo */
-        g_CurrentFittedVagState = llList2Integer(data,1);
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
-        // return;
-    }
-    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && command=="setnip") {
-        g_CurrentFittedNipState = llList2Integer(data,1);
+
+    string part_wanted_s = llList2String(data, 1);
+    #ifdef DEBUG_DATA
+    llOwnerSay("Special message:" + part_wanted_s);
+    #endif
+    if(part_wanted_s == BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        g_CurrentFittedNipState = showit;
         xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
         return;
     }
-    else {
+    else if(part_wanted_s == BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+        g_CurrentFittedVagState = showit;
+        g_TogglingPGMeshes=TRUE;
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+        g_TogglingPGMeshes=FALSE;
         return;
     }
-    command="";
-    list params;
-    string part_wanted_s = llList2String(data, 1);
-    integer list_size = xlListLen2MaxID(data);
-        #ifdef DEBUG_DATA
-        llOwnerSay("Special message:" + part_wanted_s);
-        #endif
-        if(part_wanted_s == BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            g_CurrentFittedNipState = showit;
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
-            return;
-        }
-        else if(part_wanted_s == BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            g_CurrentFittedVagState = showit;
-            g_TogglingPGMeshes=TRUE;
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
-            g_TogglingPGMeshes=FALSE;
-            return;
-        }
-        else if(part_wanted_s==BLADE_VAG) {
-            g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
-           if(!showit && !g_TogglingPGMeshes) {
-               #ifdef DEBUG_COMMAND
-               llOwnerSay("TOGGLING TO PG");
-               #endif
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
-           }
-           if(showit && g_TogglingPGMeshes) {
-               #ifdef DEBUG_COMMAND
-               llOwnerSay("TOGGLING FROM PG");
-               #endif
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
-           }
+    else if(part_wanted_s==BLADE_VAG) {
+        g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+       if(!showit && !g_TogglingPGMeshes) {
            #ifdef DEBUG_COMMAND
-           llOwnerSay("PG Mode:"+(string)(g_TogglingPGMeshes));
+           llOwnerSay("TOGGLING TO PG");
            #endif
-        }
+           chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+       }
+       if(showit && g_TogglingPGMeshes) {
+           #ifdef DEBUG_COMMAND
+           llOwnerSay("TOGGLING FROM PG");
+           #endif
+           chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+       }
+       #ifdef DEBUG_COMMAND
+       llOwnerSay("PG Mode:"+(string)(g_TogglingPGMeshes));
+       #endif
+    }
+    integer list_size = xlListLen2MaxID(data);
     #ifdef DEBUG_DATA
     llOwnerSay("list_size="+(string)list_size);
     llOwnerSay("data:"+llList2CSV(data));
     #endif
-    do{
-        part_wanted_s = llList2String(data, list_size);
-        #ifdef DEBUG_DATA
-        if(part_wanted_s == "") {
-            llOwnerSay("BAD, BAD, BLADE NAME IS EMPTY!!!!");
-        }
-        #endif
-        #ifdef DEBUG_COMMAND
-        llOwnerSay("Processing:"+part_wanted_s);
-        #endif
-        params += xlGetBladeToggleParamsNew(part_wanted_s,showit);
-        list_size--;
-    } while(list_size > 0); /* skip first element, which is the command*/
-    if(params!=[]) {
-        #ifdef DEBUG_COMMAND
-        llOwnerSay("Applying!");
-        #endif
-        xlSetLinkPrimitiveParamsFast(LINK_SET, params);
-        params=[];
-    }
+    list params;
+    for(;list_size > 0;list_size--)/* skip first element, which is the command*/
+        params += xlGetBladeToggleParamsNew(llList2String(data, list_size),showit);
+    xlSetLinkPrimitiveParamsFast(LINK_SET, params);
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
