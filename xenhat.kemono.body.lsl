@@ -968,16 +968,18 @@ default {
             return;
         }
         else if (message=="Hlegs") {
-            if(!human_mode)
+            if(!human_mode) {
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            human_mode=TRUE;
-            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                human_mode=TRUE;
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            }
         }
         else if(message=="Flegs") {
-            if(human_mode)
+            if(human_mode) {
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            human_mode=FALSE;
-            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                human_mode=FALSE;
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            }
         }
         /* Restore compatibility with old scripts*/
         else if(message=="resetA")
