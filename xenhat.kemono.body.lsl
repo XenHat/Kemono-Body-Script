@@ -797,21 +797,11 @@ xlProcessCommand(string message) {
     }
     else if(part_wanted_s==BLADE_VAG) {
         g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
-       if(!showit && !g_TogglingPGMeshes) {
-           #ifdef DEBUG_COMMAND
-           llOwnerSay("TOGGLING TO PG");
-           #endif
-           chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
-       }
-       if(showit && g_TogglingPGMeshes) {
-           #ifdef DEBUG_COMMAND
-           llOwnerSay("TOGGLING FROM PG");
-           #endif
+        if(!showit && !g_TogglingPGMeshes) {
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+        }
+        else if(showit && g_TogglingPGMeshes)
            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
-       }
-       #ifdef DEBUG_COMMAND
-       llOwnerSay("PG Mode:"+(string)(g_TogglingPGMeshes));
-       #endif
     }
     integer list_size = xlListLen2MaxID(data);
     #ifdef DEBUG_DATA
