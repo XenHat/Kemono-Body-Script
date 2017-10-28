@@ -386,277 +386,190 @@ list xlGetFacesByBladeName(string name) {
 }
 list xlBladeNameToPrimNames(string name) {
     /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
-    list prim_name = [name];
     #ifdef DEBUG_FACE_SELECT
     llOwnerSay("xlBladeNameToPrimNames("+name+")");
     #endif
-    if(name==BLADE_ARM_L_L) prim_name = [MESH_ARMS];
-    else if(name==BLADE_ARM_L_R) prim_name = [MESH_ARMS];
-    else if(name==BLADE_ARM_U_L) prim_name = [MESH_ARMS];
-    else if(name==BLADE_ARM_U_R) prim_name = [MESH_ARMS];
-    else if(name==BLADE_ELBOW_L) prim_name = [MESH_ARMS];
-    else if(name==BLADE_ELBOW_R) prim_name = [MESH_ARMS];
-    else if(name==BLADE_WRIST_L) prim_name = [MESH_ARMS];
-    else if(name==BLADE_WRIST_R) prim_name = [MESH_ARMS];
+    if(name==BLADE_ARM_L_L) return [MESH_ARMS];
+    else if(name==BLADE_ARM_L_R) return [MESH_ARMS];
+    else if(name==BLADE_ARM_U_L) return [MESH_ARMS];
+    else if(name==BLADE_ARM_U_R) return [MESH_ARMS];
+    else if(name==BLADE_ELBOW_L) return [MESH_ARMS];
+    else if(name==BLADE_ELBOW_R) return [MESH_ARMS];
+    else if(name==BLADE_WRIST_L) return [MESH_ARMS];
+    else if(name==BLADE_WRIST_R) return [MESH_ARMS];
     else if(name==BLADE_RIBS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [MESH_FITTED_TORSO_CHEST];
-        }
-        else {
-            prim_name = [MESH_BODY];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_CHEST];
+        return [MESH_BODY];
     }
     else if(name==BLADE_ABS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [MESH_FITTED_TORSO_CHEST];
-        }
-        else {
-            prim_name = [MESH_BODY];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_CHEST];
+        return [MESH_BODY];
     }
     else if(name==BLADE_BODY) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [MESH_FITTED_TORSO_CHEST];
-        }
-        else {
-            prim_name = [MESH_BODY];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_CHEST];
+        return [MESH_BODY];
     }
     else if(name==BLADE_BREASTS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [MESH_FITTED_TORSO_CHEST];
-        }
-        else {
-            prim_name = [MESH_BODY];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_CHEST];
+        return [MESH_BODY];
     }
     else if(name==BLADE_CHEST) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [MESH_FITTED_TORSO_CHEST];
-        }
-        else {
-            prim_name = [MESH_BODY];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_CHEST];
+        return [MESH_BODY];
     }
     else if(name==BLADE_COLLAR) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {
-            prim_name = [MESH_NECK];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
-    else if(name==BLADE_HAND_LEFT) prim_name = [MESH_HAND_LEFT];
-    else if(name==BLADE_HAND_RIGHT) prim_name = [MESH_HAND_RIGHT];
+    else if(name==BLADE_HAND_LEFT) return [MESH_HAND_LEFT];
+    else if(name==BLADE_HAND_RIGHT) return [MESH_HAND_RIGHT];
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
-        }
-        else {
-            prim_name = [MESH_HIPS];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+        return [MESH_HIPS];
     }
     else if(name==BLADE_NECK) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {prim_name = [MESH_NECK];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
     else if(name==BLADE_PELVIS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            /* TODO: Handle PG/vagoo/butt states properly */
-            prim_name = [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
-        }
-        else {
-            prim_name = [MESH_HIPS];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+        return [MESH_HIPS];
     }
     else if(name==BLADE_KNEE_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_FOOT_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_ANKLE_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_SHIN_U_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_CALF_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_SHIN_L_R) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_RIGHT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_RIGHT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_CALF_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_ANKLE_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_FOOT_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_KNEE_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_SHIN_L_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_SHIN_U_L) {
-        if(human_mode) {
-            prim_name = [MESH_LEG_LEFT_HUMAN];
-        }
-        else {
-            prim_name = [MESH_LEG_LEFT_ANIMAL];
-        }
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
     else if(name==BLADE_SHOULDER_L_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {prim_name = [MESH_NECK];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
     else if(name==BLADE_SHOULDER_L_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {prim_name = [MESH_NECK];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
     else if(name==BLADE_SHOULDER_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {prim_name = [MESH_NECK];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
     else if(name==BLADE_SHOULDER_U_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO];
-        else {prim_name = [MESH_NECK];}
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO];
+        return [MESH_NECK];
     }
     else if(name==BLADE_THIGH_U_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO_ETC];
-        else {
-            prim_name = [MESH_HIPS];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_ETC];
+        return [MESH_HIPS];
     }
     else if(name==BLADE_THIGH_U_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO_ETC];
-        else {
-            prim_name = [MESH_HIPS];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_ETC];
+        return [MESH_HIPS];
     }
     else if(name==BLADE_BELLY) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) prim_name = [MESH_FITTED_TORSO_ETC];
-        else {
-            prim_name = [MESH_HIPS];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [MESH_FITTED_TORSO_ETC];
+        return [MESH_HIPS];
     }
     else if(name==BLADE_NIPS) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            prim_name = [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
-            // return;
-        }
-        else {
-            prim_name = [MESH_PG_LAYER];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            return [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+        return [MESH_PG_LAYER];
     }
     else if(name==BLADE_VAG) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(g_TogglingPGMeshes) {
-                prim_name = [llList2String(s_KFTPelvisMeshes, 0)];
-            }
-            else {
-                prim_name = [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
-            }
-        }
-        else {
-            prim_name = [MESH_PG_LAYER];
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            if(g_TogglingPGMeshes)
+                return [llList2String(s_KFTPelvisMeshes, 0)];
+            return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+        return [MESH_PG_LAYER];
     }
     else if(name==BLADE_THIGH_L_R) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
-                prim_name = [MESH_FITTED_TORSO_HLEGS];
-            }
-            else {
-                prim_name = [MESH_FITTED_TORSO_ETC];
-            }
-        }
-        else {
-            if(human_mode) {
-                prim_name = [MESH_LEG_RIGHT_HUMAN];
-            }
-            else {
-                prim_name = [MESH_LEG_RIGHT_ANIMAL];
-            }
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            if(human_mode)
+                return [MESH_FITTED_TORSO_HLEGS];
+            return [MESH_FITTED_TORSO_ETC];
+        if(human_mode)
+            return [MESH_LEG_RIGHT_HUMAN];
+        return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_THIGH_L_L) {
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(human_mode) {
-               prim_name = [MESH_FITTED_TORSO_HLEGS];
-            }
-            else {
-                prim_name = [MESH_FITTED_TORSO_ETC];
-            }
-        }
-        else {
-            if(human_mode) {
-                prim_name = [MESH_LEG_LEFT_HUMAN];
-            }
-            else {
-                prim_name = [MESH_LEG_LEFT_ANIMAL];
-            }
-        }
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            if(human_mode)
+               return [MESH_FITTED_TORSO_HLEGS];
+            return [MESH_FITTED_TORSO_ETC];
+        if(human_mode)
+            return [MESH_LEG_LEFT_HUMAN];
+        return [MESH_LEG_LEFT_ANIMAL];
     }
-    return prim_name;
+    return [name];
 }
 /* Stock Fitted Torso script:
 setnip0 == NipState0
