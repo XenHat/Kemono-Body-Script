@@ -929,23 +929,21 @@ default {
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3) {
+        #ifdef FTK_MULTI_DROP
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
                 return;
-            }
-        }
+        #endif
         /*If we can't get a valid owner...*/
         if(owner_key == id) {
             /*And if they aren't in the auth list, ignore them.*/
-            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1) {
+            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1)
                 return;
-            }
         }
         /*If they don't have the same owner, ignore them.*/
-        else if(owner_key != g_Owner_k) {
+        else if(owner_key != g_Owner_k)
             return;
-        }
-        if("reqFTData" == message){
+        if("reqFTData" == message) {
             if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
                 llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
                     +(string)g_CurrentFittedNipState
@@ -957,54 +955,42 @@ default {
             }
             return;
         }
-        if(message == "add") {
-            /*And if they aren't in the auth list, add them.*/
-            if (llGetFreeMemory() <= 2048) {
-                g_HoverText = " Out of Memory!";
-                return;
-            }
-            if(llListFindList(g_RemConfirmKeys_l,[id]) == -1) {
-                g_RemConfirmKeys_l += [id];
-                return;
-            }
+        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
+        else if(message == "add"){ /*And if they aren't in the auth list, add them.*/
+            if (llGetFreeMemory() > 2048)
+                if(llListFindList(g_RemConfirmKeys_l,[id]) == -1)
+                    g_RemConfirmKeys_l += [id];
         }
-        if(message == "remove") {
-            /*If the are in the list, remove them.*/
+        else if(message == "remove") { /*If the are in the list, remove them.*/
             integer placeinlist = llListFindList(g_RemConfirmKeys_l, [(key)id]);
-            if (placeinlist != -1) {
+            if (placeinlist != -1)
                 g_RemConfirmKeys_l = llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
-            }
+            return;
         }
-        if (message=="Hlegs") {
-            if(!human_mode) {
+        else if (message=="Hlegs") {
+            if(!human_mode)
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=TRUE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            }
+            human_mode=TRUE;
+            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         }
         else if(message=="Flegs") {
-            if(human_mode) {
+            if(human_mode)
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=FALSE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            }
+            human_mode=FALSE;
+            xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         }
         /* Restore compatibility with old scripts*/
-        else if(message=="resetA") {
-            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        }
+        else if(message=="resetA")
+            jump reset;
         else if(message=="resetB") {
-            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
             g_RemConfirmKeys_l=[];
+            jump reset;
         }
-        else {
+        else
             xlProcessCommand(message);
-            #ifdef DEBUG_COMMAND
-            #ifdef DEBUG_LISTEN
-            llOwnerSay("Sucessfully consumed "+knp+"'s [http://"+message+" command]");
-            #endif
-            #endif
-        }
+        return;
+        @reset;
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
     }
     attach(key id) {
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
