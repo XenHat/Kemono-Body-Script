@@ -558,19 +558,19 @@ default {
             human_mode=FALSE;
         if(llListFindList(g_LinkDB_l, [ "RFleg" ]) < 0)
             human_mode=TRUE;
-        llSetText("", <0.825,0.825,0.825> , 0.75 );
+        llSetText("", <0.925,0.925,0.925> , 0.75 );
         human_mode=!human_mode;
         xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         human_mode=!human_mode;
 
         xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llListen( -34525475 ,"","","");
-        llSetText("", <0.825,0.825,0.825> ,0.0);
+        llSetText("", <0.925,0.925,0.925> ,0.0);
         g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
         if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        llSetText("", <0.825,0.825,0.825> , 0.75 );
+        llSetText("", <0.925,0.925,0.925> , 0.75 );
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
@@ -655,7 +655,7 @@ default {
                 llStartAnimation(g_AnimDeform);
         }
         string text = g_HoverText;
-        llSetText(text+"\n \n \n \n ",  <0.825,0.825,0.825> ,  0.75 );
+        llSetText(text+"\n \n \n \n ",  <0.925,0.925,0.925> ,  0.75 );
         llSetTimerEvent(10);
     }
     http_response(key request_id, integer status, list metadata, string body)
