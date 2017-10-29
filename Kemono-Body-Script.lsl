@@ -49,7 +49,7 @@
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /*----------------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.1"
+#define g_internal_version_s "0.1.2"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_TEXT
