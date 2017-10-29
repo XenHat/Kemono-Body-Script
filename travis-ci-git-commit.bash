@@ -41,7 +41,7 @@ function travis-branch-commit() {
         return 1
     fi
     # add to your .travis.yml: `branches\n  except:\n  - "/\\+travis\\d+$/"\n`
-    export git_tag="travis_ok"
+    export git_tag="travis_ok-$TRAVIS_BUILD_NUMBER"
     if ! git tag "$git_tag" -f -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"; then
         err "failed to create git tag: $git_tag"
         return 1
