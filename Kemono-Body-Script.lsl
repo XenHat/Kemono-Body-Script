@@ -833,11 +833,11 @@ default {
             llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry() {
+        g_Owner_k = llGetOwner();
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
         llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         #endif
-        g_Owner_k = llGetOwner();
         #ifdef DEBUG
         llSetText("UNIT SELF-TEST",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         llSay(0,"g_RuntimeBodyStateSettings: " + (string)g_RuntimeBodyStateSettings);
