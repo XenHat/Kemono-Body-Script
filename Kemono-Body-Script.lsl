@@ -999,7 +999,7 @@ default {
     }
     on_rez(integer p) {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"+g_internal_repo_s+"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[], "");
+        g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"+g_internal_repo_s+"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
     }
     attach(key id) {
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
