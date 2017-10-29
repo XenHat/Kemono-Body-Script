@@ -49,6 +49,7 @@
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /*----------------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
+#define g_internal_version_s "0.1.1"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_TEXT
@@ -213,6 +214,9 @@ string g_AnimUndeform;
 string g_HoverText;
 #define xlListLen2MaxID(a) ((a!=[]) - 1)
 integer human_mode=TRUE; /* Prefer when available*/
+#define script_name "Kemono-Body-Script"
+#define g_internal_repo_s "XenHat/"+script_name
+key g_internal_httprid_k                = NULL_KEY;
 list xlGetFacesByBladeName(string name) {
     if(name==BLADE_ABS) return [6,7];
     if(name==BLADE_ANKLE_L) {
@@ -864,7 +868,6 @@ default {
                         name=MESH_FITTED_TORSO;
                     }
             }
-
             if(llListFindList(g_supported_meshes, [name])!= -1) {
                 #ifdef DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply += [PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
@@ -996,6 +999,7 @@ default {
     }
     on_rez(integer p) {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"+g_internal_repo_s+"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[], "");
     }
     attach(key id) {
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
@@ -1030,5 +1034,40 @@ default {
 #endif
         llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
+    }
+    http_response(key request_id, integer status, list metadata, string body)
+    {
+        if (request_id != g_internal_httprid_k) return;// exit if unknown
+        string new_version_s = llJsonGetValue(body,["tag_name"]);
+        if (new_version_s == g_internal_version_s) return;
+        list cur_version_l = llParseString2List(g_internal_version_s, ["."], [""]);
+        list new_version_l = llParseString2List(new_version_s, ["."], [""]);
+        string update_type = "version";
+        if (llList2Integer(new_version_l, 0) > llList2Integer(cur_version_l, 0)){
+            update_type = "major version"; jump update;
+        }
+        else if (llList2Integer(new_version_l, 1) > llList2Integer(cur_version_l, 1)){
+            update_type = "version"; jump update;
+        }
+        else if (llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)){
+            update_type = "patch"; jump update;
+        }
+        jump end;
+        @update;
+        string sHelpText = "[https://github.com/"+g_internal_repo_s +" " + script_name +"] v"
+        + g_internal_version_s + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
+        string g_cached_updateMsg_s = "A new " + update_type + " is available!\n\n"
+            +"v" + new_version_s+ ":\n\""+llJsonGetValue(body,["name"])+"\"\n";
+            string update_description_s = llJsonGetValue(body,["body"]);
+            if(llStringLength(update_description_s) >= 128)
+            {
+                update_description_s = "Too many changes, see link below.";
+            }
+            g_cached_updateMsg_s +=update_description_s+"\n\n"
+            +"Your new scripts (["+"https://github.com/"+g_internal_repo_s+"/compare/"
+                +g_internal_version_s+"..."+new_version_s+" Diff "+g_internal_version_s+"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+g_internal_repo_s
+                +"/"+new_version_s+"/"+script_name+".lsl " + script_name + ".lsl]";
+        llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
+        @end;
     }
 }
