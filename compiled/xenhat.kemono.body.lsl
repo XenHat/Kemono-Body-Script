@@ -662,8 +662,8 @@ default {
     {
         if (request_id != g_internal_httprid_k) return;
         string new_version_s = llJsonGetValue(body,["tag_name"]);
-        if (new_version_s ==  "0.1.0" ) return;
-        list cur_version_l = llParseString2List( "0.1.0" , ["."], [""]);
+        if (new_version_s ==  "0.1.3" ) return;
+        list cur_version_l = llParseString2List( "0.1.3" , ["."], [""]);
         list new_version_l = llParseString2List(new_version_s, ["."], [""]);
         string update_type = "version";
         if (llList2Integer(new_version_l, 0) > llList2Integer(cur_version_l, 0)){
@@ -678,7 +678,7 @@ default {
         jump end;
         @update;
         string sHelpText = "[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" " +  "Kemono-Body-Script"  +"] v"
-        +  "0.1.0"  + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
+        +  "0.1.3"  + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
         string update_title = llJsonGetValue(body,["name"]);
         if(update_title == "﷕")
             update_title = "";
@@ -693,7 +693,7 @@ default {
             +update_title+"\n";
             g_cached_updateMsg_s +=update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script" +"/compare/"
-                + "0.1.0" +"..."+new_version_s+" Diff "+ "0.1.0" +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+ "XenHat/"+ "Kemono-Body-Script"
+                + "0.1.3" +"..."+new_version_s+" Diff "+ "0.1.3" +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+ "XenHat/"+ "Kemono-Body-Script"
                 +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" " +  "Kemono-Body-Script"  + ".lsl]";
         llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
         @end;
