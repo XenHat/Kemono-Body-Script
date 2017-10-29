@@ -62,7 +62,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
 // End of debug defines
-#define HOVER_TEXT_COLOR <0.825,0.825,0.825>
+#define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #ifdef DEBUG_PARAMS
 #define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("PARAMS:"+llList2CSV(b));\
