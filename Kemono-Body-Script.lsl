@@ -49,7 +49,7 @@
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 /*----------------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.2"
+#define g_internal_version_s "0.1.0"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_TEXT
@@ -215,6 +215,7 @@ string g_HoverText;
 #define xlListLen2MaxID(a) ((a!=[]) - 1)
 integer human_mode=TRUE; /* Prefer when available*/
 #define script_name "Kemono-Body-Script"
+#define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
 key g_internal_httprid_k                = NULL_KEY;
 list xlGetFacesByBladeName(string name) {
@@ -1056,17 +1057,22 @@ default {
         @update;
         string sHelpText = "[https://github.com/"+g_internal_repo_s +" " + script_name +"] v"
         + g_internal_version_s + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
-        string g_cached_updateMsg_s = "A new " + update_type + " is available!\n\n"
-            +"v" + new_version_s+ ":\n\""+llJsonGetValue(body,["name"])+"\"\n";
-            string update_description_s = llJsonGetValue(body,["body"]);
-            if(llStringLength(update_description_s) >= 128)
-            {
-                update_description_s = "Too many changes, see link below.";
-            }
-            g_cached_updateMsg_s +=update_description_s+"\n\n"
+        string update_title = llJsonGetValue(body,["name"]);
+        if(update_title == "﷕")
+            update_title = "";
+        else update_title=":\n\n"+update_title;
+        string update_description = llJsonGetValue(body,["body"]);
+        if(update_description == "﷕")
+            update_description = "";
+        else update_description+="\n";
+        if(llStringLength(update_description) >= 128)
+            update_description = "Too many changes, see link below.";
+        string g_cached_updateMsg_s = "A new " + update_type + " (v" + new_version_s +") is available!"
+            +update_title+"\n";
+            g_cached_updateMsg_s +=update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+g_internal_repo_s+"/compare/"
                 +g_internal_version_s+"..."+new_version_s+" Diff "+g_internal_version_s+"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+g_internal_repo_s
-                +"/"+new_version_s+"/"+script_name+".lsl " + script_name + ".lsl]";
+                +"/"+new_version_s+"/compiled/"+compiled_name+" " + script_name + ".lsl]";
         llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
         @end;
     }
