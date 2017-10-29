@@ -35,6 +35,7 @@ string g_HoverText;
 integer human_mode=TRUE;
 
 
+
 key g_internal_httprid_k = NULL_KEY;
 list xlGetFacesByBladeName(string name) {
     if(name== "abs" ) return [6,7];
@@ -661,8 +662,8 @@ default {
     {
         if (request_id != g_internal_httprid_k) return;
         string new_version_s = llJsonGetValue(body,["tag_name"]);
-        if (new_version_s ==  "0.1.2" ) return;
-        list cur_version_l = llParseString2List( "0.1.2" , ["."], [""]);
+        if (new_version_s ==  "0.1.0" ) return;
+        list cur_version_l = llParseString2List( "0.1.0" , ["."], [""]);
         list new_version_l = llParseString2List(new_version_s, ["."], [""]);
         string update_type = "version";
         if (llList2Integer(new_version_l, 0) > llList2Integer(cur_version_l, 0)){
@@ -677,18 +678,23 @@ default {
         jump end;
         @update;
         string sHelpText = "[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" " +  "Kemono-Body-Script"  +"] v"
-        +  "0.1.2"  + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
-        string g_cached_updateMsg_s = "A new " + update_type + " is available!\n\n"
-            +"v" + new_version_s+ ":\n\""+llJsonGetValue(body,["name"])+"\"\n";
-            string update_description_s = llJsonGetValue(body,["body"]);
-            if(llStringLength(update_description_s) >= 128)
-            {
-                update_description_s = "Too many changes, see link below.";
-            }
-            g_cached_updateMsg_s +=update_description_s+"\n\n"
+        +  "0.1.0"  + " by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
+        string update_title = llJsonGetValue(body,["name"]);
+        if(update_title == "﷕")
+            update_title = "";
+        else update_title=":\n\n"+update_title;
+        string update_description = llJsonGetValue(body,["body"]);
+        if(update_description == "﷕")
+            update_description = "";
+        else update_description+="\n";
+        if(llStringLength(update_description) >= 128)
+            update_description = "Too many changes, see link below.";
+        string g_cached_updateMsg_s = "A new " + update_type + " (v" + new_version_s +") is available!"
+            +update_title+"\n";
+            g_cached_updateMsg_s +=update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script" +"/compare/"
-                + "0.1.2" +"..."+new_version_s+" Diff "+ "0.1.2" +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+ "XenHat/"+ "Kemono-Body-Script"
-                +"/"+new_version_s+"/"+ "Kemono-Body-Script" +".lsl " +  "Kemono-Body-Script"  + ".lsl]";
+                + "0.1.0" +"..."+new_version_s+" Diff "+ "0.1.0" +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+ "XenHat/"+ "Kemono-Body-Script"
+                +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" " +  "Kemono-Body-Script"  + ".lsl]";
         llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
         @end;
     }
