@@ -1,7 +1,4 @@
-#line 1 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
-#line 49 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
 float g_Config_MaximumOpacity = 1.00;
-#line 172 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l = [];
@@ -31,7 +28,6 @@ integer g_TogglingPGMeshes=FALSE;
 
 
 integer g_RuntimeBodyStateSettings;
-#line 212 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
 string g_AnimDeform;
 string g_AnimUndeform;
 string g_HoverText;
@@ -194,7 +190,6 @@ list xlGetFacesByBladeName(string name) {
     }
     if(name== "butt" ) {
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ) {
-#line 378 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
             if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
             return [2,3,4,5];
@@ -203,11 +198,9 @@ list xlGetFacesByBladeName(string name) {
     }
     if(name== "wristL" ) return [3];
     if(name== "wristR" ) return [1];
-#line 389 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     return [];
 }
 list xlBladeNameToPrimNames(string name) {
-#line 396 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     if(name== "armLL" ) return [ "arms" ];
     else if(name== "armLR" ) return [ "arms" ];
     else if(name== "armUL" ) return [ "arms" ];
@@ -390,9 +383,7 @@ list xlBladeNameToPrimNames(string name) {
     }
     return [name];
 }
-#line 588 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
 list xlSetNip() {
-#line 592 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     list params;
 
     integer meshes_count =  ((s_FittedNipsMeshNames!=[]) - 1) ;
@@ -409,14 +400,11 @@ list xlSetNip() {
             integer faces_count =  ((faces_l!=[]) - 1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-#line 613 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         }
     }
-#line 618 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     return params;
 }
 list xlSetVag() {
-#line 624 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     list params;
 
     integer meshes_count =  ((s_KFTPelvisMeshes!=[]) - 1) ;
@@ -433,14 +421,11 @@ list xlSetVag() {
             integer faces_count =  ((faces_l!=[]) - 1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-#line 645 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         }
     }
-#line 652 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     return params;
 }
 list xlSetBut() {
-#line 658 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     list params;
 
     integer meshes_count =  ((s_KFTPelvisMeshes!=[]) - 1) ;
@@ -457,16 +442,13 @@ list xlSetBut() {
             integer faces_count =  ((faces_l!=[]) - 1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-#line 679 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         }
     }
-#line 686 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     return params;
 }
 
 list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
     list params;
-#line 696 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     if (blade_name== "breast"  ) {
         g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
         params += xlSetNip();
@@ -480,26 +462,20 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit) {
         blade_name =  "vagoo" ;
         showit *= !(g_RuntimeBodyStateSettings &  2 );
     }
-#line 714 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     list prim_names = xlBladeNameToPrimNames(blade_name);
     integer blade_prim_iter =  ((prim_names!=[]) - 1) ;
-#line 720 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     for(;blade_prim_iter > -1;blade_prim_iter--) {
-#line 735 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         params+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,blade_prim_iter)])+1)];
         list faces_l = xlGetFacesByBladeName(blade_name);
         integer faces_index =  ((faces_l!=[]) - 1) ;
-#line 748 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         for(;faces_index > -1; faces_index--)
             params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, (showit ^ ( "vagoo" ==blade_name)) * g_Config_MaximumOpacity];
     }
-#line 754 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     return params;
 }
 xlProcessCommand(string message) {
     list data = llParseStringKeepNulls(message,[":"],[]);
     string command = llList2String(data,0);
-#line 762 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     integer showit;
 
     if(command == "show")
@@ -524,7 +500,6 @@ xlProcessCommand(string message) {
     else
         return;
     string part_wanted_s = llList2String(data, 1);
-#line 789 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     if(part_wanted_s ==  "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) ) {
         g_CurrentFittedNipState = showit;
         llSetLinkPrimitiveParamsFast(LINK_SET,xlSetNip()) ;
@@ -546,14 +521,12 @@ xlProcessCommand(string message) {
            g_RuntimeBodyStateSettings = (g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
     }
     integer list_size =  ((data!=[]) - 1) ;
-#line 814 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     list params;
     for(;list_size > 0;list_size--)
         params += xlGetBladeToggleParamsNew(llList2String(data, list_size),showit);
     llSetLinkPrimitiveParamsFast(LINK_SET,params) ;
 }
 default {
-#line 828 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
     changed(integer change) {
         if (change & CHANGED_OWNER)
             llResetScript();
@@ -561,13 +534,10 @@ default {
             llResetScript();
     }
     state_entry() {
-#line 839 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         g_Owner_k = llGetOwner();
-#line 856 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         integer part = llGetNumberOfPrims();
         for (;part > 0;--part) {
             string name = llGetLinkName(part);
-#line 862 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
             if(! (!!(g_RuntimeBodyStateSettings & 1 )) ) {
 
                 integer fitted_torso_string_index = llSubStringIndex(name,  "Fitted Kemono Torso" );
@@ -578,7 +548,6 @@ default {
                     }
             }
             if(llListFindList( [ "arms" , "body" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" , "HumanLegs" , "TorsoChest" , "Fitted Kemono Torso" ,"BitState0","BitState1","BitState2","BitState3", "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ,"cumButtS1","cumButtS2","cumButtS3"] , [name])!= -1) {
-#line 878 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
                 g_LinkDB_l+=[name,part];
             }
         }
@@ -589,25 +558,21 @@ default {
         if(llListFindList(g_LinkDB_l, [ "RFleg" ]) < 0)
             human_mode=TRUE;
         llSetText("", <0.825,0.825,0.825> , 0.75 );
-#line 900 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         human_mode=!human_mode;
         xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
         human_mode=!human_mode;
 
         xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-#line 912 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         llListen( -34525475 ,"","","");
         llSetText("", <0.825,0.825,0.825> ,0.0);
         g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
-#line 920 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         llSetText("", <0.825,0.825,0.825> , 0.75 );
     }
     listen( integer channel, string name, key id, string message ) {
         key owner_key = llGetOwnerKey(id);
-#line 941 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         if(owner_key == id) {
 
             if(llListFindList(g_RemConfirmKeys_l,[id]) == -1)
@@ -672,7 +637,6 @@ default {
         g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"+ "XenHat/"+ "Kemono-Body-Script" +"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
     }
     attach(key id) {
-#line 1009 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         if(id == (key)NULL_KEY)
         llStartAnimation(g_AnimUndeform);
     }
@@ -690,7 +654,6 @@ default {
                 llStartAnimation(g_AnimDeform);
         }
         string text = g_HoverText;
-#line 1035 "/home/travis/build/XenHat/Kemono-Body-Script/Kemono-Body-Script.lsl"
         llSetText(text+"\n \n \n \n ",  <0.825,0.825,0.825> ,  0.75 );
         llSetTimerEvent(10);
     }
