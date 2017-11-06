@@ -49,7 +49,7 @@
 float g_Config_MaximumOpacity= 1.00; // 0.8 // for goo
 /*----------------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.3"
+#define g_internal_version_s "0.1.4"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_TEXT
@@ -103,7 +103,6 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_ARM_U_L "armUL"
 #define BLADE_ARM_U_R "armUR"
 #define BLADE_BELLY "belly"
-#define BLADE_BODY "body"
 #define BLADE_BREASTS "breast"
 #define BLADE_CALF_L "calfL"
 #define BLADE_CALF_R "calfR"
@@ -112,16 +111,12 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_ELBOW_L "elbowL"
 #define BLADE_ELBOW_R "elbowR"
 #define BLADE_FITTED_TORSO "Fitted Torso"
-#define BLADE_HAND_LEFT "handL"
-#define BLADE_HAND_RIGHT "handR"
 #define BLADE_HIP_L "hipL"
 #define BLADE_HIP_R "hipR"
 #define BLADE_KNEE_L "kneeL"
 #define BLADE_KNEE_R "kneeR"
-#define BLADE_NECK "neck"
 #define BLADE_NIPS "nips"
 #define BLADE_PELVIS "pelvis"
-#define BLADE_PG_LAYER "PG"
 #define BLADE_RIBS "ribs"
 #define BLADE_SHIN_L_L "shinLL"
 #define BLADE_SHIN_L_R "shinLR"
@@ -234,7 +229,7 @@ list xlGetFacesByBladeName(string name){
     if(name==BLADE_ARM_U_L) return [0];
     if(name==BLADE_ARM_U_R) return [6];
     if(name==BLADE_BELLY) return [2,3];
-    if(name==BLADE_BODY) return [0];
+    if(name==MESH_BODY) return [0];
     if(name==BLADE_BREASTS){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [2,3];
@@ -286,11 +281,11 @@ list xlGetFacesByBladeName(string name){
             return [5];
         return [1];
     }
-    if(name==BLADE_HAND_LEFT)
+    if(name==MESH_HAND_LEFT)
         return [-1];
-    if(name==BLADE_HAND_RIGHT)
+    if(name==MESH_HAND_RIGHT)
         return [-1];
-    if(name==BLADE_NECK){
+    if(name==MESH_NECK){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [0,1];
         return [2,5];
@@ -412,7 +407,7 @@ list xlBladeNameToPrimNames(string name){
             return [MESH_FITTED_TORSO_CHEST];
         return [MESH_BODY];
     }
-    else if(name==BLADE_BODY){
+    else if(name==MESH_BODY){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [MESH_FITTED_TORSO_CHEST];
         return [MESH_BODY];
@@ -432,14 +427,14 @@ list xlBladeNameToPrimNames(string name){
             return [MESH_FITTED_TORSO];
         return [MESH_NECK];
     }
-    else if(name==BLADE_HAND_LEFT) return [MESH_HAND_LEFT];
-    else if(name==BLADE_HAND_RIGHT) return [MESH_HAND_RIGHT];
+    else if(name==MESH_HAND_LEFT) return [MESH_HAND_LEFT];
+    else if(name==MESH_HAND_RIGHT) return [MESH_HAND_RIGHT];
     else if(name==BLADE_HIP_L || name==BLADE_HIP_R){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
         return [MESH_HIPS];
     }
-    else if(name==BLADE_NECK){
+    else if(name==MESH_NECK){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [MESH_FITTED_TORSO];
         return [MESH_NECK];
