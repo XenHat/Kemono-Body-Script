@@ -920,6 +920,8 @@ default {
         #endif
         if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        else
+            llSetTimerEvent(0.1);
         llSetText("",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
     }
     listen(integer channel, string name, key id, string message){
