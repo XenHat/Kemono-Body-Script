@@ -548,7 +548,7 @@ default {
                         name= "Fitted Kemono Torso" ;
                     }
             }
-            if(llListFindList( [ "arms" , "body" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" , "HumanLegs" , "TorsoChest" , "Fitted Kemono Torso" ,"BitState0","BitState1","BitState2","BitState3", "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ,"cumButtS1","cumButtS2","cumButtS3"] , [name])!= -1){
+            if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] , [name])!= -1){
                 g_LinkDB_l+=[name,part];
             }
         }
