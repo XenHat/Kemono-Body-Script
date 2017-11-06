@@ -76,25 +76,6 @@ llSetLinkPrimitiveParamsFast(a,b)
 - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
-#define MESH_ARMS "arms"
-#define MESH_BODY "body"
-#define MESH_HAND_LEFT "handL"
-#define MESH_HAND_RIGHT "handR"
-#define MESH_HIPS "hips"
-#define MESH_LEG_LEFT_ANIMAL "LFleg"
-#define MESH_LEG_LEFT_HUMAN "LHleg"
-#define MESH_LEG_RIGHT_ANIMAL "RFleg"
-#define MESH_LEG_RIGHT_HUMAN "RHleg"
-#define MESH_NECK "neck"
-#define MESH_PG_LAYER "PG"
-#define MESH_ROOT "Kemono - Body"
-#define MESH_FITTED_TORSO_ETC "TorsoEtc"
-#define MESH_FITTED_TORSO_HLEGS "HumanLegs"
-#define MESH_FITTED_TORSO_NIP_0 "NipState0"
-#define MESH_FITTED_TORSO_NIP_1 "NipState1"
-#define MESH_FITTED_TORSO_NIP_A "NipAlpha"
-#define MESH_FITTED_TORSO_CHEST "TorsoChest"
-#define MESH_FITTED_TORSO "Fitted Kemono Torso"
 #define BLADE_ABS "abs"
 #define BLADE_ANKLE_L "ankleL"
 #define BLADE_ANKLE_R "ankleR"
@@ -111,6 +92,8 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_ELBOW_L "elbowL"
 #define BLADE_ELBOW_R "elbowR"
 #define BLADE_FITTED_TORSO "Fitted Torso"
+#define BLADE_FOOT_L "footL"
+#define BLADE_FOOT_R "footR"
 #define BLADE_HIP_L "hipL"
 #define BLADE_HIP_R "hipR"
 #define BLADE_KNEE_L "kneeL"
@@ -134,11 +117,42 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_VIRTUAL_BUTT "butt"
 #define BLADE_WRIST_L "wristL"
 #define BLADE_WRIST_R "wristR"
-#define BLADE_FOOT_R "footR"
-#define BLADE_FOOT_L "footL"
+#define MESH_ARMS "arms"
+#define MESH_BODY "body"
+#define MESH_FITTED_TORSO "Fitted Kemono Torso"
+#define MESH_FITTED_TORSO_CHEST "TorsoChest"
+#define MESH_FITTED_TORSO_ETC "TorsoEtc"
+#define MESH_FITTED_TORSO_HLEGS "HumanLegs"
+#define MESH_FITTED_TORSO_NIP_0 "NipState0"
+#define MESH_FITTED_TORSO_NIP_1 "NipState1"
+#define MESH_FITTED_TORSO_NIP_A "NipAlpha"
+#define MESH_HAND_LEFT "handL"
+#define MESH_HAND_RIGHT "handR"
+#define MESH_HIPS "hips"
+#define MESH_LEG_LEFT_ANIMAL "LFleg"
+#define MESH_LEG_LEFT_HUMAN "LHleg"
+#define MESH_LEG_RIGHT_ANIMAL "RFleg"
+#define MESH_LEG_RIGHT_HUMAN "RHleg"
+#define MESH_NECK "neck"
+#define MESH_PG_LAYER "PG"
+#define MESH_ROOT "Kemono - Body"
 #define g_supported_meshes [\
+"BitState0",\
+"BitState1",\
+"BitState2",\
+"BitState3",\
+"cumButtS1",\
+"cumButtS2",\
+"cumButtS3",\
 MESH_ARMS,\
 MESH_BODY,\
+MESH_FITTED_TORSO,\
+MESH_FITTED_TORSO_CHEST,\
+MESH_FITTED_TORSO_ETC,\
+MESH_FITTED_TORSO_HLEGS,\
+MESH_FITTED_TORSO_NIP_0,\
+MESH_FITTED_TORSO_NIP_1,\
+MESH_FITTED_TORSO_NIP_A,\
 MESH_HAND_LEFT,\
 MESH_HAND_RIGHT,\
 MESH_HIPS,\
@@ -148,21 +162,7 @@ MESH_LEG_RIGHT_ANIMAL,\
 MESH_LEG_RIGHT_HUMAN,\
 MESH_NECK,\
 MESH_PG_LAYER,\
-MESH_ROOT,\
-MESH_FITTED_TORSO_HLEGS,\
-MESH_FITTED_TORSO_CHEST,\
-MESH_FITTED_TORSO,\
-"BitState0",\
-"BitState1",\
-"BitState2",\
-"BitState3",\
-MESH_FITTED_TORSO_NIP_0,\
-MESH_FITTED_TORSO_ETC,\
-MESH_FITTED_TORSO_NIP_1,\
-MESH_FITTED_TORSO_NIP_A,\
-"cumButtS1",\
-"cumButtS2",\
-"cumButtS3"\
+MESH_ROOT\
 ]
 key g_Owner_k;
 list g_RemConfirmKeys_l;
