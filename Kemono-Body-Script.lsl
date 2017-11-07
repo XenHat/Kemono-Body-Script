@@ -52,6 +52,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 #define g_internal_version_s "0.1.4"
 /* Defines */
 // #define DEBUG
+// #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
@@ -783,17 +784,6 @@ default {
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
         #endif
-        #ifdef DEBUG
-        llSetText("UNIT SELF-TEST",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-        llSay(0,"g_RuntimeBodyStateSettings: "+(string)g_RuntimeBodyStateSettings);
-        llSay(0,"FKT_PRESENT: "+(string)FKT_PRESENT);
-        integer test1=getBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
-        llSay(0,"Test1: "+(string)test1);
-        setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
-        integer test2=getBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
-        llSay(0,"Test2: "+(string)test2);
-        llOwnerSay("Counting");
-        #endif
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         string texture=llGetInventoryName(INVENTORY_TEXTURE,0);
         integer retexture=texture !="";
@@ -827,8 +817,26 @@ default {
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
         #endif
-        llListen(KEMONO_COM_CH,"","","");
-        llSetText("",HOVER_TEXT_COLOR,0.0);
+        #ifdef DEBUG_SELF_TEST
+        llSetText("[UNIT SELF-TEST]",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        list selftest=["neck","collar","shoulderUL","shoulderUR","shoulderLL",
+            "shoulderLR","armUL","armUR","elbowL","elbowR","armLL","armLR",
+            "wristL","wristR","handL","handR","chest","breast","ribs","abs",
+            "belly","pelvis","hipL","hipR","thighUL","thighUR","thighLL",
+            "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
+            "shinLL","shinLR","ankleL","ankleR","footL","footR"];
+        integer id = xlListLen2MaxID(selftest);
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        for(;id>-1;id--){
+            xlProcessCommand("hide:"+llList2String(selftest,id));
+            llSleep(0.0625);
+        }
+        id = xlListLen2MaxID(selftest);
+        for(;id>-1;id--){
+            xlProcessCommand("show:"+llList2String(selftest,id));
+            llSleep(0.0625);
+        }
+        #endif
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION, 1);
         #ifdef DEBUG_DATA
@@ -840,7 +848,8 @@ default {
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         else
             llSetTimerEvent(0.1);
-        llSetText("",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        llSetText("",ZERO_VECTOR,0.0);
+        llListen(KEMONO_COM_CH,"","","");
     }
     listen(integer channel, string name, key id, string message){
         key owner_key=llGetOwnerKey(id);
