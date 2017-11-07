@@ -529,18 +529,6 @@ default {
                 g_LinkDB_l+=[name,part];
             }
         }
-
-
-        if(llListFindList(g_LinkDB_l, [ "RHleg" ]) < 0)
-            human_mode=FALSE;
-        if(llListFindList(g_LinkDB_l, [ "RFleg" ]) < 0)
-            human_mode=TRUE;
-        llSetText("", <0.925,0.925,0.925> , 0.75 );
-        human_mode=!human_mode;
-        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-        human_mode=!human_mode;
-
-        xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llListen( -34525475 ,"","","");
         llSetText("", <0.925,0.925,0.925> ,0.0);
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
