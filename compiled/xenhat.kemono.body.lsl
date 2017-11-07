@@ -529,15 +529,14 @@ default {
                 g_LinkDB_l+=[name,part];
             }
         }
-        llListen( -34525475 ,"","","");
-        llSetText("", <0.925,0.925,0.925> ,0.0);
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION, 1);
         if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         else
             llSetTimerEvent(0.1);
-        llSetText("", <0.925,0.925,0.925> , 0.75 );
+        llSetText("",ZERO_VECTOR,0.0);
+        llListen( -34525475 ,"","","");
     }
     listen(integer channel, string name, key id, string message){
         key owner_key=llGetOwnerKey(id);
