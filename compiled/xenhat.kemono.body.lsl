@@ -1,4 +1,4 @@
-float g_Config_MaximumOpacity= 1.00;
+float g_Config_MaximumOpacity=1.00;
 key g_Owner_k;
 list g_RemConfirmKeys_l;
 list g_LinkDB_l=[];
@@ -14,7 +14,7 @@ list s_KFTPelvisMeshes=[
 "BitState2",
 "BitState3"
 ];
-integer g_HasAnimPerms= FALSE;
+integer g_HasAnimPerms=FALSE;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
 integer g_CurrentFittedButState=1;
@@ -36,7 +36,7 @@ integer human_mode=TRUE;
 
 
 
-key g_internal_httprid_k = NULL_KEY;
+key g_internal_httprid_k =NULL_KEY;
 list xlGetFacesByBladeName(string name){
     if(name== "abs" ) return [6,7];
     if(name== "ankleL" ){
@@ -387,18 +387,18 @@ list xlBladeNameToPrimNames(string name){
 list xlSetNip(){
     list params;
 
-    integer meshes_count=  ((s_FittedNipsMeshNames!=[])-1) ;
+    integer meshes_count= ((s_FittedNipsMeshNames!=[])-1) ;
     for(;meshes_count > -1;meshes_count--){
-        integer visible= ! (!!(g_RuntimeBodyStateSettings & 16 ))  * (meshes_count==g_CurrentFittedNipState);
+        integer visible=! (!!(g_RuntimeBodyStateSettings & 16 ))  * (meshes_count==g_CurrentFittedNipState);
 
-        string mesh_name= llList2String(s_FittedNipsMeshNames,meshes_count);
-        list prim_names= xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=  ((prim_names!=[])-1) ;
+        string mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+        list prim_names=xlBladeNameToPrimNames(mesh_name);
+        integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
-            integer link_id= llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l= xlGetFacesByBladeName( "nips" );
-            integer faces_count=  ((faces_l!=[])-1) ;
+            list faces_l=xlGetFacesByBladeName( "nips" );
+            integer faces_count= ((faces_l!=[])-1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
         }
@@ -408,18 +408,18 @@ list xlSetNip(){
 list xlSetVag(){
     list params;
 
-    integer meshes_count=  ((s_KFTPelvisMeshes!=[])-1) ;
+    integer meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
     for(;meshes_count > -1;meshes_count--){
-        integer visible= ! (!!(g_RuntimeBodyStateSettings & 32 ))  * (meshes_count==g_CurrentFittedVagState);
+        integer visible=! (!!(g_RuntimeBodyStateSettings & 32 ))  * (meshes_count==g_CurrentFittedVagState);
 
-        string mesh_name= llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names= xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=  ((prim_names!=[])-1) ;
+        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
+        list prim_names=xlBladeNameToPrimNames(mesh_name);
+        integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
-            integer link_id= llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l= xlGetFacesByBladeName( "vagoo" );
-            integer faces_count=  ((faces_l!=[])-1) ;
+            list faces_l=xlGetFacesByBladeName( "vagoo" );
+            integer faces_count= ((faces_l!=[])-1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
         }
@@ -429,18 +429,18 @@ list xlSetVag(){
 list xlSetBut(){
     list params;
 
-    integer meshes_count=  ((s_KFTPelvisMeshes!=[])-1) ;
+    integer meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
     for(;meshes_count > -1;meshes_count--){
-        integer visible= ! (!!(g_RuntimeBodyStateSettings & 8 ))  * (meshes_count==g_CurrentFittedButState);
+        integer visible=! (!!(g_RuntimeBodyStateSettings & 8 ))  * (meshes_count==g_CurrentFittedButState);
 
-        string mesh_name= llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names= xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=  ((prim_names!=[])-1) ;
+        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
+        list prim_names=xlBladeNameToPrimNames(mesh_name);
+        integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
-            integer link_id= llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l= xlGetFacesByBladeName( "butt" );
-            integer faces_count=  ((faces_l!=[])-1) ;
+            list faces_l=xlGetFacesByBladeName( "butt" );
+            integer faces_count= ((faces_l!=[])-1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
         }
@@ -451,80 +451,80 @@ list xlSetBut(){
 list xlGetBladeToggleParamsNew(string blade_name, integer showit){
     list params;
     if(blade_name== "breast"  ){
-        g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
-        params += xlSetNip();
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
+        params +=xlSetNip();
     }
     else if( (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-        g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
-        params += xlSetVag();
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
+        params +=xlSetVag();
     }
 
     else if(! (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-        blade_name=  "vagoo" ;
-        showit *= !(g_RuntimeBodyStateSettings &  2 );
+        blade_name= "vagoo" ;
+        showit *=!(g_RuntimeBodyStateSettings &  2 );
     }
-    list prim_names= xlBladeNameToPrimNames(blade_name);
-    integer blade_prim_iter=  ((prim_names!=[])-1) ;
+    list prim_names=xlBladeNameToPrimNames(blade_name);
+    integer blade_prim_iter= ((prim_names!=[])-1) ;
     for(;blade_prim_iter > -1;blade_prim_iter--){
         params+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,blade_prim_iter)])+1)];
-        list faces_l= xlGetFacesByBladeName(blade_name);
-        integer faces_index=  ((faces_l!=[])-1) ;
+        list faces_l=xlGetFacesByBladeName(blade_name);
+        integer faces_index= ((faces_l!=[])-1) ;
         for(;faces_index > -1; faces_index--)
             params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, (showit ^ ( "vagoo" ==blade_name)) * g_Config_MaximumOpacity];
     }
     return params;
 }
 xlProcessCommand(string message){
-    list data= llParseStringKeepNulls(message,[":"],[]);
-    string command= llList2String(data,0);
+    list data=llParseStringKeepNulls(message,[":"],[]);
+    string command=llList2String(data,0);
     integer showit;
 
     if(command=="show")
-        showit= TRUE;
+        showit=TRUE;
     else if(command=="hide")
-        showit= FALSE;
+        showit=FALSE;
     else if( (!!(g_RuntimeBodyStateSettings & 1 )) )
         if(command=="setbutt"){
-            g_CurrentFittedButState= llList2Integer(data,1);
+            g_CurrentFittedButState=llList2Integer(data,1);
             llSetLinkPrimitiveParamsFast(LINK_SET,xlSetBut()) ;
         }
         else if(command=="setvag"){
-            g_CurrentFittedVagState= llList2Integer(data,1);
+            g_CurrentFittedVagState=llList2Integer(data,1);
             llSetLinkPrimitiveParamsFast(LINK_SET,xlSetVag()) ;
         }
         else if(command=="setnip"){
-            g_CurrentFittedNipState= llList2Integer(data,1);
+            g_CurrentFittedNipState=llList2Integer(data,1);
             llSetLinkPrimitiveParamsFast(LINK_SET,xlSetNip()) ;
         }
         else
             return;
     else
         return;
-    string part_wanted_s= llList2String(data, 1);
+    string part_wanted_s=llList2String(data, 1);
     if(part_wanted_s== "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) ){
-        g_CurrentFittedNipState= showit;
+        g_CurrentFittedNipState=showit;
         llSetLinkPrimitiveParamsFast(LINK_SET,xlSetNip()) ;
         return;
     }
     else if(part_wanted_s== "vagoo"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) ){
-        g_CurrentFittedVagState= showit;
+        g_CurrentFittedVagState=showit;
         g_TogglingPGMeshes=TRUE;
         llSetLinkPrimitiveParamsFast(LINK_SET,xlSetVag()) ;
         g_TogglingPGMeshes=FALSE;
         return;
     }
     else if(part_wanted_s== "vagoo" ){
-        g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings & (~ 2 )) | ( 2  * !showit);
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2  * !showit);
         if(!showit && !g_TogglingPGMeshes){
-            g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
         }
         else if(showit && g_TogglingPGMeshes)
-           g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
+           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
     }
-    integer list_size=  ((data!=[])-1) ;
+    integer list_size= ((data!=[])-1) ;
     list params;
     for(;list_size > 0;list_size--)
-        params += xlGetBladeToggleParamsNew(llList2String(data, list_size),showit);
+        params +=xlGetBladeToggleParamsNew(llList2String(data, list_size),showit);
     llSetLinkPrimitiveParamsFast(LINK_SET,params) ;
 }
 default {
@@ -535,20 +535,20 @@ default {
             llResetScript();
     }
     state_entry(){
-        g_Owner_k= llGetOwner();
-        integer part= llGetNumberOfPrims();
+        g_Owner_k=llGetOwner();
+        integer part=llGetNumberOfPrims();
         for (;part > 0;--part){
-            string name= llGetLinkName(part);
+            string name=llGetLinkName(part);
             if(! (!!(g_RuntimeBodyStateSettings & 1 )) ){
 
-                integer fitted_torso_string_index= llSubStringIndex(name,  "Fitted Kemono Torso" );
+                integer fitted_torso_string_index=llSubStringIndex(name,  "Fitted Kemono Torso" );
                 if(fitted_torso_string_index > 5)
                     if(fitted_torso_string_index < 8){
-                        g_RuntimeBodyStateSettings= (g_RuntimeBodyStateSettings | 1 ) ;
+                        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
                         name= "Fitted Kemono Torso" ;
                     }
             }
-            if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] , [name])!= -1){
+            if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] , [name])!=-1){
                 g_LinkDB_l+=[name,part];
             }
         }
@@ -566,8 +566,8 @@ default {
         xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llListen( -34525475 ,"","","");
         llSetText("", <0.925,0.925,0.925> ,0.0);
-        g_AnimDeform= llGetInventoryName(INVENTORY_ANIMATION, 0);
-        g_AnimUndeform= llGetInventoryName(INVENTORY_ANIMATION, 1);
+        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
+        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION, 1);
         if(llGetAttached())
             llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         else
@@ -575,14 +575,14 @@ default {
         llSetText("", <0.925,0.925,0.925> , 0.75 );
     }
     listen(integer channel, string name, key id, string message){
-        key owner_key= llGetOwnerKey(id);
+        key owner_key=llGetOwnerKey(id);
         if(owner_key==id){
 
             if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
                 return;
         }
 
-        else if(owner_key != g_Owner_k)
+        else if(owner_key !=g_Owner_k)
             return;
         if("reqFTData"==message){
             if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
@@ -603,9 +603,9 @@ default {
                     g_RemConfirmKeys_l +=[id];
         }
         else if(message=="remove"){
-            integer placeinlist= llListFindList(g_RemConfirmKeys_l, [(key)id]);
-            if(placeinlist != -1)
-                g_RemConfirmKeys_l= llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
+            integer placeinlist=llListFindList(g_RemConfirmKeys_l, [(key)id]);
+            if(placeinlist !=-1)
+                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
             return;
         }
         else if(message=="Hlegs"){
@@ -637,7 +637,7 @@ default {
     }
     on_rez(integer p){
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-        g_internal_httprid_k= llHTTPRequest("https://api.github.com/repos/"+ "XenHat/"+ "Kemono-Body-Script" +"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"+ "XenHat/"+ "Kemono-Body-Script" +"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
     }
     attach(key id){
         if(id==(key)NULL_KEY)
@@ -656,42 +656,42 @@ default {
             else
                 llStartAnimation(g_AnimDeform);
         }
-        string text= g_HoverText;
+        string text=g_HoverText;
         llSetText(text+"\n \n \n \n ",  <0.925,0.925,0.925> ,  0.75 );
         llSetTimerEvent(10);
     }
     http_response(key request_id, integer status, list metadata, string body)
     {
-        if(request_id != g_internal_httprid_k) return;
-        string new_version_s= llJsonGetValue(body,["tag_name"]);
+        if(request_id !=g_internal_httprid_k) return;
+        string new_version_s=llJsonGetValue(body,["tag_name"]);
         if(new_version_s== "0.1.4" ) return;
-        list cur_version_l= llParseString2List( "0.1.4" , ["."], [""]);
-        list new_version_l= llParseString2List(new_version_s, ["."], [""]);
-        string update_type= "version";
+        list cur_version_l=llParseString2List( "0.1.4" , ["."], [""]);
+        list new_version_l=llParseString2List(new_version_s, ["."], [""]);
+        string update_type="version";
         if(llList2Integer(new_version_l, 0) > llList2Integer(cur_version_l, 0)){
-            update_type= "major version"; jump update;
+            update_type="major version"; jump update;
         }
         else if(llList2Integer(new_version_l, 1) > llList2Integer(cur_version_l, 1)){
-            update_type= "version"; jump update;
+            update_type="version"; jump update;
         }
         else if(llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)){
-            update_type= "patch"; jump update;
+            update_type="patch"; jump update;
         }
         jump end;
         @update;
-        string sHelpText= "[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "+ "Kemono-Body-Script"  +"] v"
+        string sHelpText="[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "+ "Kemono-Body-Script"  +"] v"
        + "0.1.4" +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
-        string update_title= llJsonGetValue(body,["name"]);
+        string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")
-            update_title= "";
+            update_title="";
         else update_title=":\n\n"+update_title;
-        string update_description= llJsonGetValue(body,["body"]);
+        string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕")
-            update_description= "";
+            update_description="";
         else update_description+="\n";
-        if(llStringLength(update_description) >= 128)
-            update_description= "Too many changes, see link below.";
-        string g_cached_updateMsg_s= "A new "+update_type+" (v"+new_version_s +") is available!"
+        if(llStringLength(update_description) >=128)
+            update_description="Too many changes, see link below.";
+        string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s +") is available!"
             +update_title+"\n";
             g_cached_updateMsg_s +=update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script" +"/compare/"
