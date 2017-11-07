@@ -165,55 +165,56 @@ MESH_NECK,\
 MESH_PG_LAYER,\
 MESH_ROOT\
 ]
-key g_Owner_k;
-list g_RemConfirmKeys_l;
-list g_LinkDB_l=[];
-list s_FittedNipsMeshNames=[
-MESH_FITTED_TORSO_NIP_0, /* PG */
-MESH_FITTED_TORSO_ETC, /* Adult, idle */
-MESH_FITTED_TORSO_NIP_1, /* Adult, puffy */
-MESH_FITTED_TORSO_NIP_A /* Used in Starbright HUD/API */
-];
-list s_KFTPelvisMeshes=[
-"BitState0", /* PG */
-"BitState1", /* Adult, idle */
-"BitState2", /* Adult, aroused */
-"BitState3" /* Adult, gaping */
-];
-integer g_HasAnimPerms=FALSE;
-integer g_CurrentFittedNipState=1;
-integer g_CurrentFittedVagState=1;
-integer g_CurrentFittedButState=1;
-integer g_TogglingPGMeshes=FALSE;
+#define s_FittedNipsMeshNames [\
+MESH_FITTED_TORSO_NIP_0,\
+MESH_FITTED_TORSO_ETC,\
+MESH_FITTED_TORSO_NIP_1,\
+MESH_FITTED_TORSO_NIP_A\
+]
+#define s_KFTPelvisMeshes [\
+"BitState0",\
+"BitState1",\
+"BitState2",\
+"BitState3"\
+]
 #define FKT_PRESENT 1
 /* PG States */
 #define KSB_PGVAGOO 2
 #define KSB_PGNIPLS 4
-/* Temporary flags for blade sync purposes*/
+/* Flags for blade sync purposes*/
 #define FKT_FHIDE_B 8
 #define FKT_FHIDE_N 16
 #define FKT_FHIDE_V 32
-integer g_RuntimeBodyStateSettings;
-/* usage:
-    a=variable/set
-    b=bit (define, see above)
+/* === Some shorthand operators are not allowed in LSL, so let's do some hackery ===
+    usage:
+        a=variable/set
+        b=bit (define, see above)
 */
-/* Some shorthand operators are not allowed in LSL */
-#define clrBit(a,b) a=(a & (~b))
-#define setBit(a,b) a=(a | b)
 #define chgBit(a,b,c) a=(a & (~b)) | (b * c);
-#define togBit(a,b) a ^=1 << b
-/* Note: This one can be used inline */
+#define clrBit(a,b) a=(a & (~b))
 #define getBit(a,b) (!!(a & b))
-string g_AnimDeform;
-string g_AnimUndeform;
-string g_HoverText;
+#define setBit(a,b) a=(a | b)
+#define togBit(a,b) a ^=1 << b
 #define xlListLen2MaxID(a) ((a!=[])-1)
-integer human_mode=TRUE; /* Prefer when available*/
-#define script_name "Kemono-Body-Script"
+/* === Updater settings === */
 #define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
-key g_internal_httprid_k               =NULL_KEY;
+#define script_name "Kemono-Body-Script"
+/* === Runtime settings and values === */
+integer g_CurrentFittedButState=1;
+integer g_CurrentFittedNipState=1;
+integer g_CurrentFittedVagState=1;
+integer g_HasAnimPerms=FALSE;
+integer g_RuntimeBodyStateSettings;
+integer g_TogglingPGMeshes=FALSE;
+integer human_mode=TRUE; /* Prefer when available*/
+key g_internal_httprid_k=NULL_KEY;
+key g_Owner_k;
+list g_LinkDB_l=[];
+list g_RemConfirmKeys_l;
+string g_AnimDeform;
+string g_AnimUndeform;
+/* === User Functions === */
 list xlGetFacesByBladeName(string name){
     if(name==BLADE_ABS) return [6,7];
     if(name==BLADE_ANKLE_L){
@@ -955,7 +956,7 @@ default {
             else
                 llStartAnimation(g_AnimDeform);
         }
-        string text=g_HoverText;
+        string text;
 #ifdef DEBUG_TEXT
         text="[DEBUG]"+text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
@@ -971,6 +972,7 @@ default {
     http_response(key request_id, integer status, list metadata, string body)
     {
         if(request_id !=g_internal_httprid_k) return;// exit if unknown
+        g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
         if(new_version_s==g_internal_version_s) return;
         list cur_version_l=llParseString2List(g_internal_version_s, ["."], [""]);
