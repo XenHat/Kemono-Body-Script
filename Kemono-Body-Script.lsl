@@ -579,30 +579,49 @@ NipAlpha==????
 */
 /* Note: The Starbright stock behavior is the following:
 Show PG layer when hiding nipples
-Forcefully set the current nipple type to Adult, idle on PG disable
+Forcefully set the current genital state to Adult, idle on PG disable
 */
-list xlSetNip(){
+list xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_FUNCTIONS
-    llOwnerSay("xlSetNip");
+    llOwnerSay("xlSetGenitals");
     #endif
     list params;
-    /* Nip meshes */
-    integer meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
+    integer meshes_count=0;
+    if(FKT_FHIDE_N==pTogglePart)
+        meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
+    else
+        meshes_count=xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
+    integer visible=FALSE;
+    string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
-        integer visible=!getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N) * (meshes_count==g_CurrentFittedNipState);
-        /* Process each nipple mesh one by one */
-        string mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+        /* Process each genital mesh one by one */
+        if(FKT_FHIDE_N==pTogglePart)
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedNipState);
+        else if(FKT_FHIDE_V==pTogglePart)
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedVagState);
+        else if(FKT_FHIDE_B==pTogglePart)
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedButState);
+        if(FKT_FHIDE_N==pTogglePart)
+            mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+        else
+            mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count=xlListLen2MaxID(prim_names);
         for(;prim_count> -1;prim_count--){
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName(BLADE_NIPS);
+            list faces_l=[];
+            if(FKT_FHIDE_N==pTogglePart)
+                faces_l=xlGetFacesByBladeName(BLADE_NIPS);
+            else if(FKT_FHIDE_V==pTogglePart)
+                faces_l=xlGetFacesByBladeName(BLADE_VAG);
+            else if(FKT_FHIDE_B==pTogglePart)
+                faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
             integer faces_count=xlListLen2MaxID(faces_l);
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
             #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("BLADENAME:"+BLADE_NIPS+"|FACES:"+llList2CSV(faces_l)
+            llOwnerSay("FACES:"+llList2CSV(faces_l)
                 +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
                 +"|visible:"+(string)visible);
             #endif
@@ -610,74 +629,6 @@ list xlSetNip(){
     }
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:"+llList2CSV(params));
-    #endif
-    return params;
-}
-list xlSetVag(){
-    #ifdef DEBUG_FUNCTIONS
-    llOwnerSay("xlSetVag");
-    #endif
-    list params;
-    /* Vagoo meshes */
-    integer meshes_count=xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
-    for(;meshes_count > -1;meshes_count--){
-        integer visible=!getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V) * (meshes_count==g_CurrentFittedVagState);
-        /* Process each nipple mesh one by one */
-        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=xlListLen2MaxID(prim_names);
-        for(;prim_count> -1;prim_count--){
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName(BLADE_VAG);
-            integer faces_count=xlListLen2MaxID(faces_l);
-            for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("BLADENAME:"+BLADE_VAG+"|FACES:"+llList2CSV(faces_l)
-                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
-                +"|visible:"+(string)visible);
-            #endif
-        }
-    }
-    #ifdef DEBUG_FACE_SELECT
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:"+llList2CSV(params));
-    #endif
-    #endif
-    return params;
-}
-list xlSetBut(){
-    #ifdef DEBUG_FUNCTIONS
-    llOwnerSay("xlSetBut");
-    #endif
-    list params;
-    /* Butt meshes */
-    integer meshes_count=xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
-    for(;meshes_count > -1;meshes_count--){
-        integer visible=!getBit(g_RuntimeBodyStateSettings,FKT_FHIDE_B) * (meshes_count==g_CurrentFittedButState);
-        /* Process each nipple mesh one by one */
-        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=xlListLen2MaxID(prim_names);
-        for(;prim_count> -1;prim_count--){
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-            integer faces_count=xlListLen2MaxID(faces_l);
-            for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("BLADENAME:"+BLADE_VIRTUAL_BUTT+"|FACES:"+llList2CSV(faces_l)
-                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
-                +"|visible:"+(string)visible);
-            #endif
-        }
-    }
-    #ifdef DEBUG_FACE_SELECT
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:"+llList2CSV(params));
-    #endif
     #endif
     return params;
 }
@@ -691,11 +642,11 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit){
     #endif
     if(blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/){
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-        params +=xlSetNip();
+        params +=xlSetGenitals(FKT_FHIDE_N);
     }
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS){
         chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
-        params +=xlSetVag();
+        params +=xlSetGenitals(FKT_FHIDE_V);
     }
     /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
     else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS){
@@ -764,15 +715,15 @@ xlProcessCommand(string message){
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
         if(command=="setbutt"){
             g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetBut());
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_B));
         }
         else if(command=="setvag"){
             g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_V));
         }
         else if(command=="setnip"){
             g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_N));
         }
         else
             return;
@@ -784,13 +735,13 @@ xlProcessCommand(string message){
     #endif
     if(part_wanted_s==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
         g_CurrentFittedNipState=showit;
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetNip());
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_N));
         return;
     }
     else if(part_wanted_s==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
         g_CurrentFittedVagState=showit;
         g_TogglingPGMeshes=TRUE;
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetVag());
+        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_V));
         g_TogglingPGMeshes=FALSE;
         return;
     }
