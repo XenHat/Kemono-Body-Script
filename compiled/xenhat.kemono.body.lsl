@@ -384,62 +384,39 @@ list xlBladeNameToPrimNames(string name){
     }
     return [name];
 }
-list xlSetNip(){
+list xlSetGenitals(integer pTogglePart){
     list params;
-
-    integer meshes_count= ((s_FittedNipsMeshNames!=[])-1) ;
+    integer meshes_count=0;
+    if( 16 ==pTogglePart)
+        meshes_count= ((s_FittedNipsMeshNames!=[])-1) ;
+    else
+        meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
+    integer visible=FALSE;
+    string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
-        integer visible=! (!!(g_RuntimeBodyStateSettings & 16 ))  * (meshes_count==g_CurrentFittedNipState);
 
-        string mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+        if( 16 ==pTogglePart)
+            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  * (meshes_count==g_CurrentFittedNipState);
+        else if( 32 ==pTogglePart)
+            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  * (meshes_count==g_CurrentFittedVagState);
+        else if( 8 ==pTogglePart)
+            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  * (meshes_count==g_CurrentFittedButState);
+        if( 16 ==pTogglePart)
+            mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+        else
+            mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName( "nips" );
-            integer faces_count= ((faces_l!=[])-1) ;
-            for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-        }
-    }
-    return params;
-}
-list xlSetVag(){
-    list params;
-
-    integer meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
-    for(;meshes_count > -1;meshes_count--){
-        integer visible=! (!!(g_RuntimeBodyStateSettings & 32 ))  * (meshes_count==g_CurrentFittedVagState);
-
-        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count= ((prim_names!=[])-1) ;
-        for(;prim_count> -1;prim_count--){
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName( "vagoo" );
-            integer faces_count= ((faces_l!=[])-1) ;
-            for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
-        }
-    }
-    return params;
-}
-list xlSetBut(){
-    list params;
-
-    integer meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
-    for(;meshes_count > -1;meshes_count--){
-        integer visible=! (!!(g_RuntimeBodyStateSettings & 8 ))  * (meshes_count==g_CurrentFittedButState);
-
-        string mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count= ((prim_names!=[])-1) ;
-        for(;prim_count> -1;prim_count--){
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
-            list faces_l=xlGetFacesByBladeName( "butt" );
+            list faces_l=[];
+            if( 16 ==pTogglePart)
+                faces_l=xlGetFacesByBladeName( "nips" );
+            else if( 32 ==pTogglePart)
+                faces_l=xlGetFacesByBladeName( "vagoo" );
+            else if( 8 ==pTogglePart)
+                faces_l=xlGetFacesByBladeName( "butt" );
             integer faces_count= ((faces_l!=[])-1) ;
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
@@ -452,11 +429,11 @@ list xlGetBladeToggleParamsNew(string blade_name, integer showit){
     list params;
     if(blade_name== "breast"  ){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
-        params +=xlSetNip();
+        params +=xlSetGenitals( 16 );
     }
     else if( (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
-        params +=xlSetVag();
+        params +=xlSetGenitals( 32 );
     }
 
     else if(! (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
@@ -486,15 +463,15 @@ xlProcessCommand(string message){
     else if( (!!(g_RuntimeBodyStateSettings & 1 )) )
         if(command=="setbutt"){
             g_CurrentFittedButState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetBut()) ;
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
         }
         else if(command=="setvag"){
             g_CurrentFittedVagState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetVag()) ;
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
         }
         else if(command=="setnip"){
             g_CurrentFittedNipState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetNip()) ;
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
         }
         else
             return;
@@ -503,13 +480,13 @@ xlProcessCommand(string message){
     string part_wanted_s=llList2String(data, 1);
     if(part_wanted_s== "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) ){
         g_CurrentFittedNipState=showit;
-        llSetLinkPrimitiveParamsFast(LINK_SET,xlSetNip()) ;
+        llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
         return;
     }
     else if(part_wanted_s== "vagoo"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) ){
         g_CurrentFittedVagState=showit;
         g_TogglingPGMeshes=TRUE;
-        llSetLinkPrimitiveParamsFast(LINK_SET,xlSetVag()) ;
+        llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
         g_TogglingPGMeshes=FALSE;
         return;
     }
