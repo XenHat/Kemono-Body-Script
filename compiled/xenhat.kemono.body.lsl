@@ -424,33 +424,6 @@ list xlSetGenitals(integer pTogglePart){
     }
     return params;
 }
-
-list xlGetBladeToggleParamsNew(string blade_name, integer showit){
-    list params;
-    if(blade_name== "breast"  ){
-        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
-        params +=xlSetGenitals( 16 );
-    }
-    else if( (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
-        params +=xlSetGenitals( 32 );
-    }
-
-    else if(! (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-        blade_name= "vagoo" ;
-        showit *=!(g_RuntimeBodyStateSettings &  2 );
-    }
-    list prim_names=xlBladeNameToPrimNames(blade_name);
-    integer blade_prim_iter= ((prim_names!=[])-1) ;
-    for(;blade_prim_iter > -1;blade_prim_iter--){
-        params+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,blade_prim_iter)])+1)];
-        list faces_l=xlGetFacesByBladeName(blade_name);
-        integer faces_index= ((faces_l!=[])-1) ;
-        for(;faces_index > -1; faces_index--)
-            params+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, (showit ^ ( "vagoo" ==blade_name)) * g_Config_MaximumOpacity];
-    }
-    return params;
-}
 xlProcessCommand(string message){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
@@ -500,8 +473,34 @@ xlProcessCommand(string message){
     }
     integer list_size= ((data!=[])-1) ;
     list params;
-    for(;list_size > 0;list_size--)
-        params +=xlGetBladeToggleParamsNew(llList2String(data, list_size),showit);
+    for(;list_size > 0;list_size--){
+
+        string blade_name=llList2String(data, list_size);
+        list params_internal;
+        if(blade_name== "breast"  ){
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
+            params_internal +=xlSetGenitals( 16 );
+        }
+        else if( (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
+            params_internal +=xlSetGenitals( 32 );
+        }
+
+        else if(! (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
+            blade_name= "vagoo" ;
+            showit *=!(g_RuntimeBodyStateSettings &  2 );
+        }
+        list prim_names=xlBladeNameToPrimNames(blade_name);
+        integer blade_prim_iter= ((prim_names!=[])-1) ;
+        for(;blade_prim_iter > -1;blade_prim_iter--){
+            params_internal+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,blade_prim_iter)])+1)];
+            list faces_l=xlGetFacesByBladeName(blade_name);
+            integer faces_index= ((faces_l!=[])-1) ;
+            for(;faces_index > -1; faces_index--)
+                params_internal+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, (showit ^ ( "vagoo" ==blade_name)) * g_Config_MaximumOpacity];
+        }
+    params+=params_internal;
+    }
     llSetLinkPrimitiveParamsFast(LINK_SET,params) ;
 }
 default {
