@@ -6,7 +6,9 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE;
+
 key g_internal_httprid_k=NULL_KEY;
+
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_RemConfirmKeys_l;
@@ -576,7 +578,9 @@ default {
     }
     on_rez(integer p){
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"+ "XenHat/"+ "Kemono-Body-Script" +"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
+
     }
     attach(key id){
         if(id==(key)NULL_KEY)
@@ -599,6 +603,7 @@ default {
         llSetText(text+"\n \n \n \n ",  <0.925,0.925,0.925> ,  0.75 );
         llSetTimerEvent(10);
     }
+
     http_response(key request_id, integer status, list metadata, string body)
     {
         if(request_id !=g_internal_httprid_k) return;
@@ -640,4 +645,5 @@ default {
         llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
         @end;
     }
+
 }
