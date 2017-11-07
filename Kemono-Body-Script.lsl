@@ -55,6 +55,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
 // #define DEBUG_ENTIRE_BODY_ALPHA
+#define GITHUB_UPDATER
 // #define DEBUG_LISTEN
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
@@ -208,7 +209,9 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE; /* Prefer when available*/
+#ifdef GITHUB_UPDATER
 key g_internal_httprid_k=NULL_KEY;
+#endif
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_RemConfirmKeys_l;
@@ -933,7 +936,9 @@ default {
     }
     on_rez(integer p){
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        #ifdef GITHUB_UPDATER
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"+g_internal_repo_s+"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
+        #endif
     }
     attach(key id){
         /* Deform on detach, unlike the stock body. This assumes permissions are granted,
@@ -969,6 +974,7 @@ default {
         llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
     }
+    #ifdef GITHUB_UPDATER
     http_response(key request_id, integer status, list metadata, string body)
     {
         if(request_id !=g_internal_httprid_k) return;// exit if unknown
@@ -1010,4 +1016,5 @@ default {
         llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
         @end;
     }
+    #endif
 }
