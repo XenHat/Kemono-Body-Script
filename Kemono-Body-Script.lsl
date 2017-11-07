@@ -782,7 +782,6 @@ default {
         g_Owner_k=llGetOwner();
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
-        llSetText("Please wait...",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         #endif
         #ifdef DEBUG
         llSetText("UNIT SELF-TEST",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
@@ -825,42 +824,15 @@ default {
                 g_LinkDB_l+=[name,part];
             }
         }
-        /* The Starbright body Stripper has an option to leave the human legs out, so check if these are present at all*/
-        /* TODO: FIXME: Undefined behavior if no legs from kemono body */
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) < 0)
-            human_mode=FALSE; /* Forcefully set to human mode if the animal legs aren't found*/
-        if(llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) < 0)
-            human_mode=TRUE; /* Forcefully set to animal mode if the human legs aren't found*/
-        llSetText("",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-        #ifdef DEBUG
-        llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
-        #endif
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
-        #endif
-        #ifdef DEBUG_TEXT
-        llSetText("Resetting Faces",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-        #endif
-        /* Reset faces*/
-        /* Warning: This command contains an additional "show:nips" and "show:vagoo:" not desired in the reset command*/
-        /* TODO: Persistent storage for states to avoid resetting everything to have a consistent state */
-        human_mode=!human_mode;
-        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-        human_mode=!human_mode;
-        // xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-        xlProcessCommand("show:show:nips:vagoo:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        /* I used texture because TEXTURE_TRANSPARENT tends to disappear totally on some viewers, which is preferable.*/
-        /* TODO: Validate that the root prim is not a body part then scrub and hide it */
-        /* if(llGetAttached()){llSetLinkTexture(LINK_ROOT, TEXTURE_TRANSPARENT, ALL_SIDES);} */
-        /* else {llSetLinkTexture(LINK_ROOT, TEXTURE_BLANK, ALL_SIDES);} */
-        #ifdef DEBUG_TEXT
-        llSetText("Set Listeners"+BLADE_THIGH_L_R,HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         #endif
         llListen(KEMONO_COM_CH,"","","");
         llSetText("",HOVER_TEXT_COLOR,0.0);
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
         g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION, 1);
-        #ifdef DEBUG
+        #ifdef DEBUG_DATA
+        llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
