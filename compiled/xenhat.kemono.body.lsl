@@ -1,42 +1,18 @@
 float g_Config_MaximumOpacity=1.00;
-key g_Owner_k;
-list g_RemConfirmKeys_l;
-list g_LinkDB_l=[];
-list s_FittedNipsMeshNames=[
-"NipState0" ,
-"TorsoEtc" ,
-"NipState1" ,
-"NipAlpha"
-];
-list s_KFTPelvisMeshes=[
-"BitState0",
-"BitState1",
-"BitState2",
-"BitState3"
-];
-integer g_HasAnimPerms=FALSE;
+integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
-integer g_CurrentFittedButState=1;
-integer g_TogglingPGMeshes=FALSE;
-
-
-
-
-
-
-
-
+integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
+integer g_TogglingPGMeshes=FALSE;
+integer human_mode=TRUE;
+key g_internal_httprid_k=NULL_KEY;
+key g_Owner_k;
+list g_LinkDB_l=[];
+list g_RemConfirmKeys_l;
 string g_AnimDeform;
 string g_AnimUndeform;
-string g_HoverText;
 
-integer human_mode=TRUE;
-
-
-
-key g_internal_httprid_k =NULL_KEY;
 list xlGetFacesByBladeName(string name){
     if(name== "abs" ) return [6,7];
     if(name== "ankleL" ){
@@ -244,7 +220,7 @@ list xlBladeNameToPrimNames(string name){
     else if(name== "handR" ) return [ "handR" ];
     else if(name== "hipL"  || name== "hipR" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+            return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,g_CurrentFittedVagState)];
         return [ "hips" ];
     }
     else if(name== "neck" ){
@@ -254,7 +230,7 @@ list xlBladeNameToPrimNames(string name){
     }
     else if(name== "pelvis" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+            return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,g_CurrentFittedVagState)];
         return [ "hips" ];
     }
     else if(name== "kneeR" ){
@@ -354,14 +330,14 @@ list xlBladeNameToPrimNames(string name){
     }
     else if(name== "nips" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            return [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+            return [llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] , g_CurrentFittedNipState)];
         return [ "PG" ];
     }
     else if(name== "vagoo" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
             if(g_TogglingPGMeshes)
-                return [llList2String(s_KFTPelvisMeshes, 0)];
-            return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+                return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] , 0)];
+            return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] , g_CurrentFittedVagState)];
         return [ "PG" ];
     }
     else if(name== "thighLR" ){
@@ -388,9 +364,9 @@ list xlSetGenitals(integer pTogglePart){
     list params;
     integer meshes_count=0;
     if( 16 ==pTogglePart)
-        meshes_count= ((s_FittedNipsMeshNames!=[])-1) ;
+        meshes_count= (( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] !=[])-1) ;
     else
-        meshes_count= ((s_KFTPelvisMeshes!=[])-1) ;
+        meshes_count= (( ["BitState0","BitState1","BitState2","BitState3"] !=[])-1) ;
     integer visible=FALSE;
     string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
@@ -402,9 +378,9 @@ list xlSetGenitals(integer pTogglePart){
         else if( 8 ==pTogglePart)
             visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  * (meshes_count==g_CurrentFittedButState);
         if( 16 ==pTogglePart)
-            mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
+            mesh_name=llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ,meshes_count);
         else
-            mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
+            mesh_name=llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,meshes_count);
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
@@ -619,13 +595,14 @@ default {
             else
                 llStartAnimation(g_AnimDeform);
         }
-        string text=g_HoverText;
+        string text;
         llSetText(text+"\n \n \n \n ",  <0.925,0.925,0.925> ,  0.75 );
         llSetTimerEvent(10);
     }
     http_response(key request_id, integer status, list metadata, string body)
     {
         if(request_id !=g_internal_httprid_k) return;
+        g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
         if(new_version_s== "0.1.4" ) return;
         list cur_version_l=llParseString2List( "0.1.4" , ["."], [""]);
