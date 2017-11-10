@@ -444,20 +444,20 @@ xlProcessCommand(string message){
     else if(part_wanted_s== "vagoo" ){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2  * !showit);
 
-
-
-
-
-
+        if(!showit && !g_TogglingPGMeshes){
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
+        }
+        else if(showit && g_TogglingPGMeshes)
+           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
     }
     else if(part_wanted_s== "nips" ){
 
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4  * !showit);
-
-
-
-
-
+        if(!g_TogglingPGMeshes && !showit){
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * TRUE); ;
+        }
+        else if(g_TogglingPGMeshes && showit)
+           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * FALSE); ;
     }
     integer list_size= ((data!=[])-1) ;
     list params;
