@@ -685,20 +685,20 @@ xlProcessCommand(string message){
     else if(part_wanted_s==BLADE_VAG){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
         // llOwnerSay("o.o.o.o.o");
-        // if(!showit && !g_TogglingPGMeshes){
-            // chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
-        // }
-        // else if(showit && g_TogglingPGMeshes)
-           // chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+        if(!showit && !g_TogglingPGMeshes){
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+        }
+        else if(showit && g_TogglingPGMeshes)
+           chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
     }
     else if(part_wanted_s==BLADE_NIPS){
         // llOwnerSay("o.o.o.o.o");
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
-        // if(!g_TogglingPGMeshes && !showit){
-            // chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
-        // }
-        // else if(g_TogglingPGMeshes && showit)
-           // chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
+        if(!g_TogglingPGMeshes && !showit){
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
+        }
+        else if(g_TogglingPGMeshes && showit)
+           chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
     }
     integer list_size=xlListLen2MaxID(data);
     #ifdef DEBUG_DATA
