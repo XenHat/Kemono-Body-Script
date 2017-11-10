@@ -684,11 +684,21 @@ xlProcessCommand(string message){
     }
     else if(part_wanted_s==BLADE_VAG){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
-        if(!showit && !g_TogglingPGMeshes){
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
-        }
-        else if(showit && g_TogglingPGMeshes)
-           chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+        // llOwnerSay("o.o.o.o.o");
+        // if(!showit && !g_TogglingPGMeshes){
+            // chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+        // }
+        // else if(showit && g_TogglingPGMeshes)
+           // chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+    }
+    else if(part_wanted_s==BLADE_NIPS){
+        // llOwnerSay("o.o.o.o.o");
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
+        // if(!g_TogglingPGMeshes && !showit){
+            // chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
+        // }
+        // else if(g_TogglingPGMeshes && showit)
+           // chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
     }
     integer list_size=xlListLen2MaxID(data);
     #ifdef DEBUG_DATA
@@ -705,24 +715,33 @@ xlProcessCommand(string message){
         #ifdef DEBUG_COMMAND
         llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
         #endif
-        if(blade_name==BLADE_BREASTS/* || blade_name==BLADE_NIPS*/){
-            chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-            params_internal +=xlSetGenitals(FKT_FHIDE_N);
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            if(blade_name==BLADE_BREASTS){
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
+                params_internal +=xlSetGenitals(FKT_FHIDE_N);
+            }
+            else if(blade_name==BLADE_PELVIS){
+                chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
+                params_internal +=xlSetGenitals(FKT_FHIDE_V);
+            }
         }
-        else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS){
-            chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
-            params_internal +=xlSetGenitals(FKT_FHIDE_V);
-        }
+        else{
         /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
-        else if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT) && blade_name==BLADE_PELVIS){
-            blade_name=BLADE_VAG;
-            showit *=!(g_RuntimeBodyStateSettings & KSB_PGVAGOO);
+            if(blade_name==BLADE_PELVIS){
+                // blade_name=BLADE_VAG;
+                showit *=!(g_RuntimeBodyStateSettings & KSB_PGVAGOO);
+                xlProcessCommand(BLADE_VAG);
+            }
+            else if(blade_name==BLADE_BREASTS){
+                // showit *=!(g_RuntimeBodyStateSettings & KSB_PGNIPLS);
+                // llOwnerSay("GOD NO PLEASE GO AWAY!");
+                if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit)
+                    xlProcessCommand("hide:"+BLADE_NIPS);
+                    // llOwnerSay("nuuuu");
+                else
+                    xlProcessCommand("show:"+BLADE_NIPS);
+            }
         }
-        #ifdef DEBUG_FUNCTIONS
-        if(BLADE_NIPS==blade_name){
-            llOwnerSay("GOD NO PLEASE GO AWAY!");
-        }
-        #endif
         list prim_names=xlBladeNameToPrimNames(blade_name);
         integer blade_prim_iter=xlListLen2MaxID(prim_names);
         #ifdef DEBUG_DATA
