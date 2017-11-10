@@ -443,11 +443,21 @@ xlProcessCommand(string message){
     }
     else if(part_wanted_s== "vagoo" ){
         g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2  * !showit);
-        if(!showit && !g_TogglingPGMeshes){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
-        }
-        else if(showit && g_TogglingPGMeshes)
-           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
+
+
+
+
+
+
+    }
+    else if(part_wanted_s== "nips" ){
+
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4  * !showit);
+
+
+
+
+
     }
     integer list_size= ((data!=[])-1) ;
     list params;
@@ -455,18 +465,32 @@ xlProcessCommand(string message){
 
         string blade_name=llList2String(data, list_size);
         list params_internal;
-        if(blade_name== "breast"  ){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
-            params_internal +=xlSetGenitals( 16 );
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(blade_name== "breast" ){
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
+                params_internal +=xlSetGenitals( 16 );
+            }
+            else if(blade_name== "pelvis" ){
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
+                params_internal +=xlSetGenitals( 32 );
+            }
         }
-        else if( (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
-            params_internal +=xlSetGenitals( 32 );
-        }
+        else{
 
-        else if(! (!!(g_RuntimeBodyStateSettings & 1 ))  && blade_name== "pelvis" ){
-            blade_name= "vagoo" ;
-            showit *=!(g_RuntimeBodyStateSettings &  2 );
+            if(blade_name== "pelvis" ){
+
+                showit *=!(g_RuntimeBodyStateSettings &  2 );
+                xlProcessCommand( "vagoo" );
+            }
+            else if(blade_name== "breast" ){
+
+
+                if(!(g_RuntimeBodyStateSettings &  4 ) && !showit)
+                    xlProcessCommand("hide:"+ "nips" );
+
+                else
+                    xlProcessCommand("show:"+ "nips" );
+            }
         }
         list prim_names=xlBladeNameToPrimNames(blade_name);
         integer blade_prim_iter= ((prim_names!=[])-1) ;
