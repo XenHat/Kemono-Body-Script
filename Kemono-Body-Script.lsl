@@ -1012,10 +1012,8 @@ default {
         else if(llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)){
             update_type="patch"; jump update;
         }
-        jump end;
+        return;
         @update;
-        string sHelpText="[https://github.com/"+g_internal_repo_s +" "+script_name +"] v"
-       +g_internal_version_s+" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n";
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")
             update_title="";
@@ -1026,14 +1024,17 @@ default {
         else update_description+="\n";
         if(llStringLength(update_description) >=128)
             update_description="Too many changes, see link below.";
-        string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s +") is available!"
-            +update_title+"\n";
-            g_cached_updateMsg_s +=update_description+"\n"
+        string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
+            +") is available!"+update_title+"\n"+update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+g_internal_repo_s+"/compare/"
-                +g_internal_version_s+"..."+new_version_s+" Diff "+g_internal_version_s+"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"+g_internal_repo_s
-                +"/"+new_version_s+"/compiled/"+compiled_name+" "+script_name+".lsl]";
-        llDialog(g_Owner_k,sHelpText+g_cached_updateMsg_s,["Close"],-1);
-        @end;
+            +g_internal_version_s+"..."+new_version_s+" Diff "+g_internal_version_s
+            +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"
+            +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
+            +script_name+".lsl]";
+        llDialog(g_Owner_k,"[https://github.com/"+g_internal_repo_s +" "+script_name
+            +"] v"+g_internal_version_s
+            +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n"
+            +g_cached_updateMsg_s,["Close"],-1);
     }
     #endif
 }
