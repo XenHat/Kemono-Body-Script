@@ -1,41 +1,42 @@
-/* <<<---- Enlarge window so you see this on only one line for better visibility ---->>>
-**
-** Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
-** Original creation date: 6/06/2017 22:52:37
-** The latest version of this script is located at:
-**  https://github.com/XenHat/Kemono-Body-Script/blob/master/xenhat.kemono.body.lsl
-**
-** Licensed under the Aladdin Free Public License Version 9
-** For the Full license, see
-**  https://tldrlegal.com/license/aladdin-free-public-license#fulltext
-**
-** The short human readable version of this licence for the benefit of the reader is:
-**
-** You CAN:
-** Modify
-** Distribute
-**
-** You CANNOT:
-**  Hold Liable
-**  Sublicense
-**  Place Warranty
-**  Commercial Use
-** You MUST:
-**  Include License
-**  Include Original
-**  State Changes
-** An online version of the human-readable version of the AFPL can be found at:
-** https://tldrlegal.com/license/aladdin-free-public-license
-**
-** WARNING: Currently the script does not allow custom coloring to be retained
-** due to the way I preserve texturing without needing an applier script.
-**
-** Please contact the author of this script if you wish to trade that functionality
-** for custom coloring support (You will need a full-perm copy of your skin for the
-** texturing to work at all.
-** This is because I do not have the info required to support the kApp applier.
-**/
-/*
+/* <- Enlarge window so you see this on only one line for better visibility ->
+*
+* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
+* Original creation date: 6/06/2017 22:52:37
+* The latest version of this script is located at:
+* https://github.com/XenHat/Kemono-Body-Script/blob/master/xenhat.kemono.body.lsl
+*
+* Licensed under the Aladdin Free Public License Version 9
+* For the Full license, see
+*  https://tldrlegal.com/license/aladdin-free-public-license#fulltext
+*
+* The short human readable version of this licence for the benefit of the
+* reader is:
+*
+* You CAN:
+* Modify
+* Distribute
+*
+* You CANNOT:
+*  Hold Liable
+*  Sublicense
+*  Place Warranty
+*  Commercial Use
+* You MUST:
+*  Include License
+*  Include Original
+*  State Changes
+* An online version of the human-readable version of the AFPL can be found at:
+* https://tldrlegal.com/license/aladdin-free-public-license
+*
+* WARNING: Currently the script does not allow custom coloring to be retained
+* due to the way I preserve texturing without needing an applier script.
+*
+* Please contact the author of this script if you wish to trade that
+* functionality
+* for custom coloring support (You will need a full-perm copy of your skin
+* for the texturing to work at all.
+* This is because I do not have the info required to support the kApp applier.
+*
 .oPYo.               d'b  o                              o   o
 8    8               8                                   8
 8      .oPYo. odYo. o8P  o8 .oPYo. o    o oPYo. .oPYo.  o8P o8 .oPYo. odYo.
@@ -47,7 +48,7 @@
 ::::::::::::::::::::::::::::::...:::::::::::::::::::::::::::::::::::::::::::
 */
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
-/*----------------------------------------------------------------------------------- */
+/*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 #define g_internal_version_s "0.1.4"
 /* Defines */
@@ -186,10 +187,10 @@ MESH_FITTED_TORSO_NIP_A\
 #define FKT_FHIDE_B 8
 #define FKT_FHIDE_N 16
 #define FKT_FHIDE_V 32
-/* === Some shorthand operators are not allowed in LSL, so let's do some hackery ===
-    usage:
-        a=variable/set
-        b=bit (define, see above)
+/* Some shorthand operators are not allowed in LSL, so let's do some hackery
+*    usage:
+*        a=variable/set
+*        b=bit (define, see above)
 */
 #define chgBit(a,b,c) a=(a & (~b)) | (b * c);
 #define clrBit(a,b) a=(a & (~b))
@@ -297,7 +298,10 @@ list xlGetFacesByBladeName(string name){
     }
     if(name==BLADE_NIPS){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            /* Note: Before changing this again, create a different way of handling the request that doesn't match. This is configured properly for the whole Fitted Torso chest mesh */
+            /* Note: Before changing this again, create a different way of
+            *  handling the request that doesn't match.
+            * This is configured properly for the whole Fitted Torso chest mesh
+            */
             return [0,1];
         return [2,3];
     }
@@ -363,7 +367,10 @@ list xlGetFacesByBladeName(string name){
     if(name==BLADE_THIGH_U_R) return [4];
     if(name==BLADE_VAG){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
+            * The bottom hip mesh half is controlled independently using
+            * setbutt
+            */
             if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
             return [0,1];
@@ -372,7 +379,10 @@ list xlGetFacesByBladeName(string name){
     }
     if(name==BLADE_VIRTUAL_BUTT){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            /* Reminder: On the Fitted Torso, this is the upper hip mesh half. The bottom hip mesh half is controlled independently using setbutt */
+            /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
+            *  The bottom hip mesh half is controlled independently using
+            *  setbutt
+            */
             #ifdef DEBUG_COMMAND
             llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
             #endif
@@ -390,7 +400,9 @@ list xlGetFacesByBladeName(string name){
     return [];
 }
 list xlBladeNameToPrimNames(string name){
-    /* TODO Can't we return the link number directly (using less than 512 bytes of code!) without an additional function call? */
+    /* TODO Can't we return the link number directly (using less than 512 bytes
+    *  of code!) without an additional function call?
+    */
     #ifdef DEBUG_FACE_SELECT
     llOwnerSay("xlBladeNameToPrimNames("+name+")");
     #endif
@@ -546,14 +558,15 @@ list xlBladeNameToPrimNames(string name){
     }
     else if(name==BLADE_NIPS){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            return [llList2String(s_FittedNipsMeshNames, g_CurrentFittedNipState)];
+            return [llList2String(s_FittedNipsMeshNames,
+                                    g_CurrentFittedNipState)];
         return [MESH_PG_LAYER];
     }
     else if(name==BLADE_VAG){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             if(g_TogglingPGMeshes)
-                return [llList2String(s_KFTPelvisMeshes, 0)];
-            return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+                return [llList2String(s_KFTPelvisMeshes,0)];
+            return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
         return [MESH_PG_LAYER];
     }
     else if(name==BLADE_THIGH_L_R){
@@ -593,19 +606,22 @@ list xlSetGenitals(integer pTogglePart){
     list params;
     integer meshes_count=0;
     if(FKT_FHIDE_N==pTogglePart)
-        meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames); /* todo: hard-code */
+        meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames);
     else
-        meshes_count=xlListLen2MaxID(s_KFTPelvisMeshes); /* todo: hard-code */
+        meshes_count=xlListLen2MaxID(s_KFTPelvisMeshes);
     integer visible=FALSE;
     string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
         /* Process each genital mesh one by one */
         if(FKT_FHIDE_N==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedNipState);
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+                            (meshes_count==g_CurrentFittedNipState);
         else if(FKT_FHIDE_V==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedVagState);
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+                            (meshes_count==g_CurrentFittedVagState);
         else if(FKT_FHIDE_B==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) * (meshes_count==g_CurrentFittedButState);
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+                            (meshes_count==g_CurrentFittedButState);
         if(FKT_FHIDE_N==pTogglePart)
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
         else
@@ -613,7 +629,8 @@ list xlSetGenitals(integer pTogglePart){
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count=xlListLen2MaxID(prim_names);
         for(;prim_count> -1;prim_count--){
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,prim_count)])+1);
+            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
+                        ,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
             if(FKT_FHIDE_N==pTogglePart)
@@ -624,10 +641,15 @@ list xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
             integer faces_count=xlListLen2MaxID(faces_l);
             for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,llList2Integer(faces_l,faces_count), <1,1,1>, visible * g_Config_MaximumOpacity];
+                params+=[PRIM_COLOR,
+                            llList2Integer(faces_l,faces_count),<1,1,1>,
+                                visible * g_Config_MaximumOpacity
+                        ];
             #ifdef DEBUG_FACE_SELECT
             llOwnerSay("FACES:"+llList2CSV(faces_l)
-                +"|MESH_NAME:"+mesh_name+"|PRIM_NAME:"+(string)prim_names+"|PRIM_ID:"+(string)prim_count
+                +"|MESH_NAME:"+mesh_name
+                +"|PRIM_NAME:"+(string)prim_names
+                +"|PRIM_ID:"+(string)prim_count
                 +"|visible:"+(string)visible);
             #endif
         }
@@ -652,38 +674,41 @@ xlProcessCommand(string message){
     else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
         if(command=="setbutt"){
             g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_B));
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
         }
         else if(command=="setvag"){
             g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_V));
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
         }
         else if(command=="setnip"){
             g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_N));
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
         }
         else
             return;
-    else 
+    else
         return;
-    string part_wanted_s=llList2String(data, 1);
+    string part_wanted_s=llList2String(data,1);
     #ifdef DEBUG_DATA
     llOwnerSay("Special message:"+part_wanted_s);
     #endif
-    if(part_wanted_s==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+    if(part_wanted_s==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,
+            FKT_PRESENT)){
         g_CurrentFittedNipState=showit;
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_N));
+        xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
         return;
     }
-    else if(part_wanted_s==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+    else if(part_wanted_s==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,
+            FKT_PRESENT)){
         g_CurrentFittedVagState=showit;
         g_TogglingPGMeshes=TRUE;
-        xlSetLinkPrimitiveParamsFast(LINK_SET, xlSetGenitals(FKT_FHIDE_V));
+        xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
         g_TogglingPGMeshes=FALSE;
         return;
     }
     else if(part_wanted_s==BLADE_VAG){
-        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
         // llOwnerSay("o.o.o.o.o");
         if(!showit && !g_TogglingPGMeshes){
             chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
@@ -693,7 +718,8 @@ xlProcessCommand(string message){
     }
     else if(part_wanted_s==BLADE_NIPS){
         // llOwnerSay("o.o.o.o.o");
-        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+            (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
         if(!g_TogglingPGMeshes && !showit){
             chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
         }
@@ -706,12 +732,18 @@ xlProcessCommand(string message){
     llOwnerSay("data:"+llList2CSV(data));
     #endif
     list params;
-    for(;list_size > 0;list_size--){/* skip first element, which is the command*/
+    for(;list_size > 0;list_size--){/* skip command (first element) */
         /* Process a list of blade names */
-        string blade_name=llList2String(data, list_size);
+        string blade_name=llList2String(data,list_size);
         list params_internal;
-        /* When linked against the Fitted Torso, we need to skip the parts handled by said torso to avoid endless toggling as the fitted torso requests hiding of the faces it replaces to "fix" the stock body */
-        /* TODO: Optimize the param creation logic to not include redundant changes. This implies making it so that there is no post-loop "fixing" happening. */
+        /* When linked against the Fitted Torso, we need to skip the parts
+        *  handled by said torso to avoid endless toggling as the fitted torso
+        *  requests hiding of the faces it replaces to "fix" the stock body
+        */
+        /* TODO: Optimize the param creation logic to not include redundant
+        *  changes. This implies making it so that there is no post-loop
+        *  fixing" happening.
+        */
         #ifdef DEBUG_COMMAND
         llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
         #endif
@@ -726,7 +758,9 @@ xlProcessCommand(string message){
             }
         }
         else{
-        /* TODO: Handle stock body in xlSetVag instead to only keep the statement above */
+        /* TODO: Handle stock body in xlSetVag instead to only keep
+        *  the statement above
+        */
             if(blade_name==BLADE_PELVIS){
                 // blade_name=BLADE_VAG;
                 showit *=!(g_RuntimeBodyStateSettings & KSB_PGVAGOO);
@@ -750,20 +784,48 @@ xlProcessCommand(string message){
         #endif
         for(;blade_prim_iter > -1;blade_prim_iter--){
             /* Fix legs automatically */
-            // string this_prim_name=llList2String(prim_names,blade_prim_iter);
             /* TODO: Be less nuclear and only fix the faces we asked for*/
-            // if(!human_mode && (MESH_LEG_LEFT_ANIMAL==this_prim_name || MESH_LEG_RIGHT_ANIMAL==this_prim_name)){
-            //     params_internal +=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-            //         PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-            //     ];
-            // }
-            // else if(human_mode && (MESH_LEG_LEFT_HUMAN==this_prim_name || MESH_LEG_RIGHT_HUMAN==this_prim_name)){
-            //     params_internal +=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE,
-            //         PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL])+1),PRIM_COLOR,ALL_SIDES,<1,1,1>, FALSE
-            //     ];
-            // }
+            // /*
+            string this_prim_name=llList2String(prim_names,blade_prim_iter);
+            if(!human_mode && (MESH_LEG_LEFT_ANIMAL==this_prim_name ||
+                MESH_LEG_RIGHT_ANIMAL==this_prim_name)){
+                    params_internal +=[
+                        PRIM_LINK_TARGET,
+                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
+                            MESH_LEG_LEFT_HUMAN
+                        ])+1),
+                        PRIM_COLOR,ALL_SIDES,<1,1,1>,
+                        FALSE,
+                        PRIM_LINK_TARGET,
+                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
+                            MESH_LEG_RIGHT_HUMAN
+                        ])+1),
+                        PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
+                ];
+            }
+            else if(human_mode && (MESH_LEG_LEFT_HUMAN==this_prim_name ||
+                MESH_LEG_RIGHT_HUMAN==this_prim_name)){
+                params_internal +=[
+                    PRIM_LINK_TARGET,
+                    llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
+                        MESH_LEG_LEFT_ANIMAL
+                        ])+1),
+                    PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE,
+                    PRIM_LINK_TARGET,
+                    llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
+                        MESH_LEG_RIGHT_ANIMAL
+                        ])+1),
+                    PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
+                ];
+            }
+            // */
             /* TODO: inline as much as possible */
-            params_internal+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[llList2String(prim_names,blade_prim_iter)])+1)];
+            params_internal+=[
+                PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
+                    llListFindList(g_LinkDB_l,[
+                        llList2String(prim_names,blade_prim_iter)
+                    ])+1)
+                ];
             list faces_l=xlGetFacesByBladeName(blade_name);
             integer faces_index=xlListLen2MaxID(faces_l);
             #ifdef DEBUG_FACE_SELECT
@@ -777,14 +839,18 @@ xlProcessCommand(string message){
             llOwnerSay("Link ID 1    :"+(string)link_id);
             #endif
             for(;faces_index > -1; faces_index--)
-                params_internal+=[PRIM_COLOR, llList2Integer(faces_l,faces_index), <1,1,1>, (showit ^ (BLADE_VAG==blade_name)) * g_Config_MaximumOpacity];
+                params_internal+=[
+                    PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
+                        (showit ^ (BLADE_VAG==blade_name)) *
+                            g_Config_MaximumOpacity
+                ];
         }
-    #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:"+llList2CSV(params));
-    #endif
-    params+=params_internal;
-    }    
-    xlSetLinkPrimitiveParamsFast(LINK_SET, params);
+        #ifdef DEBUG_PARAMS
+        llOwnerSay("Params out:"+llList2CSV(params));
+        #endif
+        params+=params_internal;
+    }
+    xlSetLinkPrimitiveParamsFast(LINK_SET,params);
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -792,7 +858,9 @@ default {
         key tk=llDetectedKey(0);
         if(tk!=g_Owner_k) return;
         llRegionSayTo(tk,0,
-            "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["+(string)llDetectedTouchFace(0)+"];break;");
+            "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+
+            llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["
+            +(string)llDetectedTouchFace(0)+"];break;");
     }
     #endif
     changed(integer change){
@@ -815,29 +883,35 @@ default {
         for (;part > 0;--part){
             string name=llGetLinkName(part);
             #ifdef DEBUG_TEXT
-            llSetText("\n \n \n \n \n \n["+(string)llGetFreeMemory()+"]Processing "+name+"...",<0,0,0>,1.0);
+            llSetText("\n \n \n \n \n \n["+(string)llGetFreeMemory()
+                +"]Processing "+name+"...",<0,0,0>,1.0);
             #endif
             if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                /* Look if this really is a fitted torso or an accessory for it */
-                integer fitted_torso_string_index=llSubStringIndex(name, MESH_FITTED_TORSO);
+            /* Look if this really is a fitted torso or an accessory for it */
+                integer fitted_torso_string_index=llSubStringIndex(name,
+                    MESH_FITTED_TORSO);
                 if(fitted_torso_string_index > 5)
                     if(fitted_torso_string_index < 8){
                         setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
                         name=MESH_FITTED_TORSO;
                     }
             }
-            if(llListFindList(g_supported_meshes, [name])!=-1){
+            if(llListFindList(g_supported_meshes,[name])!=-1){
                 #ifdef DEBUG_ENTIRE_BODY_ALPHA
-                prim_params_to_apply +=[PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+                prim_params_to_apply +=[
+                    PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0
+                ];
                 if(retexture){
-                    prim_params_to_apply+=[PRIM_TEXTURE,ALL_SIDES, texture, <1,1,0>,<0,0,0>,0.0];
+                    prim_params_to_apply+=[
+                        PRIM_TEXTURE,ALL_SIDES,texture,<1,1,0>,<0,0,0>,0.0
+                    ];
                 }
                 #endif
                 g_LinkDB_l+=[name,part];
             }
         }
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
-        llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
+        llSetLinkPrimitiveParamsFast(LINK_ROOT,prim_params_to_apply);
         #endif
         #ifdef DEBUG_SELF_TEST
         llSetText("[UNIT SELF-TEST]",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
@@ -848,7 +922,11 @@ default {
             "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
             "shinLL","shinLR","ankleL","ankleR","footL","footR"];
         integer id = xlListLen2MaxID(selftest);
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
         for(;id>-1;id--){
             xlProcessCommand("hide:"+llList2String(selftest,id));
             llSleep(0.0625);
@@ -859,32 +937,41 @@ default {
             llSleep(0.0625);
         }
         #endif
-        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION, 0);
-        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION, 1);
+        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
         #ifdef DEBUG_DATA
         llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
         llOwnerSay("Deform:"+g_AnimDeform);
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
         if(llGetAttached())
-            llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
             llSetTimerEvent(0.1);
         llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
+            +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
+            +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
+            +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
+            +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
     }
-    listen(integer channel, string name, key id, string message){
+    listen(integer channel,string name,key id,string message){
         key owner_key=llGetOwnerKey(id);
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
         #ifdef DEBUG_LISTEN
         string knp;
-        knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("+llKey2Name(llGetOwnerKey(id))+" ";
+        knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+            +llKey2Name(llGetOwnerKey(id))+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
@@ -915,29 +1002,34 @@ default {
             return;
         }
         /* TODO: Allow chained commands such as add:show:vagoo:remove*/
-        else if(message=="add"){ /*And if they aren't in the auth list, add them.*/
+        else if(message=="add"){ /* And add if not in the auth list */
             if(llGetFreeMemory() > 2048)
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
                     g_RemConfirmKeys_l +=[id];
         }
         else if(message=="remove"){ /*If the are in the list, remove them.*/
-            integer placeinlist=llListFindList(g_RemConfirmKeys_l, [(key)id]);
+            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
             if(placeinlist !=-1)
-                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l, placeinlist, placeinlist);
+                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
+                    placeinlist,placeinlist);
             return;
         }
         else if(message=="Hlegs"){
             if(!human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=TRUE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
         else if(message=="Flegs"){
             if(human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 human_mode=FALSE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
         /* Restore compatibility with old scripts*/
@@ -951,65 +1043,83 @@ default {
             xlProcessCommand(message);
         return;
         @reset;
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
     }
     on_rez(integer p){
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         #ifdef GITHUB_UPDATER
-        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"+g_internal_repo_s+"/releases/latest?access_token=603ee815cda6fb45fcc16876effbda017f158bef",[HTTP_BODY_MAXLENGTH, 16384], "");
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+            +g_internal_repo_s
+            +"/releases/latest?access_token="
+            +"603ee815cda6fb45fcc16876effbda017f158bef",
+            [HTTP_BODY_MAXLENGTH,16384],"");
         #endif
     }
     attach(key id){
-        /* Deform on detach, unlike the stock body. This assumes permissions are granted,
-            which happen on rez or startup if attached.
-            Needs to be processed as fast as possible to make it before the object
-            is pruned from the Current Outfit Folder otherwise it won't fire. */
+        /* Deform on detach, unlike the stock body. This assumes permissions
+        *  are granted, which happens on rez or startup if attached.
+        *  Needs to be processed as fast as possible to make it before the
+        *  object is pruned from the Current Outfit Folder otherwise
+        *  it won't fire.
+        */
         if(id==(key)NULL_KEY)
         llStartAnimation(g_AnimUndeform);
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
         /* Send a "reset" message to forcefully trigger clothing autohiders */
-        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
+            +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
+            +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
+            +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
+            +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llSetTimerEvent(0.1);
     }
     timer(){
         if(llGetAttached()){
             if(!g_HasAnimPerms)
-                llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             else
                 llStartAnimation(g_AnimDeform);
         }
         string text;
 #ifdef DEBUG_TEXT
         text="[DEBUG]"+text;
-        text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()+"]/"+(string)llGetMemoryLimit()+"B";
+        text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()
+            +"]/"+(string)llGetMemoryLimit()+"B";
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)g_TogglingPGMeshes;
         #endif
-        text+="\n"+(string)(xlListLen2MaxID(g_RemConfirmKeys_l)+1)+" Keys\n \n ";
+        text+="\n"+(string)(xlListLen2MaxID(g_RemConfirmKeys_l)+1)
+            +" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
 #endif
-        llSetText(text+"\n \n \n \n ", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+        llSetText(text+"\n \n \n \n ",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
     }
     #ifdef GITHUB_UPDATER
-    http_response(key request_id, integer status, list metadata, string body)
+    http_response(key request_id,integer status,list metadata,string body)
     {
         if(request_id !=g_internal_httprid_k) return;// exit if unknown
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
         if(new_version_s==g_internal_version_s) return;
-        list cur_version_l=llParseString2List(g_internal_version_s, ["."], [""]);
-        list new_version_l=llParseString2List(new_version_s, ["."], [""]);
+        list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
+        list new_version_l=llParseString2List(new_version_s,["."],[""]);
         string update_type="version";
-        if(llList2Integer(new_version_l, 0) > llList2Integer(cur_version_l, 0)){
+        if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
             update_type="major version"; jump update;
         }
-        else if(llList2Integer(new_version_l, 1) > llList2Integer(cur_version_l, 1)){
+        else if(llList2Integer(new_version_l,1) >
+                llList2Integer(cur_version_l,1)){
             update_type="version"; jump update;
         }
-        else if(llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)){
+        else if(llList2Integer(new_version_l,2) >
+                llList2Integer(cur_version_l,2)){
             update_type="patch"; jump update;
         }
         return;
@@ -1026,15 +1136,16 @@ default {
             update_description="Too many changes, see link below.";
         string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
             +") is available!"+update_title+"\n"+update_description+"\n"
-            +"Your new scripts (["+"https://github.com/"+g_internal_repo_s+"/compare/"
-            +g_internal_version_s+"..."+new_version_s+" Diff "+g_internal_version_s
-            +"..."+new_version_s+"]):\n[https://raw.githubusercontent.com/"
+            +"Your new scripts (["+"https://github.com/"+g_internal_repo_s
+            +"/compare/"+g_internal_version_s+"..."+new_version_s+" Diff "
+            +g_internal_version_s+"..."+new_version_s
+            +"]):\n[https://raw.githubusercontent.com/"
             +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
             +script_name+".lsl]";
-        llDialog(g_Owner_k,"[https://github.com/"+g_internal_repo_s +" "+script_name
-            +"] v"+g_internal_version_s
-            +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/inspect.\n"
-            +g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k,"[https://github.com/"+g_internal_repo_s +" "
+            +script_name+"] v"+g_internal_version_s
+            +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
+            +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
     }
     #endif
 }
