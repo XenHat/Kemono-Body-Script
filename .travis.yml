@@ -5,7 +5,7 @@ branches:
 before_script:
 - sudo apt-get -qq update
 - sudo apt-get install -y unzip mcpp
-- wget https://github.com/Makopo/lslint/releases/download/v1.0.6/lslint_v1.0.6_linux.zip
+- wget https://github.com/Makopo/lslint/releases/download/v1.0.8/lslint_v1.0.8_linux.zip
 - unzip lslint_v1.0.6_linux.zip
 script:
 - mkdir -p compiled
