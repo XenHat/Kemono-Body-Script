@@ -762,9 +762,10 @@ xlProcessCommand(string message){
         *  the statement above
         */
             if(blade_name==BLADE_PELVIS){
-                // blade_name=BLADE_VAG;
-                showit *=!(g_RuntimeBodyStateSettings & KSB_PGVAGOO);
-                xlProcessCommand(BLADE_VAG);
+                if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit)
+                    xlProcessCommand("hide:"+BLADE_VAG);
+                else
+                    xlProcessCommand("show:"+BLADE_VAG);
             }
             else if(blade_name==BLADE_BREASTS){
                 // showit *=!(g_RuntimeBodyStateSettings & KSB_PGNIPLS);
