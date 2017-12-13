@@ -487,9 +487,10 @@ xlProcessCommand(string message){
         }
         else{
             if(blade_name== "pelvis" ){
-
-                showit *=!(g_RuntimeBodyStateSettings &  2 );
-                xlProcessCommand( "vagoo" );
+                if(!(g_RuntimeBodyStateSettings &  2 ) && !showit)
+                    xlProcessCommand("hide:"+ "vagoo" );
+                else
+                    xlProcessCommand("show:"+ "vagoo" );
             }
             else if(blade_name== "breast" ){
 
