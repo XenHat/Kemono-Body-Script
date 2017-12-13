@@ -64,6 +64,8 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FACE_SELECT
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
+#define PROCESS_LEGS_COMMANDS
+// #define AUTOFIX_LEGS
 // End of debug defines
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
@@ -786,7 +788,7 @@ xlProcessCommand(string message){
         for(;blade_prim_iter > -1;blade_prim_iter--){
             /* Fix legs automatically */
             /* TODO: Be less nuclear and only fix the faces we asked for*/
-            // /*
+            #ifdef AUTOFIX_LEGS
             string this_prim_name=llList2String(prim_names,blade_prim_iter);
             if(!human_mode && (MESH_LEG_LEFT_ANIMAL==this_prim_name ||
                 MESH_LEG_RIGHT_ANIMAL==this_prim_name)){
@@ -819,7 +821,7 @@ xlProcessCommand(string message){
                     PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
                 ];
             }
-            // */
+            #endif
             /* TODO: inline as much as possible */
             params_internal+=[
                 PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
@@ -1015,6 +1017,7 @@ default {
                     placeinlist,placeinlist);
             return;
         }
+#ifdef PROCESS_LEGS_COMMANDS
         else if(message=="Hlegs"){
             if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
@@ -1033,6 +1036,7 @@ default {
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
+#endif
         /* Restore compatibility with old scripts*/
         else if(message=="resetA")
             jump reset;
