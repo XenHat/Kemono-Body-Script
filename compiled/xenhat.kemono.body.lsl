@@ -505,43 +505,6 @@ xlProcessCommand(string message){
         list prim_names=xlBladeNameToPrimNames(blade_name);
         integer blade_prim_iter= ((prim_names!=[])-1) ;
         for(;blade_prim_iter > -1;blade_prim_iter--){
-
-
-
-            string this_prim_name=llList2String(prim_names,blade_prim_iter);
-            if(!human_mode && ( "LFleg" ==this_prim_name ||
-                "RFleg" ==this_prim_name)){
-                    params_internal +=[
-                        PRIM_LINK_TARGET,
-                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                            "LHleg"
-                        ])+1),
-                        PRIM_COLOR,ALL_SIDES,<1,1,1>,
-                        FALSE,
-                        PRIM_LINK_TARGET,
-                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                            "RHleg"
-                        ])+1),
-                        PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
-                ];
-            }
-            else if(human_mode && ( "LHleg" ==this_prim_name ||
-                "RHleg" ==this_prim_name)){
-                params_internal +=[
-                    PRIM_LINK_TARGET,
-                    llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                        "LFleg"
-                        ])+1),
-                    PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE,
-                    PRIM_LINK_TARGET,
-                    llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                        "RFleg"
-                        ])+1),
-                    PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
-                ];
-            }
-
-
             params_internal+=[
                 PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
                     llListFindList(g_LinkDB_l,[
@@ -631,6 +594,7 @@ default {
                     placeinlist,placeinlist);
             return;
         }
+
         else if(message=="Hlegs"){
             if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
@@ -649,6 +613,7 @@ default {
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
         }
+
 
         else if(message=="resetA")
             jump reset;
