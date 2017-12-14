@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.5"
+#define g_internal_version_s "0.1.6"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -674,29 +674,31 @@ xlProcessCommand(string message){
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-        if(command=="setbutt"){
-            ftCommand=1;
-            g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
-        }
-        else if(command=="setvag"){
-            ftCommand=2;
-            g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
-        }
-        else if(command=="setnip"){
-            ftCommand=3;
-            g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
-        }
-        else{
-            llOwnerSay("Unhandled FKT command: '"+message+"'");
-            }
-        return;
-    }
     else{
-        llOwnerSay("Unexpected Non-FKT command: '"+message+"'");
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            if(command=="setbutt"){
+                ftCommand=1;
+                g_CurrentFittedButState=llList2Integer(data,1);
+                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
+                return;
+            }
+            else if(command=="setvag"){
+                ftCommand=2;
+                g_CurrentFittedVagState=llList2Integer(data,1);
+                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
+                return;
+            }
+            else if(command=="setnip"){
+                ftCommand=3;
+                g_CurrentFittedNipState=llList2Integer(data,1);
+                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
+                return;
+            }
+        }
+        // Falls here if not a FTK handled command either
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy"],[llGetSubString(message,0,2)])==-1){
+            llOwnerSay("Unhandled command: '"+message+"'");
+        }
         return;
     }
     integer list_size=xlListLen2MaxID(data);
