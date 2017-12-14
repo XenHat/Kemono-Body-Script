@@ -418,29 +418,31 @@ xlProcessCommand(string message){
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-        if(command=="setbutt"){
-            ftCommand=1;
-            g_CurrentFittedButState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
-        }
-        else if(command=="setvag"){
-            ftCommand=2;
-            g_CurrentFittedVagState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
-        }
-        else if(command=="setnip"){
-            ftCommand=3;
-            g_CurrentFittedNipState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
-        }
-        else{
-            llOwnerSay("Unhandled FKT command: '"+message+"'");
-            }
-        return;
-    }
     else{
-        llOwnerSay("Unexpected Non-FKT command: '"+message+"'");
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(command=="setbutt"){
+                ftCommand=1;
+                g_CurrentFittedButState=llList2Integer(data,1);
+                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
+                return;
+            }
+            else if(command=="setvag"){
+                ftCommand=2;
+                g_CurrentFittedVagState=llList2Integer(data,1);
+                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
+                return;
+            }
+            else if(command=="setnip"){
+                ftCommand=3;
+                g_CurrentFittedNipState=llList2Integer(data,1);
+                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
+                return;
+            }
+        }
+
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy"],[llGetSubString(message,0,2)])==-1){
+            llOwnerSay("Unhandled command: '"+message+"'");
+        }
         return;
     }
     integer list_size= ((data!=[])-1) ;
@@ -680,8 +682,8 @@ default {
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.1.5" ) return;
-        list cur_version_l=llParseString2List( "0.1.5" ,["."],[""]);
+        if(new_version_s== "0.1.6" ) return;
+        list cur_version_l=llParseString2List( "0.1.6" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
         string update_type="version";
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -710,13 +712,13 @@ default {
         string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
             +") is available!"+update_title+"\n"+update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-            +"/compare/"+ "0.1.5" +"..."+new_version_s+" Diff "
-            + "0.1.5" +"..."+new_version_s
+            +"/compare/"+ "0.1.6" +"..."+new_version_s+" Diff "
+            + "0.1.6" +"..."+new_version_s
             +"]):\n[https://raw.githubusercontent.com/"
             + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
             + "Kemono-Body-Script" +".lsl]";
         llDialog(g_Owner_k,"[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "
-            + "Kemono-Body-Script" +"] v"+ "0.1.5"
+            + "Kemono-Body-Script" +"] v"+ "0.1.6"
             +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
             +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
     }
