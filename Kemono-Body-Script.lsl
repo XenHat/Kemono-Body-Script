@@ -1005,7 +1005,7 @@ default {
         /*If they don't have the same owner, ignore them.*/
         else if(owner_key !=g_Owner_k)
             return;
-        if("reqFTData"==message){
+        if("reqFTDat"==message){
             if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                 llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
                     +(string)g_CurrentFittedNipState
