@@ -76,8 +76,15 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
 /* TODO:
-- Fitted Torso nipples alpha setting
-- Figure out what reqCLdat is.
+-   Set Nipple Alpha
+        0 = None : 1 = Partial : 2 = Full
+        0 being replaced by the state number 0 ~ 2:
+        nipalpha:0
+-   Set Nipple Override
+        0 = Off : 1 = On
+        0 being replaced by the state number 0 ~ 1:
+        nipovrd:0
+- Send reqCLdat and handle reply 'resCLdat' (ie  'resCLdat:clothID:1033:clothDesc:Top:attachPoint:1:clothState:0')
 - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
