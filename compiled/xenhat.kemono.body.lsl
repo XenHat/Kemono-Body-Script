@@ -579,7 +579,7 @@ default {
 
         else if(owner_key !=g_Owner_k)
             return;
-        if("reqFTData"==message){
+        if("reqFTDat"==message){
             if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
                 llWhisper( -34525475 ,"resFTdat:nipState:"
                     +(string)g_CurrentFittedNipState
