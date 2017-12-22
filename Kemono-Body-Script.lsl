@@ -700,6 +700,15 @@ xlProcessCommand(string message){
                 xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
                 return;
             }
+            else if(command=="resCLdat"){
+                // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+                // integer clothID = llList2Integer(data,2);
+                // integer clothDesc = llList2Integer(data,4);
+                // integer attachPoint = llList2Integer(data,6);
+                // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                // TODO: Handle this data. I have no idea what it's for.
+                return;
+            }
         }
         // Falls here if not a FTK handled command either
         if(llListFindList(["Ani","eRo","Exp","LEy","REy"],[llGetSubString(message,0,2)])==-1){
@@ -956,6 +965,7 @@ default {
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
+        //llWhisper(KEMONO_COM_CH,"reqCLdat");
     }
     listen(integer channel,string name,key id,string message){
         key owner_key=llGetOwnerKey(id);
