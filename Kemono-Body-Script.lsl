@@ -65,7 +65,6 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
 #define PROCESS_LEGS_COMMANDS
-// #define AUTOFIX_LEGS
 // End of debug defines
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
@@ -802,42 +801,7 @@ xlProcessCommand(string message){
             llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
             #endif
             for(;blade_prim_iter > -1;blade_prim_iter--){
-                /* Fix legs automatically */
                 /* TODO: Be less nuclear and only fix the faces we asked for*/
-                #ifdef AUTOFIX_LEGS
-                string this_prim_name=llList2String(prim_names,blade_prim_iter);
-                if(!human_mode && (MESH_LEG_LEFT_ANIMAL==this_prim_name ||
-                    MESH_LEG_RIGHT_ANIMAL==this_prim_name)){
-                        params_internal +=[
-                            PRIM_LINK_TARGET,
-                            llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                                MESH_LEG_LEFT_HUMAN
-                            ])+1),
-                            PRIM_COLOR,ALL_SIDES,<1,1,1>,
-                            FALSE,
-                            PRIM_LINK_TARGET,
-                            llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                                MESH_LEG_RIGHT_HUMAN
-                            ])+1),
-                            PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
-                    ];
-                }
-                else if(human_mode && (MESH_LEG_LEFT_HUMAN==this_prim_name ||
-                    MESH_LEG_RIGHT_HUMAN==this_prim_name)){
-                    params_internal +=[
-                        PRIM_LINK_TARGET,
-                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                            MESH_LEG_LEFT_ANIMAL
-                            ])+1),
-                        PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE,
-                        PRIM_LINK_TARGET,
-                        llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l,[
-                            MESH_LEG_RIGHT_ANIMAL
-                            ])+1),
-                        PRIM_COLOR,ALL_SIDES,<1,1,1>,FALSE
-                    ];
-                }
-                #endif
                 /* TODO: inline as much as possible */
                 params_internal+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
@@ -903,6 +867,7 @@ default {
         list prim_params_to_apply=[];
         #endif
         integer part=llGetNumberOfPrims();
+        integer found_fitted_torso = FALSE;
         for (;part > 0;--part){
             string name=llGetLinkName(part);
             #ifdef DEBUG_TEXT
@@ -915,7 +880,9 @@ default {
                     MESH_FITTED_TORSO);
                 if(fitted_torso_string_index > 5)
                     if(fitted_torso_string_index < 8){
-                        setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+                        // Not yet; perform autohiding first
+                        //setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
+                        found_fitted_torso = TRUE;
                         name=MESH_FITTED_TORSO;
                     }
             }
@@ -932,6 +899,10 @@ default {
                 #endif
                 g_LinkDB_l+=[name,part];
             }
+        }
+        if(found_fitted_torso){
+            xlProcessCommand("hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
+            setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
         }
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         llSetLinkPrimitiveParamsFast(LINK_ROOT,prim_params_to_apply);
