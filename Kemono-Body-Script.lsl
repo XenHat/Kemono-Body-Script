@@ -55,6 +55,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
+// #define DEBUG_AUTH
 // #define DEBUG_RETURNS
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
@@ -1077,16 +1078,27 @@ default {
         else if(message=="add"){ /* And add if not in the auth list */
             if(llGetFreeMemory() > 2048)
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+                {
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Adding " + (string)id + " to auth list");
+                    #endif
                     g_RemConfirmKeys_l +=[id];
+                }
             return;
         }
         else if(message=="remove"){ /*If the are in the list, remove them.*/
             integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
-            if(placeinlist !=-1)
+            if(placeinlist !=-1){
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Removing " + (string)id + " from auth list");
+                #endif
                 g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
                     placeinlist,placeinlist);
+                }
             return;
         }
+        // TODO: Should probably branch off the command processor here instead
+        // of this long logic wall before it
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
         #ifdef FTK_MULTI_DROP
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
@@ -1098,8 +1110,8 @@ default {
             /*And if they aren't in the auth list, ignore them.*/
             if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
             {
-                #ifdef DEBUG_RETURNS
-                llOwnerSay("Ignoring unauthed clothing");
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Ignoring unauthed " + (string)id);
                 #endif
                 return;
             }
