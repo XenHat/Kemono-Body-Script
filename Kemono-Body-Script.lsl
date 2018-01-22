@@ -709,18 +709,6 @@ xlProcessCommand(string message){
         }
         return;
     }
-    else if(command=="resCLdat"){
-        // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-        // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-        // integer clothID = llList2Integer(data,2);
-        // integer clothDesc = llList2Integer(data,4);
-        // integer attachPoint = llList2Integer(data,6);
-        // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-        // NOTE: This is part of the internal Starbright API. We shouldn't know
-        // how to handle this and that is fine. Staryna says it's for
-        // careful ordering of stuff. Private and all.
-        return;
-    }
     else{
         #ifdef PRINT_UNHANDLED_COMMANDS
         if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
@@ -1099,6 +1087,21 @@ default {
         }
         // TODO: Should probably branch off the command processor here instead
         // of this long logic wall before it
+        else if(llSubStringIndex(message, "resCLdat")==0)
+        {
+            // This API isn't public, the best we can do is guess.
+            // Do nothing for now.
+            // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+            // integer clothID = llList2Integer(data,2);
+            // integer clothDesc = llList2Integer(data,4);
+            // integer attachPoint = llList2Integer(data,6);
+            // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+            // NOTE: This is part of the internal Starbright API. We shouldn't know
+            // how to handle this and that is fine. Staryna says it's for
+            // careful ordering of stuff. Private and all.
+            return;
+        }
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
         #ifdef FTK_MULTI_DROP
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
