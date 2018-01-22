@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.14"
+#define g_internal_version_s "0.1.14" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1245,13 +1245,16 @@ default {
         list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
         string update_type="version";
+        // Major
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
             update_type="major version"; jump update;
         }
+        // Minor
         else if(llList2Integer(new_version_l,1) >
                 llList2Integer(cur_version_l,1)){
             update_type="version"; jump update;
         }
+        // Patch (bugfix)
         else if(llList2Integer(new_version_l,2) >
                 llList2Integer(cur_version_l,2)){
             update_type="patch"; jump update;
