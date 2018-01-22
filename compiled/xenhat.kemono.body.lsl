@@ -12,6 +12,7 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_RemConfirmKeys_l;
+
 string g_AnimDeform;
 string g_AnimUndeform;
 
@@ -418,31 +419,36 @@ xlProcessCommand(string message){
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else{
+    else if(command=="setbutt"){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            if(command=="setbutt"){
-                ftCommand=1;
-                g_CurrentFittedButState=llList2Integer(data,1);
-                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
-                return;
-            }
-            else if(command=="setvag"){
-                ftCommand=2;
-                g_CurrentFittedVagState=llList2Integer(data,1);
-                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
-                return;
-            }
-            else if(command=="setnip"){
-                ftCommand=3;
-                g_CurrentFittedNipState=llList2Integer(data,1);
-                llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
-                return;
-            }
+            ftCommand=1;
+            g_CurrentFittedButState=llList2Integer(data,1);
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
         }
+        return;
+    }
+    else if(command=="setvag"){
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            ftCommand=2;
+            g_CurrentFittedVagState=llList2Integer(data,1);
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
+        }
+        return;
+    }
+    else if(command=="setnip"){
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            ftCommand=3;
+            g_CurrentFittedNipState=llList2Integer(data,1);
+            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
+        }
+        return;
+    }
+    else{
 
-        if(llListFindList(["Ani","eRo","Exp","LEy","REy"],[llGetSubString(message,0,2)])==-1){
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
             llOwnerSay("Unhandled command: '"+message+"'");
         }
+
         return;
     }
     integer list_size= ((data!=[])-1) ;
@@ -514,6 +520,8 @@ xlProcessCommand(string message){
             list prim_names=xlBladeNameToPrimNames(blade_name);
             integer blade_prim_iter= ((prim_names!=[])-1) ;
             for(;blade_prim_iter > -1;blade_prim_iter--){
+
+
                 params_internal+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
                         llListFindList(g_LinkDB_l,[
@@ -544,6 +552,7 @@ default {
     state_entry(){
         g_Owner_k=llGetOwner();
         integer part=llGetNumberOfPrims();
+        integer found_fitted_torso = FALSE;
         for (;part > 0;--part){
             string name=llGetLinkName(part);
             if(! (!!(g_RuntimeBodyStateSettings & 1 )) ){
@@ -552,13 +561,19 @@ default {
                     "Fitted Kemono Torso" );
                 if(fitted_torso_string_index > 5)
                     if(fitted_torso_string_index < 8){
-                        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
+
+
+                        found_fitted_torso = TRUE;
                         name= "Fitted Kemono Torso" ;
                     }
             }
             if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] ,[name])!=-1){
                 g_LinkDB_l+=[name,part];
             }
+        }
+        if(found_fitted_torso){
+            xlProcessCommand("hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
         }
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
         g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
@@ -571,75 +586,188 @@ default {
     }
     listen(integer channel,string name,key id,string message){
         key owner_key=llGetOwnerKey(id);
-        if(owner_key==id){
-
-            if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
-                return;
-        }
-
-        else if(owner_key !=g_Owner_k)
+        if(message == "Rhand:1"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStartAnimation("Kem-hand-R-relax");
             return;
-        if("reqFTDat"==message){
-            if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-                llWhisper( -34525475 ,"resFTdat:nipState:"
-                    +(string)g_CurrentFittedNipState
-                    +":nipAlpha:0"
-                    +":nipOvrd:0"
-                    +":vagState:"+(string)g_CurrentFittedVagState
-                    +":buttState:"+(string)g_CurrentFittedButState
-                    +":humLegs:"+(string)human_mode);
-            }
+        }
+        else if(message == "Rhand:2"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-hold");
+            return;
+        }
+        else if(message == "Rhand:3"){
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-fist");
+            return;
+        }
+        else if(message == "Rhand:4"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-point");
+            return;
+        }
+        else if(message == "Rhand:5"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-horns");
+            return;
+        }
+        else if(message == "Lhand:1"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStartAnimation("Kem-hand-L-relax");
+            return;
+        }
+        else if(message == "Lhand:2"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-hold");
+            return;
+        }
+        else if(message == "Lhand:3"){
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-fist");
+            return;
+        }
+        else if(message == "Lhand:4"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-point");
+            return;
+        }
+        else if(message == "Lhand:5"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-horns");
             return;
         }
 
         else if(message=="add"){
             if(llGetFreeMemory() > 2048)
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+                {
                     g_RemConfirmKeys_l +=[id];
+                }
+            return;
         }
         else if(message=="remove"){
             integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
-            if(placeinlist !=-1)
+            if(placeinlist !=-1){
                 g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
                     placeinlist,placeinlist);
+                }
             return;
         }
-
-        else if(message=="Hlegs"){
-            if(!human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=TRUE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+        else{
+            if(llSubStringIndex(message, "resCLdat")==0){
+                return;
             }
-        }
-        else if(message=="Flegs"){
-            if(human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=FALSE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+            else if("reqFTdat"==message){
+                if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+                    llWhisper( -34525475 ,"resFTdat:nipState:"
+                        +(string)g_CurrentFittedNipState
+                        +":nipAlpha:0"
+                        +":nipOvrd:0"
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode);
+                }
+                return;
             }
-        }
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
 
 
-        else if(message=="resetA")
-            jump reset;
-        else if(message=="resetB"){
-            g_RemConfirmKeys_l=[];
-            jump reset;
+                if(owner_key ==g_Owner_k || ((owner_key !=g_Owner_k) && (owner_key==id))){
+
+                    if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+                        if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+                            return;
+                        }
+                    }
+
+                    xlProcessCommand(message);
+                }
+            }
+            else if(message=="Hlegs"){
+
+                if(!human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=TRUE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
+
+            }
+            else if(message=="Flegs"){
+
+                if(human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=FALSE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
+
+            }
+            else if(message=="resetA")
+                jump reset;
+            else if(message=="resetB"){
+                g_RemConfirmKeys_l=[];
+                jump reset;
+            }
+            else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                jump reset;
+            }
+            jump end;
+            @reset;
+            llOwnerSay("Resetting!");
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStartAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-L-relax");
+            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
         }
-        else
-            xlProcessCommand(message);
-        return;
-        @reset;
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        @end;
     }
     on_rez(integer p){
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
@@ -652,8 +780,9 @@ default {
 
     }
     attach(key id){
-        if(id==(key)NULL_KEY)
         llStartAnimation(g_AnimUndeform);
+        if(id!=NULL_KEY)
+            llStartAnimation(g_AnimDeform);
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
@@ -682,17 +811,20 @@ default {
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.1.6" ) return;
-        list cur_version_l=llParseString2List( "0.1.6" ,["."],[""]);
+        if(new_version_s== "0.2.14" ) return;
+        list cur_version_l=llParseString2List( "0.2.14" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
         string update_type="version";
+
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
             update_type="major version"; jump update;
         }
+
         else if(llList2Integer(new_version_l,1) >
                 llList2Integer(cur_version_l,1)){
             update_type="version"; jump update;
         }
+
         else if(llList2Integer(new_version_l,2) >
                 llList2Integer(cur_version_l,2)){
             update_type="patch"; jump update;
@@ -712,13 +844,13 @@ default {
         string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
             +") is available!"+update_title+"\n"+update_description+"\n"
             +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-            +"/compare/"+ "0.1.6" +"..."+new_version_s+" Diff "
-            + "0.1.6" +"..."+new_version_s
+            +"/compare/"+ "0.2.14" +"..."+new_version_s+" Diff "
+            + "0.2.14" +"..."+new_version_s
             +"]):\n[https://raw.githubusercontent.com/"
             + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
             + "Kemono-Body-Script" +".lsl]";
         llDialog(g_Owner_k,"[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "
-            + "Kemono-Body-Script" +"] v"+ "0.1.6"
+            + "Kemono-Body-Script" +"] v"+ "0.2.14"
             +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
             +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
     }
