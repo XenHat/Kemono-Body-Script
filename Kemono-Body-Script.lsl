@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.2.14" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.1" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1120,6 +1120,14 @@ default {
                 }
                 return;
             }
+            else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                llOwnerSay("yis!");
+                jump reset;
+            }
             else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
                 /* If the key returned for that object's owner isn't our owner...*/
                 // if(owner_key !=g_Owner_k){
@@ -1165,16 +1173,8 @@ default {
                 g_RemConfirmKeys_l=[];
                 jump reset;
             }
-            else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                jump reset;
-            }
             jump end;
             @reset;
-            llOwnerSay("Resetting!");
             llStopAnimation("Kem-hand-L-fist");
             llStopAnimation("Kem-hand-L-hold");
             llStopAnimation("Kem-hand-L-horns");
