@@ -50,13 +50,12 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.14" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.2.14" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
 // #define DEBUG_AUTH
-// #define DEBUG_RETURNS
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
 // #define DEBUG_COMMAND
@@ -1085,117 +1084,117 @@ default {
                 }
             return;
         }
-        // TODO: Should probably branch off the command processor here instead
-        // of this long logic wall before it
-        else if(llSubStringIndex(message, "resCLdat")==0)
-        {
-            // This API isn't public, the best we can do is guess.
-            // Do nothing for now.
-            // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-            // integer clothID = llList2Integer(data,2);
-            // integer clothDesc = llList2Integer(data,4);
-            // integer attachPoint = llList2Integer(data,6);
-            // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-            // NOTE: This is part of the internal Starbright API. We shouldn't know
-            // how to handle this and that is fine. Staryna says it's for
-            // careful ordering of stuff. Private and all.
-            return;
-        }
-        /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-        #ifdef FTK_MULTI_DROP
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
+        else{
+            #ifdef FTK_MULTI_DROP
+            /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
+            if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+                if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
+                    return;
+            #endif
+            if(llSubStringIndex(message, "resCLdat")==0){
+                // This API isn't public, the best we can do is guess.
+                // Do nothing for now.
+                // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+                // integer clothID = llList2Integer(data,2);
+                // integer clothDesc = llList2Integer(data,4);
+                // integer attachPoint = llList2Integer(data,6);
+                // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                // NOTE: This is part of the internal Starbright API. We shouldn't know
+                // how to handle this and that is fine. Staryna says it's for
+                // careful ordering of stuff. Private and all.
                 return;
-        #endif
-        /*If we can't get a valid owner...*/
-        if(owner_key==id){
-            /*And if they aren't in the auth list, ignore them.*/
-            if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
-            {
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Ignoring unauthed " + (string)id);
+            }
+            else if("reqFTdat"==message){
+                #ifdef DEBUG_FUNCTIONS
+                llOwnerSay("Sending Data");
                 #endif
+                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
+                        +(string)g_CurrentFittedNipState
+                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
+                        +":nipOvrd:0" /* TODO: Implement Nipple Override */
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode);
+                }
                 return;
             }
-        }
-        /*If they don't have the same owner, ignore them.*/
-        if(owner_key !=g_Owner_k)
-        {
-            #ifdef DEBUG_RETURNS
-            llOwnerSay("Aborting due to bad owner ("+(string)owner_key+")");
-            #endif
-            return;
-        }
-        if("reqFTdat"==message){
-            #ifdef DEBUG_FUNCTIONS
-            llOwnerSay("Sending Data");
-            #endif
-            if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
-                    +(string)g_CurrentFittedNipState
-                    +":nipAlpha:0" /* TODO: Implement Alpha State*/
-                    +":nipOvrd:0" /* TODO: Implement Nipple Override */
-                    +":vagState:"+(string)g_CurrentFittedVagState
-                    +":buttState:"+(string)g_CurrentFittedButState
-                    +":humLegs:"+(string)human_mode);
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
+                /* If the key returned for that object's owner isn't our owner...*/
+                // if(owner_key !=g_Owner_k){
+                if(owner_key ==g_Owner_k || ((owner_key !=g_Owner_k) && (owner_key==id))){ /* Eval both, on purpose*/
+                    /* If they aren't in the auth list, ignore them.*/
+                    if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+                        if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+                        #ifdef DEBUG_AUTH
+                        llOwnerSay("Ignoring unauthed " + (string)id);
+                        #endif
+                            return;
+                        }
+                    }
+                    /* Authorized */
+                    xlProcessCommand(message);
+                }
             }
-            return;
-        }
-        else if(message=="Hlegs"){
+            else if(message=="Hlegs"){
 #ifdef PROCESS_LEGS_COMMANDS
-            if(!human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=TRUE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            }
+                if(!human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=TRUE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
 #endif
-        }
-        else if(message=="Flegs"){
+            }
+            else if(message=="Flegs"){
 #ifdef PROCESS_LEGS_COMMANDS
-            if(human_mode){
-                xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                human_mode=FALSE;
-                xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                    +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-            }
+                if(human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=FALSE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
 #endif
+            }
+            else if(message=="resetA")
+                jump reset;
+            else if(message=="resetB"){
+                g_RemConfirmKeys_l=[];
+                jump reset;
+            }
+            else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                jump reset;
+            }
+            jump end;
+            @reset;
+            llOwnerSay("Resetting!");
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStartAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-L-relax");
+            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
         }
-        else if(message=="resetA")
-            jump reset;
-        else if(message=="resetB"){
-            g_RemConfirmKeys_l=[];
-            jump reset;
-        }
-        else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-            jump reset;
-        }
-        else
-            xlProcessCommand(message);
-        return;
-        @reset;
-        llStopAnimation("Kem-hand-L-fist");
-        llStopAnimation("Kem-hand-L-hold");
-        llStopAnimation("Kem-hand-L-horns");
-        llStopAnimation("Kem-hand-L-point");
-        llStopAnimation("Kem-hand-R-fist");
-        llStopAnimation("Kem-hand-R-hold");
-        llStopAnimation("Kem-hand-R-horns");
-        llStopAnimation("Kem-hand-R-point");
-        llStartAnimation("Kem-hand-R-relax");
-        llStartAnimation("Kem-hand-L-relax");
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        @end;
+#ifdef DEBUG_LISTEN
+        llOwnerSay("End for '" + message + "'");
+#endif
     }
     on_rez(integer p){
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
