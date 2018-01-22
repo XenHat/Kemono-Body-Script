@@ -14,7 +14,7 @@ before_script:
 script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
-- ./lslint -m -i < compiled/xenhat.kemono.body.lsl
+- "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 after_success:
