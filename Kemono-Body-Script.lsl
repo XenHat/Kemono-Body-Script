@@ -51,11 +51,11 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 #define g_internal_version_s "0.1.11"
-/* Defines */
+/* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
-// #define DEBUG_RETURNS
+#define DEBUG_RETURNS
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define GITHUB_UPDATER
 // #define DEBUG_LISTEN
@@ -65,9 +65,10 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FACE_SELECT
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
+/* End of debug defines */
+/* Normal Features that should be enabled */
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
-// End of debug defines
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #ifdef DEBUG_PARAMS
@@ -226,6 +227,7 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_RemConfirmKeys_l;
+/* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
 /* === User Functions === */
