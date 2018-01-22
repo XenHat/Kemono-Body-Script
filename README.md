@@ -7,12 +7,21 @@ Aftermarket replacement for Utilizator's Kemono Body in Second Life
 
 This is a from-scratch, compatible and open-source implementation of the body script used in the Utilizator Kemono body (and other mods for it)
 
+**WARNING**
+
+Use of this script/product is only licensed for legal owners of the [UTILIZATOR Kemono body](https://marketplace.secondlife.com/p/UTILIZATOR-Kemono/6070005).
+If you did not purchase the **Kemono body**, this script isn't for you.
+
+I do not condone or endorse the use of this script in any other way, nor will I provide any kind of help/service if you do not own the **Kemono Body**.
+
+Proof of ownership will be asked and required if you request services about this product.
+
 **Why?**
 
-  - I was not satisfied with the stock script included in the Kemono body
+  - I was not satisfied with the stock script included in the Kemono body.
   - At the time (June 2017), it was impossible to combine the Starbright Fitted Kemono Torso and the Utilizator Kemono body into a single linkset.
-  - Some people said I shouldn't bother because I could never achieve something better than the stock script
-  - I am easily bored and I can't sit still doing nothing
+  - To prove (myself and others) that I could do it.
+  - I am easily bored and I can't sit still doing nothing.
   
   **Current Status**
   
@@ -20,10 +29,10 @@ This is a from-scratch, compatible and open-source implementation of the body sc
   
   - Stock kemono blades alpha toggle
   - Genitals and Nipples PG state
-  - Fitted Torso Nipple states
-  - Fitted Torso genitals states
+  - Fitted Torso Nipple states* (See below)
+  - Fitted Torso Genitals states
   - Fitted Torso Butt States
-  - Fitted Torso API commands
+  - Fitted Torso **public** API commands
   
   The current stock features need to be implemented:
   
