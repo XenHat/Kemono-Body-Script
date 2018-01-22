@@ -1,5 +1,5 @@
 # Kemono-Body-Script
-[![License](https://img.shields.io/badge/license-AFPL-blue.svg)](https://tldrlegal.com/license/aladdin-free-public-license)![Maintained](https://img.shields.io/maintenance/yes/2017.svg)[![Build Status](https://travis-ci.org/XenHat/Kemono-Body-Script.svg?branch=master)](https://travis-ci.org/XenHat/Kemono-Body-Script)
+[![License](https://img.shields.io/badge/license-AFPL-blue.svg)](https://tldrlegal.com/license/aladdin-free-public-license)![Maintained](https://img.shields.io/maintenance/yes/2018.svg)[![Build Status](https://travis-ci.org/XenHat/Kemono-Body-Script.svg?branch=master)](https://travis-ci.org/XenHat/Kemono-Body-Script)
 
 Aftermarket replacement for Utilizator's Kemono Body in Second Life
 

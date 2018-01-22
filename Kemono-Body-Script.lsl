@@ -57,7 +57,6 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_TEXT
 // #define DEBUG_RETURNS
 // #define DEBUG_ENTIRE_BODY_ALPHA
-// #define GITHUB_UPDATER
 // #define DEBUG_LISTEN
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
@@ -67,6 +66,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FUNCTIONS
 /* End of debug defines */
 /* Normal Features that should be enabled */
+#define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
