@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.11"
+#define g_internal_version_s "0.1.12"
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1199,8 +1199,9 @@ default {
         *  object is pruned from the Current Outfit Folder otherwise
         *  it won't fire.
         */
-        if(id==(key)NULL_KEY)
         llStartAnimation(g_AnimUndeform);
+        if(id!=NULL_KEY)
+            llStartAnimation(g_AnimDeform);
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
