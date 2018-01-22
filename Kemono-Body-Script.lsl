@@ -978,7 +978,9 @@ default {
         //llWhisper(KEMONO_COM_CH,"reqCLdat");
     }
     listen(integer channel,string name,key id,string message){
+        #ifdef DEBUG_LISTEN
         llOwnerSay("Time:"+(string)llGetTimestamp());
+        #endif
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
