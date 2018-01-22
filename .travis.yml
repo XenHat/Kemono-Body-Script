@@ -10,15 +10,10 @@ branches:
 before_script:
 - wget https://github.com/Makopo/lslint/releases/download/v1.0.8/lslint_v1.0.8_linux.zip -O lslint.zip
 - unzip lslint.zip
-
 script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
-env:
-  global:
-    - secure: SwvbDpU3dle++rBnflUEJqkBwskinn8Hctn+BvitwGOKvDlnfOWCcHeY6YH4U71XCwuK9ix/OwZ37GbAs8vU3pdzXguMSnHlPXUcyxBh4qHMCeeO6QA453hcV35x0vhE+rrbxMYDpXImFdtEwGJfznaqI6hwuqHw/1m9InjavYBBLG7OHwfILI3Zo4gCLgNAJKzOvMOVoYHCqCzyqVWBlKgHDp2vRiD4jn08ciFbJJmqg4igj2v5+rkXEyIu8bSgssHlw75sNJqrlEZDlrP7fIIXnJIknMmgfYgW43N2YHFGZReSAYn15AzVGKpQC5DCzzLX98KqrNminWJkGm2LTJ3yNnA7vPZH1maKM5d3vbn4eSMx2MBzj+bd2JQQZyQhkCIJLWtBCwnFvQMApoHJWrJC8a0RkgfObWhHp7tDHAhXMedqkY5k9autGmnXh0/Ep7UeAlzae+x5u5RonUewOQhksdDFZEHJqxTi3up9JokKOMeqvl0JfRZxX+MvXrD6YUqdBbaCFmZ4CSPoncr8Liw+04m3uwJWh4GrspEYq6KqGhXC/NWTstIwcmQMtJ0y2YV7e9M6wZ5xsR5w1W39LXUUbuzeYf68HZR14IXTEvCGFMlYRKj9XiGhztlD6avTnkUUDXz9GetqSUKwZxw6RF3KkvmJBrXh/B7+Nsbk4Sw=
-
 after_success:
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
@@ -27,14 +22,12 @@ after_success:
 - bash ./travis-ci-git-commit.bash
 deploy:
   provider: releases
-  # description: "Automated Release"
-  # release: "Release build $TRAVIS_BUILD_NUMBER"
-  # tag: "travis_ok"
-
   file: compiled/xenhat.kemono.body.lsl
   skip_cleanup: true
   on:
     repo: XenHat/Kemono-Body-Script
     tags: true
-    # condition: "$TRAVIS_TAG =~ ^\d.\d.\d$"
     condition: "$TRAVIS_TAG =~ ^travis_ok-.*$"
+env:
+  global:
+    secure: yKaFDOhjfiR2EHv8+0MNLP/warrmfeVnttF2TY5AG8lpNptVHDRBvsmRgnXjPjHiBbDMZLD7I4EeXnjxE9e2/E8NViHLDmjznaPJyMXRDgkwVXwcx9hwW1FGdS2vLIJpDv078g+FzPDOcxTF59aBpcDvtwwNn5PcJA6K44QKU0RWQEmn4VrNiufMJRyIDiNI+2Q4jcorRJ4egpQ7e/RXatGUk8SEc1MxZN6vbVyC147EPK6q0gl+NGsrVLIWTSMG43al/rI0iWuWioynwOIhHkUf+NVaUjbW60z48X/2wKOUbRQ9X7BHiSn+qvtmql+QRnhuAM0s6O3XMB4xtuETBxgauDK7RJWySNNnH6AAg670xwgqBNUT6A8XOM0LsT1ycn5Lc8EDdI/+WUaSfTTZK9ZfEOVE25M9b012Jgu/5evBrBHkfm0ADPYFI12NvM/asN1OH2QZIZM0C6L6/s5H4Yj/Ld6D/UmSdGOzBJNCfxnEN3RY13v3PCH6h4Bl16WnHgGY1MXSJl2KCKiDM0ZWy8VSaOvQf3Y4IBqocFjAsu974BvALp6tr9/yug2r3f56ORrx9ZifnxSyzPjEBI0rSeu5c3WrwsLozCOvIn5KDHkiWC07uVStq+vSTE7RHu4FXLfddPWQmieRxWNqglU0qbpcHaii1gOJB2o/9dZGUwc=
