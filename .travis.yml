@@ -15,9 +15,13 @@ script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
+env:
+  global:
+    - secure: SwvbDpU3dle++rBnflUEJqkBwskinn8Hctn+BvitwGOKvDlnfOWCcHeY6YH4U71XCwuK9ix/OwZ37GbAs8vU3pdzXguMSnHlPXUcyxBh4qHMCeeO6QA453hcV35x0vhE+rrbxMYDpXImFdtEwGJfznaqI6hwuqHw/1m9InjavYBBLG7OHwfILI3Zo4gCLgNAJKzOvMOVoYHCqCzyqVWBlKgHDp2vRiD4jn08ciFbJJmqg4igj2v5+rkXEyIu8bSgssHlw75sNJqrlEZDlrP7fIIXnJIknMmgfYgW43N2YHFGZReSAYn15AzVGKpQC5DCzzLX98KqrNminWJkGm2LTJ3yNnA7vPZH1maKM5d3vbn4eSMx2MBzj+bd2JQQZyQhkCIJLWtBCwnFvQMApoHJWrJC8a0RkgfObWhHp7tDHAhXMedqkY5k9autGmnXh0/Ep7UeAlzae+x5u5RonUewOQhksdDFZEHJqxTi3up9JokKOMeqvl0JfRZxX+MvXrD6YUqdBbaCFmZ4CSPoncr8Liw+04m3uwJWh4GrspEYq6KqGhXC/NWTstIwcmQMtJ0y2YV7e9M6wZ5xsR5w1W39LXUUbuzeYf68HZR14IXTEvCGFMlYRKj9XiGhztlD6avTnkUUDXz9GetqSUKwZxw6RF3KkvmJBrXh/B7+Nsbk4Sw=
+
+after_success:
 - git config credential.helper "store --file=.git/credentials"
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-after_success:
 - git tag | grep travis | xargs -n 1 -i% git push origin :refs/tags/%
 - git add compiled/xenhat.kemono.body.lsl
 - bash ./travis-ci-git-commit.bash
@@ -26,8 +30,7 @@ deploy:
   # description: "Automated Release"
   # release: "Release build $TRAVIS_BUILD_NUMBER"
   # tag: "travis_ok"
-  api_key:
-    secure: SwvbDpU3dle++rBnflUEJqkBwskinn8Hctn+BvitwGOKvDlnfOWCcHeY6YH4U71XCwuK9ix/OwZ37GbAs8vU3pdzXguMSnHlPXUcyxBh4qHMCeeO6QA453hcV35x0vhE+rrbxMYDpXImFdtEwGJfznaqI6hwuqHw/1m9InjavYBBLG7OHwfILI3Zo4gCLgNAJKzOvMOVoYHCqCzyqVWBlKgHDp2vRiD4jn08ciFbJJmqg4igj2v5+rkXEyIu8bSgssHlw75sNJqrlEZDlrP7fIIXnJIknMmgfYgW43N2YHFGZReSAYn15AzVGKpQC5DCzzLX98KqrNminWJkGm2LTJ3yNnA7vPZH1maKM5d3vbn4eSMx2MBzj+bd2JQQZyQhkCIJLWtBCwnFvQMApoHJWrJC8a0RkgfObWhHp7tDHAhXMedqkY5k9autGmnXh0/Ep7UeAlzae+x5u5RonUewOQhksdDFZEHJqxTi3up9JokKOMeqvl0JfRZxX+MvXrD6YUqdBbaCFmZ4CSPoncr8Liw+04m3uwJWh4GrspEYq6KqGhXC/NWTstIwcmQMtJ0y2YV7e9M6wZ5xsR5w1W39LXUUbuzeYf68HZR14IXTEvCGFMlYRKj9XiGhztlD6avTnkUUDXz9GetqSUKwZxw6RF3KkvmJBrXh/B7+Nsbk4Sw=
+
   file: compiled/xenhat.kemono.body.lsl
   skip_cleanup: true
   on:
