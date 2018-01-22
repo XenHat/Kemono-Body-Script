@@ -50,11 +50,12 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.1.7"
+#define g_internal_version_s "0.1.11"
 /* Defines */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
+// #define DEBUG_RETURNS
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define GITHUB_UPDATER
 // #define DEBUG_LISTEN
@@ -65,6 +66,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
 #define PROCESS_LEGS_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
 // End of debug defines
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
@@ -680,40 +682,48 @@ xlProcessCommand(string message){
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else{
+    else if(command=="setbutt"){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            if(command=="setbutt"){
-                ftCommand=1;
-                g_CurrentFittedButState=llList2Integer(data,1);
-                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
-                return;
-            }
-            else if(command=="setvag"){
-                ftCommand=2;
-                g_CurrentFittedVagState=llList2Integer(data,1);
-                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
-                return;
-            }
-            else if(command=="setnip"){
-                ftCommand=3;
-                g_CurrentFittedNipState=llList2Integer(data,1);
-                xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
-                return;
-            }
-            else if(command=="resCLdat"){
-                // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-                // integer clothID = llList2Integer(data,2);
-                // integer clothDesc = llList2Integer(data,4);
-                // integer attachPoint = llList2Integer(data,6);
-                // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-                // TODO: Handle this data. I have no idea what it's for.
-                return;
-            }
+            ftCommand=1;
+            g_CurrentFittedButState=llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
         }
-        // Falls here if not a FTK handled command either
-        if(llListFindList(["Ani","eRo","Exp","LEy","REy"],[llGetSubString(message,0,2)])==-1){
+        return;
+    }
+    else if(command=="setvag"){
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            ftCommand=2;
+            g_CurrentFittedVagState=llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
+        }
+        return;
+    }
+    else if(command=="setnip"){
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            ftCommand=3;
+            g_CurrentFittedNipState=llList2Integer(data,1);
+            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
+        }
+        return;
+    }
+    else if(command=="resCLdat"){
+        // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+        // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+        // integer clothID = llList2Integer(data,2);
+        // integer clothDesc = llList2Integer(data,4);
+        // integer attachPoint = llList2Integer(data,6);
+        // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+        // NOTE: This is part of the internal Starbright API. We shouldn't know
+        // how to handle this and that is fine. Staryna says it's for
+        // careful ordering of stuff. Private and all.
+        return;
+    }
+    else{
+        #ifdef PRINT_UNHANDLED_COMMANDS
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
             llOwnerSay("Unhandled command: '"+message+"'");
         }
+        #endif
         return;
     }
     integer list_size=xlListLen2MaxID(data);
@@ -826,9 +836,9 @@ xlProcessCommand(string message){
                 llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
                 llOwnerSay("Faces Count  :"+(string)(faces_index+1));
                 llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
-                llOwnerSay("Link Name 1  :"+this_prim_name);
-                llOwnerSay("link_name_index:"+(string)link_name_index);
-                llOwnerSay("Link ID 1    :"+(string)link_id);
+                // llOwnerSay("Link Name 1  :"+this_prim_name);
+                // llOwnerSay("link_name_index:"+(string)link_name_index);
+                // llOwnerSay("Link ID 1    :"+(string)link_id);
                 #endif
                 for(;faces_index > -1; faces_index--)
                     params_internal+=[
@@ -968,16 +978,111 @@ default {
         //llWhisper(KEMONO_COM_CH,"reqCLdat");
     }
     listen(integer channel,string name,key id,string message){
-        key owner_key=llGetOwnerKey(id);
+        llOwnerSay("Time:"+(string)llGetTimestamp());
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
+        key owner_key=llGetOwnerKey(id);
         #ifdef DEBUG_LISTEN
-        string knp;
-        knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+        string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
             +llKey2Name(llGetOwnerKey(id))+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
+        // TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.
+        if(message == "Rhand:1"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStartAnimation("Kem-hand-R-relax");
+            return;
+        }
+        else if(message == "Rhand:2"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-hold");
+            return;
+        }
+        else if(message == "Rhand:3"){
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-fist");
+            return;
+        }
+        else if(message == "Rhand:4"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-horns");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-point");
+            return;
+        }
+        else if(message == "Rhand:5"){
+            llStopAnimation("Kem-hand-R-fist");
+            llStopAnimation("Kem-hand-R-hold");
+            llStopAnimation("Kem-hand-R-point");
+            llStopAnimation("Kem-hand-R-relax");
+            llStartAnimation("Kem-hand-R-horns");
+            return;
+        }
+        else if(message == "Lhand:1"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStartAnimation("Kem-hand-L-relax");
+            return;
+        }
+        else if(message == "Lhand:2"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-hold");
+            return;
+        }
+        else if(message == "Lhand:3"){
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-fist");
+            return;
+        }
+        else if(message == "Lhand:4"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-horns");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-point");
+            return;
+        }
+        else if(message == "Lhand:5"){
+            llStopAnimation("Kem-hand-L-fist");
+            llStopAnimation("Kem-hand-L-hold");
+            llStopAnimation("Kem-hand-L-point");
+            llStopAnimation("Kem-hand-L-relax");
+            llStartAnimation("Kem-hand-L-horns");
+            return;
+        }
+        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
+        else if(message=="add"){ /* And add if not in the auth list */
+            if(llGetFreeMemory() > 2048)
+                if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+                    g_RemConfirmKeys_l +=[id];
+            return;
+        }
+        else if(message=="remove"){ /*If the are in the list, remove them.*/
+            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
+            if(placeinlist !=-1)
+                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
+                    placeinlist,placeinlist);
+            return;
+        }
         /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
         #ifdef FTK_MULTI_DROP
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
@@ -988,12 +1093,25 @@ default {
         if(owner_key==id){
             /*And if they aren't in the auth list, ignore them.*/
             if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+            {
+                #ifdef DEBUG_RETURNS
+                llOwnerSay("Ignoring unauthed clothing");
+                #endif
                 return;
+            }
         }
         /*If they don't have the same owner, ignore them.*/
-        else if(owner_key !=g_Owner_k)
+        if(owner_key !=g_Owner_k)
+        {
+            #ifdef DEBUG_RETURNS
+            llOwnerSay("Aborting due to bad owner ("+(string)owner_key+")");
+            #endif
             return;
-        if("reqFTDat"==message){
+        }
+        if("reqFTdat"==message){
+            #ifdef DEBUG_FUNCTIONS
+            llOwnerSay("Sending Data");
+            #endif
             if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                 llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
                     +(string)g_CurrentFittedNipState
@@ -1005,21 +1123,8 @@ default {
             }
             return;
         }
-        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
-        else if(message=="add"){ /* And add if not in the auth list */
-            if(llGetFreeMemory() > 2048)
-                if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
-                    g_RemConfirmKeys_l +=[id];
-        }
-        else if(message=="remove"){ /*If the are in the list, remove them.*/
-            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
-            if(placeinlist !=-1)
-                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
-                    placeinlist,placeinlist);
-            return;
-        }
-#ifdef PROCESS_LEGS_COMMANDS
         else if(message=="Hlegs"){
+#ifdef PROCESS_LEGS_COMMANDS
             if(!human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
@@ -1027,8 +1132,10 @@ default {
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
+#endif
         }
         else if(message=="Flegs"){
+#ifdef PROCESS_LEGS_COMMANDS
             if(human_mode){
                 xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
@@ -1036,19 +1143,35 @@ default {
                 xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                     +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
             }
-        }
 #endif
-        /* Restore compatibility with old scripts*/
+        }
         else if(message=="resetA")
             jump reset;
         else if(message=="resetB"){
             g_RemConfirmKeys_l=[];
             jump reset;
         }
+        else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+            jump reset;
+        }
         else
             xlProcessCommand(message);
         return;
         @reset;
+        llStopAnimation("Kem-hand-L-fist");
+        llStopAnimation("Kem-hand-L-hold");
+        llStopAnimation("Kem-hand-L-horns");
+        llStopAnimation("Kem-hand-L-point");
+        llStopAnimation("Kem-hand-R-fist");
+        llStopAnimation("Kem-hand-R-hold");
+        llStopAnimation("Kem-hand-R-horns");
+        llStopAnimation("Kem-hand-R-point");
+        llStartAnimation("Kem-hand-R-relax");
+        llStartAnimation("Kem-hand-L-relax");
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
             +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
             +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
