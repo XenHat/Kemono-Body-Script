@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.3" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.4" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1125,7 +1125,6 @@ default {
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
                 +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
                 +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                llOwnerSay("yis!");
                 jump reset;
             }
             else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
