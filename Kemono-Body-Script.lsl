@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.2" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.3" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1213,9 +1213,15 @@ default {
         *  object is pruned from the Current Outfit Folder otherwise
         *  it won't fire.
         */
-        llStartAnimation(g_AnimUndeform);
-        if(id!=NULL_KEY)
+        if(id==NULL_KEY){
+            llStartAnimation(g_AnimUndeform);
+            llSleep(0.1);
+            llStopAnimation(g_AnimUndeform);
+        }
+        else{
+            llStopAnimation(g_AnimUndeform);
             llStartAnimation(g_AnimDeform);
+        }
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
