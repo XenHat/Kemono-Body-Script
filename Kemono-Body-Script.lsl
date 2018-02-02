@@ -981,7 +981,7 @@ default {
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         if(owner_key != g_Owner_k && (owner_key!=id)){ /* Eval both, on purpose*/
-            llOwnerSay("Nope!");
+            // llOwnerSay("Nope!");
             return;
         }
         /* TODO: Allow chained commands such as add:show:vagoo:remove*/
