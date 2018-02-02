@@ -582,7 +582,7 @@ default {
     listen(integer channel,string name,key id,string message){
         key owner_key=llGetOwnerKey(id);
         if(owner_key != g_Owner_k && (owner_key!=id)){
-            llOwnerSay("Nope!");
+
             return;
         }
 
@@ -618,7 +618,7 @@ default {
                     +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
                     +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
                     +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                    llOwnerSay("yis!");
+
                     jump reset;
                 }
                 else if(message=="Hlegs"){
