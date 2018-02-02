@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.4" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.5" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -68,7 +68,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* Normal Features that should be enabled */
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
-#define PRINT_UNHANDLED_COMMANDS
+// #define PRINT_UNHANDLED_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #ifdef DEBUG_PARAMS
@@ -977,9 +977,89 @@ default {
         key owner_key=llGetOwnerKey(id);
         #ifdef DEBUG_LISTEN
         string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-            +llKey2Name(llGetOwnerKey(id))+" ";
+            +llKey2Name(owner_key)+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
+        if(owner_key != g_Owner_k && (owner_key!=id)){ /* Eval both, on purpose*/
+            llOwnerSay("Nope!");
+            return;
+        }
+        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
+        if(message=="add"){ /* And add if not in the auth list */
+            if(llGetFreeMemory() > 2048)
+                if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+                {
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Adding " + (string)id + " to auth list");
+                    #endif
+                    g_RemConfirmKeys_l +=[id];
+                }
+            return;
+        }
+        else if(message=="remove"){ /*If the are in the list, remove them.*/
+            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
+            if(placeinlist !=-1){
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Removing " + (string)id + " from auth list");
+                #endif
+                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
+                    placeinlist,placeinlist);
+                }
+            return;
+        }
+        if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
+            /* If the key returned for that object's owner isn't our owner...*/
+            // if(owner_key !=g_Owner_k){
+            // if(owner_key == g_Owner_k || ((owner_key !=g_Owner_k) && (owner_key==id))){ /* Eval both, on purpose*/
+                /* If they aren't in the auth list, ignore them.*/
+                if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+                    if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Ignoring unauthed " + (string)id);
+                    #endif
+                        return;
+                    }
+                }
+                /* Authorized */
+                if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                    +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                    +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                    +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                    +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                    llOwnerSay("yis!");
+                    jump reset;
+                }
+                else if(message=="Hlegs"){
+#ifdef PROCESS_LEGS_COMMANDS
+                    if(!human_mode){
+                        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        human_mode=TRUE;
+                        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    }
+#endif
+                }
+                else if(message=="Flegs"){
+#ifdef PROCESS_LEGS_COMMANDS
+                    if(human_mode){
+                        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        human_mode=FALSE;
+                        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    }
+#endif
+                }
+                else if(message=="resetA")
+                    jump reset;
+                else if(message=="resetB"){
+                    g_RemConfirmKeys_l=[];
+                    jump reset;
+                }
+                    xlProcessCommand(message);
+                //}
+        }
         // TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.
         if(message == "Rhand:1"){
             llStopAnimation("Kem-hand-R-fist");
@@ -1061,29 +1141,7 @@ default {
             llStartAnimation("Kem-hand-L-horns");
             return;
         }
-        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
-        else if(message=="add"){ /* And add if not in the auth list */
-            if(llGetFreeMemory() > 2048)
-                if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
-                {
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Adding " + (string)id + " to auth list");
-                    #endif
-                    g_RemConfirmKeys_l +=[id];
-                }
-            return;
-        }
-        else if(message=="remove"){ /*If the are in the list, remove them.*/
-            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
-            if(placeinlist !=-1){
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Removing " + (string)id + " from auth list");
-                #endif
-                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
-                    placeinlist,placeinlist);
-                }
-            return;
-        }
+
         else{
             #ifdef FTK_MULTI_DROP
             /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
@@ -1120,76 +1178,24 @@ default {
                 }
                 return;
             }
-            else if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                jump reset;
-            }
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
-                /* If the key returned for that object's owner isn't our owner...*/
-                // if(owner_key !=g_Owner_k){
-                if(owner_key ==g_Owner_k || ((owner_key !=g_Owner_k) && (owner_key==id))){ /* Eval both, on purpose*/
-                    /* If they aren't in the auth list, ignore them.*/
-                    if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
-                        if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
-                        #ifdef DEBUG_AUTH
-                        llOwnerSay("Ignoring unauthed " + (string)id);
-                        #endif
-                            return;
-                        }
-                    }
-                    /* Authorized */
-                    xlProcessCommand(message);
-                }
-            }
-            else if(message=="Hlegs"){
-#ifdef PROCESS_LEGS_COMMANDS
-                if(!human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                    human_mode=TRUE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                }
-#endif
-            }
-            else if(message=="Flegs"){
-#ifdef PROCESS_LEGS_COMMANDS
-                if(human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                    human_mode=FALSE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                }
-#endif
-            }
-            else if(message=="resetA")
-                jump reset;
-            else if(message=="resetB"){
-                g_RemConfirmKeys_l=[];
-                jump reset;
-            }
-            jump end;
-            @reset;
-            llStopAnimation("Kem-hand-L-fist");
-            llStopAnimation("Kem-hand-L-hold");
-            llStopAnimation("Kem-hand-L-horns");
-            llStopAnimation("Kem-hand-L-point");
-            llStopAnimation("Kem-hand-R-fist");
-            llStopAnimation("Kem-hand-R-hold");
-            llStopAnimation("Kem-hand-R-horns");
-            llStopAnimation("Kem-hand-R-point");
-            llStartAnimation("Kem-hand-R-relax");
-            llStartAnimation("Kem-hand-L-relax");
-            xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
         }
+        jump end;
+        @reset;
+        llStopAnimation("Kem-hand-L-fist");
+        llStopAnimation("Kem-hand-L-hold");
+        llStopAnimation("Kem-hand-L-horns");
+        llStopAnimation("Kem-hand-L-point");
+        llStopAnimation("Kem-hand-R-fist");
+        llStopAnimation("Kem-hand-R-hold");
+        llStopAnimation("Kem-hand-R-horns");
+        llStopAnimation("Kem-hand-R-point");
+        llStartAnimation("Kem-hand-R-relax");
+        llStartAnimation("Kem-hand-L-relax");
+        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
         @end;
 #ifdef DEBUG_LISTEN
         llOwnerSay("End for '" + message + "'");
