@@ -1026,7 +1026,7 @@ default {
                     +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
                     +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
                     +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                    llOwnerSay("yis!");
+                    // llOwnerSay("yis!");
                     jump reset;
                 }
                 else if(message=="Hlegs"){
