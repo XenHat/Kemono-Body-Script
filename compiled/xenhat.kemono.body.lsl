@@ -562,6 +562,7 @@ default {
         llResetScript();
     }
     state_entry(){
+        human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
         integer part=llGetNumberOfPrims();
         integer found_fitted_torso = FALSE;
@@ -582,7 +583,6 @@ default {
             }
         }
         if(found_fitted_torso){
-            xlProcessCommand("hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
         }
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
@@ -647,6 +647,7 @@ default {
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 }
 
+                llSetObjectDesc((string)human_mode);
             }
             else if(message=="Flegs"){
 
@@ -658,6 +659,7 @@ default {
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 }
 
+                llSetObjectDesc((string)human_mode);
             }
 
             if(message == "Rhand:1"){
