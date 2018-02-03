@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.6" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.7" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -58,6 +58,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
+// #define DEBUG_LISTEN_ALL
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
 // #define DEBUG_PARAMS
@@ -571,7 +572,7 @@ list xlBladeNameToPrimNames(string name){
     else if(name==BLADE_NIPS){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             return [llList2String(s_FittedNipsMeshNames,
-                                    g_CurrentFittedNipState)];
+                        g_CurrentFittedNipState)];
         return [MESH_PG_LAYER];
     }
     else if(name==BLADE_VAG){
@@ -593,7 +594,7 @@ list xlBladeNameToPrimNames(string name){
     else if(name==BLADE_THIGH_L_L){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
             if(human_mode)
-               return [MESH_FITTED_TORSO_HLEGS];
+                return [MESH_FITTED_TORSO_HLEGS];
             return [MESH_FITTED_TORSO_ETC];
         if(human_mode)
             return [MESH_LEG_LEFT_HUMAN];
@@ -627,13 +628,13 @@ list xlSetGenitals(integer pTogglePart){
         /* Process each genital mesh one by one */
         if(FKT_FHIDE_N==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-                            (meshes_count==g_CurrentFittedNipState);
+            (meshes_count==g_CurrentFittedNipState);
         else if(FKT_FHIDE_V==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-                            (meshes_count==g_CurrentFittedVagState);
+            (meshes_count==g_CurrentFittedVagState);
         else if(FKT_FHIDE_B==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-                            (meshes_count==g_CurrentFittedButState);
+            (meshes_count==g_CurrentFittedButState);
         if(FKT_FHIDE_N==pTogglePart)
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
         else
@@ -642,7 +643,7 @@ list xlSetGenitals(integer pTogglePart){
         integer prim_count=xlListLen2MaxID(prim_names);
         for(;prim_count> -1;prim_count--){
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
-                        ,[llList2String(prim_names,prim_count)])+1);
+                ,[llList2String(prim_names,prim_count)])+1);
             params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
             if(FKT_FHIDE_N==pTogglePart)
@@ -654,9 +655,9 @@ list xlSetGenitals(integer pTogglePart){
             integer faces_count=xlListLen2MaxID(faces_l);
             for(;faces_count > -1;--faces_count)
                 params+=[PRIM_COLOR,
-                            llList2Integer(faces_l,faces_count),<1,1,1>,
-                                visible * g_Config_MaximumOpacity
-                        ];
+                    llList2Integer(faces_l,faces_count),<1,1,1>,
+                        visible * g_Config_MaximumOpacity
+                ];
             #ifdef DEBUG_FACE_SELECT
             llOwnerSay("FACES:"+llList2CSV(faces_l)
                 +"|MESH_NAME:"+mesh_name
@@ -729,12 +730,12 @@ xlProcessCommand(string message){
         llOwnerSay("[Looping through params]:"+blade_name);
         #endif
         if(blade_name==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,
-                FKT_PRESENT)){
+            FKT_PRESENT)){
             g_CurrentFittedNipState=showit;
             xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
         }
         else if(blade_name==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,
-                FKT_PRESENT)){
+            FKT_PRESENT)){
             g_CurrentFittedVagState=showit;
             g_TogglingPGMeshes=TRUE;
             xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
@@ -742,13 +743,13 @@ xlProcessCommand(string message){
         }
         else if(blade_name==BLADE_VAG){
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                    (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+                (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
             // llOwnerSay("o.o.o.o.o");
             if(!showit && !g_TogglingPGMeshes){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
             }
             else if(showit && g_TogglingPGMeshes)
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
         }
         else if(blade_name==BLADE_NIPS){
             // llOwnerSay("o.o.o.o.o");
@@ -758,7 +759,7 @@ xlProcessCommand(string message){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
             }
             else if(g_TogglingPGMeshes && showit)
-               chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
         }
         else{
             list params_internal;
@@ -787,55 +788,55 @@ xlProcessCommand(string message){
             /* TODO: Handle stock body in xlSetVag instead to only keep
             *  the statement above
             */
-                if(blade_name==BLADE_PELVIS){
-                    if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit)
-                        xlProcessCommand("hide:"+BLADE_VAG);
-                    else
-                        xlProcessCommand("show:"+BLADE_VAG);
-                }
-                else if(blade_name==BLADE_BREASTS){
+            if(blade_name==BLADE_PELVIS){
+                if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit)
+                xlProcessCommand("hide:"+BLADE_VAG);
+                else
+                xlProcessCommand("show:"+BLADE_VAG);
+            }
+            else if(blade_name==BLADE_BREASTS){
                     // showit *=!(g_RuntimeBodyStateSettings & KSB_PGNIPLS);
                     // llOwnerSay("GOD NO PLEASE GO AWAY!");
                     if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit)
-                        xlProcessCommand("hide:"+BLADE_NIPS);
+                    xlProcessCommand("hide:"+BLADE_NIPS);
                         // llOwnerSay("nuuuu");
-                    else
+                        else
                         xlProcessCommand("show:"+BLADE_NIPS);
+                    }
                 }
-            }
-            list prim_names=xlBladeNameToPrimNames(blade_name);
-            integer blade_prim_iter=xlListLen2MaxID(prim_names);
-            #ifdef DEBUG_DATA
-            llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
-            llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
-            #endif
-            for(;blade_prim_iter > -1;blade_prim_iter--){
-                /* TODO: Be less nuclear and only fix the faces we asked for*/
-                /* TODO: inline as much as possible */
-                params_internal+=[
+                list prim_names=xlBladeNameToPrimNames(blade_name);
+                integer blade_prim_iter=xlListLen2MaxID(prim_names);
+                #ifdef DEBUG_DATA
+                llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
+                llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
+                #endif
+                for(;blade_prim_iter > -1;blade_prim_iter--){
+                    /* TODO: Be less nuclear and only fix the faces we asked for*/
+                    /* TODO: inline as much as possible */
+                    params_internal+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
                         llListFindList(g_LinkDB_l,[
                             llList2String(prim_names,blade_prim_iter)
-                        ])+1)
+                            ])+1)
                     ];
-                list faces_l=xlGetFacesByBladeName(blade_name);
-                integer faces_index=xlListLen2MaxID(faces_l);
-                #ifdef DEBUG_FACE_SELECT
-                llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
-                llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
-                llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
-                llOwnerSay("Faces Count  :"+(string)(faces_index+1));
-                llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
+                    list faces_l=xlGetFacesByBladeName(blade_name);
+                    integer faces_index=xlListLen2MaxID(faces_l);
+                    #ifdef DEBUG_FACE_SELECT
+                    llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
+                    llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
+                    llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
+                    llOwnerSay("Faces Count  :"+(string)(faces_index+1));
+                    llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
                 // llOwnerSay("Link Name 1  :"+this_prim_name);
                 // llOwnerSay("link_name_index:"+(string)link_name_index);
                 // llOwnerSay("Link ID 1    :"+(string)link_id);
                 #endif
                 for(;faces_index > -1; faces_index--)
-                    params_internal+=[
-                        PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                            (showit ^ (BLADE_VAG==blade_name)) *
-                                g_Config_MaximumOpacity
-                    ];
+                params_internal+=[
+                PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
+                (showit ^ (BLADE_VAG==blade_name)) *
+                g_Config_MaximumOpacity
+                ];
             }
             #ifdef DEBUG_PARAMS
             llOwnerSay("Params out:"+llList2CSV(params));
@@ -847,6 +848,23 @@ xlProcessCommand(string message){
         #endif
     }
     xlSetLinkPrimitiveParamsFast(LINK_SET,params);
+}
+reset(){
+    llStopAnimation("Kem-hand-L-fist");
+    llStopAnimation("Kem-hand-L-hold");
+    llStopAnimation("Kem-hand-L-horns");
+    llStopAnimation("Kem-hand-L-point");
+    llStopAnimation("Kem-hand-R-fist");
+    llStopAnimation("Kem-hand-R-hold");
+    llStopAnimation("Kem-hand-R-horns");
+    llStopAnimation("Kem-hand-R-point");
+    llStartAnimation("Kem-hand-R-relax");
+    llStartAnimation("Kem-hand-L-relax");
+    xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+        +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+        +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+        +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+        +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -861,9 +879,9 @@ default {
     #endif
     changed(integer change){
         if(change & CHANGED_OWNER)
-            llResetScript();
+        llResetScript();
         else if(change & CHANGED_LINK)
-            llResetScript(); /* TODO: should really just recalculate */
+        llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
         g_Owner_k=llGetOwner();
@@ -884,25 +902,23 @@ default {
                 +"]Processing "+name+"...",<0,0,0>,1.0);
             #endif
             if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            /* Look if this really is a fitted torso or an accessory for it */
+                /* Look if this really is a fitted torso or an accessory for it */
                 integer fitted_torso_string_index=llSubStringIndex(name,
                     MESH_FITTED_TORSO);
                 if(fitted_torso_string_index > 5)
-                    if(fitted_torso_string_index < 8){
-                        // Not yet; perform autohiding first
-                        //setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
-                        found_fitted_torso = TRUE;
-                        name=MESH_FITTED_TORSO;
-                    }
+                if(fitted_torso_string_index < 8){
+                    found_fitted_torso = TRUE;
+                    name=MESH_FITTED_TORSO;
+                }
             }
             if(llListFindList(g_supported_meshes,[name])!=-1){
                 #ifdef DEBUG_ENTIRE_BODY_ALPHA
                 prim_params_to_apply +=[
-                    PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0
+                PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0
                 ];
                 if(retexture){
                     prim_params_to_apply+=[
-                        PRIM_TEXTURE,ALL_SIDES,texture,<1,1,0>,<0,0,0>,0.0
+                    PRIM_TEXTURE,ALL_SIDES,texture,<1,1,0>,<0,0,0>,0.0
                     ];
                 }
                 #endif
@@ -919,11 +935,11 @@ default {
         #ifdef DEBUG_SELF_TEST
         llSetText("[UNIT SELF-TEST]",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         list selftest=["neck","collar","shoulderUL","shoulderUR","shoulderLL",
-            "shoulderLR","armUL","armUR","elbowL","elbowR","armLL","armLR",
-            "wristL","wristR","handL","handR","chest","breast","ribs","abs",
-            "belly","pelvis","hipL","hipR","thighUL","thighUR","thighLL",
-            "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
-            "shinLL","shinLR","ankleL","ankleR","footL","footR"];
+        "shoulderLR","armUL","armUR","elbowL","elbowR","armLL","armLR",
+        "wristL","wristR","handL","handR","chest","breast","ribs","abs",
+        "belly","pelvis","hipL","hipR","thighUL","thighUR","thighLL",
+        "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
+        "shinLL","shinLR","ankleL","ankleR","footL","footR"];
         integer id = xlListLen2MaxID(selftest);
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
             +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
@@ -948,9 +964,9 @@ default {
         llOwnerSay("Undeform:"+g_AnimUndeform);
         #endif
         if(llGetAttached())
-            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
-            llSetTimerEvent(0.1);
+        llSetTimerEvent(0.1);
         llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
@@ -965,7 +981,6 @@ default {
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
-        //llWhisper(KEMONO_COM_CH,"reqCLdat");
     }
     listen(integer channel,string name,key id,string message){
         #ifdef DEBUG_LISTEN
@@ -975,25 +990,31 @@ default {
         if(id==llGetKey()) return;
         #endif
         key owner_key=llGetOwnerKey(id);
-        #ifdef DEBUG_LISTEN
+        #ifdef DEBUG_LISTEN_ALL
         string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-            +llKey2Name(owner_key)+" ";
+        +llKey2Name(owner_key)+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         if(owner_key != g_Owner_k && (owner_key!=id)){ /* Eval both, on purpose*/
-            // llOwnerSay("Nope!");
             return;
         }
+        #ifndef DEBUG_LISTEN_ALL
+        #ifdef DEBUG_LISTEN
+        string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+        +llKey2Name(owner_key)+" ";
+        llOwnerSay(knp+"input ["+message+"]");
+        #endif
+        #endif
         /* TODO: Allow chained commands such as add:show:vagoo:remove*/
         if(message=="add"){ /* And add if not in the auth list */
             if(llGetFreeMemory() > 2048)
-                if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
-                {
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Adding " + (string)id + " to auth list");
-                    #endif
-                    g_RemConfirmKeys_l +=[id];
-                }
+            if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+            {
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Adding " + (string)id + " to auth list");
+                #endif
+                g_RemConfirmKeys_l +=[id];
+            }
             return;
         }
         else if(message=="remove"){ /*If the are in the list, remove them.*/
@@ -1004,163 +1025,166 @@ default {
                 #endif
                 g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
                     placeinlist,placeinlist);
-                }
+            }
             return;
         }
-        if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
-            /* If the key returned for that object's owner isn't our owner...*/
-            // if(owner_key !=g_Owner_k){
-            // if(owner_key == g_Owner_k || ((owner_key !=g_Owner_k) && (owner_key==id))){ /* Eval both, on purpose*/
-                /* If they aren't in the auth list, ignore them.*/
-                if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
-                    if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+        else{
+            if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+                if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
                     #ifdef DEBUG_AUTH
                     llOwnerSay("Ignoring unauthed " + (string)id);
                     #endif
-                        return;
-                    }
-                }
-                /* Authorized */
-                if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                    +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                    +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                    +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                    +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                    // llOwnerSay("yis!");
-                    jump reset;
-                }
-                else if(message=="Hlegs"){
-#ifdef PROCESS_LEGS_COMMANDS
-                    if(!human_mode){
-                        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                        human_mode=TRUE;
-                        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                    }
-#endif
-                }
-                else if(message=="Flegs"){
-#ifdef PROCESS_LEGS_COMMANDS
-                    if(human_mode){
-                        xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                        human_mode=FALSE;
-                        xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                            +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
-                    }
-#endif
-                }
-                else if(message=="resetA")
-                    jump reset;
-                else if(message=="resetB"){
-                    g_RemConfirmKeys_l=[];
-                    jump reset;
-                }
-                    xlProcessCommand(message);
-                //}
-        }
-        // TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.
-        if(message == "Rhand:1"){
-            llStopAnimation("Kem-hand-R-fist");
-            llStopAnimation("Kem-hand-R-hold");
-            llStopAnimation("Kem-hand-R-horns");
-            llStopAnimation("Kem-hand-R-point");
-            llStartAnimation("Kem-hand-R-relax");
-            return;
-        }
-        else if(message == "Rhand:2"){
-            llStopAnimation("Kem-hand-R-fist");
-            llStopAnimation("Kem-hand-R-horns");
-            llStopAnimation("Kem-hand-R-point");
-            llStopAnimation("Kem-hand-R-relax");
-            llStartAnimation("Kem-hand-R-hold");
-            return;
-        }
-        else if(message == "Rhand:3"){
-            llStopAnimation("Kem-hand-R-hold");
-            llStopAnimation("Kem-hand-R-horns");
-            llStopAnimation("Kem-hand-R-point");
-            llStopAnimation("Kem-hand-R-relax");
-            llStartAnimation("Kem-hand-R-fist");
-            return;
-        }
-        else if(message == "Rhand:4"){
-            llStopAnimation("Kem-hand-R-fist");
-            llStopAnimation("Kem-hand-R-hold");
-            llStopAnimation("Kem-hand-R-horns");
-            llStopAnimation("Kem-hand-R-relax");
-            llStartAnimation("Kem-hand-R-point");
-            return;
-        }
-        else if(message == "Rhand:5"){
-            llStopAnimation("Kem-hand-R-fist");
-            llStopAnimation("Kem-hand-R-hold");
-            llStopAnimation("Kem-hand-R-point");
-            llStopAnimation("Kem-hand-R-relax");
-            llStartAnimation("Kem-hand-R-horns");
-            return;
-        }
-        else if(message == "Lhand:1"){
-            llStopAnimation("Kem-hand-L-fist");
-            llStopAnimation("Kem-hand-L-hold");
-            llStopAnimation("Kem-hand-L-horns");
-            llStopAnimation("Kem-hand-L-point");
-            llStartAnimation("Kem-hand-L-relax");
-            return;
-        }
-        else if(message == "Lhand:2"){
-            llStopAnimation("Kem-hand-L-fist");
-            llStopAnimation("Kem-hand-L-horns");
-            llStopAnimation("Kem-hand-L-point");
-            llStopAnimation("Kem-hand-L-relax");
-            llStartAnimation("Kem-hand-L-hold");
-            return;
-        }
-        else if(message == "Lhand:3"){
-            llStopAnimation("Kem-hand-L-hold");
-            llStopAnimation("Kem-hand-L-horns");
-            llStopAnimation("Kem-hand-L-point");
-            llStopAnimation("Kem-hand-L-relax");
-            llStartAnimation("Kem-hand-L-fist");
-            return;
-        }
-        else if(message == "Lhand:4"){
-            llStopAnimation("Kem-hand-L-fist");
-            llStopAnimation("Kem-hand-L-hold");
-            llStopAnimation("Kem-hand-L-horns");
-            llStopAnimation("Kem-hand-L-relax");
-            llStartAnimation("Kem-hand-L-point");
-            return;
-        }
-        else if(message == "Lhand:5"){
-            llStopAnimation("Kem-hand-L-fist");
-            llStopAnimation("Kem-hand-L-hold");
-            llStopAnimation("Kem-hand-L-point");
-            llStopAnimation("Kem-hand-L-relax");
-            llStartAnimation("Kem-hand-L-horns");
-            return;
-        }
-
-        else{
-            #ifdef FTK_MULTI_DROP
-            /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-            if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-                if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
                     return;
+                }
+            }
+            #ifdef DEBUG_AUTH
+            else{
+                    llOwnerSay("Hi Kemono HUD");
+            }
             #endif
-            if(llSubStringIndex(message, "resCLdat")==0){
-                // This API isn't public, the best we can do is guess.
-                // Do nothing for now.
-                // if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                // ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-                // integer clothID = llList2Integer(data,2);
-                // integer clothDesc = llList2Integer(data,4);
-                // integer attachPoint = llList2Integer(data,6);
-                // integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-                // NOTE: This is part of the internal Starbright API. We shouldn't know
-                // how to handle this and that is fine. Staryna says it's for
-                // careful ordering of stuff. Private and all.
+            /* Authorized */
+            if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                reset();
+            }
+            else if(message=="resetA")
+                reset();
+            else if(message=="resetB"){
+                g_RemConfirmKeys_l=[];
+                reset();
+            }
+            /* TODO: Move at bottom and overwrite 'message' instead in other
+            /* branches so that we can inline xlProcessCommand
+            */
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
+                xlProcessCommand(message);
+            }
+            else if(message=="Hlegs"){
+                #ifdef PROCESS_LEGS_COMMANDS
+                if(!human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=TRUE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
+                #endif
+            }
+            else if(message=="Flegs"){
+                #ifdef PROCESS_LEGS_COMMANDS
+                if(human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                    human_mode=FALSE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                }
+                #endif
+            }
+            /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
+            if(message == "Rhand:1"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStartAnimation("Kem-hand-R-relax");
+                return;
+            }
+            else if(message == "Rhand:2"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-hold");
+                return;
+            }
+            else if(message == "Rhand:3"){
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-fist");
+                return;
+            }
+            else if(message == "Rhand:4"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-point");
+                return;
+            }
+            else if(message == "Rhand:5"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-horns");
+                return;
+            }
+            else if(message == "Lhand:1"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStartAnimation("Kem-hand-L-relax");
+                return;
+            }
+            else if(message == "Lhand:2"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-hold");
+                return;
+            }
+            else if(message == "Lhand:3"){
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-fist");
+                return;
+            }
+            else if(message == "Lhand:4"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-point");
+                return;
+            }
+            else if(message == "Lhand:5"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-horns");
+                return;
+            }
+            else{
+                #ifdef FTK_MULTI_DROP
+                /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
+                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+                if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
+                return;
+                #endif
+                if(llSubStringIndex(message, "resCLdat")==0){
+                /* This API isn't public, the best we can do is guess.
+                /* Do nothing for now.
+                /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+                /* integer clothID = llList2Integer(data,2);
+                /* integer clothDesc = llList2Integer(data,4);
+                /* integer attachPoint = llList2Integer(data,6);
+                /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                /* NOTE: This is part of the internal Starbright API. We shouldn't know
+                /* how to handle this and that is fine. Staryna says it's for
+                /* careful ordering of stuff. Private and all.
+                */
                 return;
             }
             else if("reqFTdat"==message){
@@ -1178,40 +1202,23 @@ default {
                 }
                 return;
             }
+            #ifdef DEBUG_LISTEN
+            llOwnerSay("End for '" + message + "'");
+            #endif
         }
-        jump end;
-        @reset;
-        llStopAnimation("Kem-hand-L-fist");
-        llStopAnimation("Kem-hand-L-hold");
-        llStopAnimation("Kem-hand-L-horns");
-        llStopAnimation("Kem-hand-L-point");
-        llStopAnimation("Kem-hand-R-fist");
-        llStopAnimation("Kem-hand-R-hold");
-        llStopAnimation("Kem-hand-R-horns");
-        llStopAnimation("Kem-hand-R-point");
-        llStartAnimation("Kem-hand-R-relax");
-        llStartAnimation("Kem-hand-L-relax");
-        xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        @end;
-#ifdef DEBUG_LISTEN
-        llOwnerSay("End for '" + message + "'");
-#endif
     }
-    on_rez(integer p){
-        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-        #ifdef GITHUB_UPDATER
-        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
-            +g_internal_repo_s
-            +"/releases/latest?access_token="
-            +"603ee815cda6fb45fcc16876effbda017f158bef",
-            [HTTP_BODY_MAXLENGTH,16384],"");
-        #endif
-    }
-    attach(key id){
+}
+on_rez(integer p){
+    llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+    #ifdef GITHUB_UPDATER
+    g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+        +g_internal_repo_s
+        +"/releases/latest?access_token="
+        +"603ee815cda6fb45fcc16876effbda017f158bef",
+        [HTTP_BODY_MAXLENGTH,16384],"");
+    #endif
+}
+attach(key id){
         /* Deform on detach, unlike the stock body. This assumes permissions
         *  are granted, which happens on rez or startup if attached.
         *  Needs to be processed as fast as possible to make it before the
@@ -1241,22 +1248,22 @@ default {
     timer(){
         if(llGetAttached()){
             if(!g_HasAnimPerms)
-                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             else
-                llStartAnimation(g_AnimDeform);
+            llStartAnimation(g_AnimDeform);
         }
         string text;
-#ifdef DEBUG_TEXT
+        #ifdef DEBUG_TEXT
         text="[DEBUG]"+text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()
-            +"]/"+(string)llGetMemoryLimit()+"B";
+        +"]/"+(string)llGetMemoryLimit()+"B";
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)g_TogglingPGMeshes;
         #endif
         text+="\n"+(string)(xlListLen2MaxID(g_RemConfirmKeys_l)+1)
-            +" Keys\n \n ";
+        +" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
-#endif
+        #endif
         llSetText(text+"\n \n \n \n ",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
     }
@@ -1276,34 +1283,34 @@ default {
         }
         // Minor
         else if(llList2Integer(new_version_l,1) >
-                llList2Integer(cur_version_l,1)){
+            llList2Integer(cur_version_l,1)){
             update_type="version"; jump update;
         }
         // Patch (bugfix)
         else if(llList2Integer(new_version_l,2) >
-                llList2Integer(cur_version_l,2)){
+            llList2Integer(cur_version_l,2)){
             update_type="patch"; jump update;
         }
         return;
         @update;
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")
-            update_title="";
+        update_title="";
         else update_title=":\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕")
-            update_description="";
+        update_description="";
         else update_description+="\n";
         if(llStringLength(update_description) >=128)
-            update_description="Too many changes, see link below.";
+        update_description="Too many changes, see link below.";
         string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
-            +") is available!"+update_title+"\n"+update_description+"\n"
-            +"Your new scripts (["+"https://github.com/"+g_internal_repo_s
-            +"/compare/"+g_internal_version_s+"..."+new_version_s+" Diff "
-            +g_internal_version_s+"..."+new_version_s
-            +"]):\n[https://raw.githubusercontent.com/"
-            +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
-            +script_name+".lsl]";
+        +") is available!"+update_title+"\n"+update_description+"\n"
+        +"Your new scripts (["+"https://github.com/"+g_internal_repo_s
+        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Diff "
+        +g_internal_version_s+"..."+new_version_s
+        +"]):\n[https://raw.githubusercontent.com/"
+        +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
+        +script_name+".lsl]";
         llDialog(g_Owner_k,"[https://github.com/"+g_internal_repo_s +" "
             +script_name+"] v"+g_internal_version_s
             +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
