@@ -884,6 +884,7 @@ default {
         llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
+        human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
@@ -1074,6 +1075,7 @@ default {
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 }
                 #endif
+                llSetObjectDesc((string)human_mode);
             }
             else if(message=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
@@ -1085,6 +1087,7 @@ default {
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
                 }
                 #endif
+                llSetObjectDesc((string)human_mode);
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
             if(message == "Rhand:1"){
