@@ -926,7 +926,9 @@ default {
             }
         }
         if(found_fitted_torso){
-            xlProcessCommand("hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
+            /* NOTE: This is only needed when not combining the Kemono body with the Fitted torso, which I do not have fully tested.
+            // xlProcessCommand("hide:neck:shoulderLR:shoulderLL:shoulderUR:shoulderUL:collar:chest:breast:ribs:abs:belly:pelvis:hipR:hipL:thighUR:thighUL:thighLR:thighLL");
+            */
             setBit(g_RuntimeBodyStateSettings,FKT_PRESENT);
         }
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
