@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.7" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.8" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -904,10 +904,11 @@ default {
             #endif
             if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                 /* Look if this really is a fitted torso or an accessory for it */
-                integer fitted_torso_string_index=llSubStringIndex(name,
-                    MESH_FITTED_TORSO);
-                if(fitted_torso_string_index > 5)
-                if(fitted_torso_string_index < 8){
+                //integer fitted_torso_string_index=llSubStringIndex(name,
+                //    MESH_FITTED_TORSO);
+                //if(fitted_torso_string_index > 5)
+                //if(fitted_torso_string_index < 8){
+                if(llSubStringIndex(name, MESH_FITTED_TORSO) != -1){
                     found_fitted_torso = TRUE;
                     name=MESH_FITTED_TORSO;
                 }
