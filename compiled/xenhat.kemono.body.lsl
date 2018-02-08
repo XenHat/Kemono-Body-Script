@@ -623,7 +623,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-            if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+            string name = llKey2Name(id);
+            if(llSubStringIndex(name, "Kemono - HUD")==-1 &&
+                (llSubStringIndex(name, "Fitted Kemono")==-1
+                    && (llSubStringIndex(name, "Petite")==-1 || llSubStringIndex(name, "Busty")==-1)
+                    && (llSubStringIndex(name, "Front")==-1 || llSubStringIndex(name, "Rear")==-1)
+                    && llSubStringIndex(name, "Bits")==-1)){
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
                     return;
                 }
@@ -641,7 +646,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 g_RemConfirmKeys_l=[];
                 reset();
             }
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
                 xlProcessCommand(message);
             }
             else if(message=="Hlegs"){
@@ -816,8 +821,8 @@ attach(key id){
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.8" ) return;
-        list cur_version_l=llParseString2List( "0.3.8" ,["."],[""]);
+        if(new_version_s== "0.3.9" ) return;
+        list cur_version_l=llParseString2List( "0.3.9" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
         string update_type="version";
 
@@ -849,13 +854,13 @@ attach(key id){
         string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
         +") is available!"+update_title+"\n"+update_description+"\n"
         +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.8" +"..."+new_version_s+" Diff "
-        + "0.3.8" +"..."+new_version_s
+        +"/compare/"+ "0.3.9" +"..."+new_version_s+" Diff "
+        + "0.3.9" +"..."+new_version_s
         +"]):\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
         llDialog(g_Owner_k,"[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "
-            + "Kemono-Body-Script" +"] v"+ "0.3.8"
+            + "Kemono-Body-Script" +"] v"+ "0.3.9"
             +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
             +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
     }
