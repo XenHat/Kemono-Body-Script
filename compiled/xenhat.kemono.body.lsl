@@ -562,6 +562,12 @@ default {
         llResetScript();
     }
     state_entry(){
+string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
+tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
+{start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
+basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
+while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
+if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
         human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
         integer part=llGetNumberOfPrims();
