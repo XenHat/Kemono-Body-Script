@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.8" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.9" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -675,7 +675,7 @@ list xlSetGenitals(integer pTogglePart){
 xlProcessCommand(string message){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
-    #ifdef DEBUG_DATA
+    #ifdef DEBUG_COMMANDS
     llOwnerSay("Parsing Command:"+message);
     #endif
     integer showit;
@@ -1039,7 +1039,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-            if(llSubStringIndex(llKey2Name(id), "Kemono - HUD")==-1){
+            string name = llKey2Name(id);
+            if(llSubStringIndex(name, "Kemono - HUD")==-1 &&
+                (llSubStringIndex(name, "Fitted Kemono")==-1
+                    && (llSubStringIndex(name, "Petite")==-1 || llSubStringIndex(name, "Busty")==-1)
+                    && (llSubStringIndex(name, "Front")==-1  || llSubStringIndex(name, "Rear")==-1)
+                    && llSubStringIndex(name, "Bits")==-1)){
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
                     #ifdef DEBUG_AUTH
                     llOwnerSay("Ignoring unauthed " + (string)id);
@@ -1069,7 +1074,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* TODO: Move at bottom and overwrite 'message' instead in other
             /* branches so that we can inline xlProcessCommand
             */
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0){
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
                 xlProcessCommand(message);
             }
             else if(message=="Hlegs"){
