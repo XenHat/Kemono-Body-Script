@@ -78,6 +78,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #else
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
+#define debugLogic(a) llOwnerSay(#a + " == " + (string)a)
 /* TODO:
 -   Set Nipple Alpha
         0 = None : 1 = Partial : 2 = Full
@@ -911,13 +912,16 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             llSetText("\n \n \n \n \n \n["+(string)llGetFreeMemory()
                 +"]Processing "+name+"...",<0,0,0>,1.0);
             #endif
-            if(!getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                /* Look if this really is a fitted torso or an accessory for it */
-                //integer fitted_torso_string_index=llSubStringIndex(name,
-                //    MESH_FITTED_TORSO);
-                //if(fitted_torso_string_index > 5)
-                //if(fitted_torso_string_index < 8){
-                if(llSubStringIndex(name, MESH_FITTED_TORSO) != -1){
+          if(!found_fitted_torso){
+                if(llSubStringIndex(name, "Kemono")!=-1 &&
+                    llSubStringIndex(name, "Torso")!=-1 &&
+                    (llSubStringIndex(name, "Petite")!=-1 ||
+                    llSubStringIndex(name, "Busty")!=-1)){
+                    // debugLogic(llSubStringIndex(name, "Kemono"));
+                    // debugLogic(llSubStringIndex(name, "Torso"));
+                    // debugLogic(llSubStringIndex(name, "Busty"));
+                    // debugLogic(llSubStringIndex(name, "Petite"));
+                    // llOwnerSay("Found Fitted Torso: " + name + " on link ID:" + (string)part);
                     found_fitted_torso = TRUE;
                     name=MESH_FITTED_TORSO;
                 }
