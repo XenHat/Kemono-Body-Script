@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.10" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.11" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -893,13 +893,20 @@ tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(t
 basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
 while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
 if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
+        #ifdef DEBUG_TEXT
+        llScriptProfiler(PROFILE_SCRIPT_MEMORY);
+        #endif
         if(llGetObjectDesc()==""){
             llSetObjectDesc("1");
         }
         human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
-        #ifdef DEBUG_TEXT
-        llScriptProfiler(PROFILE_SCRIPT_MEMORY);
+        #ifdef GITHUB_UPDATER
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+            +g_internal_repo_s
+            +"/releases/latest?access_token="
+            +"603ee815cda6fb45fcc16876effbda017f158bef",
+            [HTTP_BODY_MAXLENGTH,16384],"");
         #endif
         #ifdef DEBUG_ENTIRE_BODY_ALPHA
         string texture=llGetInventoryName(INVENTORY_TEXTURE,0);
@@ -1302,45 +1309,39 @@ attach(key id){
         if(new_version_s==g_internal_version_s) return;
         list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
-        string update_type="version";
         // Major
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
-            update_type="major version"; jump update;
+            jump update;
         }
         // Minor
         else if(llList2Integer(new_version_l,1) >
             llList2Integer(cur_version_l,1)){
-            update_type="version"; jump update;
+            jump update;
         }
         // Patch (bugfix)
         else if(llList2Integer(new_version_l,2) >
             llList2Integer(cur_version_l,2)){
-            update_type="patch"; jump update;
+            jump update;
         }
         return;
         @update;
         string update_title=llJsonGetValue(body,["name"]);
-        if(update_title=="﷕")
-        update_title="";
-        else update_title=":\n\n"+update_title;
+        if(update_title=="﷕")update_title="";
+        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
-        if(update_description=="﷕")
-        update_description="";
-        else update_description+="\n";
-        if(llStringLength(update_description) >=128)
-        update_description="Too many changes, see link below.";
-        string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
-        +") is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new scripts (["+"https://github.com/"+g_internal_repo_s
-        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Diff "
-        +g_internal_version_s+"..."+new_version_s
-        +"]):\n[https://raw.githubusercontent.com/"
+        if(update_description=="﷕"){
+            update_description="";
+        }
+        update_description+="\n";
+        if(llStringLength(update_description) >=350)
+        update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
+        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
+        +g_internal_version_s+"↛"+new_version_s+"]\n";
+        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
+        +"Your new script:\n[https://raw.githubusercontent.com/"
         +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
         +script_name+".lsl]";
-        llDialog(g_Owner_k,"[https://github.com/"+g_internal_repo_s +" "
-            +script_name+"] v"+g_internal_version_s
-            +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
-            +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k,script_name + " v"+g_internal_version_s +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
     #endif
 }
