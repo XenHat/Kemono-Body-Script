@@ -577,13 +577,16 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         integer found_fitted_torso = FALSE;
         for (;part > 0;--part){
             string name=llGetLinkName(part);
-            if(! (!!(g_RuntimeBodyStateSettings & 1 )) ){
+          if(!found_fitted_torso){
+                if(llSubStringIndex(name, "Kemono")!=-1 &&
+                    llSubStringIndex(name, "Torso")!=-1 &&
+                    (llSubStringIndex(name, "Petite")!=-1 ||
+                    llSubStringIndex(name, "Busty")!=-1)){
 
 
 
 
 
-                if(llSubStringIndex(name,  "Fitted Kemono Torso" ) != -1){
                     found_fitted_torso = TRUE;
                     name= "Fitted Kemono Torso" ;
                 }
