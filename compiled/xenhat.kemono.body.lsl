@@ -575,6 +575,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
+
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+            + "XenHat/"+ "Kemono-Body-Script"
+            +"/releases/latest?access_token="
+            +"603ee815cda6fb45fcc16876effbda017f158bef",
+            [HTTP_BODY_MAXLENGTH,16384],"");
         integer part=llGetNumberOfPrims();
         integer found_fitted_torso = FALSE;
         for (;part > 0;--part){
@@ -829,48 +835,42 @@ attach(key id){
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.10" ) return;
-        list cur_version_l=llParseString2List( "0.3.10" ,["."],[""]);
+        if(new_version_s== "0.3.11" ) return;
+        list cur_version_l=llParseString2List( "0.3.11" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
-        string update_type="version";
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
-            update_type="major version"; jump update;
+            jump update;
         }
 
         else if(llList2Integer(new_version_l,1) >
             llList2Integer(cur_version_l,1)){
-            update_type="version"; jump update;
+            jump update;
         }
 
         else if(llList2Integer(new_version_l,2) >
             llList2Integer(cur_version_l,2)){
-            update_type="patch"; jump update;
+            jump update;
         }
         return;
         @update;
         string update_title=llJsonGetValue(body,["name"]);
-        if(update_title=="﷕")
-        update_title="";
-        else update_title=":\n\n"+update_title;
+        if(update_title=="﷕")update_title="";
+        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
-        if(update_description=="﷕")
-        update_description="";
-        else update_description+="\n";
-        if(llStringLength(update_description) >=128)
-        update_description="Too many changes, see link below.";
-        string g_cached_updateMsg_s="A new "+update_type+" (v"+new_version_s
-        +") is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new scripts (["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.10" +"..."+new_version_s+" Diff "
-        + "0.3.10" +"..."+new_version_s
-        +"]):\n[https://raw.githubusercontent.com/"
+        if(update_description=="﷕"){
+            update_description="";
+        }
+        update_description+="\n";
+        if(llStringLength(update_description) >=350)
+        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
+        +"/compare/"+ "0.3.11" +"..."+new_version_s+" Changes for "
+        + "0.3.11" +"↛"+new_version_s+"]\n";
+        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
+        +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k,"[https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"  +" "
-            + "Kemono-Body-Script" +"] v"+ "0.3.10"
-            +" by secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86"
-            +"/inspect.\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.11"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
