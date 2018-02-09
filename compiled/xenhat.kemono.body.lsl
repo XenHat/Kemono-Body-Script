@@ -630,11 +630,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         else{
             string name = llKey2Name(id);
-            if(llSubStringIndex(name, "Kemono - HUD")==-1 &&
-                (llSubStringIndex(name, "Fitted Kemono")==-1
-                    && (llSubStringIndex(name, "Petite")==-1 || llSubStringIndex(name, "Busty")==-1)
-                    && (llSubStringIndex(name, "Front")==-1 || llSubStringIndex(name, "Rear")==-1)
-                    && llSubStringIndex(name, "Bits")==-1)){
+            if(llSubStringIndex(name, "Kemono - HUD")!=-1 &&
+                (llSubStringIndex(name, "Fitted Kemono")!=-1
+                    && (llSubStringIndex(name, "Petite")!=-1 || llSubStringIndex(name, "Busty")!=-1)
+                    && (llSubStringIndex(name, "Front")!=-1 || llSubStringIndex(name, "Rear")!=-1)
+                    && llSubStringIndex(name, "Bits")!=-1)){
                 if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
                     return;
                 }
