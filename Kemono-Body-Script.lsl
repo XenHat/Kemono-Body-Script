@@ -912,7 +912,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             llSetText("\n \n \n \n \n \n["+(string)llGetFreeMemory()
                 +"]Processing "+name+"...",<0,0,0>,1.0);
             #endif
-          if(!found_fitted_torso){
+            if(!found_fitted_torso){
                 if(llSubStringIndex(name, "Kemono")!=-1 &&
                     llSubStringIndex(name, "Torso")!=-1 &&
                     (llSubStringIndex(name, "Petite")!=-1 ||
