@@ -890,6 +890,9 @@ tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(t
 basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
 while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
 if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
+        if(llGetObjectDesc()==""){
+            llSetObjectDesc("1");
+        }
         human_mode = (integer)llGetObjectDesc();
         g_Owner_k=llGetOwner();
         #ifdef DEBUG_TEXT
