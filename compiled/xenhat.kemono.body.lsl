@@ -6,6 +6,7 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE;
+list global_params;
 
 key g_internal_httprid_k=NULL_KEY;
 
@@ -363,7 +364,7 @@ list xlBladeNameToPrimNames(string name){
     return [name];
 }
 list xlSetGenitals(integer pTogglePart){
-    list params;
+    list internal_params;
     integer meshes_count=0;
     if( 16 ==pTogglePart)
         meshes_count= (( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] !=[])-1) ;
@@ -391,7 +392,7 @@ list xlSetGenitals(integer pTogglePart){
         for(;prim_count> -1;prim_count--){
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
+            internal_params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
             if( 16 ==pTogglePart)
                 faces_l=xlGetFacesByBladeName( "nips" );
@@ -401,15 +402,16 @@ list xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName( "butt" );
             integer faces_count= ((faces_l!=[])-1) ;
             for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,
+                internal_params+=[PRIM_COLOR,
                     llList2Integer(faces_l,faces_count),<1,1,1>,
                         visible * g_Config_MaximumOpacity
                 ];
         }
     }
-    return params;
+    return internal_params;
 }
-xlProcessCommand(string message){
+
+xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
     integer showit;
@@ -447,7 +449,6 @@ xlProcessCommand(string message){
         return;
     }
     integer list_size= ((data!=[])-1) ;
-    list params;
     for(;list_size > 0;list_size--){
 
         string blade_name=llList2String(data,list_size);
@@ -498,18 +499,18 @@ xlProcessCommand(string message){
             else{
             if(blade_name== "pelvis" ){
                 if(!(g_RuntimeBodyStateSettings &  2 ) && !showit)
-                xlProcessCommand("hide:"+ "vagoo" );
+                xlProcessCommand("hide:"+ "vagoo" ,FALSE);
                 else
-                xlProcessCommand("show:"+ "vagoo" );
+                xlProcessCommand("show:"+ "vagoo" ,FALSE);
             }
             else if(blade_name== "breast" ){
 
 
                     if(!(g_RuntimeBodyStateSettings &  4 ) && !showit)
-                    xlProcessCommand("hide:"+ "nips" );
+                    xlProcessCommand("hide:"+ "nips" ,FALSE);
 
                         else
-                        xlProcessCommand("show:"+ "nips" );
+                        xlProcessCommand("show:"+ "nips" ,FALSE);
                     }
                 }
                 list prim_names=xlBladeNameToPrimNames(blade_name);
@@ -532,10 +533,13 @@ xlProcessCommand(string message){
                 g_Config_MaximumOpacity
                 ];
             }
-            params+=params_internal;
+            global_params+=params_internal;
         }
     }
-    llSetLinkPrimitiveParamsFast(LINK_SET,params) ;
+    if(send_params){
+        llSetLinkPrimitiveParamsFast(LINK_SET,global_params) ;
+        global_params=[];
+    }
 }
 reset(){
     if(llGetAttached()){
@@ -554,7 +558,7 @@ reset(){
         +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
         +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
         +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-        +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
 }
 default {
     changed(integer change){
@@ -660,16 +664,16 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 reset();
             }
             else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                xlProcessCommand(message);
+                xlProcessCommand(message,TRUE);
             }
             else if(message=="Hlegs"){
 
                 if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=TRUE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
 
                 llSetObjectDesc((string)human_mode);
@@ -678,10 +682,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
 
                 if(human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=FALSE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
 
                 llSetObjectDesc((string)human_mode);
