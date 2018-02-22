@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.11" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.12" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -895,6 +895,7 @@ default {
         llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
+    llOwnerSay("Resetting... O3O!!!");
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
@@ -1045,7 +1046,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
             {
                 #ifdef DEBUG_AUTH
-                llOwnerSay("Adding " + (string)id + " to auth list");
+                llOwnerSay("Adding [" + (string)id + "]" + llKey2Name(id) + " to auth list");
                 #endif
                 g_RemConfirmKeys_l +=[id];
             }
@@ -1055,7 +1056,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
             if(placeinlist !=-1){
                 #ifdef DEBUG_AUTH
-                llOwnerSay("Removing " + (string)id + " from auth list");
+                llOwnerSay("Removing [" + (string)id + "]" + llKey2Name(id) + " from auth list");
                 #endif
                 g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
                     placeinlist,placeinlist);
@@ -1063,25 +1064,113 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-            string name = llKey2Name(id);
-            if(llSubStringIndex(name, "Kemono - HUD")!=-1 &&
-                (llSubStringIndex(name, "Fitted Kemono")!=-1
-                    && (llSubStringIndex(name, "Petite")!=-1 || llSubStringIndex(name, "Busty")!=-1)
-                    && (llSubStringIndex(name, "Front")!=-1  || llSubStringIndex(name, "Rear")!=-1)
-                    && llSubStringIndex(name, "Bits")!=-1)){
-                if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+            //string name = llKey2Name(id);
+            /* Reminder: LSL does NOT support short-circuiting; this method should be
+            /* as fast as possible
+            */
+            // #define AUTH_METHOD_1
+            // #define AUTH_METHOD_2
+            #define AUTH_METHOD_3
+            #ifdef BENCHMARK
+            llResetTime();
+            #endif
+            #ifdef AUTH_METHOD_1
+                // llOwnerSay("Testing JUMP method");
+                if(llStringLength(name) < 24){ /* Strict matching */
+                    if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
+                        jump AUTHORIZED;
+                    }
+                    else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
+                        jump AUTHORIZED;
+                    }
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else{
+                    if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
+                        jump AUTHORIZED;
+                    }
                     #ifdef DEBUG_AUTH
-                    llOwnerSay("Ignoring unauthed " + (string)id);
+                    llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+                    #endif
+                }
+                #ifdef BENCHMARK
+                llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
+                #endif
+                return;
+                @AUTHORIZED;
+                /* Authorized */
+                #ifdef BENCHMARK
+                llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+                #endif
+            #endif
+            #ifdef AUTH_METHOD_2
+                #ifdef BENCHMARK
+                llOwnerSay("Testing JUMP method");
+                // llResetTime();
+                #endif
+                if(llSubStringIndex(name, "Fitted Kemono") > -1){
+                    if(llSubStringIndex(name, "Bits") > -1){
+                        if(llSubStringIndex(name, "Front") > -1){
+                            jump AUTHORIZED;
+                        }
+                        else if(llSubStringIndex(name, "Rear") > -1){
+                            jump AUTHORIZED;
+                        }
+                    }
+                    else if (llSubStringIndex(name, "Torso HUD") > -1){
+                        jump AUTHORIZED;
+                    }
+                }
+                else if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
+                    jump AUTHORIZED;
+                }
+                if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
+                    jump AUTHORIZED;
+                }
+                #ifdef BENCHMARK
+                llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
+                #endif
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+                #endif
+                return;
+                @AUTHORIZED;
+                /* Authorized */
+                #ifdef BENCHMARK
+                llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+                #endif
+            #endif
+            #ifdef AUTH_METHOD_3
+                #ifdef BENCHMARK
+                // llOwnerSay("Testing ifwall method");
+                // llResetTime();
+                #endif
+                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0)
+                    if (llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0)
+                if(llListFindList(g_RemConfirmKeys_l,[id]) < 0){
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+                    #endif
+                    #ifdef BENCHMARK
+                    llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
                     #endif
                     return;
                 }
-            }
-            #ifdef DEBUG_AUTH
-            else{
-                    llOwnerSay("Hi Kemono HUD");
-            }
             #endif
-            /* Authorized */
+            #ifdef BENCHMARK
+            llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+            #endif
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
