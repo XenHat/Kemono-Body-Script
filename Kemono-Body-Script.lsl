@@ -622,7 +622,7 @@ NipAlpha==????
 Show PG layer when hiding nipples
 Forcefully set the current genital state to Adult, idle on PG disable
 */
-list xlSetGenitals(integer pTogglePart){
+xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_FUNCTIONS
     llOwnerSay("xlSetGenitals");
     #endif
@@ -680,7 +680,7 @@ list xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:"+llList2CSV(params));
     #endif
-    return internal_params;
+    global_params += internal_params;
 }
 
 xlProcessCommand(string message,integer send_params){
@@ -700,7 +700,7 @@ xlProcessCommand(string message,integer send_params){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
             ftCommand=1;
             g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_B));
+            xlSetGenitals(FKT_FHIDE_B);
         }
         return;
     }
@@ -708,7 +708,7 @@ xlProcessCommand(string message,integer send_params){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
             ftCommand=2;
             g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
+            xlSetGenitals(FKT_FHIDE_V);
         }
         return;
     }
@@ -716,7 +716,7 @@ xlProcessCommand(string message,integer send_params){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
             ftCommand=3;
             g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
+            xlSetGenitals(FKT_FHIDE_N);
         }
         return;
     }
@@ -743,13 +743,13 @@ xlProcessCommand(string message,integer send_params){
         if(blade_name==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,
             FKT_PRESENT)){
             g_CurrentFittedNipState=showit;
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_N));
+            xlSetGenitals(FKT_FHIDE_N);
         }
         else if(blade_name==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,
             FKT_PRESENT)){
             g_CurrentFittedVagState=showit;
             g_TogglingPGMeshes=TRUE;
-            xlSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals(FKT_FHIDE_V));
+            xlSetGenitals(FKT_FHIDE_V);
             g_TogglingPGMeshes=FALSE;
         }
         else if(blade_name==BLADE_VAG){
@@ -788,11 +788,11 @@ xlProcessCommand(string message,integer send_params){
             if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                 if(blade_name==BLADE_BREASTS){
                     chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
-                    params_internal +=xlSetGenitals(FKT_FHIDE_N);
+                    xlSetGenitals(FKT_FHIDE_N);
                 }
                 else if(blade_name==BLADE_PELVIS){
                     chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_V,!showit);
-                    params_internal +=xlSetGenitals(FKT_FHIDE_V);
+                    xlSetGenitals(FKT_FHIDE_V);
                 }
             }
             else{
