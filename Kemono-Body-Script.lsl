@@ -413,6 +413,14 @@ list xlGetFacesByBladeName(string name){
     #endif
     return [];
 }
+/* This function is like a "translator", it returns
+the specialized mesh name when a generic one is provided.
+i.e. When using the fitted torso. BLADE_BREASTS => MESH_FITTED_TORSO_CHEST
+This is where the "Compatibility" and "Support" magic happens, for the
+most part.
+I don't particularly like having a mandatory function call for this
+but I can't think of a better way to handle it right now.
+*/
 list xlBladeNameToPrimNames(string name){
     /* TODO Can't we return the link number directly (using less than 512 bytes
     *  of code!) without an additional function call?
