@@ -223,6 +223,7 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE; /* Prefer when available*/
+list global_params;
 #ifdef GITHUB_UPDATER
 key g_internal_httprid_k=NULL_KEY;
 #endif
@@ -625,7 +626,7 @@ list xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_FUNCTIONS
     llOwnerSay("xlSetGenitals");
     #endif
-    list params;
+    list internal_params;
     integer meshes_count=0;
     if(FKT_FHIDE_N==pTogglePart)
         meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames);
@@ -653,7 +654,7 @@ list xlSetGenitals(integer pTogglePart){
         for(;prim_count> -1;prim_count--){
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,[llList2String(prim_names,prim_count)])+1);
-            params +=[PRIM_LINK_TARGET,link_id];
+            internal_params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
             if(FKT_FHIDE_N==pTogglePart)
                 faces_l=xlGetFacesByBladeName(BLADE_NIPS);
@@ -663,7 +664,7 @@ list xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
             integer faces_count=xlListLen2MaxID(faces_l);
             for(;faces_count > -1;--faces_count)
-                params+=[PRIM_COLOR,
+                internal_params+=[PRIM_COLOR,
                     llList2Integer(faces_l,faces_count),<1,1,1>,
                         visible * g_Config_MaximumOpacity
                 ];
@@ -679,9 +680,10 @@ list xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:"+llList2CSV(params));
     #endif
-    return params;
+    return internal_params;
 }
-xlProcessCommand(string message){
+
+xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
     #ifdef DEBUG_COMMANDS
@@ -731,7 +733,7 @@ xlProcessCommand(string message){
     llOwnerSay("list_size="+(string)list_size);
     llOwnerSay("data:"+llList2CSV(data));
     #endif
-    list params;
+
     for(;list_size > 0;list_size--){/* skip command (first element) */
         /* Process a list of blade names */
         string blade_name=llList2String(data,list_size);
@@ -799,18 +801,18 @@ xlProcessCommand(string message){
             */
             if(blade_name==BLADE_PELVIS){
                 if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit)
-                xlProcessCommand("hide:"+BLADE_VAG);
+                xlProcessCommand("hide:"+BLADE_VAG,FALSE);
                 else
-                xlProcessCommand("show:"+BLADE_VAG);
+                xlProcessCommand("show:"+BLADE_VAG,FALSE);
             }
             else if(blade_name==BLADE_BREASTS){
                     // showit *=!(g_RuntimeBodyStateSettings & KSB_PGNIPLS);
                     // llOwnerSay("GOD NO PLEASE GO AWAY!");
                     if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit)
-                    xlProcessCommand("hide:"+BLADE_NIPS);
+                    xlProcessCommand("hide:"+BLADE_NIPS,FALSE);
                         // llOwnerSay("nuuuu");
                         else
-                        xlProcessCommand("show:"+BLADE_NIPS);
+                        xlProcessCommand("show:"+BLADE_NIPS,FALSE);
                     }
                 }
                 list prim_names=xlBladeNameToPrimNames(blade_name);
@@ -848,15 +850,18 @@ xlProcessCommand(string message){
                 ];
             }
             #ifdef DEBUG_PARAMS
-            llOwnerSay("Params out:"+llList2CSV(params));
+            llOwnerSay("Params out:"+llList2CSV(global_params));
             #endif
-            params+=params_internal;
+            global_params+=params_internal;
         }
         #ifdef DEBUG_COMMAND
         llOwnerSay("[done with param]:"+blade_name);
         #endif
     }
-    xlSetLinkPrimitiveParamsFast(LINK_SET,params);
+    if(send_params){
+        xlSetLinkPrimitiveParamsFast(LINK_SET,global_params);
+        global_params=[];
+    }
 }
 reset(){
     if(llGetAttached()){
@@ -875,7 +880,7 @@ reset(){
         +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
         +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
         +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-        +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+        +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -1188,16 +1193,16 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* branches so that we can inline xlProcessCommand
             */
             else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                xlProcessCommand(message);
+                xlProcessCommand(message,TRUE);
             }
             else if(message=="Hlegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
                 if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=TRUE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
                 llSetObjectDesc((string)human_mode);
@@ -1206,10 +1211,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 #ifdef PROCESS_LEGS_COMMANDS
                 if(human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=FALSE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR");
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
                 llSetObjectDesc((string)human_mode);
