@@ -564,6 +564,7 @@ default {
         llResetScript();
     }
     state_entry(){
+    llOwnerSay("Resetting... O3O!!!");
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
@@ -637,16 +638,14 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-            string name = llKey2Name(id);
-            if(llSubStringIndex(name, "Kemono - HUD")!=-1 &&
-                (llSubStringIndex(name, "Fitted Kemono")!=-1
-                    && (llSubStringIndex(name, "Petite")!=-1 || llSubStringIndex(name, "Busty")!=-1)
-                    && (llSubStringIndex(name, "Front")!=-1 || llSubStringIndex(name, "Rear")!=-1)
-                    && llSubStringIndex(name, "Bits")!=-1)){
-                if(llListFindList(g_RemConfirmKeys_l,[id])==-1){
+                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0)
+                    if (llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0)
+                    if(llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0)
+                if(llListFindList(g_RemConfirmKeys_l,[id]) < 0){
                     return;
                 }
-            }
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
@@ -835,8 +834,8 @@ attach(key id){
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.11" ) return;
-        list cur_version_l=llParseString2List( "0.3.11" ,["."],[""]);
+        if(new_version_s== "0.3.12" ) return;
+        list cur_version_l=llParseString2List( "0.3.12" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -864,13 +863,13 @@ attach(key id){
         update_description+="\n";
         if(llStringLength(update_description) >=350)
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.11" +"..."+new_version_s+" Changes for "
-        + "0.3.11" +"↛"+new_version_s+"]\n";
+        +"/compare/"+ "0.3.12" +"..."+new_version_s+" Changes for "
+        + "0.3.12" +"↛"+new_version_s+"]\n";
         string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
         +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.11"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.12"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
