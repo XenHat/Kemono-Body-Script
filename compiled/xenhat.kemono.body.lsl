@@ -363,7 +363,7 @@ list xlBladeNameToPrimNames(string name){
     }
     return [name];
 }
-list xlSetGenitals(integer pTogglePart){
+xlSetGenitals(integer pTogglePart){
     list internal_params;
     integer meshes_count=0;
     if( 16 ==pTogglePart)
@@ -408,7 +408,7 @@ list xlSetGenitals(integer pTogglePart){
                 ];
         }
     }
-    return internal_params;
+    global_params += internal_params;
 }
 
 xlProcessCommand(string message,integer send_params){
@@ -425,7 +425,7 @@ xlProcessCommand(string message,integer send_params){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
             ftCommand=1;
             g_CurrentFittedButState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 8 )) ;
+            xlSetGenitals( 8 );
         }
         return;
     }
@@ -433,7 +433,7 @@ xlProcessCommand(string message,integer send_params){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
             ftCommand=2;
             g_CurrentFittedVagState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
+            xlSetGenitals( 32 );
         }
         return;
     }
@@ -441,7 +441,7 @@ xlProcessCommand(string message,integer send_params){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
             ftCommand=3;
             g_CurrentFittedNipState=llList2Integer(data,1);
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
+            xlSetGenitals( 16 );
         }
         return;
     }
@@ -455,13 +455,13 @@ xlProcessCommand(string message,integer send_params){
         if(blade_name== "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
 {
             g_CurrentFittedNipState=showit;
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 16 )) ;
+            xlSetGenitals( 16 );
         }
         else if(blade_name== "vagoo"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
 {
             g_CurrentFittedVagState=showit;
             g_TogglingPGMeshes=TRUE;
-            llSetLinkPrimitiveParamsFast(LINK_SET,xlSetGenitals( 32 )) ;
+            xlSetGenitals( 32 );
             g_TogglingPGMeshes=FALSE;
         }
         else if(blade_name== "vagoo" ){
@@ -489,11 +489,11 @@ xlProcessCommand(string message,integer send_params){
             if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
                 if(blade_name== "breast" ){
                     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
-                    params_internal +=xlSetGenitals( 16 );
+                    xlSetGenitals( 16 );
                 }
                 else if(blade_name== "pelvis" ){
                     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 32 )) | ( 32 * !showit); ;
-                    params_internal +=xlSetGenitals( 32 );
+                    xlSetGenitals( 32 );
                 }
             }
             else{
