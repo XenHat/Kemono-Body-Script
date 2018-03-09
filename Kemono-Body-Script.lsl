@@ -985,14 +985,14 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
             +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
             +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
         for(;id>-1;id--){
-            xlProcessCommand("hide:"+llList2String(selftest,id));
+            xlProcessCommand("hide:"+llList2String(selftest,id),TRUE);
             llSleep(0.0625);
         }
         id = xlListLen2MaxID(selftest);
         for(;id>-1;id--){
-            xlProcessCommand("show:"+llList2String(selftest,id));
+            xlProcessCommand("show:"+llList2String(selftest,id),TRUE);
             llSleep(0.0625);
         }
         #endif
@@ -1014,7 +1014,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
             +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
             +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-            +"elbowR:armLL:armLR:wristL:wristR:handL:handR");
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
         llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
             +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
             +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
