@@ -625,6 +625,7 @@ Forcefully set the current genital state to Adult, idle on PG disable
 xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_FUNCTIONS
     llOwnerSay("xlSetGenitals");
+    llOwnerSay("g_CurrentFittedVagState:"+(string)g_CurrentFittedVagState);
     #endif
     list internal_params;
     integer meshes_count=0;
@@ -636,6 +637,7 @@ xlSetGenitals(integer pTogglePart){
     string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
         /* Process each genital mesh one by one */
+        // debugLogic(meshes_count);
         if(FKT_FHIDE_N==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
             (meshes_count==g_CurrentFittedNipState);
@@ -649,12 +651,15 @@ xlSetGenitals(integer pTogglePart){
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
         else
             mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
+            // debugLogic(visible);
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count=xlListLen2MaxID(prim_names);
         for(;prim_count> -1;prim_count--){
+            // debugLogic(prim_count);
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,[llList2String(prim_names,prim_count)])+1);
             internal_params +=[PRIM_LINK_TARGET,link_id];
+            // debugLogic(link_id);
             list faces_l=[];
             if(FKT_FHIDE_N==pTogglePart)
                 faces_l=xlGetFacesByBladeName(BLADE_NIPS);
@@ -678,15 +683,15 @@ xlSetGenitals(integer pTogglePart){
         }
     }
     #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:"+llList2CSV(params));
+    llOwnerSay("Params out:"+llList2CSV(internal_params));
     #endif
-    global_params += internal_params;
+    xlSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params);
 }
 
 xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
-    #ifdef DEBUG_COMMANDS
+    #ifdef DEBUG_COMMAND
     llOwnerSay("Parsing Command:"+message);
     #endif
     integer showit;
@@ -859,7 +864,7 @@ xlProcessCommand(string message,integer send_params){
         #endif
     }
     if(send_params){
-        xlSetLinkPrimitiveParamsFast(LINK_SET,global_params);
+        xlSetLinkPrimitiveParamsFast(LINK_ROOT,global_params);
         global_params=[];
     }
 }
@@ -1073,9 +1078,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
-            // #define AUTH_METHOD_1
+            #define AUTH_METHOD_1
             // #define AUTH_METHOD_2
-            #define AUTH_METHOD_3
+            // #define AUTH_METHOD_3
             #ifdef BENCHMARK
             llResetTime();
             #endif
@@ -1158,12 +1163,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 // llOwnerSay("Testing ifwall method");
                 // llResetTime();
                 #endif
-                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0)
-                    if (llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0)
-                if(llListFindList(g_RemConfirmKeys_l,[id]) < 0){
+                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0
+                    || llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0
+                    || llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0
+                    || llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0
+                    || llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0
+                    || llListFindList(g_RemConfirmKeys_l,[id]) < 0){
                     #ifdef DEBUG_AUTH
                     llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
                     #endif
@@ -1175,6 +1180,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #endif
             #ifdef BENCHMARK
             llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+            #endif
+            #ifdef DEBUG_AUTH
+            llOwnerSay("Authed " + name);
             #endif
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
@@ -1338,7 +1346,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 return;
             }
             #ifdef DEBUG_LISTEN
-            llOwnerSay("End for '" + message + "'");
+            llOwnerSay("End of listener processing for '" + message + "'");
             #endif
         }
     }
