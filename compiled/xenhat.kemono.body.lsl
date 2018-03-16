@@ -374,6 +374,7 @@ xlSetGenitals(integer pTogglePart){
     string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
 
+
         if( 16 ==pTogglePart)
             visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  *
             (meshes_count==g_CurrentFittedNipState);
@@ -387,12 +388,15 @@ xlSetGenitals(integer pTogglePart){
             mesh_name=llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ,meshes_count);
         else
             mesh_name=llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,meshes_count);
+
         list prim_names=xlBladeNameToPrimNames(mesh_name);
         integer prim_count= ((prim_names!=[])-1) ;
         for(;prim_count> -1;prim_count--){
+
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,[llList2String(prim_names,prim_count)])+1);
             internal_params +=[PRIM_LINK_TARGET,link_id];
+
             list faces_l=[];
             if( 16 ==pTogglePart)
                 faces_l=xlGetFacesByBladeName( "nips" );
@@ -408,7 +412,7 @@ xlSetGenitals(integer pTogglePart){
                 ];
         }
     }
-    global_params += internal_params;
+    llSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params) ;
 }
 
 xlProcessCommand(string message,integer send_params){
@@ -537,7 +541,7 @@ xlProcessCommand(string message,integer send_params){
         }
     }
     if(send_params){
-        llSetLinkPrimitiveParamsFast(LINK_SET,global_params) ;
+        llSetLinkPrimitiveParamsFast(LINK_ROOT,global_params) ;
         global_params=[];
     }
 }
@@ -642,14 +646,30 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0)
-                    if (llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0)
-                    if(llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0)
-                if(llListFindList(g_RemConfirmKeys_l,[id]) < 0){
-                    return;
+                if(llStringLength(name) < 24){
+                    if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
+                        jump AUTHORIZED;
+                    }
+                    else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
+                        jump AUTHORIZED;
+                    }
                 }
+                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else{
+                    if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
+                        jump AUTHORIZED;
+                    }
+                }
+                return;
+                @AUTHORIZED;
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
