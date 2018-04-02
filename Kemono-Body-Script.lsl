@@ -50,7 +50,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.13" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.14" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define DEBUG
 // #define DEBUG_SELF_TEST
@@ -1205,25 +1205,25 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             }
             else if(message=="Hlegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
-                if(!human_mode){
+                //if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=TRUE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
+                //}
                 #endif
                 llSetObjectDesc((string)human_mode);
             }
             else if(message=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
-                if(human_mode){
+                //if(human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=FALSE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
+                //}
                 #endif
                 llSetObjectDesc((string)human_mode);
             }
@@ -1410,6 +1410,12 @@ attach(key id){
         llSetText(text+"\n \n \n \n ",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         llSetTimerEvent(10);
     }
+    #ifdef DEBUG_LISTEN
+    link_message(integer sender_num, integer num, string message, key id){
+        llOwnerSay(message);
+        llOwnerSay((string)id);
+    }
+    #endif
     #ifdef GITHUB_UPDATER
     http_response(key request_id,integer status,list metadata,string body)
     {
