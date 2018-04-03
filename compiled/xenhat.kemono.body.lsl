@@ -376,13 +376,13 @@ xlSetGenitals(integer pTogglePart){
 
 
         if( 16 ==pTogglePart)
-            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=!(!! ((g_RuntimeBodyStateSettings & pTogglePart)) ) *
             (meshes_count==g_CurrentFittedNipState);
         else if( 32 ==pTogglePart)
-            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=!(!! ((g_RuntimeBodyStateSettings & pTogglePart)) ) *
             (meshes_count==g_CurrentFittedVagState);
         else if( 8 ==pTogglePart)
-            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=!(!! ((g_RuntimeBodyStateSettings & pTogglePart)) ) *
             (meshes_count==g_CurrentFittedButState);
         if( 16 ==pTogglePart)
             mesh_name=llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ,meshes_count);
