@@ -652,12 +652,10 @@ xlSetGenitals(integer pTogglePart){
         else
             mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
             // debugLogic(visible);
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count=xlListLen2MaxID(prim_names);
-        for(;prim_count> -1;prim_count--){
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
             // debugLogic(prim_count);
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
-                ,[llList2String(prim_names,prim_count)])+1);
+                ,prim_names)+1);
             internal_params +=[PRIM_LINK_TARGET,link_id];
             // debugLogic(link_id);
             list faces_l=[];
@@ -677,10 +675,10 @@ xlSetGenitals(integer pTogglePart){
             llOwnerSay("FACES:"+llList2CSV(faces_l)
                 +"|MESH_NAME:"+mesh_name
                 +"|PRIM_NAME:"+(string)prim_names
-                +"|PRIM_ID:"+(string)prim_count
+                //+"|PRIM_ID:"+(string)prim_count
                 +"|visible:"+(string)visible);
             #endif
-        }
+        //}
     }
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:"+llList2CSV(internal_params));
@@ -821,24 +819,22 @@ xlProcessCommand(string message,integer send_params){
                     }
                 }
                 list prim_names=xlBladeNameToPrimNames(blade_name);
-                integer blade_prim_iter=xlListLen2MaxID(prim_names);
+                //integer blade_prim_iter=xlListLen2MaxID(prim_names);
                 #ifdef DEBUG_DATA
                 llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
-                llOwnerSay("prim_count="+(string)(blade_prim_iter+1));
+                llOwnerSay("prim_count="+(string)1);
                 #endif
-                for(;blade_prim_iter > -1;blade_prim_iter--){
+                //for(;blade_prim_iter > -1;blade_prim_iter--){
                     /* TODO: Be less nuclear and only fix the faces we asked for*/
                     /* TODO: inline as much as possible */
                     params_internal+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
-                        llListFindList(g_LinkDB_l,[
-                            llList2String(prim_names,blade_prim_iter)
-                            ])+1)
+                        llListFindList(g_LinkDB_l,prim_names)+1)
                     ];
                     list faces_l=xlGetFacesByBladeName(blade_name);
                     integer faces_index=xlListLen2MaxID(faces_l);
                     #ifdef DEBUG_FACE_SELECT
-                    llOwnerSay("Prim Count   :"+(string)(blade_prim_iter+1));
+                    llOwnerSay("Prim Count   :"+(string)1);
                     llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
                     llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
                     llOwnerSay("Faces Count  :"+(string)(faces_index+1));
@@ -853,7 +849,7 @@ xlProcessCommand(string message,integer send_params){
                 (showit ^ (BLADE_VAG==blade_name)) *
                 g_Config_MaximumOpacity
                 ];
-            }
+            //}
             #ifdef DEBUG_PARAMS
             llOwnerSay("Params out:"+llList2CSV(global_params));
             #endif
