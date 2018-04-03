@@ -21,10 +21,12 @@
 *  Sublicense
 *  Place Warranty
 *  Commercial Use
+*
 * You MUST:
 *  Include License
 *  Include Original
 *  State Changes
+*
 * An online version of the human-readable version of the AFPL can be found at:
 * https://tldrlegal.com/license/aladdin-free-public-license
 *
