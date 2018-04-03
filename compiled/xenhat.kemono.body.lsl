@@ -453,7 +453,20 @@ xlProcessCommand(string message,integer send_params){
     for(;list_size > 0;list_size--){
 
         string blade_name=llList2String(data,list_size);
-        if(blade_name== "vagoo" ){
+        if(blade_name== "nips"  &&  ((g_RuntimeBodyStateSettings & 1 )) )
+{
+            g_CurrentFittedNipState=showit;
+            xlSetGenitals( 16 );
+        }
+        else if(blade_name== "vagoo"  &&  ((g_RuntimeBodyStateSettings & 1 )) )
+{
+            g_CurrentFittedVagState=showit;
+            g_TogglingPGMeshes=TRUE;
+            xlSetGenitals( 32 );
+            g_TogglingPGMeshes=FALSE;
+        }
+        else if(blade_name== "vagoo" ){
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * !showit); ;
 
             if(!showit && !g_TogglingPGMeshes){
                 g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
@@ -461,20 +474,15 @@ xlProcessCommand(string message,integer send_params){
             else if(showit && g_TogglingPGMeshes){
                 g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
             }
-            else{
-                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * !showit); ;
-            }
         }
         else if(blade_name== "nips" ){
 
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * !showit); ;
             if(!g_TogglingPGMeshes && !showit){
                 g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * TRUE); ;
             }
             else if(g_TogglingPGMeshes && showit){
                 g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * FALSE); ;
-            }
-            else{
-                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * !showit); ;
             }
         }
         else{
