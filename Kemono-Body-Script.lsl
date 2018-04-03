@@ -757,24 +757,24 @@ xlProcessCommand(string message,integer send_params){
         #endif
         blade_name=llList2String(data,list_size);
         if(blade_name==BLADE_VAG){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,!showit);
             // llOwnerSay("o.o.o.o.o");
             if(!showit && !g_TogglingPGMeshes){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
             }
-            else if(showit && g_TogglingPGMeshes)
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+            else if(showit && g_TogglingPGMeshes){
+                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
+            }
         }
         else if(blade_name==BLADE_NIPS){
             // llOwnerSay("o.o.o.o.o");
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!showit);
             if(!g_TogglingPGMeshes && !showit){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
             }
-            else if(g_TogglingPGMeshes && showit)
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
+            else if(g_TogglingPGMeshes && showit){
+                chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
+            }
         }
         else{
             list params_internal;
