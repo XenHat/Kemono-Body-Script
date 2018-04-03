@@ -415,57 +415,55 @@ xlSetGenitals(integer pTogglePart){
 xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
+    integer list_size= ((data!=[])-1) ;
+    string blade_name=llList2String(data,list_size);
     integer showit;
 
-    integer ftCommand;
+    integer doGenitals=FALSE;
     if(command=="show")
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else if(command=="setbutt"){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            ftCommand=1;
-            g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetGenitals( 8 );
-        }
-        return;
-    }
-    else if(command=="setvag"){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            ftCommand=2;
-            g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetGenitals( 32 );
-        }
-        return;
-    }
-    else if(command=="setnip"){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            ftCommand=3;
-            g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetGenitals( 16 );
-        }
-        return;
-    }
-    else{
-        return;
-    }
-    integer list_size= ((data!=[])-1) ;
-    for(;list_size > 0;list_size--){
-
-        string blade_name=llList2String(data,list_size);
-        if(blade_name== "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
-{
+    else if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+        if(blade_name== "nips" ){
             g_CurrentFittedNipState=showit;
-            xlSetGenitals( 16 );
-        }
-        else if(blade_name== "vagoo"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
-{
-            g_CurrentFittedVagState=showit;
-            g_TogglingPGMeshes=TRUE;
-            xlSetGenitals( 32 );
-            g_TogglingPGMeshes=FALSE;
+
+            doGenitals= 16 ;
         }
         else if(blade_name== "vagoo" ){
+            g_CurrentFittedVagState=showit;
+            g_TogglingPGMeshes=TRUE;
+
+            doGenitals= 32 ;
+
+        }
+        else if(command=="setbutt"){
+            g_CurrentFittedButState=llList2Integer(data,1);
+            doGenitals= 8 ;
+        }
+        else if(command=="setvag"){
+            g_CurrentFittedVagState=llList2Integer(data,1);
+            doGenitals= 32 ;
+        }
+        else if(command=="setnip"){
+            g_CurrentFittedNipState=llList2Integer(data,1);
+            doGenitals= 16 ;
+        }
+        if(doGenitals){
+            xlSetGenitals(doGenitals);
+            if(doGenitals== 32 ){
+                g_TogglingPGMeshes=FALSE;
+            }
+            return;
+        }
+    }
+    else
+    {
+        return;
+    }
+    for(;list_size > 0;list_size--){
+        blade_name=llList2String(data,list_size);
+        if(blade_name== "vagoo" ){
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
                 (~ 2 )) | ( 2  * !showit);
 
