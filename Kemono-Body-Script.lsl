@@ -639,13 +639,13 @@ xlSetGenitals(integer pTogglePart){
         /* Process each genital mesh one by one */
         // debugLogic(meshes_count);
         if(FKT_FHIDE_N==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
             (meshes_count==g_CurrentFittedNipState);
         else if(FKT_FHIDE_V==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
             (meshes_count==g_CurrentFittedVagState);
         else if(FKT_FHIDE_B==pTogglePart)
-            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
+            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
             (meshes_count==g_CurrentFittedButState);
         if(FKT_FHIDE_N==pTogglePart)
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
