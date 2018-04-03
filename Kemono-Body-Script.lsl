@@ -687,75 +687,74 @@ xlSetGenitals(integer pTogglePart){
 }
 
 xlProcessCommand(string message,integer send_params){
-    list data=llParseStringKeepNulls(message,[":"],[]);
-    string command=llList2String(data,0);
     #ifdef DEBUG_COMMAND
     llOwnerSay("Parsing Command:"+message);
     #endif
+    list data=llParseStringKeepNulls(message,[":"],[]);
+    string command=llList2String(data,0);
+    integer list_size=xlListLen2MaxID(data);
+    string blade_name=llList2String(data,list_size);
+    #ifdef DEBUG_DATA
+    llOwnerSay("list_size="+(string)list_size);
+    llOwnerSay("data:"+llList2CSV(data));
+    #endif
     integer showit;
     /* filter out and process commands */
-    integer ftCommand;
+    integer doGenitals=FALSE;
     if(command=="show")
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else if(command=="setbutt"){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            ftCommand=1;
+    else if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+        if(blade_name==BLADE_NIPS){
+            g_CurrentFittedNipState=showit;
+            //xlSetGenitals(FKT_FHIDE_N);
+            doGenitals=FKT_FHIDE_N;
+        }
+        else if(blade_name==BLADE_VAG){
+            g_CurrentFittedVagState=showit;
+            g_TogglingPGMeshes=TRUE;
+            //xlSetGenitals(FKT_FHIDE_V);
+            doGenitals=FKT_FHIDE_V;
+            //g_TogglingPGMeshes=FALSE;
+        }
+        else if(command=="setbutt"){
             g_CurrentFittedButState=llList2Integer(data,1);
-            xlSetGenitals(FKT_FHIDE_B);
+            doGenitals=FKT_FHIDE_B;
         }
-        return;
-    }
-    else if(command=="setvag"){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            ftCommand=2;
+        else if(command=="setvag"){
             g_CurrentFittedVagState=llList2Integer(data,1);
-            xlSetGenitals(FKT_FHIDE_V);
+            doGenitals=FKT_FHIDE_V;
         }
-        return;
-    }
-    else if(command=="setnip"){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            ftCommand=3;
+        else if(command=="setnip"){
             g_CurrentFittedNipState=llList2Integer(data,1);
-            xlSetGenitals(FKT_FHIDE_N);
+            doGenitals=FKT_FHIDE_N;
         }
-        return;
+        if(doGenitals){
+            xlSetGenitals(doGenitals);
+            if(doGenitals==FKT_FHIDE_V){
+                g_TogglingPGMeshes=FALSE;
+            }
+            return;
+        }
     }
-    else{
+    else
+    {
         #ifdef PRINT_UNHANDLED_COMMANDS
-        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],
+            [llGetSubString(message,0,2)])==-1){
             llOwnerSay("Unhandled command: '"+message+"'");
         }
         #endif
         return;
     }
-    integer list_size=xlListLen2MaxID(data);
-    #ifdef DEBUG_DATA
-    llOwnerSay("list_size="+(string)list_size);
-    llOwnerSay("data:"+llList2CSV(data));
-    #endif
-
     for(;list_size > 0;list_size--){/* skip command (first element) */
         /* Process a list of blade names */
-        string blade_name=llList2String(data,list_size);
         #ifdef DEBUG_COMMAND
         llOwnerSay("[Looping through params]:"+blade_name);
         #endif
-        if(blade_name==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,
-            FKT_PRESENT)){
-            g_CurrentFittedNipState=showit;
-            xlSetGenitals(FKT_FHIDE_N);
-        }
-        else if(blade_name==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,
-            FKT_PRESENT)){
-            g_CurrentFittedVagState=showit;
-            g_TogglingPGMeshes=TRUE;
-            xlSetGenitals(FKT_FHIDE_V);
-            g_TogglingPGMeshes=FALSE;
-        }
-        else if(blade_name==BLADE_VAG){
+        blade_name=llList2String(data,list_size);
+        if(blade_name==BLADE_VAG){
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
                 (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
             // llOwnerSay("o.o.o.o.o");
