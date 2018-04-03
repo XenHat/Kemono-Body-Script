@@ -207,7 +207,7 @@ MESH_FITTED_TORSO_NIP_A\
 */
 #define chgBit(a,b,c) a=(a & (~b)) | (b * c);
 #define clrBit(a,b) a=(a & (~b))
-#define getBit(a,b) (!!(a & b))
+#define getBit(a,b) ((a & b))
 #define setBit(a,b) a=(a | b)
 #define togBit(a,b) a ^=1 << b
 #define xlListLen2MaxID(a) ((a!=[])-1)
