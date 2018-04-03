@@ -389,12 +389,10 @@ xlSetGenitals(integer pTogglePart){
         else
             mesh_name=llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,meshes_count);
 
-        list prim_names=xlBladeNameToPrimNames(mesh_name);
-        integer prim_count= ((prim_names!=[])-1) ;
-        for(;prim_count> -1;prim_count--){
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
 
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
-                ,[llList2String(prim_names,prim_count)])+1);
+                ,prim_names)+1);
             internal_params +=[PRIM_LINK_TARGET,link_id];
 
             list faces_l=[];
@@ -410,7 +408,6 @@ xlSetGenitals(integer pTogglePart){
                     llList2Integer(faces_l,faces_count),<1,1,1>,
                         visible * g_Config_MaximumOpacity
                 ];
-        }
     }
     llSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params) ;
 }
@@ -518,15 +515,9 @@ xlProcessCommand(string message,integer send_params){
                     }
                 }
                 list prim_names=xlBladeNameToPrimNames(blade_name);
-                integer blade_prim_iter= ((prim_names!=[])-1) ;
-                for(;blade_prim_iter > -1;blade_prim_iter--){
-
-
                     params_internal+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
-                        llListFindList(g_LinkDB_l,[
-                            llList2String(prim_names,blade_prim_iter)
-                            ])+1)
+                        llListFindList(g_LinkDB_l,prim_names)+1)
                     ];
                     list faces_l=xlGetFacesByBladeName(blade_name);
                     integer faces_index= ((faces_l!=[])-1) ;
@@ -536,7 +527,6 @@ xlProcessCommand(string message,integer send_params){
                 (showit ^ ( "vagoo" ==blade_name)) *
                 g_Config_MaximumOpacity
                 ];
-            }
             global_params+=params_internal;
         }
     }
