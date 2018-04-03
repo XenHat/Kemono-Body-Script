@@ -35,7 +35,7 @@ list xlGetFacesByBladeName(string name){
     if(name== "belly" ) return [2,3];
     if(name== "body" ) return [0];
     if(name== "breast" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [2,3];
         return [2,5];
     }
@@ -50,14 +50,14 @@ list xlGetFacesByBladeName(string name){
         return [2];
     }
     if(name== "chest" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [0,1];
         if(human_mode)
             return [0,4];
         return [0,4];
     }
     if(name== "collar" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [6,7];
         return [1,6];
     }
@@ -66,12 +66,12 @@ list xlGetFacesByBladeName(string name){
     if(name== "footL" ) return [0];
     if(name== "footR" ) return [0];
     if(name== "hipL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [5];
         return [6];
     }
     if(name== "hipR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [4];
         return [5];
     }
@@ -90,22 +90,22 @@ list xlGetFacesByBladeName(string name){
     if(name== "handR" )
         return [-1];
     if(name== "neck" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [0,1];
         return [2,5];
     }
     if(name== "nips" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [0,1];
         return [2,3];
     }
     if(name== "pelvis" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [0,1,2,3];
         return [0,1];
     }
     if(name== "ribs" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [4,5];
         return [1,3];
     }
@@ -126,19 +126,19 @@ list xlGetFacesByBladeName(string name){
     if(name== "shoulderLL" )
         return [3];
     if(name== "shoulderLR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [2];
         return [0];
     }
     if(name== "shoulderUL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [5];
         return [7];
     }
     if(name== "shoulderUR" )
         return [4];
     if(name== "thighLL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+        if( ((g_RuntimeBodyStateSettings & 1 )) ){
             if(human_mode)
                 return [1];
             return [7];
@@ -146,7 +146,7 @@ list xlGetFacesByBladeName(string name){
         return [6];
     }
     if(name== "thighLR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+        if( ((g_RuntimeBodyStateSettings & 1 )) ){
             if(human_mode)
                 return [0];
             return [6];
@@ -154,13 +154,13 @@ list xlGetFacesByBladeName(string name){
         return [6];
     }
     if(name== "thighUL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [5];
         return [7];
     }
     if(name== "thighUR" ) return [4];
     if(name== "vagoo" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+        if( ((g_RuntimeBodyStateSettings & 1 )) ){
             if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
             return [0,1];
@@ -168,7 +168,7 @@ list xlGetFacesByBladeName(string name){
         return [0,1];
     }
     if(name== "butt" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+        if( ((g_RuntimeBodyStateSettings & 1 )) ){
             if(g_TogglingPGMeshes)
                 return [0,1,2,3,4,5];
             return [2,3,4,5];
@@ -189,49 +189,49 @@ list xlBladeNameToPrimNames(string name){
     else if(name== "wristL" ) return [ "arms" ];
     else if(name== "wristR" ) return [ "arms" ];
     else if(name== "ribs" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoChest" ];
         return [ "body" ];
     }
     else if(name== "abs" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoChest" ];
         return [ "body" ];
     }
     else if(name== "body" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoChest" ];
         return [ "body" ];
     }
     else if(name== "breast" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoChest" ];
         return [ "body" ];
     }
     else if(name== "chest" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoChest" ];
         return [ "body" ];
     }
     else if(name== "collar" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "handL" ) return [ "handL" ];
     else if(name== "handR" ) return [ "handR" ];
     else if(name== "hipL"  || name== "hipR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,g_CurrentFittedVagState)];
         return [ "hips" ];
     }
     else if(name== "neck" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "pelvis" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,g_CurrentFittedVagState)];
         return [ "hips" ];
     }
@@ -296,55 +296,55 @@ list xlBladeNameToPrimNames(string name){
         return [ "LFleg" ];
     }
     else if(name== "shoulderLL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "shoulderLR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "shoulderUL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "shoulderUR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "Fitted Kemono Torso" ];
         return [ "neck" ];
     }
     else if(name== "thighUL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoEtc" ];
         return [ "hips" ];
     }
     else if(name== "thighUR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoEtc" ];
         return [ "hips" ];
     }
     else if(name== "belly" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [ "TorsoEtc" ];
         return [ "hips" ];
     }
     else if(name== "nips" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             return [llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ,
                         g_CurrentFittedNipState)];
         return [ "PG" ];
     }
     else if(name== "vagoo" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             if(g_TogglingPGMeshes)
                 return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,0)];
             return [llList2String( ["BitState0","BitState1","BitState2","BitState3"] ,g_CurrentFittedVagState)];
         return [ "PG" ];
     }
     else if(name== "thighLR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             if(human_mode)
                 return [ "HumanLegs" ];
             return [ "TorsoEtc" ];
@@ -353,7 +353,7 @@ list xlBladeNameToPrimNames(string name){
         return [ "RFleg" ];
     }
     else if(name== "thighLL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+        if( ((g_RuntimeBodyStateSettings & 1 )) )
             if(human_mode)
                 return [ "HumanLegs" ];
             return [ "TorsoEtc" ];
@@ -376,13 +376,13 @@ xlSetGenitals(integer pTogglePart){
 
 
         if( 16 ==pTogglePart)
-            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
             (meshes_count==g_CurrentFittedNipState);
         else if( 32 ==pTogglePart)
-            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
             (meshes_count==g_CurrentFittedVagState);
         else if( 8 ==pTogglePart)
-            visible=! (!!(g_RuntimeBodyStateSettings & pTogglePart))  *
+            visible=! ((g_RuntimeBodyStateSettings & pTogglePart))  *
             (meshes_count==g_CurrentFittedButState);
         if( 16 ==pTogglePart)
             mesh_name=llList2String( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ,meshes_count);
@@ -424,7 +424,7 @@ xlProcessCommand(string message,integer send_params){
         showit=TRUE;
     else if(command=="hide")
         showit=FALSE;
-    else if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+    else if( ((g_RuntimeBodyStateSettings & 1 )) ){
         if(blade_name== "nips" ){
             g_CurrentFittedNipState=showit;
 
@@ -485,7 +485,7 @@ xlProcessCommand(string message,integer send_params){
         }
         else{
             list params_internal;
-            if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if( ((g_RuntimeBodyStateSettings & 1 )) ){
                 if(blade_name== "breast" ){
                     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16 )) | ( 16 * !showit); ;
                     xlSetGenitals( 16 );
@@ -784,7 +784,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 return;
             }
             else if("reqFTdat"==message){
-                if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+                if( ((g_RuntimeBodyStateSettings & 1 )) ){
                     llWhisper( -34525475 ,"resFTdat:nipState:"
                         +(string)g_CurrentFittedNipState
                         +":nipAlpha:0"
