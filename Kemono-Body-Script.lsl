@@ -57,6 +57,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
+// #define DISABLE_AUTH
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
@@ -209,7 +210,7 @@ MESH_FITTED_TORSO_NIP_A\
 */
 #define chgBit(a,b,c) a=(a & (~b)) | (b * c);
 #define clrBit(a,b) a=(a & (~b))
-#define getBit(a,b) ((a & b))
+#define getBit(a,b) (!!(a & b))
 #define setBit(a,b) a=(a | b)
 #define togBit(a,b) a ^=1 << b
 #define xlListLen2MaxID(a) ((a!=[])-1)
@@ -641,13 +642,13 @@ xlSetGenitals(integer pTogglePart){
         /* Process each genital mesh one by one */
         // debugLogic(meshes_count);
         if(FKT_FHIDE_N==pTogglePart)
-            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
             (meshes_count==g_CurrentFittedNipState);
         else if(FKT_FHIDE_V==pTogglePart)
-            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
             (meshes_count==g_CurrentFittedVagState);
         else if(FKT_FHIDE_B==pTogglePart)
-            visible=!(!!getBit(g_RuntimeBodyStateSettings,pTogglePart)) *
+            visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
             (meshes_count==g_CurrentFittedButState);
         if(FKT_FHIDE_N==pTogglePart)
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
@@ -758,24 +759,24 @@ xlProcessCommand(string message,integer send_params){
             g_TogglingPGMeshes=FALSE;
         }
         else if(blade_name==BLADE_VAG){
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,!showit);
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
             // llOwnerSay("o.o.o.o.o");
             if(!showit && !g_TogglingPGMeshes){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
             }
-            else if(showit && g_TogglingPGMeshes){
-                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
-            }
+            else if(showit && g_TogglingPGMeshes)
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
         }
         else if(blade_name==BLADE_NIPS){
             // llOwnerSay("o.o.o.o.o");
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!showit);
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
             if(!g_TogglingPGMeshes && !showit){
                 chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
             }
-            else if(g_TogglingPGMeshes && showit){
-                chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
-            }
+            else if(g_TogglingPGMeshes && showit)
+            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
         }
         else{
             list params_internal;
@@ -1076,6 +1077,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
+            #ifndef DISABLE_AUTH
             #define AUTH_METHOD_1
             // #define AUTH_METHOD_2
             // #define AUTH_METHOD_3
@@ -1182,6 +1184,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #ifdef DEBUG_AUTH
             llOwnerSay("Authed " + name);
             #endif
+            #endif
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
@@ -1203,25 +1206,25 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             }
             else if(message=="Hlegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
-                //if(!human_mode){
+                if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=TRUE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                //}
+                }
                 #endif
                 llSetObjectDesc((string)human_mode);
             }
             else if(message=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
-                //if(human_mode){
+                if(human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
                     human_mode=FALSE;
                     xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                //}
+                }
                 #endif
                 llSetObjectDesc((string)human_mode);
             }
@@ -1345,6 +1348,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             }
             #ifdef DEBUG_LISTEN
             llOwnerSay("End of listener processing for '" + message + "'");
+            llSleep(1);
             #endif
         }
     }
