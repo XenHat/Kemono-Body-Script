@@ -615,9 +615,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llListen( -34525475 ,"","","");
     }
     listen(integer channel,string name,key id,string message){
-        key owner_key=llGetOwnerKey(id);
-        if(owner_key != g_Owner_k && (owner_key!=id)){
-            return;
+        key object_owner_k=llGetOwnerKey(id);
+        if(object_owner_k != g_Owner_k){
+            if((object_owner_k!=id))
+                return;
         }
         if(message=="add"){
             if(llGetFreeMemory() > 2048)
@@ -801,6 +802,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 }
 on_rez(integer p){
+
+    llSleep(3);
     llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
 
     g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -823,13 +826,6 @@ attach(key id){
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
-
-        llWhisper( -34525475 ,"show:neck:collar:shoulderUL:shoulderUR:"
-            +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
-            +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
-            +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
-            +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        llSetTimerEvent(0.1);
     }
     timer(){
         if(llGetAttached()){
