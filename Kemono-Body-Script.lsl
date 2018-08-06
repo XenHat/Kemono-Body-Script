@@ -1033,19 +1033,20 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
-        key owner_key=llGetOwnerKey(id);
+        key object_owner_k=llGetOwnerKey(id);
         #ifdef DEBUG_LISTEN_ALL
         string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-        +llKey2Name(owner_key)+" ";
+        +llKey2Name(object_owner_k)+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
-        if(owner_key != g_Owner_k && (owner_key!=id)){ /* Eval both, on purpose*/
-            return;
+        if(object_owner_k != g_Owner_k){
+            if((object_owner_k!=id)) /* This can somehow happen on detach */
+                return;
         }
         #ifndef DEBUG_LISTEN_ALL
         #ifdef DEBUG_LISTEN
         string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-        +llKey2Name(owner_key)+" ";
+        +llKey2Name(object_owner_k)+" ";
         llOwnerSay(knp+"input ["+message+"]");
         #endif
         #endif
@@ -1354,6 +1355,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 }
 on_rez(integer p){
+    // Wait a few seconds in case we're still rezzing
+    llSleep(3);
     llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
     #ifdef GITHUB_UPDATER
     g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -1382,6 +1385,7 @@ attach(key id){
     }
     run_time_permissions(integer perm){
         g_HasAnimPerms=TRUE;
+        #ifdef RESET_ON_PERMS
         /* Send a "reset" message to forcefully trigger clothing autohiders */
         llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
             +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
@@ -1389,6 +1393,7 @@ attach(key id){
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         llSetTimerEvent(0.1);
+        #endif
     }
     timer(){
         if(llGetAttached()){
@@ -1414,8 +1419,7 @@ attach(key id){
     }
     #ifdef DEBUG_LISTEN
     link_message(integer sender_num, integer num, string message, key id){
-        llOwnerSay(message);
-        llOwnerSay((string)id);
+        llOwnerSay("LINK MESSAGE["+(string)id+"]: '" + message + "'");
     }
     #endif
     #ifdef GITHUB_UPDATER
