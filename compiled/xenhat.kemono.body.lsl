@@ -620,6 +620,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             if((object_owner_k!=id))
                 return;
         }
+
         if(message=="add"){
             if(llGetFreeMemory() > 2048)
             if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
