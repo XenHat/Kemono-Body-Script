@@ -453,37 +453,40 @@ xlProcessCommand(string message,integer send_params){
     for(;list_size > 0;list_size--){
 
         string blade_name=llList2String(data,list_size);
-        if(blade_name== "nips"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
-{
-            g_CurrentFittedNipState=showit;
-            xlSetGenitals( 16 );
-        }
-        else if(blade_name== "vagoo"  &&  (!!(g_RuntimeBodyStateSettings & 1 )) )
-{
-            g_CurrentFittedVagState=showit;
-            g_TogglingPGMeshes=TRUE;
-            xlSetGenitals( 32 );
-            g_TogglingPGMeshes=FALSE;
+        if(blade_name== "nips" ){
+            if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+                g_CurrentFittedNipState=showit;
+                xlSetGenitals( 16 );
+            }
+            else
+            {
+
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                    (~ 4 )) | ( 4  * !showit);
+                if(!g_TogglingPGMeshes && !showit){
+                    g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * TRUE); ;
+                }
+                else if(g_TogglingPGMeshes && showit)
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * FALSE); ;
+            }
         }
         else if(blade_name== "vagoo" ){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~ 2 )) | ( 2  * !showit);
-
-            if(!showit && !g_TogglingPGMeshes){
-                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
+            if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+                g_CurrentFittedVagState=showit;
+                g_TogglingPGMeshes=TRUE;
+                xlSetGenitals( 32 );
+                g_TogglingPGMeshes=FALSE;
             }
-            else if(showit && g_TogglingPGMeshes)
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
-        }
-        else if(blade_name== "nips" ){
+            else{
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                    (~ 2 )) | ( 2  * !showit);
 
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~ 4 )) | ( 4  * !showit);
-            if(!g_TogglingPGMeshes && !showit){
-                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * TRUE); ;
+                if(!showit && !g_TogglingPGMeshes){
+                    g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * TRUE); ;
+                }
+                else if(showit && g_TogglingPGMeshes)
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2 )) | ( 2 * FALSE); ;
             }
-            else if(g_TogglingPGMeshes && showit)
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * FALSE); ;
         }
         else{
             list params_internal;
@@ -505,11 +508,8 @@ xlProcessCommand(string message,integer send_params){
                 xlProcessCommand("show:"+ "vagoo" ,FALSE);
             }
             else if(blade_name== "breast" ){
-
-
                     if(!(g_RuntimeBodyStateSettings &  4 ) && !showit)
                     xlProcessCommand("hide:"+ "nips" ,FALSE);
-
                         else
                         xlProcessCommand("show:"+ "nips" ,FALSE);
                     }
@@ -521,12 +521,13 @@ xlProcessCommand(string message,integer send_params){
                     ];
                     list faces_l=xlGetFacesByBladeName(blade_name);
                     integer faces_index= ((faces_l!=[])-1) ;
-                for(;faces_index > -1; faces_index--)
-                params_internal+=[
-                PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                (showit ^ ( "vagoo" ==blade_name)) *
-                g_Config_MaximumOpacity
-                ];
+                for(;faces_index > -1; faces_index--){
+                    params_internal+=[
+                    PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
+                    (showit ^ ( "vagoo" ==blade_name)) *
+                    g_Config_MaximumOpacity
+                    ];
+                }
             global_params+=params_internal;
         }
     }
