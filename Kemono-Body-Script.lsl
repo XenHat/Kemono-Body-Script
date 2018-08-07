@@ -61,6 +61,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
+// #define DEBUG_LISTEN_LITE
 // #define DEBUG_LISTEN_ALL
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
@@ -1027,29 +1028,32 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #endif
     }
     listen(integer channel,string name,key id,string message){
-        #ifdef DEBUG_LISTEN
-        llOwnerSay("Time:"+(string)llGetTimestamp());
-        #endif
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
         key object_owner_k=llGetOwnerKey(id);
-        #ifdef DEBUG_LISTEN_ALL
-        string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-        +llKey2Name(object_owner_k)+" ";
-        llOwnerSay(knp+"input ["+message+"]");
+        #ifdef DEBUG_LISTEN
+            string oname = llGetObjectName();
+            llSetObjectName(llGetSubString((string)llGetKey(),0, 6) + " Debug");
+            llOwnerSay("Time:"+(string)llGetTimestamp());
+            #ifdef DEBUG_LISTEN_ALL
+                string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+                +llKey2Name(object_owner_k)+" ";
+                llOwnerSay(knp+"input ["+message+"]");
+            #else
+                string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+                +llKey2Name(object_owner_k)+" ";
+                llOwnerSay(knp+"input ["+message+"]");
+            #endif
+        #else
+            #ifdef DEBUG_LISTEN_LITE
+                llOwnerSay("["+llKey2Name(id)+"]: " +message);
+            #endif
         #endif
         if(object_owner_k != g_Owner_k){
             if((object_owner_k!=id)) /* This can somehow happen on detach */
                 return;
         }
-        #ifndef DEBUG_LISTEN_ALL
-        #ifdef DEBUG_LISTEN
-        string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-        +llKey2Name(object_owner_k)+" ";
-        llOwnerSay(knp+"input ["+message+"]");
-        #endif
-        #endif
         /* TODO: Allow chained commands such as add:show:vagoo:remove*/
         if(message=="add"){ /* And add if not in the auth list */
             if(llGetFreeMemory() > 2048)
@@ -1353,6 +1357,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #endif
         }
     }
+    #ifdef DEBUG_LISTEN
+    llSetObjectName(oname);
+    #endif
 }
 on_rez(integer p){
     // Wait a few seconds in case we're still rezzing
