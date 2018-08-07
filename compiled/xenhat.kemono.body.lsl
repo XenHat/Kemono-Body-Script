@@ -611,7 +611,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
         llSetTimerEvent(0.1);
-        llSetText("",ZERO_VECTOR,0.0);
+
         llListen( -34525475 ,"","","");
     }
     listen(integer channel,string name,key id,string message){
