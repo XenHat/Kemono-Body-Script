@@ -978,27 +978,34 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llSetLinkPrimitiveParamsFast(LINK_ROOT,prim_params_to_apply);
         #endif
         #ifdef DEBUG_SELF_TEST
-        llSetText("[UNIT SELF-TEST]",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-        list selftest=["neck","collar","shoulderUL","shoulderUR","shoulderLL",
-        "shoulderLR","armUL","armUR","elbowL","elbowR","armLL","armLR",
-        "wristL","wristR","handL","handR","chest","breast","ribs","abs",
-        "belly","pelvis","hipL","hipR","thighUL","thighUR","thighLL",
-        "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
-        "shinLL","shinLR","ankleL","ankleR","footL","footR"];
-        integer id = xlListLen2MaxID(selftest);
+        //llSetText("[UNIT SELF-TEST]",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+        xlProcessCommand("hide:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+            +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+            +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+            +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+            +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
+        llSleep(0.25);
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
             +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
             +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
             +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
             +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
-        for(;id>-1;id--){
+        llSleep(0.25);
+        list selftest=["neck","shoulderUL","shoulderUR","collar","shoulderLL",
+        "shoulderLR","armUL","armUR","chest","breast","elbowL","elbowR",
+        "ribs","armLL","armLR","abs","wristL","wristR","belly","handL","handR",
+        "pelvis","hipL","hipR","thighUL","thighUR","thighLL",
+        "thighLR","kneeL","kneeR","calfL","calfR","shinUL","shinUR",
+        "shinLL","shinLR","ankleL","ankleR","footL","footR"];
+        integer id = 0;
+        integer len = xlListLen2MaxID(selftest)+1;
+        for(;id < len;++id){
             xlProcessCommand("hide:"+llList2String(selftest,id),TRUE);
-            llSleep(0.0625);
+            // llSleep(0.0625);
         }
-        id = xlListLen2MaxID(selftest);
         for(;id>-1;id--){
             xlProcessCommand("show:"+llList2String(selftest,id),TRUE);
-            llSleep(0.0625);
+            // llSleep(0.0625);
         }
         #endif
         g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
@@ -1012,7 +1019,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
         llSetTimerEvent(0.1);
-        llSetText("",ZERO_VECTOR,0.0);
+        // llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
