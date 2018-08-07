@@ -3,7 +3,7 @@
 * Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
 * Original creation date: 6/06/2017 22:52:37
 * The latest version of this script is located at:
-* https://github.com/XenHat/Kemono-Body-Script/blob/master/xenhat.kemono.body.lsl
+* https://github.com/XenHat/Kemono-Body-Script/blob/master/Kemono-Body-Script.lsl
 *
 * Licensed under the Aladdin Free Public License Version 9
 * For the Full license, see
