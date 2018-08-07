@@ -740,44 +740,46 @@ xlProcessCommand(string message,integer send_params){
     llOwnerSay("list_size="+(string)list_size);
     llOwnerSay("data:"+llList2CSV(data));
     #endif
-
     for(;list_size > 0;list_size--){/* skip command (first element) */
         /* Process a list of blade names */
         string blade_name=llList2String(data,list_size);
         #ifdef DEBUG_COMMAND
         llOwnerSay("[Looping through params]:"+blade_name);
         #endif
-        if(blade_name==BLADE_NIPS && getBit(g_RuntimeBodyStateSettings,
-            FKT_PRESENT)){
-            g_CurrentFittedNipState=showit;
-            xlSetGenitals(FKT_FHIDE_N);
-        }
-        else if(blade_name==BLADE_VAG && getBit(g_RuntimeBodyStateSettings,
-            FKT_PRESENT)){
-            g_CurrentFittedVagState=showit;
-            g_TogglingPGMeshes=TRUE;
-            xlSetGenitals(FKT_FHIDE_V);
-            g_TogglingPGMeshes=FALSE;
+        if(blade_name==BLADE_NIPS){
+            if(getBit(g_RuntimeBodyStateSettings, FKT_PRESENT)){
+                g_CurrentFittedNipState=showit;
+                xlSetGenitals(FKT_FHIDE_N);
+            }
+            else
+            {
+                // llOwnerSay("o.o.o.o.o");
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                    (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
+                if(!g_TogglingPGMeshes && !showit){
+                    chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
+                }
+                else if(g_TogglingPGMeshes && showit)
+                chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
+            }
         }
         else if(blade_name==BLADE_VAG){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
-            // llOwnerSay("o.o.o.o.o");
-            if(!showit && !g_TogglingPGMeshes){
-                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+            if(getBit(g_RuntimeBodyStateSettings, FKT_PRESENT)){
+                g_CurrentFittedVagState=showit;
+                g_TogglingPGMeshes=TRUE;
+                xlSetGenitals(FKT_FHIDE_V);
+                g_TogglingPGMeshes=FALSE;
             }
-            else if(showit && g_TogglingPGMeshes)
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
-        }
-        else if(blade_name==BLADE_NIPS){
-            // llOwnerSay("o.o.o.o.o");
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
-                (~KSB_PGNIPLS)) | (KSB_PGNIPLS * !showit);
-            if(!g_TogglingPGMeshes && !showit){
-                chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,TRUE);
+            else{
+                g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings &
+                    (~KSB_PGVAGOO)) | (KSB_PGVAGOO * !showit);
+                // llOwnerSay("o.o.o.o.o");
+                if(!showit && !g_TogglingPGMeshes){
+                    chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,TRUE);
+                }
+                else if(showit && g_TogglingPGMeshes)
+                chgBit(g_RuntimeBodyStateSettings,KSB_PGVAGOO,FALSE);
             }
-            else if(g_TogglingPGMeshes && showit)
-            chgBit(g_RuntimeBodyStateSettings,KSB_PGNIPLS,FALSE);
         }
         else{
             list params_internal;
@@ -789,9 +791,6 @@ xlProcessCommand(string message,integer send_params){
             *  changes. This implies making it so that there is no post-loop
             *  fixing" happening.
             */
-            // #ifdef DEBUG_COMMAND
-            // llOwnerSay("xlGetBladeToggleParamsNew Processing:"+blade_name);
-            // #endif
             if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                 if(blade_name==BLADE_BREASTS){
                     chgBit(g_RuntimeBodyStateSettings,FKT_FHIDE_N,!showit);
@@ -813,22 +812,17 @@ xlProcessCommand(string message,integer send_params){
                 xlProcessCommand("show:"+BLADE_VAG,FALSE);
             }
             else if(blade_name==BLADE_BREASTS){
-                    // showit *=!(g_RuntimeBodyStateSettings & KSB_PGNIPLS);
-                    // llOwnerSay("GOD NO PLEASE GO AWAY!");
                     if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit)
                     xlProcessCommand("hide:"+BLADE_NIPS,FALSE);
-                        // llOwnerSay("nuuuu");
                         else
                         xlProcessCommand("show:"+BLADE_NIPS,FALSE);
                     }
                 }
                 list prim_names=xlBladeNameToPrimNames(blade_name);
-                //integer blade_prim_iter=xlListLen2MaxID(prim_names);
                 #ifdef DEBUG_DATA
-                llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
-                llOwnerSay("prim_count="+(string)1);
+                    llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
+                    llOwnerSay("prim_count="+(string)1);
                 #endif
-                //for(;blade_prim_iter > -1;blade_prim_iter--){
                     /* TODO: Be less nuclear and only fix the faces we asked for*/
                     /* TODO: inline as much as possible */
                     params_internal+=[
@@ -843,16 +837,14 @@ xlProcessCommand(string message,integer send_params){
                     llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
                     llOwnerSay("Faces Count  :"+(string)(faces_index+1));
                     llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
-                // llOwnerSay("Link Name 1  :"+this_prim_name);
-                // llOwnerSay("link_name_index:"+(string)link_name_index);
-                // llOwnerSay("Link ID 1    :"+(string)link_id);
                 #endif
-                for(;faces_index > -1; faces_index--)
-                params_internal+=[
-                PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                (showit ^ (BLADE_VAG==blade_name)) *
-                g_Config_MaximumOpacity
-                ];
+                for(;faces_index > -1; faces_index--){
+                    params_internal+=[
+                    PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
+                    (showit ^ (BLADE_VAG==blade_name)) *
+                    g_Config_MaximumOpacity
+                    ];
+                }
             //}
             #ifdef DEBUG_PARAMS
             llOwnerSay("Params out:"+llList2CSV(global_params));
