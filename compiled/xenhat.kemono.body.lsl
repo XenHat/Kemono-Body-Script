@@ -809,42 +809,41 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
                         jump AUTHORIZED;
                     }
-
-                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else{
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                    else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
                         jump AUTHORIZED;
                     }
-                    else
-                    {
+                    else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
+                        jump AUTHORIZED;
                     }
-                }
-                return;
-                @AUTHORIZED;
+                    else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
+                        jump AUTHORIZED;
+                    }
+                    else{
+                        if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                            jump AUTHORIZED;
+                        }
+                        else
+                        {
+                        }
+                    }
+                    return;
+                    @AUTHORIZED;
             xlProcessCommandWrapper(message);
+        }
     }
-}
-on_rez(integer p){
+    on_rez(integer p){
 
-    llSleep(3);
-    llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        llSleep(3);
+        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
 
-    g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
-        + "XenHat/"+ "Kemono-Body-Script"
-        +"/releases/latest?access_token="
-        +"603ee815cda6fb45fcc16876effbda017f158bef",
-        [HTTP_BODY_MAXLENGTH,16384],"");
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+            + "XenHat/"+ "Kemono-Body-Script"
+            +"/releases/latest?access_token="
+            +"603ee815cda6fb45fcc16876effbda017f158bef",
+            [HTTP_BODY_MAXLENGTH,16384],"");
 
-}
-attach(key id){
+    }
+    attach(key id){
         if(id==NULL_KEY){
             llStartAnimation(g_AnimUndeform);
             llSleep(0.1);
