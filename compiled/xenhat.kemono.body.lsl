@@ -12,7 +12,7 @@ key g_internal_httprid_k=NULL_KEY;
 
 key g_Owner_k;
 list g_LinkDB_l=[];
-list g_RemConfirmKeys_l;
+list g_AttmntAuthedKeys_l;
 
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -578,7 +578,7 @@ default {
         llResetScript();
     }
     state_entry(){
-    llOwnerSay("Resetting... O3O!!!");
+
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
@@ -636,24 +636,49 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             if((object_owner_k!=id))
                 return;
         }
-
         if(message=="add"){
             if(llGetFreeMemory() > 2048)
-            if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
             {
-                g_RemConfirmKeys_l +=[id];
+                g_AttmntAuthedKeys_l +=[id];
             }
             return;
         }
         else if(message=="remove"){
-            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
+            integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
             if(placeinlist !=-1){
-                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
+                g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
                     placeinlist,placeinlist);
             }
             return;
         }
         else{
+                    if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
+                        jump AUTHORIZED;
+                    }
+                    else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
+                        jump AUTHORIZED;
+                    }
+
+                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
+                        jump AUTHORIZED;
+                }
+                else{
+                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                        jump AUTHORIZED;
+                    }
+                    else
+                    {
+                    }
+                }
+                return;
+                @AUTHORIZED;
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
@@ -664,7 +689,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             else if(message=="resetA")
                 reset();
             else if(message=="resetB"){
-                g_RemConfirmKeys_l=[];
+                g_AttmntAuthedKeys_l=[];
                 reset();
             }
             else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
