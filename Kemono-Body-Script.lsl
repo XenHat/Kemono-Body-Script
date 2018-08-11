@@ -1263,7 +1263,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 return;
             }
+
             /* TODO: Move to xlProcessCommand */
+            /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
             else if(message=="add"){ /* And add if not in the auth list */
                 if(llGetFreeMemory() > 2048)
                 if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
