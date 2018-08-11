@@ -788,6 +788,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 return;
             }
 
+
+
             else if(message=="add"){
                 if(llGetFreeMemory() > 2048)
                 if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
