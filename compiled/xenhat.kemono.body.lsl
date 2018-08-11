@@ -536,7 +536,22 @@ xlProcessCommand(string message,integer send_params){
         global_params=[];
     }
 }
+resetHands()
+{ if(llGetAttached()){
+        llStopAnimation("Kem-hand-L-fist");
+        llStopAnimation("Kem-hand-L-hold");
+        llStopAnimation("Kem-hand-L-horns");
+        llStopAnimation("Kem-hand-L-point");
+        llStopAnimation("Kem-hand-R-fist");
+        llStopAnimation("Kem-hand-R-hold");
+        llStopAnimation("Kem-hand-R-horns");
+        llStopAnimation("Kem-hand-R-point");
+        llStartAnimation("Kem-hand-R-relax");
+        llStartAnimation("Kem-hand-L-relax");
+    }
+}
 reset(){
+    resetHands();
     if(llGetAttached()){
         llStopAnimation("Kem-hand-L-fist");
         llStopAnimation("Kem-hand-L-hold");
@@ -803,6 +818,9 @@ attach(key id){
         }
     }
     run_time_permissions(integer perm){
+        if(!g_HasAnimPerms){
+            resetHands();
+        }
         g_HasAnimPerms=TRUE;
     }
     timer(){
