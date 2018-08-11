@@ -1113,11 +1113,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
-            // #define DISABLE_AUTH
             #ifndef DISABLE_AUTH
             #define AUTH_METHOD_1
-            // #define AUTH_METHOD_2
-            // #define AUTH_METHOD_3
             #ifdef BENCHMARK
             llResetTime();
             #endif
@@ -1163,63 +1160,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 #ifdef BENCHMARK
                 llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                 #endif
-            #endif
-            #ifdef AUTH_METHOD_2
-                #ifdef BENCHMARK
-                llOwnerSay("Testing JUMP method");
-                // llResetTime();
-                #endif
-                if(llSubStringIndex(name, "Fitted Kemono") > -1){
-                    if(llSubStringIndex(name, "Bits") > -1){
-                        if(llSubStringIndex(name, "Front") > -1){
-                            jump AUTHORIZED;
-                        }
-                        else if(llSubStringIndex(name, "Rear") > -1){
-                            jump AUTHORIZED;
-                        }
-                    }
-                    else if (llSubStringIndex(name, "Torso HUD") > -1){
-                        jump AUTHORIZED;
-                    }
-                }
-                else if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
-                    jump AUTHORIZED;
-                }
-                if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
-                    jump AUTHORIZED;
-                }
-                #ifdef BENCHMARK
-                llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
-                #endif
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
-                #endif
-                return;
-                @AUTHORIZED;
-                /* Authorized */
-                #ifdef BENCHMARK
-                llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
-                #endif
-            #endif
-            #ifdef AUTH_METHOD_3
-                #ifdef BENCHMARK
-                // llOwnerSay("Testing ifwall method");
-                // llResetTime();
-                #endif
-                if(llSubStringIndex(name, "Kemono - HUD (1.") < 0
-                    || llSubStringIndex(name, "Fitted Kemono Torso HUD") < 0
-                    || llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0
-                    || llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0
-                    || llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0
-                    || llListFindList(g_AttmntAuthedKeys_l,[id]) < 0){
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
-                    #endif
-                    #ifdef BENCHMARK
-                    llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
-                    #endif
-                    return;
-                }
             #endif
             #ifdef BENCHMARK
             llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
