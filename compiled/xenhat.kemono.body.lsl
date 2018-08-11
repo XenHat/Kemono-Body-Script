@@ -821,8 +821,8 @@ attach(key id){
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.16" ) return;
-        list cur_version_l=llParseString2List( "0.3.16" ,["."],[""]);
+        if(new_version_s== "0.3.17" ) return;
+        list cur_version_l=llParseString2List( "0.3.17" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -850,13 +850,13 @@ attach(key id){
         update_description+="\n";
         if(llStringLength(update_description) >=350)
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.16" +"..."+new_version_s+" Changes for "
-        + "0.3.16" +"↛"+new_version_s+"]\n";
+        +"/compare/"+ "0.3.17" +"..."+new_version_s+" Changes for "
+        + "0.3.17" +"↛"+new_version_s+"]\n";
         string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
         +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.16"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.17"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
