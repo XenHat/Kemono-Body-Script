@@ -412,6 +412,147 @@ xlSetGenitals(integer pTogglePart){
     llSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params) ;
 }
 
+xlProcessCommandWrapper(string message)
+{
+                if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                reset();
+            }
+            else if(message=="resetA")
+                reset();
+            else if(message=="resetB"){
+                g_AttmntAuthedKeys_l=[];
+                reset();
+            }
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
+                xlProcessCommand(message,TRUE);
+            }
+            else if(message=="Hlegs"){
+
+                if(!human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    human_mode=TRUE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                }
+
+                llSetObjectDesc((string)human_mode);
+            }
+            else if(message=="Flegs"){
+
+                if(human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    human_mode=FALSE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                }
+
+                llSetObjectDesc((string)human_mode);
+            }
+
+            if(message == "Rhand:1"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStartAnimation("Kem-hand-R-relax");
+                return;
+            }
+            else if(message == "Rhand:2"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-hold");
+                return;
+            }
+            else if(message == "Rhand:3"){
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-fist");
+                return;
+            }
+            else if(message == "Rhand:4"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-point");
+                return;
+            }
+            else if(message == "Rhand:5"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-horns");
+                return;
+            }
+            else if(message == "Lhand:1"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStartAnimation("Kem-hand-L-relax");
+                return;
+            }
+            else if(message == "Lhand:2"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-hold");
+                return;
+            }
+            else if(message == "Lhand:3"){
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-fist");
+                return;
+            }
+            else if(message == "Lhand:4"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-point");
+                return;
+            }
+            else if(message == "Lhand:5"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-horns");
+                return;
+            }
+            else{
+                if(llSubStringIndex(message, "resCLdat")==0){
+                return;
+            }
+            else if("reqFTdat"==message){
+                if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+                    llWhisper( -34525475 ,"resFTdat:nipState:"
+                        +(string)g_CurrentFittedNipState
+                        +":nipAlpha:0"
+                        +":nipOvrd:0"
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode);
+                }
+                return;
+            }
+        }
+    }
 xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
@@ -688,144 +829,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 return;
                 @AUTHORIZED;
-            if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                reset();
-            }
-            else if(message=="resetA")
-                reset();
-            else if(message=="resetB"){
-                g_AttmntAuthedKeys_l=[];
-                reset();
-            }
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                xlProcessCommand(message,TRUE);
-            }
-            else if(message=="Hlegs"){
-
-                if(!human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
-                    human_mode=TRUE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
-
-                llSetObjectDesc((string)human_mode);
-            }
-            else if(message=="Flegs"){
-
-                if(human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
-                    human_mode=FALSE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
-
-                llSetObjectDesc((string)human_mode);
-            }
-
-            if(message == "Rhand:1"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStartAnimation("Kem-hand-R-relax");
-                return;
-            }
-            else if(message == "Rhand:2"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-hold");
-                return;
-            }
-            else if(message == "Rhand:3"){
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-fist");
-                return;
-            }
-            else if(message == "Rhand:4"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-point");
-                return;
-            }
-            else if(message == "Rhand:5"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-horns");
-                return;
-            }
-            else if(message == "Lhand:1"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStartAnimation("Kem-hand-L-relax");
-                return;
-            }
-            else if(message == "Lhand:2"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-hold");
-                return;
-            }
-            else if(message == "Lhand:3"){
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-fist");
-                return;
-            }
-            else if(message == "Lhand:4"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-point");
-                return;
-            }
-            else if(message == "Lhand:5"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-horns");
-                return;
-            }
-            else{
-                if(llSubStringIndex(message, "resCLdat")==0){
-                return;
-            }
-            else if("reqFTdat"==message){
-                if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-                    llWhisper( -34525475 ,"resFTdat:nipState:"
-                        +(string)g_CurrentFittedNipState
-                        +":nipAlpha:0"
-                        +":nipOvrd:0"
-                        +":vagState:"+(string)g_CurrentFittedVagState
-                        +":buttState:"+(string)g_CurrentFittedButState
-                        +":humLegs:"+(string)human_mode);
-                }
-                return;
-            }
-        }
+            xlProcessCommandWrapper(message);
     }
 }
 on_rez(integer p){
