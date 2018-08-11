@@ -57,7 +57,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
-#define DISABLE_AUTH
+// #define DISABLE_AUTH
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
@@ -233,7 +233,7 @@ key g_internal_httprid_k=NULL_KEY;
 #endif
 key g_Owner_k;
 list g_LinkDB_l=[];
-list g_RemConfirmKeys_l;
+list g_AttmntAuthedKeys_l;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -912,7 +912,7 @@ default {
         llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
-    llOwnerSay("Resetting... O3O!!!");
+    // llOwnerSay("Resetting... O3O!!!");
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
@@ -1068,26 +1068,43 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             if((object_owner_k!=id)) /* This can somehow happen on detach */
                 return;
         }
-        /* TODO: Allow chained commands such as add:show:vagoo:remove*/
+        /*
+        ------------------ AUTH SYSTEM PRIMER ----------------------
+            Because messages sent on detach, either returns null key
+             or the sender object's uuid, for llGetOwnerKey(), the auth list
+             allows an item to have its ownerkey determined, so later on all
+             it has to do is say 'bye' and looking up that sender's key in the
+             auth list, the object can decide what to do with the message
+             (accept, if sender uuid was in auth list, or reject if uuid
+             was not in auth list. (such as from another person's clothing))
+        ------------------------------------------------------------
+        */
         if(message=="add"){ /* And add if not in the auth list */
             if(llGetFreeMemory() > 2048)
-            if(llListFindList(g_RemConfirmKeys_l,[id])==-1)
+            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
             {
+                g_AttmntAuthedKeys_l +=[id];
                 #ifdef DEBUG_AUTH
-                llOwnerSay("Adding [" + (string)id + "]" + llKey2Name(id) + " to auth list");
+                llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
                 #endif
-                g_RemConfirmKeys_l +=[id];
             }
+            /* TODO: Allow chained commands such as add:show:vagoo:remove
+            by removing passing them to the command processor*/
             return;
         }
-        else if(message=="remove"){ /*If the are in the list, remove them.*/
-            integer placeinlist=llListFindList(g_RemConfirmKeys_l,[(key)id]);
+        else if(message=="remove"){
+            /* Object signals they no longer need to talk with the API;
+               Remove their key from the list of authorized attachments.
+               This object will need to use the 'add' command
+               to interact with us again
+            */
+            integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
             if(placeinlist !=-1){
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Removing [" + (string)id + "]" + llKey2Name(id) + " from auth list");
-                #endif
-                g_RemConfirmKeys_l=llDeleteSubList(g_RemConfirmKeys_l,
+                g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
                     placeinlist,placeinlist);
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Removed [" + (string)id + "] (" + llKey2Name(id) + ") from auth list");
+                #endif
             }
             return;
         }
@@ -1096,6 +1113,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
+            // #define DISABLE_AUTH
             #ifndef DISABLE_AUTH
             #define AUTH_METHOD_1
             // #define AUTH_METHOD_2
@@ -1105,14 +1123,14 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #endif
             #ifdef AUTH_METHOD_1
                 // llOwnerSay("Testing JUMP method");
-                if(llStringLength(name) < 24){ /* Strict matching */
+                // if(llStringLength(name) < 24){ /* Strict matching */
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
                         jump AUTHORIZED;
                     }
                     else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
                         jump AUTHORIZED;
                     }
-                }
+                // }
                 else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
                         jump AUTHORIZED;
                 }
@@ -1123,12 +1141,18 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                         jump AUTHORIZED;
                 }
                 else{
-                    if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
+                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                        #ifdef DEBUG_AUTH
+                        llOwnerSay("Found in List, jumping to authorized");
+                        #endif
                         jump AUTHORIZED;
                     }
+                    else
+                    {
                     #ifdef DEBUG_AUTH
                     llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
                     #endif
+                    }
                 }
                 #ifdef BENCHMARK
                 llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
@@ -1161,7 +1185,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 else if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
                     jump AUTHORIZED;
                 }
-                if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
+                if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
                     jump AUTHORIZED;
                 }
                 #ifdef BENCHMARK
@@ -1187,7 +1211,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     || llSubStringIndex(name, "Fitted Kemono Busty Front Bits") < 0
                     || llSubStringIndex(name, "Fitted Kemono Petite Front Bits") < 0
                     || llSubStringIndex(name, "Fitted Kemono Rear Bits") < 0
-                    || llListFindList(g_RemConfirmKeys_l,[id]) < 0){
+                    || llListFindList(g_AttmntAuthedKeys_l,[id]) < 0){
                     #ifdef DEBUG_AUTH
                     llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
                     #endif
@@ -1214,7 +1238,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             else if(message=="resetA")
                 reset();
             else if(message=="resetB"){
-                g_RemConfirmKeys_l=[];
+                g_AttmntAuthedKeys_l=[];
                 reset();
             }
             /* TODO: Move at bottom and overwrite 'message' instead in other
@@ -1434,7 +1458,7 @@ attach(key id){
         #ifdef DEBUG_FACE_SELECT
         text+="\nPG_v:"+(string)g_TogglingPGMeshes;
         #endif
-        text+="\n"+(string)(xlListLen2MaxID(g_RemConfirmKeys_l)+1)
+        text+="\n"+(string)(xlListLen2MaxID(g_AttmntAuthedKeys_l)+1)
         +" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
         #endif
