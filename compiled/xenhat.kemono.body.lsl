@@ -639,30 +639,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             return;
         }
         else{
-                if(llStringLength(name) < 24){
-                    if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
-                        jump AUTHORIZED;
-                    }
-                    else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
-                        jump AUTHORIZED;
-                    }
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
-                        jump AUTHORIZED;
-                }
-                else{
-                    if(llListFindList(g_RemConfirmKeys_l,[id]) > -1){
-                        jump AUTHORIZED;
-                    }
-                }
-                return;
-                @AUTHORIZED;
             if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                 +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
                 +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
