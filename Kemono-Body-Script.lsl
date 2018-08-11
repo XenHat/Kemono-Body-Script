@@ -690,6 +690,171 @@ xlSetGenitals(integer pTogglePart){
     xlSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params);
 }
 
+xlProcessCommandWrapper(string message)
+{
+                if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+                reset();
+            }
+            else if(message=="resetA")
+                reset();
+            else if(message=="resetB"){
+                g_AttmntAuthedKeys_l=[];
+                reset();
+            }
+            /* TODO: Move at bottom and overwrite 'message' instead in other
+            /* branches so that we can inline xlProcessCommand
+            */
+            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
+                xlProcessCommand(message,TRUE);
+            }
+            else if(message=="Hlegs"){
+                #ifdef PROCESS_LEGS_COMMANDS
+                if(!human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    human_mode=TRUE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                }
+                #endif
+                llSetObjectDesc((string)human_mode);
+            }
+            else if(message=="Flegs"){
+                #ifdef PROCESS_LEGS_COMMANDS
+                if(human_mode){
+                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    human_mode=FALSE;
+                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
+                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                }
+                #endif
+                llSetObjectDesc((string)human_mode);
+            }
+            /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
+            if(message == "Rhand:1"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStartAnimation("Kem-hand-R-relax");
+                return;
+            }
+            else if(message == "Rhand:2"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-hold");
+                return;
+            }
+            else if(message == "Rhand:3"){
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-fist");
+                return;
+            }
+            else if(message == "Rhand:4"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-horns");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-point");
+                return;
+            }
+            else if(message == "Rhand:5"){
+                llStopAnimation("Kem-hand-R-fist");
+                llStopAnimation("Kem-hand-R-hold");
+                llStopAnimation("Kem-hand-R-point");
+                llStopAnimation("Kem-hand-R-relax");
+                llStartAnimation("Kem-hand-R-horns");
+                return;
+            }
+            else if(message == "Lhand:1"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStartAnimation("Kem-hand-L-relax");
+                return;
+            }
+            else if(message == "Lhand:2"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-hold");
+                return;
+            }
+            else if(message == "Lhand:3"){
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-fist");
+                return;
+            }
+            else if(message == "Lhand:4"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-horns");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-point");
+                return;
+            }
+            else if(message == "Lhand:5"){
+                llStopAnimation("Kem-hand-L-fist");
+                llStopAnimation("Kem-hand-L-hold");
+                llStopAnimation("Kem-hand-L-point");
+                llStopAnimation("Kem-hand-L-relax");
+                llStartAnimation("Kem-hand-L-horns");
+                return;
+            }
+            else{
+                #ifdef FTK_MULTI_DROP
+                /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
+                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
+                if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
+                return;
+                #endif
+                if(llSubStringIndex(message, "resCLdat")==0){
+                /* This API isn't public, the best we can do is guess.
+                /* Do nothing for now.
+                /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+                /* integer clothID = llList2Integer(data,2);
+                /* integer clothDesc = llList2Integer(data,4);
+                /* integer attachPoint = llList2Integer(data,6);
+                /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                /* NOTE: This is part of the internal Starbright API. We shouldn't know
+                /* how to handle this and that is fine. Staryna says it's for
+                /* careful ordering of stuff. Private and all.
+                */
+                return;
+            }
+            else if("reqFTdat"==message){
+                #ifdef DEBUG_FUNCTIONS
+                llOwnerSay("Sending Data");
+                #endif
+                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
+                        +(string)g_CurrentFittedNipState
+                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
+                        +":nipOvrd:0" /* TODO: Implement Nipple Override */
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode);
+                }
+                return;
+            }
+        }
+    }
 xlProcessCommand(string message,integer send_params){
     list data=llParseStringKeepNulls(message,[":"],[]);
     string command=llList2String(data,0);
@@ -1181,172 +1346,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             llOwnerSay("Authed " + name);
             #endif
             #endif
-            if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
-                reset();
-            }
-            else if(message=="resetA")
-                reset();
-            else if(message=="resetB"){
-                g_AttmntAuthedKeys_l=[];
-                reset();
-            }
-            /* TODO: Move at bottom and overwrite 'message' instead in other
-            /* branches so that we can inline xlProcessCommand
-            */
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                xlProcessCommand(message,TRUE);
-            }
-            else if(message=="Hlegs"){
-                #ifdef PROCESS_LEGS_COMMANDS
-                if(!human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
-                    human_mode=TRUE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
-                #endif
-                llSetObjectDesc((string)human_mode);
-            }
-            else if(message=="Flegs"){
-                #ifdef PROCESS_LEGS_COMMANDS
-                if(human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
-                    human_mode=FALSE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
-                }
-                #endif
-                llSetObjectDesc((string)human_mode);
-            }
-            /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
-            if(message == "Rhand:1"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStartAnimation("Kem-hand-R-relax");
-                return;
-            }
-            else if(message == "Rhand:2"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-hold");
-                return;
-            }
-            else if(message == "Rhand:3"){
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-fist");
-                return;
-            }
-            else if(message == "Rhand:4"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-point");
-                return;
-            }
-            else if(message == "Rhand:5"){
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-point");
-                llStopAnimation("Kem-hand-R-relax");
-                llStartAnimation("Kem-hand-R-horns");
-                return;
-            }
-            else if(message == "Lhand:1"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStartAnimation("Kem-hand-L-relax");
-                return;
-            }
-            else if(message == "Lhand:2"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-hold");
-                return;
-            }
-            else if(message == "Lhand:3"){
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-fist");
-                return;
-            }
-            else if(message == "Lhand:4"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-horns");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-point");
-                return;
-            }
-            else if(message == "Lhand:5"){
-                llStopAnimation("Kem-hand-L-fist");
-                llStopAnimation("Kem-hand-L-hold");
-                llStopAnimation("Kem-hand-L-point");
-                llStopAnimation("Kem-hand-L-relax");
-                llStartAnimation("Kem-hand-L-horns");
-                return;
-            }
-            else{
-                #ifdef FTK_MULTI_DROP
-                /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-                if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
-                return;
-                #endif
-                if(llSubStringIndex(message, "resCLdat")==0){
-                /* This API isn't public, the best we can do is guess.
-                /* Do nothing for now.
-                /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-                /* integer clothID = llList2Integer(data,2);
-                /* integer clothDesc = llList2Integer(data,4);
-                /* integer attachPoint = llList2Integer(data,6);
-                /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-                /* NOTE: This is part of the internal Starbright API. We shouldn't know
-                /* how to handle this and that is fine. Staryna says it's for
-                /* careful ordering of stuff. Private and all.
-                */
-                return;
-            }
-            else if("reqFTdat"==message){
-                #ifdef DEBUG_FUNCTIONS
-                llOwnerSay("Sending Data");
-                #endif
-                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
-                        +(string)g_CurrentFittedNipState
-                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
-                        +":nipOvrd:0" /* TODO: Implement Nipple Override */
-                        +":vagState:"+(string)g_CurrentFittedVagState
-                        +":buttState:"+(string)g_CurrentFittedButState
-                        +":humLegs:"+(string)human_mode);
-                }
-                return;
-            }
+            xlProcessCommandWrapper(message);
             #ifdef DEBUG_LISTEN
             llOwnerSay("End of listener processing for '" + message + "'");
             llSleep(1);
             #endif
-        }
     }
     #ifdef DEBUG_LISTEN
     llSetObjectName(oname);
