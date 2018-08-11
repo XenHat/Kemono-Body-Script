@@ -447,6 +447,11 @@ xlProcessCommand(string message,integer send_params){
         return;
     }
     else{
+
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
+            llOwnerSay("Unhandled command: '"+message+"'");
+        }
+
         return;
     }
     integer list_size= ((data!=[])-1) ;
@@ -632,25 +637,29 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
-        if(object_owner_k != g_Owner_k){
-            if((object_owner_k!=id))
+        if(object_owner_k == g_Owner_k){
+            if(message=="remove"){
+                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
+                if(placeinlist !=-1){
+                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
+                        placeinlist,placeinlist);
+                }
                 return;
-        }
-        if(message=="add"){
-            if(llGetFreeMemory() > 2048)
-            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
-            {
-                g_AttmntAuthedKeys_l +=[id];
             }
-            return;
-        }
-        else if(message=="remove"){
-            integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
-            if(placeinlist !=-1){
-                g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
-                    placeinlist,placeinlist);
+
+            else if(message=="add"){
+                if(llGetFreeMemory() > 2048)
+                if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                {
+                    g_AttmntAuthedKeys_l +=[id];
+                }
+                return;
             }
-            return;
+            else{
+                if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
+                    xlProcessCommand(message,TRUE);
+                }
+            }
         }
         else{
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
