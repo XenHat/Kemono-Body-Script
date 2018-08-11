@@ -73,7 +73,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* Normal Features that should be enabled */
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
-// #define PRINT_UNHANDLED_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #ifdef DEBUG_PARAMS
@@ -1064,10 +1064,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
             #endif
         #endif
-        if(object_owner_k != g_Owner_k){
-            if((object_owner_k!=id)) /* This can somehow happen on detach */
-                return;
-        }
         /*
         ------------------ AUTH SYSTEM PRIMER ----------------------
             Because messages sent on detach, either returns null key
@@ -1077,38 +1073,55 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              auth list, the object can decide what to do with the message
              (accept, if sender uuid was in auth list, or reject if uuid
              was not in auth list. (such as from another person's clothing))
+
+            But you only need to check the auth list when llGetOwnerKey() fails
+             And that'd only happen when detach event happens
+             So, the fact that the hud doesn't send 'add' is just abusing
+             the fact that it never sends anything on detach, which would
+             require checking the auth list
         ------------------------------------------------------------
         */
-        if(message=="add"){ /* And add if not in the auth list */
-            if(llGetFreeMemory() > 2048)
-            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
-            {
-                g_AttmntAuthedKeys_l +=[id];
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
-                #endif
+        if(object_owner_k == g_Owner_k){
+            if(message=="remove"){
+                /* Object signals they no longer need to talk with the API;
+                   Remove their key from the list of authorized attachments.
+                   This object will need to use the 'add' command
+                   to interact with us again
+                */
+                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
+                if(placeinlist !=-1){
+                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
+                        placeinlist,placeinlist);
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Removed [" + (string)id + "] (" + llKey2Name(id) + ") from auth list");
+                    #endif
+                }
+                return;
             }
-            /* TODO: Allow chained commands such as add:show:vagoo:remove
-            by removing passing them to the command processor*/
-            return;
-        }
-        else if(message=="remove"){
-            /* Object signals they no longer need to talk with the API;
-               Remove their key from the list of authorized attachments.
-               This object will need to use the 'add' command
-               to interact with us again
-            */
-            integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
-            if(placeinlist !=-1){
-                g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
-                    placeinlist,placeinlist);
-                #ifdef DEBUG_AUTH
-                llOwnerSay("Removed [" + (string)id + "] (" + llKey2Name(id) + ") from auth list");
-                #endif
+            /* TODO: Move to xlProcessCommand */
+            else if(message=="add"){ /* And add if not in the auth list */
+                if(llGetFreeMemory() > 2048)
+                if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                {
+                    g_AttmntAuthedKeys_l +=[id];
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
+                    #endif
+                }
+                /* TODO: Allow chained commands such as add:show:vagoo:remove
+                by removing passing them to the command processor*/
+                return;
             }
-            return;
+            else{
+                if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
+                    xlProcessCommand(message,TRUE);
+                }
+            }
         }
         else{
+            /* Owner key failed, use cached keys from previously added attachments
+               to verify if they belong to us (as they only get added if they do!)
+            */
             //string name = llKey2Name(id);
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
