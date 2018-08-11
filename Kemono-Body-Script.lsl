@@ -57,7 +57,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
-// #define DISABLE_AUTH
+#define DISABLE_AUTH
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
