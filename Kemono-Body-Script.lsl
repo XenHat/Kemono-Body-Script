@@ -1292,83 +1292,80 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* as fast as possible
             */
             #ifndef DISABLE_AUTH
-            #define AUTH_METHOD_1
-            #ifdef BENCHMARK
-            llResetTime();
-            #endif
-            #ifdef AUTH_METHOD_1
-                // llOwnerSay("Testing JUMP method");
-                // if(llStringLength(name) < 24){ /* Strict matching */
+                #define AUTH_METHOD_1
+                #ifdef BENCHMARK
+                   llResetTime();
+                #endif
+                #ifdef AUTH_METHOD_1
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
                         jump AUTHORIZED;
                     }
                     else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
                         jump AUTHORIZED;
                     }
-                // }
-                else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
+                    else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
                         jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
+                    }
+                    else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
                         jump AUTHORIZED;
-                }
-                else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
+                    }
+                    else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
                         jump AUTHORIZED;
-                }
-                else{
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                    }
+                    else{
+                        if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
+                            #ifdef DEBUG_AUTH
+                                llOwnerSay("Found in List, jumping to authorized");
+                            #endif
+                            jump AUTHORIZED;
+                        }
+                        else
+                        {
                         #ifdef DEBUG_AUTH
-                        llOwnerSay("Found in List, jumping to authorized");
+                            llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
                         #endif
-                        jump AUTHORIZED;
+                        }
                     }
-                    else
-                    {
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+                    #ifdef BENCHMARK
+                        llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
                     #endif
-                    }
-                }
-                #ifdef BENCHMARK
-                llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
+                    return;
+                    @AUTHORIZED;
+                    /* Authorized */
+                    #ifdef BENCHMARK
+                        llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+                    #endif
                 #endif
-                return;
-                @AUTHORIZED;
-                /* Authorized */
                 #ifdef BENCHMARK
-                llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
+                    llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                 #endif
-            #endif
-            #ifdef BENCHMARK
-            llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
-            #endif
-            #ifdef DEBUG_AUTH
-            llOwnerSay("Authed " + name);
-            #endif
+                #ifdef DEBUG_AUTH
+                    llOwnerSay("Authed " + name);
+                #endif
             #endif
             xlProcessCommandWrapper(message);
             #ifdef DEBUG_LISTEN
             llOwnerSay("End of listener processing for '" + message + "'");
             llSleep(1);
             #endif
+        }
+        #ifdef DEBUG_LISTEN
+        llSetObjectName(oname);
+        #endif
     }
-    #ifdef DEBUG_LISTEN
-    llSetObjectName(oname);
-    #endif
-}
-on_rez(integer p){
-    // Wait a few seconds in case we're still rezzing
-    llSleep(3);
-    llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-    #ifdef GITHUB_UPDATER
-    g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
-        +g_internal_repo_s
-        +"/releases/latest?access_token="
-        +"603ee815cda6fb45fcc16876effbda017f158bef",
-        [HTTP_BODY_MAXLENGTH,16384],"");
-    #endif
-}
-attach(key id){
+    on_rez(integer p){
+    /*Wait a few seconds in case we're still rezzing*/
+        llSleep(3);
+        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        #ifdef GITHUB_UPDATER
+        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
+            +g_internal_repo_s
+            +"/releases/latest?access_token="
+            +"603ee815cda6fb45fcc16876effbda017f158bef",
+            [HTTP_BODY_MAXLENGTH,16384],"");
+        #endif
+    }
+    attach(key id){
         /* Deform on detach, unlike the stock body. This assumes permissions
         *  are granted, which happens on rez or startup if attached.
         *  Needs to be processed as fast as possible to make it before the
