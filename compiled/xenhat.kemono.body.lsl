@@ -431,7 +431,7 @@ xlProcessCommandWrapper(string message)
                 xlProcessCommand(message,TRUE);
             }
             else if(message=="Hlegs"){
-                llOwnerSay("Switching to human legs");
+
 
                 if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
