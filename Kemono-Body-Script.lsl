@@ -712,6 +712,7 @@ xlProcessCommandWrapper(string message)
                 xlProcessCommand(message,TRUE);
             }
             else if(message=="Hlegs"){
+                llOwnerSay("Switching to human legs");
                 #ifdef PROCESS_LEGS_COMMANDS
                 if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
@@ -1277,13 +1278,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 /* TODO: Allow chained commands such as add:show:vagoo:remove
                 by removing passing them to the command processor*/
-                return;
+                //return;
             }
-            else{
-                if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                    xlProcessCommand(message,TRUE);
-                }
-            }
+            // non-add messages from same-owner objects will bypass auth code
         }
         else{
             /* Owner key failed, use cached keys from previously added attachments
@@ -1345,12 +1342,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     llOwnerSay("Authed " + name);
                 #endif
             #endif
-            xlProcessCommandWrapper(message);
-            #ifdef DEBUG_LISTEN
-            llOwnerSay("End of listener processing for '" + message + "'");
-            llSleep(1);
-            #endif
         }
+        xlProcessCommandWrapper(message);
+        #ifdef DEBUG_LISTEN
+        llOwnerSay("End of listener processing for '" + message + "'");
+        llSleep(1);
+        #endif
         #ifdef DEBUG_LISTEN
         llSetObjectName(oname);
         #endif
