@@ -431,6 +431,7 @@ xlProcessCommandWrapper(string message)
                 xlProcessCommand(message,TRUE);
             }
             else if(message=="Hlegs"){
+                llOwnerSay("Switching to human legs");
 
                 if(!human_mode){
                     xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
@@ -796,13 +797,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 {
                     g_AttmntAuthedKeys_l +=[id];
                 }
-                return;
             }
-            else{
-                if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                    xlProcessCommand(message,TRUE);
-                }
-            }
+
         }
         else{
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
@@ -830,8 +826,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     }
                     return;
                     @AUTHORIZED;
-            xlProcessCommandWrapper(message);
         }
+        xlProcessCommandWrapper(message);
     }
     on_rez(integer p){
 
