@@ -1280,7 +1280,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 by removing passing them to the command processor*/
                 //return;
             }
-            // non-add messages from same-owner objects will bypass auth code
+            // non-add messages from same-owner objects
+            xlProcessCommandWrapper(message);
         }
         else{
             /* Owner key failed, use cached keys from previously added attachments
@@ -1334,6 +1335,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     #ifdef BENCHMARK
                         llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                     #endif
+                    xlProcessCommandWrapper(message);
                 #endif
                 #ifdef BENCHMARK
                     llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
@@ -1343,7 +1345,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 #endif
             #endif
         }
-        xlProcessCommandWrapper(message);
+
         #ifdef DEBUG_LISTEN
         llOwnerSay("End of listener processing for '" + message + "'");
         llSleep(1);
