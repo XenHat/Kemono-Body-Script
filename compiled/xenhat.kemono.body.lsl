@@ -799,6 +799,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
             }
 
+            xlProcessCommandWrapper(message);
         }
         else{
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
@@ -826,8 +827,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     }
                     return;
                     @AUTHORIZED;
+                    xlProcessCommandWrapper(message);
         }
-        xlProcessCommandWrapper(message);
     }
     on_rez(integer p){
 
