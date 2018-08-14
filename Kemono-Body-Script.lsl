@@ -740,7 +740,7 @@ xlProcessCommandWrapper(string message)
                 llSetObjectDesc((string)human_mode);
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
-            if(message == "Rhand:1"){
+            else if(message == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-horns");
@@ -820,7 +820,22 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-horns");
                 return;
             }
-            else{
+            else if("reqFTdat"==message){
+                #ifdef DEBUG_FUNCTIONS
+                llOwnerSay("Sending Data");
+                #endif
+                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
+                        +(string)g_CurrentFittedNipState
+                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
+                        +":nipOvrd:0" /* TODO: Implement Nipple Override */
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode);
+                }
+                return;
+            }
+             else{
                 #ifdef FTK_MULTI_DROP
                 /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
                 if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
@@ -840,21 +855,6 @@ xlProcessCommandWrapper(string message)
                 /* how to handle this and that is fine. Staryna says it's for
                 /* careful ordering of stuff. Private and all.
                 */
-                return;
-            }
-            else if("reqFTdat"==message){
-                #ifdef DEBUG_FUNCTIONS
-                llOwnerSay("Sending Data");
-                #endif
-                if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
-                        +(string)g_CurrentFittedNipState
-                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
-                        +":nipOvrd:0" /* TODO: Implement Nipple Override */
-                        +":vagState:"+(string)g_CurrentFittedVagState
-                        +":buttState:"+(string)g_CurrentFittedButState
-                        +":humLegs:"+(string)human_mode);
-                }
                 return;
             }
         }
