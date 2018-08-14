@@ -826,6 +826,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                         }
                     }
                     return;
+
                     @AUTHORIZED;
                     xlProcessCommandWrapper(message);
         }
