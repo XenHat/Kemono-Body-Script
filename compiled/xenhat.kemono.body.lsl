@@ -456,7 +456,7 @@ xlProcessCommandWrapper(string message)
                 llSetObjectDesc((string)human_mode);
             }
 
-            if(message == "Rhand:1"){
+            else if(message == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-horns");
@@ -536,10 +536,6 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-horns");
                 return;
             }
-            else{
-                if(llSubStringIndex(message, "resCLdat")==0){
-                return;
-            }
             else if("reqFTdat"==message){
                 if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
                     llWhisper( -34525475 ,"resFTdat:nipState:"
@@ -550,6 +546,10 @@ xlProcessCommandWrapper(string message)
                         +":buttState:"+(string)g_CurrentFittedButState
                         +":humLegs:"+(string)human_mode);
                 }
+                return;
+            }
+             else{
+                if(llSubStringIndex(message, "resCLdat")==0){
                 return;
             }
         }
