@@ -56,6 +56,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 #define g_internal_version_s "0.3.17" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
+// #define BENCHMARK
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
@@ -1293,12 +1294,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
-            #ifndef DISABLE_AUTH
-                #define AUTH_METHOD_1
+
                 #ifdef BENCHMARK
                    llResetTime();
                 #endif
-                #ifdef AUTH_METHOD_1
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
                         jump AUTHORIZED;
                     }
@@ -1331,21 +1330,21 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     #ifdef BENCHMARK
                         llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
                     #endif
+            #ifndef DISABLE_AUTH
                     return;
+            #endif
                     @AUTHORIZED;
                     /* Authorized */
                     #ifdef BENCHMARK
                         llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                     #endif
                     xlProcessCommandWrapper(message);
-                #endif
                 #ifdef BENCHMARK
                     llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                 #endif
                 #ifdef DEBUG_AUTH
                     llOwnerSay("Authed " + name);
                 #endif
-            #endif
         }
 
         #ifdef DEBUG_LISTEN
