@@ -74,6 +74,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define DEBUG_FUNCTIONS
 /* End of debug defines */
 /* Normal Features that should be enabled */
+#define USE_DEFORM_ANIMS
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
@@ -1194,7 +1195,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
-        llSetTimerEvent(0.1);
+        llSetTimerEvent(0.3);
         // llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
@@ -1359,6 +1360,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             [HTTP_BODY_MAXLENGTH,16384],"");
         #endif
     }
+#ifdef USE_DEFORM_ANIMS
     attach(key id){
         /* Deform on detach, unlike the stock body. This assumes permissions
         *  are granted, which happens on rez or startup if attached.
@@ -1373,9 +1375,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         else{
             llStopAnimation(g_AnimUndeform);
+            llSleep(0.1);
             llStartAnimation(g_AnimDeform);
         }
     }
+#endif
     run_time_permissions(integer perm){
         if(!g_HasAnimPerms){
             resetHands();
@@ -1392,12 +1396,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #endif
     }
     timer(){
+#ifdef USE_DEFORM_ANIMS
         if(llGetAttached()){
-            if(!g_HasAnimPerms)
-            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-            else
-            llStartAnimation(g_AnimDeform);
+            if(!g_HasAnimPerms){
+                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+            }
+            else{
+                //if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                //    llStopAnimation(g_AnimDeform);
+                //    llStartAnimation(g_AnimUndeform);
+                //}
+                //else{
+                    llStopAnimation(g_AnimUndeform);
+                    llStartAnimation(g_AnimDeform);
+                //}
+            }
         }
+#endif
         string text;
         #ifdef DEBUG_TEXT
         text="[DEBUG]"+text;
