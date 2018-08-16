@@ -1250,7 +1250,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              require checking the auth list
         ------------------------------------------------------------
         */
-        llOwnerSay((string)object_owner_k );
         if(object_owner_k == g_Owner_k){
             if(message=="add"){ /* And add if not in the auth list */
                 if(llGetFreeMemory() > 2048){
