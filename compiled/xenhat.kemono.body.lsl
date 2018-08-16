@@ -538,7 +538,7 @@ xlProcessCommandWrapper(string message)
             }
             else if("reqFTdat"==message){
                 if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-                    llWhisper( -34525475 ,"resFTdat:nipState:"
+                    llRegionSayTo(g_Owner_k, -34525475 ,"resFTdat:nipState:"
                         +(string)g_CurrentFittedNipState
                         +":nipAlpha:0"
                         +":nipOvrd:0"
