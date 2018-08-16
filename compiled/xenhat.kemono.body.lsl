@@ -788,7 +788,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     }
                 }
             }
-            else if(message=="remove"){
+            else
+
+
+            xlProcessCommandWrapper(message);
+        }
+        else{
+            if(message=="remove"){
                 integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
                 if(placeinlist !=-1){
                     g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
@@ -796,13 +802,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 return;
             }
-
-
             else
-
-            xlProcessCommandWrapper(message);
-        }
-        else{
+            {
                     if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
                         jump AUTHORIZED;
                     }
@@ -830,6 +831,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
 
                     @AUTHORIZED;
                     xlProcessCommandWrapper(message);
+            }
         }
     }
     on_rez(integer p){
