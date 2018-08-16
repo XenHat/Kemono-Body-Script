@@ -804,29 +804,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             }
             else
             {
-                    if(llSubStringIndex(name, "Kemono - HUD (1.") == 0){
+                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
                         jump AUTHORIZED;
                     }
-                    else if (llSubStringIndex(name, "Fitted Kemono Torso HUD") == 0){
-                        jump AUTHORIZED;
+                    else
+                    {
                     }
-                    else if(llSubStringIndex(name, "Fitted Kemono Busty Front Bits") == 0){
-                        jump AUTHORIZED;
-                    }
-                    else if(llSubStringIndex(name, "Fitted Kemono Petite Front Bits") == 0){
-                        jump AUTHORIZED;
-                    }
-                    else if(llSubStringIndex(name, "Fitted Kemono Rear Bits") == 0){
-                        jump AUTHORIZED;
-                    }
-                    else{
-                        if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
-                            jump AUTHORIZED;
-                        }
-                        else
-                        {
-                        }
-                    }
+
                     return;
 
                     @AUTHORIZED;
