@@ -1265,12 +1265,29 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 by removing passing them to the command processor*/
                 //return;
             }
-            else if(message=="remove"){
+            else
+            /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
+            // non-add messages from same-owner objects
+            xlProcessCommandWrapper(message);
+        }
+        else{
+            #ifdef DEBUG_AUTH
+            llOwnerSay("Owner Key match failure for '"+name+"'");
+            #endif
+            /* Owner key failed, use cached keys from previously added attachments
+               to verify if they belong to us (as they only get added if they do!)
+            */
+            //string name = llKey2Name(id);
+            /* Reminder: LSL does NOT support short-circuiting; this method should be
+            /* as fast as possible
+            */
+            if(message=="remove"){
                 /* Object signals they no longer need to talk with the API;
                    Remove their key from the list of authorized attachments.
                    This object will need to use the 'add' command
                    to interact with us again
                 */
+                /* Technically duplicated code. TODO: Move to proper place to only chech list once */
                 integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
                 if(placeinlist !=-1){
                     g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
@@ -1281,21 +1298,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 return;
             }
-            /* TODO: Move to xlProcessCommand */
-            /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
             else
-            // non-add messages from same-owner objects
-            xlProcessCommandWrapper(message);
-        }
-        else{
-            /* Owner key failed, use cached keys from previously added attachments
-               to verify if they belong to us (as they only get added if they do!)
-            */
-            //string name = llKey2Name(id);
-            /* Reminder: LSL does NOT support short-circuiting; this method should be
-            /* as fast as possible
-            */
-
+            {
+                #ifdef DEBUG_AUTH
+                    llOwnerSay("Validating auth god-mode by object name...");
+                #endif
                 #ifdef BENCHMARK
                    llResetTime();
                 #endif
@@ -1346,6 +1353,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 #ifdef DEBUG_AUTH
                     llOwnerSay("Authed " + name);
                 #endif
+            }
         }
 
         #ifdef DEBUG_LISTEN
