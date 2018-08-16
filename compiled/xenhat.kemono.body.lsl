@@ -780,7 +780,15 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
         if(object_owner_k == g_Owner_k){
-            if(message=="remove"){
+            if(message=="add"){
+                if(llGetFreeMemory() > 2048){
+                    if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                    {
+                        g_AttmntAuthedKeys_l +=[id];
+                    }
+                }
+            }
+            else if(message=="remove"){
                 integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
                 if(placeinlist !=-1){
                     g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
@@ -790,14 +798,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             }
 
 
-
-            else if(message=="add"){
-                if(llGetFreeMemory() > 2048)
-                if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
-                {
-                    g_AttmntAuthedKeys_l +=[id];
-                }
-            }
+            else
 
             xlProcessCommandWrapper(message);
         }
