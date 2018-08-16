@@ -773,7 +773,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
-        llSetTimerEvent(0.1);
+        llSetTimerEvent(0.3);
 
         llListen( -34525475 ,"","","");
     }
@@ -830,6 +830,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             [HTTP_BODY_MAXLENGTH,16384],"");
 
     }
+
     attach(key id){
         if(id==NULL_KEY){
             llStartAnimation(g_AnimUndeform);
@@ -838,9 +839,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         else{
             llStopAnimation(g_AnimUndeform);
+            llSleep(0.1);
             llStartAnimation(g_AnimDeform);
         }
     }
+
     run_time_permissions(integer perm){
         if(!g_HasAnimPerms){
             resetHands();
@@ -848,12 +851,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         g_HasAnimPerms=TRUE;
     }
     timer(){
+
         if(llGetAttached()){
-            if(!g_HasAnimPerms)
-            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-            else
-            llStartAnimation(g_AnimDeform);
+            if(!g_HasAnimPerms){
+                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+            }
+            else{
+
+
+
+
+
+                    llStopAnimation(g_AnimUndeform);
+                    llStartAnimation(g_AnimDeform);
+
+            }
         }
+
         string text;
         llSetText(text+"\n \n \n \n ", <0.925,0.925,0.925> , 0.75 );
         llSetTimerEvent(10);
