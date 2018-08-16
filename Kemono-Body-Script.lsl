@@ -1250,8 +1250,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              require checking the auth list
         ------------------------------------------------------------
         */
+        llOwnerSay((string)object_owner_k );
         if(object_owner_k == g_Owner_k){
-            if(message=="remove"){
+            if(message=="add"){ /* And add if not in the auth list */
+                if(llGetFreeMemory() > 2048){
+                    if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                    {
+                        g_AttmntAuthedKeys_l +=[id];
+                        #ifdef DEBUG_AUTH
+                        llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
+                        #endif
+                    }
+                }
+                /* TODO: Allow chained commands such as add:show:vagoo:remove
+                by removing passing them to the command processor*/
+                //return;
+            }
+            else if(message=="remove"){
                 /* Object signals they no longer need to talk with the API;
                    Remove their key from the list of authorized attachments.
                    This object will need to use the 'add' command
@@ -1267,22 +1282,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 return;
             }
-
             /* TODO: Move to xlProcessCommand */
             /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
-            else if(message=="add"){ /* And add if not in the auth list */
-                if(llGetFreeMemory() > 2048)
-                if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
-                {
-                    g_AttmntAuthedKeys_l +=[id];
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
-                    #endif
-                }
-                /* TODO: Allow chained commands such as add:show:vagoo:remove
-                by removing passing them to the command processor*/
-                //return;
-            }
+            else
             // non-add messages from same-owner objects
             xlProcessCommandWrapper(message);
         }
