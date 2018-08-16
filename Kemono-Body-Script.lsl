@@ -825,7 +825,7 @@ xlProcessCommandWrapper(string message)
                 llOwnerSay("Sending Data");
                 #endif
                 if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                    llWhisper(KEMONO_COM_CH,"resFTdat:nipState:"
+                    llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"resFTdat:nipState:"
                         +(string)g_CurrentFittedNipState
                         +":nipAlpha:0" /* TODO: Implement Alpha State*/
                         +":nipOvrd:0" /* TODO: Implement Nipple Override */
@@ -1203,7 +1203,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
             +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
             +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
-        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
+        llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
             +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
             +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
@@ -1383,7 +1383,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         g_HasAnimPerms=TRUE;
         #ifdef RESET_ON_PERMS
         /* Send a "reset" message to forcefully trigger clothing autohiders */
-        llWhisper(KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
+        llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
             +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
             +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
