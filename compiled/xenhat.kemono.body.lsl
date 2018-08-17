@@ -367,9 +367,9 @@ xlSetGenitals(integer pTogglePart){
     list internal_params;
     integer meshes_count=0;
     if( 16 ==pTogglePart)
-        meshes_count= (( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] !=[])-1) ;
+        meshes_count= ((llGetListLength( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ))-1) ;
     else
-        meshes_count= (( ["BitState0","BitState1","BitState2","BitState3"] !=[])-1) ;
+        meshes_count= ((llGetListLength( ["BitState0","BitState1","BitState2","BitState3"] ))-1) ;
     integer visible=FALSE;
     string mesh_name="";
     for(;meshes_count > -1;meshes_count--){
@@ -402,7 +402,7 @@ xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName( "vagoo" );
             else if( 8 ==pTogglePart)
                 faces_l=xlGetFacesByBladeName( "butt" );
-            integer faces_count= ((faces_l!=[])-1) ;
+            integer faces_count= ((llGetListLength(faces_l))-1) ;
             for(;faces_count > -1;--faces_count)
                 internal_params+=[PRIM_COLOR,
                     llList2Integer(faces_l,faces_count),<1,1,1>,
@@ -596,7 +596,7 @@ xlProcessCommand(string message,integer send_params){
 
         return;
     }
-    integer list_size= ((data!=[])-1) ;
+    integer list_size= ((llGetListLength(data))-1) ;
     for(;list_size > 0;list_size--){
 
         string blade_name=llList2String(data,list_size);
@@ -667,7 +667,7 @@ xlProcessCommand(string message,integer send_params){
                         llListFindList(g_LinkDB_l,prim_names)+1)
                     ];
                     list faces_l=xlGetFacesByBladeName(blade_name);
-                    integer faces_index= ((faces_l!=[])-1) ;
+                    integer faces_index= ((llGetListLength(faces_l))-1) ;
                 for(;faces_index > -1; faces_index--){
                     params_internal+=[
                     PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
