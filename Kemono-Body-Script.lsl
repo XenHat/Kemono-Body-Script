@@ -218,7 +218,7 @@ MESH_FITTED_TORSO_NIP_A\
 #define getBit(a,b) (!!(a & b))
 #define setBit(a,b) a=(a | b)
 #define togBit(a,b) a ^=1 << b
-#define xlListLen2MaxID(a) ((a!=[])-1)
+#define xlListLen2MaxID(a) ((llGetListLength(a))-1)
 /* === Updater settings === */
 #define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
