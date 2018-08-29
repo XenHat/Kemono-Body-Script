@@ -4,6 +4,8 @@ addons:
     - unzip
     - mcpp
 language: generic
+git:
+  depth: 5
 branches:
   except:
   - "/^travis_ok-*.$/"
