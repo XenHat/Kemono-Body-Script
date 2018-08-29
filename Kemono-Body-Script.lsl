@@ -54,7 +54,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.17" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.18" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
 // #define DEBUG
@@ -115,7 +115,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define BLADE_COLLAR "collar"
 #define BLADE_ELBOW_L "elbowL"
 #define BLADE_ELBOW_R "elbowR"
-#define BLADE_FITTED_TORSO "Fitted Torso"
+#define BLADE_FITTED_TORSO "Fitted Torso Old Root"
 #define BLADE_FOOT_L "footL"
 #define BLADE_FOOT_R "footR"
 #define BLADE_HIP_L "hipL"
@@ -1118,7 +1118,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 +"]Processing "+name+"...",<0,0,0>,1.0);
             #endif
             if(!found_fitted_torso){
-                if(llSubStringIndex(name, "Kemono")!=-1 &&
+                if(name == BLADE_FITTED_TORSO){
+                    /* Shortcut if previously renamed */
+                    found_fitted_torso = TRUE;
+                    name=MESH_FITTED_TORSO;
+                }
+                else if(llSubStringIndex(name, "Kemono")!=-1 &&
                     llSubStringIndex(name, "Torso")!=-1 &&
                     (llSubStringIndex(name, "Petite")!=-1 ||
                     llSubStringIndex(name, "Busty")!=-1)){
@@ -1128,6 +1133,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     // debugLogic(llSubStringIndex(name, "Petite"));
                     // llOwnerSay("Found Fitted Torso: " + name + " on link ID:" + (string)part);
                     found_fitted_torso = TRUE;
+                    llSetLinkPrimitiveParams(part, [PRIM_NAME,BLADE_FITTED_TORSO]);
                     name=MESH_FITTED_TORSO;
                 }
             }
