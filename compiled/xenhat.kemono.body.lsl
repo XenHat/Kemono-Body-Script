@@ -725,6 +725,7 @@ default {
         llResetScript();
     }
     state_entry(){
+        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
 
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
@@ -732,10 +733,10 @@ tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(t
 basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
 while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
 if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
-        if(llGetObjectDesc()==""){
-            llSetObjectDesc("1");
-        }
-        human_mode = (integer)llGetObjectDesc();
+        list data = llParseString2List(llGetObjectDesc(), [":"], []);
+        human_mode = llList2Integer(data,1);
+        llSetObjectDesc((string)human_mode+":"+ "0.3.18" );
+        llOwnerSay("Desc = "+llGetObjectDesc());
         g_Owner_k=llGetOwner();
 
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -838,6 +839,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 
     attach(key id){
+        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
         if(id==NULL_KEY){
             llStartAnimation(g_AnimUndeform);
             llSleep(0.1);
