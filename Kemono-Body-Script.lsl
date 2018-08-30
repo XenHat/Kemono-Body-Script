@@ -1082,6 +1082,7 @@ default {
         llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
+        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
     // llOwnerSay("Resetting... O3O!!!");
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
@@ -1092,10 +1093,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
         #endif
-        if(llGetObjectDesc()==""){
-            llSetObjectDesc("1");
-        }
-        human_mode = (integer)llGetObjectDesc();
+        list data = llParseString2List(llGetObjectDesc(), [":"], []);
+        human_mode = llList2Integer(data,1);
+        llSetObjectDesc((string)human_mode+":"+g_internal_version_s);
+        llOwnerSay("Desc = "+llGetObjectDesc());
         g_Owner_k=llGetOwner();
         #ifdef GITHUB_UPDATER
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -1368,6 +1369,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 #ifdef USE_DEFORM_ANIMS
     attach(key id){
+        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
         /* Deform on detach, unlike the stock body. This assumes permissions
         *  are granted, which happens on rez or startup if attached.
         *  Needs to be processed as fast as possible to make it before the
