@@ -722,6 +722,7 @@ default {
         if(change & CHANGED_OWNER)
         llResetScript();
         else if(change & CHANGED_LINK)
+        llOwnerSay("Linkset changed, resetting...");
         llResetScript();
     }
     state_entry(){
@@ -775,8 +776,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(found_fitted_torso){
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
         }
-        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
-        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
@@ -841,9 +842,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     attach(key id){
         if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
         if(id==NULL_KEY){
-            llStartAnimation(g_AnimUndeform);
-            llSleep(0.1);
-            llStopAnimation(g_AnimUndeform);
         }
         else{
             llStopAnimation(g_AnimUndeform);
