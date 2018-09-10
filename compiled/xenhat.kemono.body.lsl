@@ -1,4 +1,5 @@
 float g_Config_MaximumOpacity=1.00;
+integer undeform_instead=FALSE;
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedVagState=1;
@@ -776,8 +777,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(found_fitted_torso){
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
         }
-                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+            g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+            g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
@@ -863,14 +864,15 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
-
-
-
-
+                if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                    llStopAnimation(g_AnimDeform);
+                    llStartAnimation(g_AnimUndeform);
+                }
+                else{
 
                     llStopAnimation(g_AnimUndeform);
                     llStartAnimation(g_AnimDeform);
-
+                }
             }
         }
 
