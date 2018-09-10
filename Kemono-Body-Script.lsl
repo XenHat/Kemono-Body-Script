@@ -248,7 +248,6 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
-#define WriteSettings() llSetObjectDesc(string(human_mode) + "," + g_internal_version_s)
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -737,7 +736,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
-                WriteSettings();
+                llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             else if(message=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
@@ -749,7 +748,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
-                WriteSettings();
+                llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
             else if(message == "Rhand:1"){
