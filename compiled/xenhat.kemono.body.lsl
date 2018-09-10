@@ -720,11 +720,13 @@ reset(){
 }
 default {
     changed(integer change){
-        if(change & CHANGED_OWNER)
-        llResetScript();
-        else if(change & CHANGED_LINK)
-        llOwnerSay("Linkset changed, resetting...");
-        llResetScript();
+        if(change & CHANGED_OWNER){
+            llResetScript();
+        }
+        else if(change & CHANGED_LINK){
+            llOwnerSay("Linkset changed, resetting...");
+            llResetScript();
+        }
     }
     state_entry(){
         if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
