@@ -75,6 +75,11 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* End of debug defines */
 /* Normal Features that should be enabled */
 #define USE_DEFORM_ANIMS
+/* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
+Your shoulders will appear larger than they should. Small price to pay to not
+look stupid in all other cases
+*/
+#define UNDEFORM_BY_DEFAULT
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
@@ -1079,6 +1084,7 @@ default {
         if(change & CHANGED_OWNER)
         llResetScript();
         else if(change & CHANGED_LINK)
+        llOwnerSay("Linkset changed, resetting...");
         llResetScript(); /* TODO: should really just recalculate */
     }
     state_entry(){
@@ -1192,12 +1198,19 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             // llSleep(0.0625);
         }
         #endif
-        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
-        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-        #ifdef DEBUG_DATA
-        llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
-        llOwnerSay("Deform:"+g_AnimDeform);
-        llOwnerSay("Undeform:"+g_AnimUndeform);
+        #ifdef USE_DEFORM_ANIMS
+            #ifdef UNDEFORM_BY_DEFAULT
+                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+            #else
+                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+            #endif
+            #ifdef DEBUG_DATA
+                llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
+                llOwnerSay("Deform:"+g_AnimDeform);
+                llOwnerSay("Undeform:"+g_AnimUndeform);
+            #endif
         #endif
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
@@ -1377,9 +1390,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         *  it won't fire.
         */
         if(id==NULL_KEY){
+            #ifdef USE_DEFORM_ANIMS_FOR_DETACH
             llStartAnimation(g_AnimUndeform);
             llSleep(0.1);
             llStopAnimation(g_AnimUndeform);
+            #endif
         }
         else{
             llStopAnimation(g_AnimUndeform);
