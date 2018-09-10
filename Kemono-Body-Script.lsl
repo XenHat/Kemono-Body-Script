@@ -79,7 +79,12 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 Your shoulders will appear larger than they should. Small price to pay to not
 look stupid in all other cases
 */
-#define UNDEFORM_BY_DEFAULT
+// #define UNDEFORM_BY_DEFAULT
+#ifdef UNDEFORM_BY_DEFAULT
+integer undeform_instead=TRUE;
+#else
+integer undeform_instead=FALSE;
+#endif
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
@@ -1199,13 +1204,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         #endif
         #ifdef USE_DEFORM_ANIMS
-            #ifdef UNDEFORM_BY_DEFAULT
-                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
-            #else
-                g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-                g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,0);
-            #endif
+            g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+            g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
             #ifdef DEBUG_DATA
                 llOwnerSay("Link database: "+llList2CSV(g_LinkDB_l));
                 llOwnerSay("Deform:"+g_AnimDeform);
@@ -1425,14 +1425,15 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
-                //if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
-                //    llStopAnimation(g_AnimDeform);
-                //    llStartAnimation(g_AnimUndeform);
-                //}
-                //else{
+                if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                    llStopAnimation(g_AnimDeform);
+                    llStartAnimation(g_AnimUndeform);
+                }
+                else{
+
                     llStopAnimation(g_AnimUndeform);
                     llStartAnimation(g_AnimDeform);
-                //}
+                }
             }
         }
 #endif
