@@ -8,9 +8,6 @@ integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE;
 list global_params;
-
-key g_internal_httprid_k=NULL_KEY;
-
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
@@ -442,7 +439,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
 
-                llSetObjectDesc((string)human_mode);
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.20" );
             }
             else if(message=="Flegs"){
 
@@ -454,7 +451,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
 
-                llSetObjectDesc((string)human_mode);
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.20" );
             }
 
             else if(message == "Rhand:1"){
@@ -737,17 +734,7 @@ tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(t
 basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
 while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
 if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
-        list data = llParseString2List(llGetObjectDesc(), [":"], []);
-        human_mode = llList2Integer(data,1);
-        llSetObjectDesc((string)human_mode+":"+ "0.3.18" );
-        llOwnerSay("Desc = "+llGetObjectDesc());
         g_Owner_k=llGetOwner();
-
-        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
-            + "XenHat/"+ "Kemono-Body-Script"
-            +"/releases/latest?access_token="
-            +"603ee815cda6fb45fcc16876effbda017f158bef",
-            [HTTP_BODY_MAXLENGTH,16384],"");
         integer part=llGetNumberOfPrims();
         integer found_fitted_torso = FALSE;
         for (;part > 0;--part){
@@ -781,11 +768,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
             g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
             g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+        list data = llCSV2List(llGetObjectDesc());
+        human_mode = llList2Integer(data,1);
+        if(llListFindList(g_LinkDB_l,[ "LFleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RFleg" ]) == -1){
+
+            xlProcessCommandWrapper("Hlegs");
+            llOwnerSay("Adjusted for missing animal legs");
+        }
+        else if(llListFindList(g_LinkDB_l,[ "LHleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RHleg" ]) == -1){
+
+            xlProcessCommandWrapper("Flegs");
+            llOwnerSay("Adjusted for missing human legs");
+        }
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
         llSetTimerEvent(0.3);
-
+        llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
     }
     listen(integer channel,string name,key id,string message){
@@ -833,13 +832,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
 
         llSleep(3);
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-
-        g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
-            + "XenHat/"+ "Kemono-Body-Script"
-            +"/releases/latest?access_token="
-            +"603ee815cda6fb45fcc16876effbda017f158bef",
-            [HTTP_BODY_MAXLENGTH,16384],"");
-
     }
 
     attach(key id){
@@ -882,47 +874,4 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llSetText(text+"\n \n \n \n ", <0.925,0.925,0.925> , 0.75 );
         llSetTimerEvent(10);
     }
-    http_response(key request_id,integer status,list metadata,string body)
-    {
-        if(request_id !=g_internal_httprid_k) return;
-        g_internal_httprid_k=NULL_KEY;
-        string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.18" ) return;
-        list cur_version_l=llParseString2List( "0.3.18" ,["."],[""]);
-        list new_version_l=llParseString2List(new_version_s,["."],[""]);
-
-        if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
-            jump update;
-        }
-
-        else if(llList2Integer(new_version_l,1) >
-            llList2Integer(cur_version_l,1)){
-            jump update;
-        }
-
-        else if(llList2Integer(new_version_l,2) >
-            llList2Integer(cur_version_l,2)){
-            jump update;
-        }
-        return;
-        @update;
-        string update_title=llJsonGetValue(body,["name"]);
-        if(update_title=="﷕")update_title="";
-        else update_title="\n\n"+update_title;
-        string update_description=llJsonGetValue(body,["body"]);
-        if(update_description=="﷕"){
-            update_description="";
-        }
-        update_description+="\n";
-        if(llStringLength(update_description) >=350)
-        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.18" +"..."+new_version_s+" Changes for "
-        + "0.3.18" +"↛"+new_version_s+"]\n";
-        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new script:\n[https://raw.githubusercontent.com/"
-        + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
-        + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.18"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
-    }
-
 }
