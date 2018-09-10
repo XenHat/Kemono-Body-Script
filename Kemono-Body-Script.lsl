@@ -54,7 +54,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.18" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.20" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
 // #define DEBUG
@@ -248,6 +248,7 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
+#define WriteSettings() llSetObjectDesc(string(human_mode) + "," + g_internal_version_s)
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -736,7 +737,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
-                llSetObjectDesc((string)human_mode);
+                WriteSettings();
             }
             else if(message=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
@@ -748,7 +749,7 @@ xlProcessCommandWrapper(string message)
                         +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
                 }
                 #endif
-                llSetObjectDesc((string)human_mode);
+                WriteSettings();
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
             else if(message == "Rhand:1"){
@@ -923,8 +924,8 @@ xlProcessCommand(string message,integer send_params){
     for(;list_size > 0;list_size--){/* skip command (first element) */
         /* Process a list of blade names */
         string blade_name=llList2String(data,list_size);
-        #ifdef DEBUG_COMMAND
-        llOwnerSay("[Looping through params]:"+blade_name);
+        #ifdef DEBUG_SELF_TEST
+        llSetText("[UNIT SELF-TEST]\n[Looping through params]:"+blade_name,HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
         #endif
         if(blade_name==BLADE_NIPS){
             if(getBit(g_RuntimeBodyStateSettings, FKT_PRESENT)){
@@ -1106,10 +1107,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #ifdef DEBUG_TEXT
         llScriptProfiler(PROFILE_SCRIPT_MEMORY);
         #endif
-        list data = llParseString2List(llGetObjectDesc(), [":"], []);
-        human_mode = llList2Integer(data,1);
-        llSetObjectDesc((string)human_mode+":"+g_internal_version_s);
-        llOwnerSay("Desc = "+llGetObjectDesc());
         g_Owner_k=llGetOwner();
         #ifdef GITHUB_UPDATER
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -1214,11 +1211,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay("Undeform:"+g_AnimUndeform);
             #endif
         #endif
+        list data = llCSV2List(llGetObjectDesc());
+        human_mode = llList2Integer(data,1);
+        if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1 && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL]) == -1){
+            // Animal legs are missing
+            xlProcessCommandWrapper("Hlegs");
+            llOwnerSay("Adjusted for missing animal legs");
+        }
+        else if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN]) == -1 && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN]) == -1){
+            // Human Legs are missing
+            xlProcessCommandWrapper("Flegs");
+            llOwnerSay("Adjusted for missing human legs");
+        }
         if(llGetAttached())
         llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         else
         llSetTimerEvent(0.3);
-        // llSetText("",ZERO_VECTOR,0.0);
+        llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
         xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
