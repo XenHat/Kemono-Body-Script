@@ -142,8 +142,9 @@ list xlGetFacesByBladeName(string name){
         return [4];
     if(name== "thighLL" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            if(human_mode)
+            if(human_mode){
                 return [1];
+            }
             return [7];
         }
         return [6];
@@ -347,27 +348,33 @@ list xlBladeNameToPrimNames(string name){
         return [ "PG" ];
     }
     else if(name== "thighLR" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            if(human_mode)
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(human_mode){
                 return [ "HumanLegs" ];
+            }
             return [ "TorsoEtc" ];
-        if(human_mode)
+        }
+        if(human_mode){
             return [ "RHleg" ];
+        }
         return [ "RFleg" ];
     }
     else if(name== "thighLL" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            if(human_mode)
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(human_mode){
                 return [ "HumanLegs" ];
+            }
             return [ "TorsoEtc" ];
-        if(human_mode)
+        }
+        if(human_mode){
             return [ "LHleg" ];
+        }
         return [ "LFleg" ];
     }
     return [name];
 }
+list g_genitalsParams_l;
 xlSetGenitals(integer pTogglePart){
-    list internal_params;
     integer meshes_count=0;
     if( 16 ==pTogglePart)
         meshes_count= ((llGetListLength( [ "NipState0" , "TorsoEtc" , "NipState1" , "NipAlpha" ] ))-1) ;
@@ -396,7 +403,7 @@ xlSetGenitals(integer pTogglePart){
 
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,prim_names)+1);
-            internal_params +=[PRIM_LINK_TARGET,link_id];
+            g_genitalsParams_l +=[PRIM_LINK_TARGET,link_id];
 
             list faces_l=[];
             if( 16 ==pTogglePart)
@@ -407,12 +414,11 @@ xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName( "butt" );
             integer faces_count= ((llGetListLength(faces_l))-1) ;
             for(;faces_count > -1;--faces_count)
-                internal_params+=[PRIM_COLOR,
+                g_genitalsParams_l+=[PRIM_COLOR,
                     llList2Integer(faces_l,faces_count),<1,1,1>,
                         visible * g_Config_MaximumOpacity
                 ];
     }
-    llSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params) ;
 }
 
 xlProcessCommandWrapper()
@@ -571,7 +577,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedButState=llList2Integer(data,1);
             xlSetGenitals( 8 );
         }
-        return;
+
     }
     else if(command=="setvag"){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
@@ -579,7 +585,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedVagState=llList2Integer(data,1);
             xlSetGenitals( 32 );
         }
-        return;
+
     }
     else if(command=="setnip"){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
@@ -587,7 +593,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedNipState=llList2Integer(data,1);
             xlSetGenitals( 16 );
         }
-        return;
+
     }
     else{
 
@@ -688,8 +694,9 @@ xlProcessCommand(integer send_params){
         }
     }
     if(send_params){
-        llSetLinkPrimitiveParamsFast(LINK_ROOT,global_params) ;
+        llSetLinkPrimitiveParamsFast(LINK_ROOT,global_params+g_genitalsParams_l) ;
         global_params=[];
+        g_genitalsParams_l=[];
     }
 }
 resetHands()
