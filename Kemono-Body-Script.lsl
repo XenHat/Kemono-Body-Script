@@ -874,7 +874,7 @@ xlProcessCommand(integer send_params){
     #ifdef DEBUG_COMMAND
     llOwnerSay("Parsing Command:"+g_LastCommand_s);
     #endif
-    list data=llParseStringKeepNulls(g_LastCommand_s,[":"],[]);
+    list data=llParseString2List(g_LastCommand_s,[":"],[]);
     string command=llList2String(data,0);
     integer showit;
     /* filter out and process commands */
@@ -1280,7 +1280,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              require checking the auth list
         ------------------------------------------------------------
         */
-        // string first_command = llList2String(llParseString2List(g_LastCommand_s, [":"], []),0);
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
         string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
         if(object_owner_k == g_Owner_k){
