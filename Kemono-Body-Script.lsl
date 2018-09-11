@@ -97,6 +97,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
 #define debugLogic(a) llOwnerSay(#a + " == " + (string)a)
+string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR";
 /* TODO:
 -   Set Nipple Alpha
         0 = None : 1 = Partial : 2 = Full
@@ -248,7 +249,7 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
-list g_LastCommandParsed_l;
+string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -705,54 +706,52 @@ xlSetGenitals(integer pTogglePart){
     xlSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params);
 }
 
-xlProcessCommandWrapper(string message)
+xlProcessCommandWrapper()
 {
-                if(message == "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                +"elbowR:armLL:armLR:wristL:wristR:handL:handR"){
+            if(g_LastCommand_s == KM_HUD_RESET_CMD){
                 reset();
             }
-            else if(message=="resetA")
+            else if(g_LastCommand_s=="resetA")
                 reset();
-            else if(message=="resetB"){
+            else if(g_LastCommand_s=="resetB"){
                 g_AttmntAuthedKeys_l=[];
                 reset();
             }
             /* TODO: Move at bottom and overwrite 'message' instead in other
             /* branches so that we can inline xlProcessCommand
             */
-            else if(llSubStringIndex(message, "show")==0 || llSubStringIndex(message, "hide")==0 || llSubStringIndex(message, "set")==0){
-                xlProcessCommand(message,TRUE);
+            else if(llSubStringIndex(g_LastCommand_s, "show")==0 ||
+                llSubStringIndex(g_LastCommand_s, "hide")==0 ||
+                llSubStringIndex(g_LastCommand_s, "set")==0){
+                xlProcessCommand(TRUE);
             }
-            else if(message=="Hlegs"){
+            else if(g_LastCommand_s=="Hlegs"){
                 //llOwnerSay("Switching to human legs");
                 #ifdef PROCESS_LEGS_COMMANDS
                 if(!human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+                    xlProcessCommand(FALSE);
                     human_mode=TRUE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                    g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+                    xlProcessCommand(TRUE);
                 }
                 #endif
                 llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
-            else if(message=="Flegs"){
+            else if(g_LastCommand_s=="Flegs"){
                 #ifdef PROCESS_LEGS_COMMANDS
                 if(human_mode){
-                    xlProcessCommand("hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",FALSE);
+                    g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+                    xlProcessCommand(FALSE);
                     human_mode=FALSE;
-                    xlProcessCommand("show:thighLL:thighLR:kneeL:kneeR:calfL:calfR"
-                        +":shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR",TRUE);
+                    g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+                    xlProcessCommand(TRUE);
                 }
                 #endif
                 llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
-            else if(message == "Rhand:1"){
+            else if(g_LastCommand_s == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-horns");
@@ -760,7 +759,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-R-relax");
                 return;
             }
-            else if(message == "Rhand:2"){
+            else if(g_LastCommand_s == "Rhand:2"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-horns");
                 llStopAnimation("Kem-hand-R-point");
@@ -768,7 +767,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-R-hold");
                 return;
             }
-            else if(message == "Rhand:3"){
+            else if(g_LastCommand_s == "Rhand:3"){
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-horns");
                 llStopAnimation("Kem-hand-R-point");
@@ -776,7 +775,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-R-fist");
                 return;
             }
-            else if(message == "Rhand:4"){
+            else if(g_LastCommand_s == "Rhand:4"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-horns");
@@ -784,7 +783,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-R-point");
                 return;
             }
-            else if(message == "Rhand:5"){
+            else if(g_LastCommand_s == "Rhand:5"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
                 llStopAnimation("Kem-hand-R-point");
@@ -792,7 +791,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-R-horns");
                 return;
             }
-            else if(message == "Lhand:1"){
+            else if(g_LastCommand_s == "Lhand:1"){
                 llStopAnimation("Kem-hand-L-fist");
                 llStopAnimation("Kem-hand-L-hold");
                 llStopAnimation("Kem-hand-L-horns");
@@ -800,7 +799,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-relax");
                 return;
             }
-            else if(message == "Lhand:2"){
+            else if(g_LastCommand_s == "Lhand:2"){
                 llStopAnimation("Kem-hand-L-fist");
                 llStopAnimation("Kem-hand-L-horns");
                 llStopAnimation("Kem-hand-L-point");
@@ -808,7 +807,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-hold");
                 return;
             }
-            else if(message == "Lhand:3"){
+            else if(g_LastCommand_s == "Lhand:3"){
                 llStopAnimation("Kem-hand-L-hold");
                 llStopAnimation("Kem-hand-L-horns");
                 llStopAnimation("Kem-hand-L-point");
@@ -816,7 +815,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-fist");
                 return;
             }
-            else if(message == "Lhand:4"){
+            else if(g_LastCommand_s == "Lhand:4"){
                 llStopAnimation("Kem-hand-L-fist");
                 llStopAnimation("Kem-hand-L-hold");
                 llStopAnimation("Kem-hand-L-horns");
@@ -824,7 +823,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-point");
                 return;
             }
-            else if(message == "Lhand:5"){
+            else if(g_LastCommand_s == "Lhand:5"){
                 llStopAnimation("Kem-hand-L-fist");
                 llStopAnimation("Kem-hand-L-hold");
                 llStopAnimation("Kem-hand-L-point");
@@ -832,7 +831,7 @@ xlProcessCommandWrapper(string message)
                 llStartAnimation("Kem-hand-L-horns");
                 return;
             }
-            else if("reqFTdat"==message){
+            else if("reqFTdat"==g_LastCommand_s){
                 #ifdef DEBUG_FUNCTIONS
                 llOwnerSay("Sending Data");
                 #endif
@@ -854,7 +853,7 @@ xlProcessCommandWrapper(string message)
                 if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
                 return;
                 #endif
-                if(llSubStringIndex(message, "resCLdat")==0){
+                if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0){
                 /* This API isn't public, the best we can do is guess.
                 /* Do nothing for now.
                 /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
@@ -871,12 +870,12 @@ xlProcessCommandWrapper(string message)
             }
         }
     }
-xlProcessCommand(string message,integer send_params){
-    list data=llParseStringKeepNulls(message,[":"],[]);
-    string command=llList2String(data,0);
+xlProcessCommand(integer send_params){
     #ifdef DEBUG_COMMAND
-    llOwnerSay("Parsing Command:"+message);
+    llOwnerSay("Parsing Command:"+g_LastCommand_s);
     #endif
+    list data=llParseStringKeepNulls(g_LastCommand_s,[":"],[]);
+    string command=llList2String(data,0);
     integer showit;
     /* filter out and process commands */
     integer ftCommand;
@@ -910,8 +909,8 @@ xlProcessCommand(string message,integer send_params){
     }
     else{
         #ifdef PRINT_UNHANDLED_COMMANDS
-        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(message,0,2)])==-1){
-            llOwnerSay("Unhandled command: '"+message+"'");
+        if(llListFindList(["Ani","eRo","Exp","LEy","REy","reqCLdat"],[llGetSubString(g_LastCommand_s,0,2)])==-1){
+            llOwnerSay("Unhandled command: '"+g_LastCommand_s+"'");
         }
         #endif
         return;
@@ -987,19 +986,27 @@ xlProcessCommand(string message,integer send_params){
             *  the statement above
             */
             if(blade_name==BLADE_PELVIS){
-                if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit)
-                xlProcessCommand("hide:"+BLADE_VAG,FALSE);
-                else
-                xlProcessCommand("show:"+BLADE_VAG,FALSE);
+                if(!(g_RuntimeBodyStateSettings & KSB_PGVAGOO) && !showit){
+                    g_LastCommand_s = "hide:"+BLADE_VAG;
+                    xlProcessCommand(FALSE);
+                }
+                else{
+                    g_LastCommand_s = "show:"+BLADE_VAG;
+                    xlProcessCommand(FALSE);
+                }
             }
             else if(blade_name==BLADE_BREASTS){
-                    if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit)
-                    xlProcessCommand("hide:"+BLADE_NIPS,FALSE);
-                        else
-                        xlProcessCommand("show:"+BLADE_NIPS,FALSE);
+                    if(!(g_RuntimeBodyStateSettings & KSB_PGNIPLS) && !showit){
+                        g_LastCommand_s = "hide:"+BLADE_NIPS;
+                        xlProcessCommand(FALSE);
+                    }
+                        else{
+                        g_LastCommand_s = "show:"+BLADE_NIPS;
+                        xlProcessCommand(FALSE);
                     }
                 }
-                list prim_names=xlBladeNameToPrimNames(blade_name);
+            }
+            list prim_names=xlBladeNameToPrimNames(blade_name);
                 #ifdef DEBUG_DATA
                     llOwnerSay("prim_names:{"+llList2CSV(prim_names)+"}");
                     llOwnerSay("prim_count="+(string)1);
@@ -1057,11 +1064,8 @@ resetHands()
 }
 reset(){
     resetHands();
-    xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-        +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-        +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-        +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-        +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
+    g_LastCommand_s=KM_HUD_RESET_CMD;
+    xlProcessCommand(TRUE);
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -1203,12 +1207,14 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         human_mode = llList2Integer(data,1);
         if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1 && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL]) == -1){
             // Animal legs are missing
-            xlProcessCommandWrapper("Hlegs");
+            g_LastCommand_s="Hlegs";
+            xlProcessCommandWrapper();
             llOwnerSay("Adjusted for missing animal legs");
         }
         else if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_HUMAN]) == -1 && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_HUMAN]) == -1){
             // Human Legs are missing
-            xlProcessCommandWrapper("Flegs");
+            g_LastCommand_s="Flegs";
+            xlProcessCommandWrapper();
             llOwnerSay("Adjusted for missing human legs");
         }
         if(llGetAttached())
@@ -1256,6 +1262,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
             #endif
         #endif
+        g_LastCommand_s = message;
         /*
         ------------------ AUTH SYSTEM PRIMER ----------------------
             Because messages sent on detach, either returns null key
@@ -1273,8 +1280,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              require checking the auth list
         ------------------------------------------------------------
         */
+        // string first_command = llList2String(llParseString2List(g_LastCommand_s, [":"], []),0);
+        integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
         if(object_owner_k == g_Owner_k){
-            if(message=="add"){ /* And add if not in the auth list */
+            if(first_command=="add"){ /* And add if not in the auth list */
                 if(llGetFreeMemory() > 2048){
                     if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
                     {
@@ -1291,7 +1301,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             else
             /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
             // non-add messages from same-owner objects
-            xlProcessCommandWrapper(message);
+            xlProcessCommandWrapper();
         }
         else{
             #ifdef DEBUG_AUTH
@@ -1304,7 +1314,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* Reminder: LSL does NOT support short-circuiting; this method should be
             /* as fast as possible
             */
-            if(message=="remove"){
+            if(first_command=="remove"){
                 /* Object signals they no longer need to talk with the API;
                    Remove their key from the list of authorized attachments.
                    This object will need to use the 'add' command
@@ -1349,7 +1359,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     #ifdef BENCHMARK
                         llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                     #endif
-                    xlProcessCommandWrapper(message);
+                    xlProcessCommandWrapper();
                 #ifdef BENCHMARK
                     llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
                 #endif
