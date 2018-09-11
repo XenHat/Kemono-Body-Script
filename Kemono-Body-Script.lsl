@@ -642,12 +642,12 @@ NipAlpha==????
 Show PG layer when hiding nipples
 Forcefully set the current genital state to Adult, idle on PG disable
 */
+list g_genitalsParams_l;
 xlSetGenitals(integer pTogglePart){
     #ifdef DEBUG_FUNCTIONS
     llOwnerSay("xlSetGenitals");
     llOwnerSay("g_CurrentFittedVagState:"+(string)g_CurrentFittedVagState);
     #endif
-    list internal_params;
     integer meshes_count=0;
     if(FKT_FHIDE_N==pTogglePart)
         meshes_count=xlListLen2MaxID(s_FittedNipsMeshNames);
@@ -676,7 +676,7 @@ xlSetGenitals(integer pTogglePart){
             // debugLogic(prim_count);
             integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
                 ,prim_names)+1);
-            internal_params +=[PRIM_LINK_TARGET,link_id];
+            g_genitalsParams_l +=[PRIM_LINK_TARGET,link_id];
             // debugLogic(link_id);
             list faces_l=[];
             if(FKT_FHIDE_N==pTogglePart)
@@ -687,7 +687,7 @@ xlSetGenitals(integer pTogglePart){
                 faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
             integer faces_count=xlListLen2MaxID(faces_l);
             for(;faces_count > -1;--faces_count)
-                internal_params+=[PRIM_COLOR,
+                g_genitalsParams_l+=[PRIM_COLOR,
                     llList2Integer(faces_l,faces_count),<1,1,1>,
                         visible * g_Config_MaximumOpacity
                 ];
@@ -701,9 +701,8 @@ xlSetGenitals(integer pTogglePart){
         //}
     }
     #ifdef DEBUG_PARAMS
-    llOwnerSay("Params out:"+llList2CSV(internal_params));
+    llOwnerSay("Params out:"+llList2CSV(g_genitalsParams_l));
     #endif
-    xlSetLinkPrimitiveParamsFast(LINK_ROOT,internal_params);
 }
 
 xlProcessCommandWrapper()
@@ -889,7 +888,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedButState=llList2Integer(data,1);
             xlSetGenitals(FKT_FHIDE_B);
         }
-        return;
+        // return;
     }
     else if(command=="setvag"){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
@@ -897,7 +896,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedVagState=llList2Integer(data,1);
             xlSetGenitals(FKT_FHIDE_V);
         }
-        return;
+        // return;
     }
     else if(command=="setnip"){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
@@ -905,7 +904,7 @@ xlProcessCommand(integer send_params){
             g_CurrentFittedNipState=llList2Integer(data,1);
             xlSetGenitals(FKT_FHIDE_N);
         }
-        return;
+        // return;
     }
     else{
         #ifdef PRINT_UNHANDLED_COMMANDS
@@ -1044,8 +1043,9 @@ xlProcessCommand(integer send_params){
         #endif
     }
     if(send_params){
-        xlSetLinkPrimitiveParamsFast(LINK_ROOT,global_params);
+        xlSetLinkPrimitiveParamsFast(LINK_ROOT,global_params+g_genitalsParams_l);
         global_params=[];
+        g_genitalsParams_l=[];
     }
 }
 resetHands()
