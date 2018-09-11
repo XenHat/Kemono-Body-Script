@@ -248,6 +248,7 @@ key g_internal_httprid_k=NULL_KEY;
 key g_Owner_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
+list g_LastCommandParsed_l;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
@@ -1378,7 +1379,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llSetObjectName(oname);
         #endif
         #ifdef BENCHMARK
-            llOwnerSay("Took " + (string)llGetTime() + " (endof listen()");
+            llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
         #endif
     }
     on_rez(integer p){
