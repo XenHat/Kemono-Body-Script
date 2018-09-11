@@ -85,7 +85,7 @@ integer undeform_instead=TRUE;
 #else
 integer undeform_instead=FALSE;
 #endif
-// #define GITHUB_UPDATER
+#define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
 #define PRINT_UNHANDLED_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
