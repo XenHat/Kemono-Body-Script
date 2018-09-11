@@ -1245,6 +1245,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
         if(id==llGetKey()) return;
         #endif
+        #ifdef BENCHMARK
+            llResetTime();
+        #endif
         key object_owner_k=llGetOwnerKey(id);
         #ifdef DEBUG_LISTEN
             string oname = llGetObjectName();
@@ -1334,9 +1337,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 #ifdef DEBUG_AUTH
                     llOwnerSay("Validating auth god-mode by object name...");
                 #endif
-                #ifdef BENCHMARK
-                   llResetTime();
-                #endif
                     if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
                         #ifdef DEBUG_AUTH
                             llOwnerSay("Found in List, jumping to authorized");
@@ -1376,6 +1376,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         #endif
         #ifdef DEBUG_LISTEN
         llSetObjectName(oname);
+        #endif
+        #ifdef BENCHMARK
+            llOwnerSay("Took " + (string)llGetTime() + " (endof listen()");
         #endif
     }
     on_rez(integer p){
