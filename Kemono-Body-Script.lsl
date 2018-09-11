@@ -1057,18 +1057,6 @@ resetHands()
 }
 reset(){
     resetHands();
-    if(llGetAttached()){
-        llStopAnimation("Kem-hand-L-fist");
-        llStopAnimation("Kem-hand-L-hold");
-        llStopAnimation("Kem-hand-L-horns");
-        llStopAnimation("Kem-hand-L-point");
-        llStopAnimation("Kem-hand-R-fist");
-        llStopAnimation("Kem-hand-R-hold");
-        llStopAnimation("Kem-hand-R-horns");
-        llStopAnimation("Kem-hand-R-point");
-        llStartAnimation("Kem-hand-R-relax");
-        llStartAnimation("Kem-hand-L-relax");
-    }
     xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
         +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
         +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
