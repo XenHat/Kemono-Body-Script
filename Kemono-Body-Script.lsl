@@ -380,8 +380,9 @@ list xlGetFacesByBladeName(string name){
         return [4];
     if(name==BLADE_THIGH_L_L){
         if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-            if(human_mode)
+            if(human_mode){
                 return [1];
+            }
             return [7];
         }
         return [6];
@@ -613,21 +614,27 @@ list xlBladeNameToPrimNames(string name){
         return [MESH_PG_LAYER];
     }
     else if(name==BLADE_THIGH_L_R){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            if(human_mode)
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            if(human_mode){
                 return [MESH_FITTED_TORSO_HLEGS];
+            }
             return [MESH_FITTED_TORSO_ETC];
-        if(human_mode)
+        }
+        if(human_mode){
             return [MESH_LEG_RIGHT_HUMAN];
+        }
         return [MESH_LEG_RIGHT_ANIMAL];
     }
     else if(name==BLADE_THIGH_L_L){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            if(human_mode)
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            if(human_mode){
                 return [MESH_FITTED_TORSO_HLEGS];
+            }
             return [MESH_FITTED_TORSO_ETC];
-        if(human_mode)
+        }
+        if(human_mode){
             return [MESH_LEG_LEFT_HUMAN];
+        }
         return [MESH_LEG_LEFT_ANIMAL];
     }
     return [name];
