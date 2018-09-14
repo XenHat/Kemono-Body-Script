@@ -1214,7 +1214,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #endif
         #endif
         list data = llCSV2List(llGetObjectDesc());
-        human_mode = llList2Integer(data,1);
+        human_mode = llList2Integer(data,0);
         if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1 && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL]) == -1){
             // Animal legs are missing
             g_LastCommand_s="Hlegs";
@@ -1245,6 +1245,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
+        llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
     }
     listen(integer channel,string name,key id,string message){
         #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
