@@ -1,5 +1,4 @@
 float g_Config_MaximumOpacity=1.00;
-integer undeform_instead=FALSE;
 string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR";
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
@@ -448,7 +447,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.20" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -460,7 +459,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.20" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
             }
 
             else if(g_LastCommand_s == "Rhand:1"){
@@ -778,7 +777,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
             g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
         list data = llCSV2List(llGetObjectDesc());
-        human_mode = llList2Integer(data,1);
+        human_mode = llList2Integer(data,0);
         if(llListFindList(g_LinkDB_l,[ "LFleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RFleg" ]) == -1){
 
             g_LastCommand_s="Hlegs";
@@ -797,6 +796,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llSetTimerEvent(0.3);
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
+        llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
@@ -879,7 +879,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
-                if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                if(
+                    llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
                     llStopAnimation(g_AnimDeform);
                     llStartAnimation(g_AnimUndeform);
                 }
@@ -900,8 +901,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.20" ) return;
-        list cur_version_l=llParseString2List( "0.3.20" ,["."],[""]);
+        if(new_version_s== "0.3.21" ) return;
+        list cur_version_l=llParseString2List( "0.3.21" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -929,13 +930,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         update_description+="\n";
         if(llStringLength(update_description) >=350)
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.20" +"..."+new_version_s+" Changes for "
-        + "0.3.20" +"↛"+new_version_s+"]\n";
+        +"/compare/"+ "0.3.21" +"..."+new_version_s+" Changes for "
+        + "0.3.21" +"↛"+new_version_s+"]\n";
         string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
         +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.20"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.21"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
