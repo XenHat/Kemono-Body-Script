@@ -54,7 +54,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.20" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.21" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
 // #define DEBUG
@@ -75,15 +75,18 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* End of debug defines */
 /* Normal Features that should be enabled */
 #define USE_DEFORM_ANIMS
+// #define SMART_DEFORM
+#ifdef SMART_DEFORM
 /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
 Your shoulders will appear larger than they should. Small price to pay to not
 look stupid in all other cases
 */
 // #define UNDEFORM_BY_DEFAULT
-#ifdef UNDEFORM_BY_DEFAULT
-integer undeform_instead=TRUE;
-#else
-integer undeform_instead=FALSE;
+    #ifdef UNDEFORM_BY_DEFAULT
+        integer undeform_instead=TRUE;
+    #else
+        integer undeform_instead=FALSE;
+    #endif
 #endif
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
@@ -1443,7 +1446,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
-                if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                if(
+                    #ifdef SMART_DEFORM
+                    undeform_instead ||
+                    #endif
+                    llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
                     llStopAnimation(g_AnimDeform);
                     llStartAnimation(g_AnimUndeform);
                 }
