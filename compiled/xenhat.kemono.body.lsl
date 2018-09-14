@@ -447,7 +447,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.22" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -459,7 +459,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.22" );
             }
 
             else if(g_LastCommand_s == "Rhand:1"){
@@ -698,6 +698,12 @@ xlProcessCommand(integer send_params){
         g_genitalsParams_l=[];
     }
 }
+redeform(){
+
+        llOwnerSay("Redeform");
+        llStopAnimation(g_AnimUndeform);
+        llStartAnimation(g_AnimDeform);
+}
 resetHands()
 { if(llGetAttached()){
         llStopAnimation("Kem-hand-L-fist");
@@ -711,6 +717,7 @@ resetHands()
         llStartAnimation("Kem-hand-R-relax");
         llStartAnimation("Kem-hand-L-relax");
     }
+    redeform();
 }
 reset(){
     resetHands();
@@ -790,13 +797,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             xlProcessCommandWrapper();
             llOwnerSay("Adjusted for missing human legs");
         }
-        if(llGetAttached())
-        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-        else
-        llSetTimerEvent(0.3);
+        if(llGetAttached()){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        llSetObjectDesc((string)(human_mode) + "," +  "0.3.21" );
+        llSetObjectDesc((string)(human_mode) + "," +  "0.3.22" );
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
@@ -871,6 +877,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             resetHands();
         }
         g_HasAnimPerms=TRUE;
+        llSetTimerEvent(5);
     }
     timer(){
 
@@ -879,30 +886,17 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
-                if(
-                    llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
-                    llStopAnimation(g_AnimDeform);
-                    llStartAnimation(g_AnimUndeform);
-                }
-                else{
-
-                    llStopAnimation(g_AnimUndeform);
-                    llStartAnimation(g_AnimDeform);
-                }
+                redeform();
             }
         }
-
-        string text;
-        llSetText(text+"\n \n \n \n ", <0.925,0.925,0.925> , 0.75 );
-        llSetTimerEvent(10);
     }
     http_response(key request_id,integer status,list metadata,string body)
     {
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.21" ) return;
-        list cur_version_l=llParseString2List( "0.3.21" ,["."],[""]);
+        if(new_version_s== "0.3.22" ) return;
+        list cur_version_l=llParseString2List( "0.3.22" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -930,13 +924,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         update_description+="\n";
         if(llStringLength(update_description) >=350)
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.21" +"..."+new_version_s+" Changes for "
-        + "0.3.21" +"↛"+new_version_s+"]\n";
+        +"/compare/"+ "0.3.22" +"..."+new_version_s+" Changes for "
+        + "0.3.22" +"↛"+new_version_s+"]\n";
         string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
         +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.21"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.22"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
