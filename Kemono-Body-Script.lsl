@@ -50,7 +50,7 @@
 ::::::::::::::::::::::::::::::...:::::::::::::::::::::::::::::::::::::::::::
 */
 /* May not be available in all viewers */
-#define USE_OPTIMIZER
+// #define USE_OPTIMIZER
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
@@ -1058,6 +1058,12 @@ xlProcessCommand(integer send_params){
         g_genitalsParams_l=[];
     }
 }
+redeform(){
+
+        llOwnerSay("Redeform");
+        llStopAnimation(g_AnimUndeform);
+        llStartAnimation(g_AnimDeform);
+}
 resetHands()
 {    if(llGetAttached()){
         llStopAnimation("Kem-hand-L-fist");
@@ -1071,6 +1077,7 @@ resetHands()
         llStartAnimation("Kem-hand-R-relax");
         llStartAnimation("Kem-hand-L-relax");
     }
+    redeform();
 }
 reset(){
     resetHands();
@@ -1227,10 +1234,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             xlProcessCommandWrapper();
             llOwnerSay("Adjusted for missing human legs");
         }
-        if(llGetAttached())
-        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-        else
-        llSetTimerEvent(0.3);
+        if(llGetAttached()){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
         llSetText("",ZERO_VECTOR,0.0);
         llListen(KEMONO_COM_CH,"","","");
         #ifdef DEBUG_SELF_TEST
@@ -1437,8 +1443,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-        llSetTimerEvent(0.1);
         #endif
+        llSetTimerEvent(5);
     }
     timer(){
 #ifdef USE_DEFORM_ANIMS
@@ -1447,24 +1453,24 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
             }
             else{
+                #ifdef SMART_DEFORM
                 if(
-                    #ifdef SMART_DEFORM
                     undeform_instead ||
-                    #endif
                     llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
-                    llStopAnimation(g_AnimDeform);
-                    llStartAnimation(g_AnimUndeform);
+                        llStopAnimation(g_AnimDeform);
+                        llStartAnimation(g_AnimUndeform);
                 }
                 else{
-
-                    llStopAnimation(g_AnimUndeform);
-                    llStartAnimation(g_AnimDeform);
+                #endif
+                redeform();
+                #ifdef SMART_DEFORM
                 }
+                #endif
             }
         }
 #endif
-        string text;
         #ifdef DEBUG_TEXT
+        string text;
         text="[DEBUG]"+text;
         text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()
         +"]/"+(string)llGetMemoryLimit()+"B";
@@ -1474,9 +1480,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         text+="\n"+(string)(xlListLen2MaxID(g_AttmntAuthedKeys_l)+1)
         +" Keys\n \n ";
         text+="\n \n \n \n \n \n ";
-        #endif
         llSetText(text+"\n \n \n \n ",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-        llSetTimerEvent(10);
+        #endif
     }
     #ifdef DEBUG_LISTEN
     link_message(integer sender_num, integer num, string message, key id){
