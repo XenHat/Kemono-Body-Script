@@ -1060,7 +1060,7 @@ xlProcessCommand(integer send_params){
 }
 redeform(){
 
-        llOwnerSay("Redeform");
+        // llOwnerSay("Redeform");
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
 }
