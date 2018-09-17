@@ -1301,7 +1301,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(separatorIndex < 0) separatorIndex = 0;
         string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
         if(object_owner_k == g_Owner_k){
+            #ifdef DEBUG_AUTH
+            llOwnerSay("Owner is correct!");
+            #endif
             if(first_command=="add"){ /* And add if not in the auth list */
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Detected Add command!");
+                #endif
                 if(llGetFreeMemory() > 2048){
                     if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
                     {
@@ -1311,6 +1317,12 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                         #endif
                     }
                 }
+                #ifdef DEBUG_AUTH
+                else
+                {
+                    llOwnerSay("Not enough memory to add!");
+                }
+                #endif
                 /* TODO: Allow chained commands such as add:show:vagoo:remove
                 by removing passing them to the command processor*/
                 //return;
