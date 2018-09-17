@@ -1298,6 +1298,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         ------------------------------------------------------------
         */
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+        if(separatorIndex < 0) separatorIndex = 0;
         string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
         if(object_owner_k == g_Owner_k){
             if(first_command=="add"){ /* And add if not in the auth list */
