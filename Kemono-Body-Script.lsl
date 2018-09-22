@@ -726,14 +726,6 @@ xlProcessCommandWrapper()
                 g_AttmntAuthedKeys_l=[];
                 reset();
             }
-            /* TODO: Move at bottom and overwrite 'message' instead in other
-            /* branches so that we can inline xlProcessCommand
-            */
-            else if(llSubStringIndex(g_LastCommand_s, "show")==0 ||
-                llSubStringIndex(g_LastCommand_s, "hide")==0 ||
-                llSubStringIndex(g_LastCommand_s, "set")==0){
-                xlProcessCommand(TRUE);
-            }
             else if(g_LastCommand_s=="Hlegs"){
                 //llOwnerSay("Switching to human legs");
                 #ifdef PROCESS_LEGS_COMMANDS
@@ -760,6 +752,7 @@ xlProcessCommandWrapper()
                 llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
+            /* TODO: move all this below inside the command processor */
             else if(g_LastCommand_s == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
@@ -863,20 +856,21 @@ xlProcessCommandWrapper()
                 return;
                 #endif
                 if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0){
-                /* This API isn't public, the best we can do is guess.
-                /* Do nothing for now.
-                /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-                /* integer clothID = llList2Integer(data,2);
-                /* integer clothDesc = llList2Integer(data,4);
-                /* integer attachPoint = llList2Integer(data,6);
-                /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-                /* NOTE: This is part of the internal Starbright API. We shouldn't know
-                /* how to handle this and that is fine. Staryna says it's for
-                /* careful ordering of stuff. Private and all.
-                */
-                return;
-            }
+                    /* This API isn't public, the best we can do is guess.
+                    /* Do nothing for now.
+                    /* if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+                    /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
+                    /* integer clothID = llList2Integer(data,2);
+                    /* integer clothDesc = llList2Integer(data,4);
+                    /* integer attachPoint = llList2Integer(data,6);
+                    /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                    /* NOTE: This is part of the internal Starbright API. We shouldn't know
+                    /* how to handle this and that is fine. Staryna says it's for
+                    /* careful ordering of stuff. Private and all.
+                    */
+                    return;
+                }
+                xlProcessCommand(TRUE);
         }
     }
 xlProcessCommand(integer send_params){
