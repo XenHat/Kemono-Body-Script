@@ -431,11 +431,6 @@ xlProcessCommandWrapper()
                 g_AttmntAuthedKeys_l=[];
                 reset();
             }
-            else if(llSubStringIndex(g_LastCommand_s, "show")==0 ||
-                llSubStringIndex(g_LastCommand_s, "hide")==0 ||
-                llSubStringIndex(g_LastCommand_s, "set")==0){
-                xlProcessCommand(TRUE);
-            }
             else if(g_LastCommand_s=="Hlegs"){
 
 
@@ -461,6 +456,7 @@ xlProcessCommandWrapper()
 
                 llSetObjectDesc((string)(human_mode) + "," +  "0.3.23" );
             }
+
 
             else if(g_LastCommand_s == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
@@ -556,8 +552,9 @@ xlProcessCommandWrapper()
             }
              else{
                 if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0){
-                return;
-            }
+                    return;
+                }
+                xlProcessCommand(TRUE);
         }
     }
 xlProcessCommand(integer send_params){
