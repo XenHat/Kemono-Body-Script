@@ -238,8 +238,10 @@ MESH_FITTED_TORSO_NIP_A\
 #define g_internal_repo_s "XenHat/"+script_name
 #define script_name "Kemono-Body-Script"
 /* === Runtime settings and values === */
+/* TODO: Use a bitset if we run out of memory */
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
+integer g_CurrentFittedNipAlpha=0;
 integer g_CurrentFittedVagState=1;
 integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
@@ -670,45 +672,44 @@ xlSetGenitals(integer pTogglePart){
         // debugLogic(meshes_count);
         if(FKT_FHIDE_N==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-            (meshes_count==g_CurrentFittedNipState);
+                (meshes_count==g_CurrentFittedNipState);
         else if(FKT_FHIDE_V==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-            (meshes_count==g_CurrentFittedVagState);
+                (meshes_count==g_CurrentFittedVagState);
         else if(FKT_FHIDE_B==pTogglePart)
             visible=!getBit(g_RuntimeBodyStateSettings,pTogglePart) *
-            (meshes_count==g_CurrentFittedButState);
+                (meshes_count==g_CurrentFittedButState);
         if(FKT_FHIDE_N==pTogglePart)
             mesh_name=llList2String(s_FittedNipsMeshNames,meshes_count);
         else
             mesh_name=llList2String(s_KFTPelvisMeshes,meshes_count);
-            // debugLogic(visible);
+        // debugLogic(visible);
         list prim_names = xlBladeNameToPrimNames(mesh_name);
-            // debugLogic(prim_count);
-            integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
-                ,prim_names)+1);
-            g_genitalsParams_l +=[PRIM_LINK_TARGET,link_id];
-            // debugLogic(link_id);
-            list faces_l=[];
-            if(FKT_FHIDE_N==pTogglePart)
-                faces_l=xlGetFacesByBladeName(BLADE_NIPS);
-            else if(FKT_FHIDE_V==pTogglePart)
-                faces_l=xlGetFacesByBladeName(BLADE_VAG);
-            else if(FKT_FHIDE_B==pTogglePart)
-                faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
-            integer faces_count=xlListLen2MaxID(faces_l);
-            for(;faces_count > -1;--faces_count)
-                g_genitalsParams_l+=[PRIM_COLOR,
-                    llList2Integer(faces_l,faces_count),<1,1,1>,
-                        visible * g_Config_MaximumOpacity
-                ];
-            #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("FACES:"+llList2CSV(faces_l)
-                +"|MESH_NAME:"+mesh_name
-                +"|PRIM_NAME:"+(string)prim_names
-                //+"|PRIM_ID:"+(string)prim_count
-                +"|visible:"+(string)visible);
-            #endif
-        //}
+        // debugLogic(prim_count);
+        integer link_id=llList2Integer(g_LinkDB_l,llListFindList(g_LinkDB_l
+                                                    ,prim_names)+1);
+        g_genitalsParams_l +=[PRIM_LINK_TARGET,link_id];
+        // debugLogic(link_id);
+        list faces_l=[];
+        if(FKT_FHIDE_N==pTogglePart)
+            faces_l=xlGetFacesByBladeName(BLADE_NIPS);
+        else if(FKT_FHIDE_V==pTogglePart)
+            faces_l=xlGetFacesByBladeName(BLADE_VAG);
+        else if(FKT_FHIDE_B==pTogglePart)
+            faces_l=xlGetFacesByBladeName(BLADE_VIRTUAL_BUTT);
+        integer faces_count=xlListLen2MaxID(faces_l);
+        for(;faces_count > -1;--faces_count)
+            g_genitalsParams_l+=[PRIM_COLOR,
+                llList2Integer(faces_l,faces_count),<1,1,1>,
+                    visible * g_Config_MaximumOpacity
+            ];
+        #ifdef DEBUG_FACE_SELECT
+        llOwnerSay("FACES:"+llList2CSV(faces_l)
+            +"|MESH_NAME:"+mesh_name
+            +"|PRIM_NAME:"+(string)prim_names
+            //+"|PRIM_ID:"+(string)prim_count
+            +"|visible:"+(string)visible);
+        #endif
     }
     #ifdef DEBUG_PARAMS
     llOwnerSay("Params out:"+llList2CSV(g_genitalsParams_l));
@@ -840,7 +841,7 @@ xlProcessCommandWrapper()
                 if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
                     llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"resFTdat:nipState:"
                         +(string)g_CurrentFittedNipState
-                        +":nipAlpha:0" /* TODO: Implement Alpha State*/
+                        +":nipAlpha:"+(string)g_CurrentFittedNipAlpha /* TODO: Implement Alpha State*/
                         +":nipOvrd:0" /* TODO: Implement Nipple Override */
                         +":vagState:"+(string)g_CurrentFittedVagState
                         +":buttState:"+(string)g_CurrentFittedButState
