@@ -24,6 +24,7 @@ integer human_mode=TRUE;
 key g_internal_httprid_k=NULL_KEY;
 
 key g_Owner_k;
+key g_Last_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
 string g_LastCommand_s;
@@ -412,7 +413,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.23" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -424,7 +425,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.23" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
             }
 
 
@@ -585,11 +586,19 @@ xlProcessCommand(integer send_params)
             {
                 i_make_visible = FALSE;
             }
+            else if("remove"==command){
+                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[g_Last_k]);
+                if(placeinlist !=-1){
+                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
+                        placeinlist,placeinlist);
+                }
+            }
+
             else
             {
-               llOwnerSay("Unhandled command '"+command+"'");
-               return;
+                llOwnerSay("Unhandled command '"+command+"'");
             }
+
         }
         else
         {
@@ -876,12 +885,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        llSetObjectDesc((string)(human_mode) + "," +  "0.3.23" );
+        llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
         ;
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
         g_LastCommand_s = message;
+        g_Last_k = id;
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
         if(separatorIndex < 0) separatorIndex = 0;
         string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
@@ -900,15 +910,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             xlProcessCommandWrapper();
         }
         else{
-            if(first_command=="remove"){
-                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
-                if(placeinlist !=-1){
-                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
-                        placeinlist,placeinlist);
-                }
-                return;
-            }
-            else
             {
                     if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
                         jump AUTHORIZED;
@@ -971,8 +972,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.23" ) return;
-        list cur_version_l=llParseString2List( "0.3.23" ,["."],[""]);
+        if(new_version_s== "0.3.24" ) return;
+        list cur_version_l=llParseString2List( "0.3.24" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -1000,13 +1001,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         update_description+="\n";
         if(llStringLength(update_description) >=350)
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.23" +"..."+new_version_s+" Changes for "
-        + "0.3.23" +"↛"+new_version_s+"]\n";
+        +"/compare/"+ "0.3.24" +"..."+new_version_s+" Changes for "
+        + "0.3.24" +"↛"+new_version_s+"]\n";
         string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
         +"Your new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.23"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.24"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
     }
 
 }
