@@ -259,6 +259,7 @@ integer human_mode=TRUE; /* Prefer when available*/
 key g_internal_httprid_k=NULL_KEY;
 #endif
 key g_Owner_k;
+key g_Last_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
 string g_LastCommand_s;
@@ -909,11 +910,27 @@ xlProcessCommand(integer send_params)
             {
                 i_make_visible = FALSE;
             }
+            else if("remove"==command){
+                /* Object signals they no longer need to talk with the API;
+                   Remove their key from the list of authorized attachments.
+                   This object will need to use the 'add' command
+                   to interact with us again
+                */
+                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[g_Last_k]);
+                if(placeinlist !=-1){
+                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
+                        placeinlist,placeinlist);
+                    #ifdef DEBUG_AUTH
+                    llOwnerSay("Removed [" + (string)g_Last_k + "] (" + llKey2Name(g_Last_k) + ") from auth list");
+                    #endif
+                }
+            }
+            #ifdef PRINT_UNHANDLED_COMMANDS
             else
             {
-               llOwnerSay("Unhandled command '"+command+"'");
-               return;
+                llOwnerSay("Unhandled command '"+command+"'");
             }
+            #endif
         }
         else
         {
@@ -941,16 +958,10 @@ xlProcessCommand(integer send_params)
                 #ifdef DEBUG_COMMAND
                 llOwnerSay("===== Genitals =====");
                 #endif
-                /* These commands are never chained, this should be safe */
                 integer param = llList2Integer(input_data,index);
                 debugLogic(param);
-                // input_data = llList2List(input_data, 1,-1);
-                // llOwnerSay("input_data="+llList2CSV(input_data));
                 #ifdef DEBUG_FUNCTIONS
                 // llOwnerSay("===== xlSetGenitals =====");
-                // llOwnerSay("g_CurrentFittedNipAlpha:"+(string)g_CurrentFittedNipAlpha);
-                // llOwnerSay("g_CurrentFittedNipState:"+(string)g_CurrentFittedNipState);
-                // llOwnerSay("g_CurrentFittedVagState:"+(string)g_CurrentFittedVagState);
                 #endif
                 string mesh_name="";
                 for(;mesh_count_index > -1;mesh_count_index--)
@@ -1382,6 +1393,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             #endif
         #endif
         g_LastCommand_s = message;
+        g_Last_k = id;
         /*
         ------------------ AUTH SYSTEM PRIMER ----------------------
             Because messages sent on detach, either returns null key
@@ -1429,9 +1441,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     llOwnerSay("Not enough memory to add!");
                 }
                 #endif
-                /* TODO: Allow chained commands such as add:show:vagoo:remove
-                by removing passing them to the command processor*/
-                //return;
             }
             else
             /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
@@ -1452,24 +1461,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             /* TODO: Do not handle here, pass to Processor to handle as a
                trailing command
             */
-            if(first_command=="remove"){
-                /* Object signals they no longer need to talk with the API;
-                   Remove their key from the list of authorized attachments.
-                   This object will need to use the 'add' command
-                   to interact with us again
-                */
-                /* Technically duplicated code. TODO: Move to proper place to only chech list once */
-                integer placeinlist=llListFindList(g_AttmntAuthedKeys_l,[(key)id]);
-                if(placeinlist !=-1){
-                    g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
-                        placeinlist,placeinlist);
-                    #ifdef DEBUG_AUTH
-                    llOwnerSay("Removed [" + (string)id + "] (" + llKey2Name(id) + ") from auth list");
-                    #endif
-                }
-                return;
-            }
-            else
+
             {
                 #ifdef DEBUG_AUTH
                     llOwnerSay("Validating auth god-mode by object name...");
