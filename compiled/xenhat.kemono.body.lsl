@@ -532,7 +532,7 @@ xlProcessCommand(integer send_params)
     list input_data = llParseString2List(g_LastCommand_s,[":"],[]);
     string command = llList2String(input_data,0);
     integer list_size = llGetListLength(input_data);
-
+    ;
     integer index = 0;
     integer i_make_visible = -1;
     list local_params;
@@ -541,13 +541,13 @@ xlProcessCommand(integer send_params)
 
     for (;index < list_size ; index++)
     {
-
-
+        ;
+        ;
         command = llList2String(input_data,index);
 
         if(0==index )
         {
-
+            ;
             if("setnip"==command)
             {
 
@@ -593,38 +593,35 @@ xlProcessCommand(integer send_params)
         }
         else
         {
+            ;
             if(mod_command<1){
                 if( "nips" ==command)
                 {
                     ;
-                    llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA FINISH ME");
                     i_make_visible= 2 ;
                     mod_command= 4 ;
                 }
                 else if( "vagoo" ==command)
                 {
                     ;
-                    llOwnerSay("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA FINISH ME");
-                    mesh_count_index= ((llGetListLength(s_KFTPelvisMeshes))-1) ;
-                    g_CurrentFittedVagState=!!i_make_visible;
-                    g_TogglingPGMeshes=TRUE;
-                    mod_command= 2 ;
                     i_make_visible= 2 ;
+                    mod_command= 2 ;
                 }
             }
             if( 2 ==i_make_visible)
             {
                 integer param = llList2Integer(input_data,index);
+                ;
                 string mesh_name="";
                 for(;mesh_count_index > -1;mesh_count_index--)
                 {
-
-
+                    ;
+                    ;
 
                     if( 16 ==mod_command)
                     {
                         g_CurrentFittedNipState=param;
-
+                        ;
                         if(!g_CurrentFittedNipAlpha)
                         {
                             i_make_visible=
@@ -644,7 +641,7 @@ xlProcessCommand(integer send_params)
                         mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
 
                         i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
-
+                        ;
                     }
                     else if( 32 ==mod_command)
                     {
@@ -660,51 +657,45 @@ xlProcessCommand(integer send_params)
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                         g_CurrentFittedButState=param;
                     }
+                    ;
 
-                    else if( 4 ==mod_command)
-                    {
-                        ;
-                        mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
-                    }
-                    else if( 2 ==mod_command)
-                    {
-                        ;
-                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
-                    }
+
+
+
+
+
+
                     if(llStringLength(mesh_name)>0)
                     {
+                        ;
 
-
-
+                        ;
                         list prim_names = xlBladeNameToPrimNames(mesh_name);
-
+                        ;
                         integer link_id=llList2Integer(g_LinkDB_l,
                             llListFindList(g_LinkDB_l ,prim_names)+1);
-
-
+                        ;
+                        ;
                         local_params +=[PRIM_LINK_TARGET,link_id];
 
                         list faces_l=[];
                         if( 16 ==mod_command){
-
+                            ;
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 32 ==mod_command){
-
                             faces_l=xlGetFacesByBladeName( "vagoo" );
                         }
                         else if( 64 ==mod_command){
-
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 8 ==mod_command){
-
                             faces_l=xlGetFacesByBladeName( "butt" );
                         }
                         integer faces_count= ((llGetListLength(faces_l))-1) ;
                         for(;faces_count > -1;faces_count--)
                         {
-
+                            ;
 
                             local_params+=[PRIM_COLOR,
                                 llList2Integer(faces_l,faces_count),<1,1,1>,
@@ -717,6 +708,8 @@ xlProcessCommand(integer send_params)
             else
             {
                 list prim_names=xlBladeNameToPrimNames(command);
+                    ;
+                    ;
                     local_params+=[
                     PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,
                         llListFindList(g_LinkDB_l,prim_names)+1)
@@ -733,6 +726,7 @@ xlProcessCommand(integer send_params)
                 }
                 if( "breast" ==command)
                 {
+
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                         list nip_faces = xlGetFacesByBladeName( "nips" );
@@ -749,15 +743,33 @@ xlProcessCommand(integer send_params)
                         local_params+=nip_params;
                     }
                 }
+                else if( "vagoo" )
+                {
+                                    if( "breast" ==command)
+                {
+
+                    if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+                    {
+                        list nip_faces = xlGetFacesByBladeName( "nips" );
+                        list nip_params = [
+                            PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                    llListFindList(g_LinkDB_l, [llList2String(
+                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1),
+                            PRIM_COLOR, llList2Integer(nip_faces,1), <1,1,1>,
+                                i_make_visible,
+                            PRIM_COLOR, llList2Integer(nip_faces,0), <1,1,1>,
+                                i_make_visible
+                        ];
+
+                        local_params+=nip_params;
+                    }
+                }
+                }
             }
         }
     }
         llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
         local_params=[];
-
-    if(g_TogglingPGMeshes){
-        g_TogglingPGMeshes=FALSE;
-    }
 }
 redeform(){
 
