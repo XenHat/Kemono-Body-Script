@@ -89,7 +89,9 @@ look stupid in all other cases
         integer undeform_instead=FALSE;
     #endif
 #endif
+#ifndef DISABLE_GITHUB_UPDATER
 #define GITHUB_UPDATER
+#endif
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
