@@ -57,6 +57,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 #define g_internal_version_s "0.3.24" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
+// #define PRINT_UNHANDLED_COMMANDS
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
@@ -90,7 +91,6 @@ look stupid in all other cases
 #endif
 #define GITHUB_UPDATER
 #define PROCESS_LEGS_COMMANDS
-#define PRINT_UNHANDLED_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #ifdef DEBUG
