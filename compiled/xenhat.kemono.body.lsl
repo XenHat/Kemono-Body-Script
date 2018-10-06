@@ -348,8 +348,23 @@ list xlBladeNameToPrimNames(string name){
     }
     else if(name== "nips" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            return [llList2String(s_FittedNipsMeshNames,
+        {
+            if (1==g_CurrentFittedNipAlpha)
+            {
+
+            return [ "NipAlpha" ];
+            }
+            else if (2==g_CurrentFittedNipAlpha)
+            {
+
+                return [ "NipState0" ];
+            }
+            else
+            {
+                return [llList2String(s_FittedNipsMeshNames,
                         g_CurrentFittedNipState)];
+            }
+        }
         return [ "PG" ];
     }
     else if(name== "NipAlpha" ){
@@ -538,8 +553,10 @@ xlProcessCommand(integer send_params)
     integer i_make_visible = -1;
     list local_params;
     integer mesh_count_index=0;
-    integer mod_command = -1;
 
+
+    integer mod_command = -1;
+    integer mod_command_2 = -1;
     for (;index < list_size ; index++)
     {
         ;
@@ -555,27 +572,27 @@ xlProcessCommand(integer send_params)
 
                 {
                     mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
-                    i_make_visible= 2 ;
+                    mod_command_2= 2 ;
                     mod_command= 16 ;
                 }
             }
             else if("nipalpha"==command)
             {
 
-               mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
-               i_make_visible= 2 ;
-               mod_command= 64 ;
+                 mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
+                 mod_command_2= 2 ;
+                 mod_command= 64 ;
             }
             else if("setbutt"==command)
             {
                 mesh_count_index= ((llGetListLength(s_KFTPelvisMeshes))-1) ;
-                i_make_visible= 2 ;
+                mod_command_2= 2 ;
                 mod_command= 8 ;
             }
             else if("setvag"==command)
             {
                 mesh_count_index= ((llGetListLength(s_KFTPelvisMeshes))-1) ;
-                i_make_visible= 2 ;
+                mod_command_2= 2 ;
                 mod_command= 32 ;
             }
             else if("show"==command)
@@ -607,17 +624,21 @@ xlProcessCommand(integer send_params)
                 if( "nips" ==command)
                 {
                     ;
-                    i_make_visible= 2 ;
+                    mod_command_2= 4 ;
                     mod_command= 4 ;
                 }
                 else if( "vagoo" ==command)
                 {
                     ;
-                    i_make_visible= 2 ;
+                    mod_command_2= 4 ;
                     mod_command= 2 ;
                 }
+                else
+                {
+                    mod_command_2= 4 ;
+                }
             }
-            if( 2 ==i_make_visible)
+            if( 2 ==mod_command_2)
             {
                 integer param = llList2Integer(input_data,index);
                 ;
@@ -626,16 +647,21 @@ xlProcessCommand(integer send_params)
                 {
                     ;
                     ;
-
+                    if( 4 ==mod_command)
+                    {
+                        ;
+                    }
                     if( 16 ==mod_command)
                     {
                         g_CurrentFittedNipState=param;
                         ;
                         if(!g_CurrentFittedNipAlpha)
                         {
-                            i_make_visible=
-                            (mesh_count_index==g_CurrentFittedNipState);
-                            mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
+                            {
+                                i_make_visible=
+                                (mesh_count_index==g_CurrentFittedNipState);
+                                mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
+                            }
                         }
                         else
                         {
@@ -668,12 +694,6 @@ xlProcessCommand(integer send_params)
                     }
                     ;
 
-
-
-
-
-
-
                     if(llStringLength(mesh_name)>0)
                     {
                         ;
@@ -688,18 +708,26 @@ xlProcessCommand(integer send_params)
                         local_params +=[PRIM_LINK_TARGET,link_id];
 
                         list faces_l=[];
-                        if( 16 ==mod_command){
+                        if( 16 ==mod_command ||  4 ==mod_command){
                             ;
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 32 ==mod_command){
+                            ;
                             faces_l=xlGetFacesByBladeName( "vagoo" );
                         }
                         else if( 64 ==mod_command){
+                            ;
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 8 ==mod_command){
+                            ;
                             faces_l=xlGetFacesByBladeName( "butt" );
+                        }
+                        else
+                        {
+                            ;
+                            ;
                         }
                         integer faces_count= ((llGetListLength(faces_l))-1) ;
                         for(;faces_count > -1;faces_count--)
@@ -714,7 +742,51 @@ xlProcessCommand(integer send_params)
                     }
                 }
             }
-            else
+            else if( "nips" ==command)
+            {
+                ;
+                if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+                {
+                    list faces = xlGetFacesByBladeName( "nips" );
+                    ;
+
+                    integer mesh_id = llList2Integer(g_LinkDB_l,
+                                llListFindList(g_LinkDB_l, [llList2String(
+                        s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
+                    ;
+                    string mesh_name = llGetLinkName(mesh_id);
+                    ;
+
+
+                    list snd_lvl_params = [
+
+                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
+                            PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                g_CurrentFittedNipAlpha < 1,
+                            PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                g_CurrentFittedNipAlpha < 1,
+
+                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "TorsoEtc" ])+1),
+                            PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                i_make_visible * (g_CurrentFittedNipState == 1),
+                            PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                i_make_visible * (g_CurrentFittedNipState == 1),
+                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState1" ])+1),
+                            PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                i_make_visible * (g_CurrentFittedNipState == 2),
+                            PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                i_make_visible * (g_CurrentFittedNipState == 2),
+                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipAlpha" ])+1),
+                            PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                g_CurrentFittedNipAlpha > 0,
+                            PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                g_CurrentFittedNipAlpha > 0
+                    ];
+
+                    local_params+=snd_lvl_params;
+                }
+            }
+            else if( 4 ==mod_command_2)
             {
                 list prim_names=xlBladeNameToPrimNames(command);
                     ;
@@ -735,44 +807,47 @@ xlProcessCommand(integer send_params)
                 }
                 if( "breast" ==command)
                 {
-
+                    ;
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
-                        list nip_faces = xlGetFacesByBladeName( "nips" );
-                        list nip_params = [
-                            PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                        list faces = xlGetFacesByBladeName( "nips" );
+                        ;
+
+                        integer mesh_id = llList2Integer(g_LinkDB_l,
                                     llListFindList(g_LinkDB_l, [llList2String(
-                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1),
-                            PRIM_COLOR, llList2Integer(nip_faces,1), <1,1,1>,
-                                i_make_visible,
-                            PRIM_COLOR, llList2Integer(nip_faces,0), <1,1,1>,
-                                i_make_visible
+                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
+                        ;
+                        string mesh_name = llGetLinkName(mesh_id);
+                        ;
+
+
+                        list snd_lvl_params = [
+
+                        PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
+                                PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipAlpha < 1),
+                                PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipAlpha < 1),
+
+                        PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "TorsoEtc" ])+1),
+                                PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipState == 1),
+                                PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipState == 1),
+                        PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState1" ])+1),
+                                PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipState == 2),
+                                PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipState == 2),
+                        PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipAlpha" ])+1),
+                                PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipAlpha > 0),
+                                PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    i_make_visible * (g_CurrentFittedNipAlpha > 0)
                         ];
 
-                        local_params+=nip_params;
+                        local_params+=snd_lvl_params;
                     }
-                }
-                else if( "vagoo" )
-                {
-                                    if( "breast" ==command)
-                {
-
-                    if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-                    {
-                        list nip_faces = xlGetFacesByBladeName( "nips" );
-                        list nip_params = [
-                            PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                    llListFindList(g_LinkDB_l, [llList2String(
-                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1),
-                            PRIM_COLOR, llList2Integer(nip_faces,1), <1,1,1>,
-                                i_make_visible,
-                            PRIM_COLOR, llList2Integer(nip_faces,0), <1,1,1>,
-                                i_make_visible
-                        ];
-
-                        local_params+=nip_params;
-                    }
-                }
                 }
             }
         }
