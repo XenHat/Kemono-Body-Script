@@ -610,12 +610,6 @@ xlProcessCommand(integer send_params)
                         placeinlist,placeinlist);
                 }
             }
-
-            else
-            {
-                llOwnerSay("Unhandled command '"+command+"'");
-            }
-
         }
         else
         {
