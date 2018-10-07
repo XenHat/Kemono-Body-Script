@@ -648,10 +648,12 @@ list xlBladeNameToPrimNames(string name){
         return [MESH_PG_LAYER];
     }
     else if(name==API_CMD_VAG){
-        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT))
-            if(g_TogglingPGMeshes)
+        if(getBit(g_RuntimeBodyStateSettings,FKT_PRESENT)){
+            if(g_TogglingPGMeshes){
                 return [llList2String(s_KFTPelvisMeshes,0)];
+            }
             return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+        }
         return [MESH_PG_LAYER];
     }
     else if(name==API_CMD_THIGH_L_R){
@@ -1205,7 +1207,8 @@ xlProcessCommand(integer send_params)
                 {
                     local_params+=[
                     PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                    (i_make_visible ^ (API_CMD_VAG==command)) *
+                    // (i_make_visible ^ (API_CMD_VAG==command)) *
+                    (i_make_visible) *
                     g_Config_MaximumOpacity
                     ];
                 }
