@@ -1056,15 +1056,15 @@ xlProcessCommand(integer send_params)
                     {
                         g_CurrentFittedVagState=param;
                         i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) **/
-                            (mesh_count_index==g_CurrentFittedVagState);
+                            (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     else if(MOD_SB_FKT_BUTT==mod_command)
                     {
-                        i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) */
-                            (mesh_count_index==g_CurrentFittedButState);
-                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                         g_CurrentFittedButState=param;
+                        i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) */
+                            (mesh_count_index==param);
+                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     /* TODO: Handle overrides (PG, etc) since bitwise check 
                     is removed */
