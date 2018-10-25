@@ -855,13 +855,16 @@ xlProcessCommand(integer send_params)
         local_params=[];
 }
 redeform(){
-
+    if(g_HasAnimPerms)
+    {
 
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
+    }
 }
 resetHands()
-{ if(llGetAttached()){
+{
+    if(g_HasAnimPerms){
         llStopAnimation("Kem-hand-L-fist");
         llStopAnimation("Kem-hand-L-hold");
         llStopAnimation("Kem-hand-L-horns");
@@ -1032,13 +1035,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     timer(){
 
-        if(llGetAttached()){
-            if(!g_HasAnimPerms){
-                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-            }
-            else{
-                redeform();
-            }
+        if(!g_HasAnimPerms){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
+        else{
+            redeform();
         }
     }
     http_response(key request_id,integer status,list metadata,string body)
