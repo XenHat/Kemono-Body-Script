@@ -727,12 +727,13 @@ xlProcessCommand(integer send_params)
                             ;
                         }
                         integer faces_count= ((llGetListLength(faces_l))-1) ;
-                        for(;faces_count > -1;faces_count--)
+                        integer index = 0;
+                        for(;index < faces_count;index++)
                         {
                             ;
                             ;
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,faces_count),<1,1,1>,
+                                llList2Integer(faces_l,index),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
