@@ -442,8 +442,9 @@ list xlGetFacesByBladeName(string name){
             #ifdef DEBUG_COMMAND
             llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
             #endif
-            if(g_TogglingPGMeshes)
+            if(g_TogglingPGMeshes){
                 return [0,1,2,3,4,5];
+            }
             return [2,3,4,5];
         }
         return [];
@@ -1108,7 +1109,7 @@ xlProcessCommand(integer send_params)
                         for(;faces_count > -1;faces_count--)
                         {
                             dSay("YES4");
-                            // debugLogic(faces_count);
+                            debugLogic(faces_count);
                             local_params+=[PRIM_COLOR,
                                 llList2Integer(faces_l,faces_count),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
@@ -1116,10 +1117,11 @@ xlProcessCommand(integer send_params)
                         }
                         #ifdef DEBUG_FACE_SELECT
                         llOwnerSay("visible:"+(string)i_make_visible
-                            +"|FACES:"+llList2CSV(faces_l)
-                            +"|TOGGLE_PART:"+(string)mod_command
-                            +"|MESH_NAME:"+mesh_name
-                            +"|PRIM_NAME:"+(string)prim_names);
+                            +"\nFACES_COUNT:"+(string)faces_count
+                            +"\nFACES:"+llList2CSV(faces_l)
+                            +"\nTOGGLE_PART:"+(string)mod_command
+                            +"\nMESH_NAME:"+mesh_name
+                            +"\nPRIM_NAME:"+(string)prim_names);
                         #endif
                     }
                 }
