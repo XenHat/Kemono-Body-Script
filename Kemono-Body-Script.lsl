@@ -1105,7 +1105,7 @@ xlProcessCommand(integer send_params)
                             dSay("NO3");
                             debugLogic(mod_command);
                         }
-                        integer faces_count=xlListLen2MaxID(faces_l);
+                        integer faces_count=xlListLen2MaxID(faces_l) + 1;
                         integer index = 0;
                         for(;index < faces_count;index++)
                         {
