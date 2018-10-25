@@ -1106,23 +1106,24 @@ xlProcessCommand(integer send_params)
                             debugLogic(mod_command);
                         }
                         integer faces_count=xlListLen2MaxID(faces_l);
-                        for(;faces_count > -1;faces_count--)
+                        integer index = 0;
+                        for(;index < faces_count;index++)
                         {
                             dSay("YES4");
-                            debugLogic(faces_count);
+                            debugLogic(index);
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,faces_count),<1,1,1>,
+                                llList2Integer(faces_l,index),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
-                        #ifdef DEBUG_FACE_SELECT
+                        // #ifdef DEBUG_FACE_SELECT
                         llOwnerSay("visible:"+(string)i_make_visible
                             +"\nFACES_COUNT:"+(string)faces_count
                             +"\nFACES:"+llList2CSV(faces_l)
                             +"\nTOGGLE_PART:"+(string)mod_command
                             +"\nMESH_NAME:"+mesh_name
                             +"\nPRIM_NAME:"+(string)prim_names);
-                        #endif
+                        // #endif
                     }
                 }
             }
