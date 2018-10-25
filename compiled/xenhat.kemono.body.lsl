@@ -431,7 +431,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -443,7 +443,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
             }
 
 
@@ -962,7 +962,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+        llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
         ;
     }
     listen(integer channel,string name,key id,string message){
@@ -1047,8 +1047,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.24" ) return;
-        list cur_version_l=llParseString2List( "0.3.24" ,["."],[""]);
+        if(new_version_s== "0.3.25" ) return;
+        list cur_version_l=llParseString2List( "0.3.25" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -1068,21 +1068,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         @update;
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")update_title="";
-        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕"){
             update_description="";
         }
-        update_description+="\n";
-        if(llStringLength(update_description) >=350)
-        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.24" +"..."+new_version_s+" Changes for "
-        + "0.3.24" +"↛"+new_version_s+"]\n";
-        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new script:\n[https://raw.githubusercontent.com/"
+        string changelog = update_description;
+        update_description="\nAn update is avaible! ("+ "0.3.25"  +"🡂"+new_version_s+")\n\""
+            +update_title+"\"\n"+changelog+"\n";
+        llOwnerSay(update_description);
+        string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.24"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        if(llStringLength(update_description) > (512 - llStringLength(link))){
+        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
+        +"/compare/"+ "0.3.25" +"..."+new_version_s+" Changes for "
+        + "0.3.25" +"🡂"+new_version_s+"]";
+        }
+        llDialog(g_Owner_k,update_description+link,[],-1);
     }
 
 }
