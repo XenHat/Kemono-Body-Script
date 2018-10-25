@@ -374,10 +374,12 @@ list xlBladeNameToPrimNames(string name){
         return [ "PG" ];
     }
     else if(name== "vagoo" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            if(g_TogglingPGMeshes)
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(g_TogglingPGMeshes){
                 return [llList2String(s_KFTPelvisMeshes,0)];
+            }
             return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+        }
         return [ "PG" ];
     }
     else if(name== "thighLR" ){
@@ -795,7 +797,8 @@ xlProcessCommand(integer send_params)
                 {
                     local_params+=[
                     PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                    (i_make_visible ^ ( "vagoo" ==command)) *
+
+                    (i_make_visible) *
                     g_Config_MaximumOpacity
                     ];
                 }
