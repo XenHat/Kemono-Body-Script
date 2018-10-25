@@ -1357,13 +1357,16 @@ xlProcessCommand(integer send_params)
     #endif
 }
 redeform(){
-
+    if(g_HasAnimPerms)
+    {
         // llOwnerSay("Redeform");
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
+    }
 }
 resetHands()
-{    if(llGetAttached()){
+{
+    if(g_HasAnimPerms){
         llStopAnimation("Kem-hand-L-fist");
         llStopAnimation("Kem-hand-L-hold");
         llStopAnimation("Kem-hand-L-horns");
@@ -1749,27 +1752,25 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     timer(){
 #ifdef USE_DEFORM_ANIMS
-        if(llGetAttached()){
-            if(!g_HasAnimPerms){
-                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        if(!g_HasAnimPerms){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
+        else{
+            #ifdef SMART_DEFORM
+            if(
+                undeform_instead ||
+                llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                    llStopAnimation(g_AnimDeform);
+                    llStartAnimation(g_AnimUndeform);
             }
             else{
-                #ifdef SMART_DEFORM
-                if(
-                    undeform_instead ||
-                    llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
-                        llStopAnimation(g_AnimDeform);
-                        llStartAnimation(g_AnimUndeform);
-                }
-                else{
-                #endif
-                redeform();
-                #ifdef SMART_DEFORM
-                }
-                #endif
+            #endif
+            redeform();
+            #ifdef SMART_DEFORM
             }
+            #endif
         }
-#endif
+        #endif
         #ifdef DEBUG_TEXT
         string text;
         text="[DEBUG]"+text;
