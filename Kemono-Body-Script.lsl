@@ -1824,10 +1824,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         string changelog = update_description;
         update_description="\nAn update is avaible! ("+g_internal_version_s +"🡂"+new_version_s+")\n\""
             +update_title+"\"\n"+changelog+"\n";
-        llOwnerSay(update_description);
         string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
         +script_name+".lsl]";
+        llOwnerSay(update_description+link);
         if(llStringLength(update_description) > (512 - llStringLength(link))){
         update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
         +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
