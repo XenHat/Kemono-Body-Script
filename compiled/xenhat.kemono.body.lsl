@@ -679,15 +679,15 @@ xlProcessCommand(integer send_params)
                     {
                         g_CurrentFittedVagState=param;
                         i_make_visible=
-                            (mesh_count_index==g_CurrentFittedVagState);
+                            (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     else if( 8 ==mod_command)
                     {
-                        i_make_visible=
-                            (mesh_count_index==g_CurrentFittedButState);
-                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                         g_CurrentFittedButState=param;
+                        i_make_visible=
+                            (mesh_count_index==param);
+                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     ;
 
@@ -726,7 +726,7 @@ xlProcessCommand(integer send_params)
                             ;
                             ;
                         }
-                        integer faces_count= ((llGetListLength(faces_l))-1) ;
+                        integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
                         integer index = 0;
                         for(;index < faces_count;index++)
                         {
