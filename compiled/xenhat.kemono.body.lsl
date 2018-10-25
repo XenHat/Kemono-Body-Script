@@ -1075,10 +1075,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         string changelog = update_description;
         update_description="\nAn update is avaible! ("+ "0.3.25"  +"🡂"+new_version_s+")\n\""
             +update_title+"\"\n"+changelog+"\n";
-        llOwnerSay(update_description);
         string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
+        llOwnerSay(update_description+link);
         if(llStringLength(update_description) > (512 - llStringLength(link))){
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
         +"/compare/"+ "0.3.25" +"..."+new_version_s+" Changes for "
