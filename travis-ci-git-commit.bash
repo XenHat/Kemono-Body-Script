@@ -40,8 +40,8 @@ function travis-branch-commit() {
         err "failed to commit updates"
         return 1
     fi
-    # add to your .travis.yml: `branches\n  except:\n  - "/\\+travis\\d+$/"\n`
-    export git_tag="travis_ok-$TRAVIS_BUILD_NUMBER"
+    # Force-replacing travis tag, only keep one
+    export git_tag="travis_ok"
     if ! git tag "$git_tag" -f -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"; then
         err "failed to create git tag: $git_tag"
         return 1
