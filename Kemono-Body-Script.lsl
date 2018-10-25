@@ -54,7 +54,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.24" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.25" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
 // #define PRINT_UNHANDLED_COMMANDS
@@ -1817,21 +1817,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         @update;
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")update_title="";
-        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕"){
             update_description="";
         }
-        update_description+="\n";
-        if(llStringLength(update_description) >=350)
-        update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
-        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
-        +g_internal_version_s+"↛"+new_version_s+"]\n";
-        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new script:\n[https://raw.githubusercontent.com/"
+        string changelog = update_description;
+        update_description="\nAn update is avaible! ("+g_internal_version_s +"🡂"+new_version_s+")\n\""
+            +update_title+"\"\n"+changelog+"\n";
+        llOwnerSay(update_description);
+        string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
         +script_name+".lsl]";
-        llDialog(g_Owner_k,script_name + " v"+g_internal_version_s +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        if(llStringLength(update_description) > (512 - llStringLength(link))){
+        update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
+        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
+        +g_internal_version_s+"🡂"+new_version_s+"]";
+        }
+        llDialog(g_Owner_k,update_description+link,[],-1);
     }
     #endif
 }
