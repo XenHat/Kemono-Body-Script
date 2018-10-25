@@ -185,8 +185,9 @@ list xlGetFacesByBladeName(string name){
     }
     if(name== "butt" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            if(g_TogglingPGMeshes)
+            if(g_TogglingPGMeshes){
                 return [0,1,2,3,4,5];
+            }
             return [2,3,4,5];
         }
         return [];
@@ -729,7 +730,7 @@ xlProcessCommand(integer send_params)
                         for(;faces_count > -1;faces_count--)
                         {
                             ;
-
+                            ;
                             local_params+=[PRIM_COLOR,
                                 llList2Integer(faces_l,faces_count),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
