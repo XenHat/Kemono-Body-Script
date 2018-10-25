@@ -1116,14 +1116,14 @@ xlProcessCommand(integer send_params)
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
-                        // #ifdef DEBUG_FACE_SELECT
+                        #ifdef DEBUG_FACE_SELECT
                         llOwnerSay("visible:"+(string)i_make_visible
                             +"\nFACES_COUNT:"+(string)faces_count
                             +"\nFACES:"+llList2CSV(faces_l)
                             +"\nTOGGLE_PART:"+(string)mod_command
                             +"\nMESH_NAME:"+mesh_name
                             +"\nPRIM_NAME:"+(string)prim_names);
-                        // #endif
+                        #endif
                     }
                 }
             }
