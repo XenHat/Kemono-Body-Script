@@ -54,7 +54,7 @@
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.24" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.25" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 // #define BENCHMARK
 // #define PRINT_UNHANDLED_COMMANDS
@@ -442,8 +442,9 @@ list xlGetFacesByBladeName(string name){
             #ifdef DEBUG_COMMAND
             llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
             #endif
-            if(g_TogglingPGMeshes)
+            if(g_TogglingPGMeshes){
                 return [0,1,2,3,4,5];
+            }
             return [2,3,4,5];
         }
         return [];
@@ -1055,15 +1056,15 @@ xlProcessCommand(integer send_params)
                     {
                         g_CurrentFittedVagState=param;
                         i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) **/
-                            (mesh_count_index==g_CurrentFittedVagState);
+                            (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     else if(MOD_SB_FKT_BUTT==mod_command)
                     {
-                        i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) */
-                            (mesh_count_index==g_CurrentFittedButState);
-                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                         g_CurrentFittedButState=param;
+                        i_make_visible=/*!getBit(g_RuntimeBodyStateSettings,mod_command) */
+                            (mesh_count_index==param);
+                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     /* TODO: Handle overrides (PG, etc) since bitwise check 
                     is removed */
@@ -1104,22 +1105,24 @@ xlProcessCommand(integer send_params)
                             dSay("NO3");
                             debugLogic(mod_command);
                         }
-                        integer faces_count=xlListLen2MaxID(faces_l);
-                        for(;faces_count > -1;faces_count--)
+                        integer faces_count=xlListLen2MaxID(faces_l) + 1;
+                        integer index = 0;
+                        for(;index < faces_count;index++)
                         {
                             dSay("YES4");
-                            // debugLogic(faces_count);
+                            debugLogic(index);
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,faces_count),<1,1,1>,
+                                llList2Integer(faces_l,index),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
                         #ifdef DEBUG_FACE_SELECT
                         llOwnerSay("visible:"+(string)i_make_visible
-                            +"|FACES:"+llList2CSV(faces_l)
-                            +"|TOGGLE_PART:"+(string)mod_command
-                            +"|MESH_NAME:"+mesh_name
-                            +"|PRIM_NAME:"+(string)prim_names);
+                            +"\nFACES_COUNT:"+(string)faces_count
+                            +"\nFACES:"+llList2CSV(faces_l)
+                            +"\nTOGGLE_PART:"+(string)mod_command
+                            +"\nMESH_NAME:"+mesh_name
+                            +"\nPRIM_NAME:"+(string)prim_names);
                         #endif
                     }
                 }
@@ -1354,13 +1357,16 @@ xlProcessCommand(integer send_params)
     #endif
 }
 redeform(){
-
+    if(g_HasAnimPerms)
+    {
         // llOwnerSay("Redeform");
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
+    }
 }
 resetHands()
-{    if(llGetAttached()){
+{
+    if(g_HasAnimPerms){
         llStopAnimation("Kem-hand-L-fist");
         llStopAnimation("Kem-hand-L-hold");
         llStopAnimation("Kem-hand-L-horns");
@@ -1746,27 +1752,25 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     timer(){
 #ifdef USE_DEFORM_ANIMS
-        if(llGetAttached()){
-            if(!g_HasAnimPerms){
-                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        if(!g_HasAnimPerms){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
+        else{
+            #ifdef SMART_DEFORM
+            if(
+                undeform_instead ||
+                llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
+                    llStopAnimation(g_AnimDeform);
+                    llStartAnimation(g_AnimUndeform);
             }
             else{
-                #ifdef SMART_DEFORM
-                if(
-                    undeform_instead ||
-                    llGetAgentInfo(g_Owner_k)&AGENT_SITTING){
-                        llStopAnimation(g_AnimDeform);
-                        llStartAnimation(g_AnimUndeform);
-                }
-                else{
-                #endif
-                redeform();
-                #ifdef SMART_DEFORM
-                }
-                #endif
+            #endif
+            redeform();
+            #ifdef SMART_DEFORM
             }
+            #endif
         }
-#endif
+        #endif
         #ifdef DEBUG_TEXT
         string text;
         text="[DEBUG]"+text;
@@ -1813,21 +1817,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         @update;
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")update_title="";
-        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕"){
             update_description="";
         }
-        update_description+="\n";
-        if(llStringLength(update_description) >=350)
-        update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
-        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
-        +g_internal_version_s+"↛"+new_version_s+"]\n";
-        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new script:\n[https://raw.githubusercontent.com/"
+        string changelog = update_description;
+        update_description="\nAn update is avaible! ("+g_internal_version_s +"🡂"+new_version_s+")\n\""
+            +update_title+"\"\n"+changelog+"\n";
+        string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         +g_internal_repo_s+"/"+new_version_s+"/compiled/"+compiled_name+" "
         +script_name+".lsl]";
-        llDialog(g_Owner_k,script_name + " v"+g_internal_version_s +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llOwnerSay(update_description+link);
+        if(llStringLength(update_description) > (512 - llStringLength(link))){
+        update_description="Too many changes, see ["+"https://github.com/"+g_internal_repo_s
+        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
+        +g_internal_version_s+"🡂"+new_version_s+"]";
+        }
+        llDialog(g_Owner_k,update_description+link,[],-1);
     }
     #endif
 }

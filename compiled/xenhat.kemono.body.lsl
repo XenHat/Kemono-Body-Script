@@ -185,8 +185,9 @@ list xlGetFacesByBladeName(string name){
     }
     if(name== "butt" ){
         if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
-            if(g_TogglingPGMeshes)
+            if(g_TogglingPGMeshes){
                 return [0,1,2,3,4,5];
+            }
             return [2,3,4,5];
         }
         return [];
@@ -374,10 +375,12 @@ list xlBladeNameToPrimNames(string name){
         return [ "PG" ];
     }
     else if(name== "vagoo" ){
-        if( (!!(g_RuntimeBodyStateSettings & 1 )) )
-            if(g_TogglingPGMeshes)
+        if( (!!(g_RuntimeBodyStateSettings & 1 )) ){
+            if(g_TogglingPGMeshes){
                 return [llList2String(s_KFTPelvisMeshes,0)];
+            }
             return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
+        }
         return [ "PG" ];
     }
     else if(name== "thighLR" ){
@@ -428,7 +431,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -440,7 +443,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
             }
 
 
@@ -676,15 +679,15 @@ xlProcessCommand(integer send_params)
                     {
                         g_CurrentFittedVagState=param;
                         i_make_visible=
-                            (mesh_count_index==g_CurrentFittedVagState);
+                            (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     else if( 8 ==mod_command)
                     {
-                        i_make_visible=
-                            (mesh_count_index==g_CurrentFittedButState);
-                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                         g_CurrentFittedButState=param;
+                        i_make_visible=
+                            (mesh_count_index==param);
+                        mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     ;
 
@@ -723,13 +726,14 @@ xlProcessCommand(integer send_params)
                             ;
                             ;
                         }
-                        integer faces_count= ((llGetListLength(faces_l))-1) ;
-                        for(;faces_count > -1;faces_count--)
+                        integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
+                        integer index = 0;
+                        for(;index < faces_count;index++)
                         {
                             ;
-
+                            ;
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,faces_count),<1,1,1>,
+                                llList2Integer(faces_l,index),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
@@ -795,7 +799,8 @@ xlProcessCommand(integer send_params)
                 {
                     local_params+=[
                     PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-                    (i_make_visible ^ ( "vagoo" ==command)) *
+
+                    (i_make_visible) *
                     g_Config_MaximumOpacity
                     ];
                 }
@@ -850,13 +855,16 @@ xlProcessCommand(integer send_params)
         local_params=[];
 }
 redeform(){
-
+    if(g_HasAnimPerms)
+    {
 
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
+    }
 }
 resetHands()
-{ if(llGetAttached()){
+{
+    if(g_HasAnimPerms){
         llStopAnimation("Kem-hand-L-fist");
         llStopAnimation("Kem-hand-L-hold");
         llStopAnimation("Kem-hand-L-horns");
@@ -954,7 +962,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        llSetObjectDesc((string)(human_mode) + "," +  "0.3.24" );
+        llSetObjectDesc((string)(human_mode) + "," +  "0.3.25" );
         ;
     }
     listen(integer channel,string name,key id,string message){
@@ -1027,13 +1035,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     timer(){
 
-        if(llGetAttached()){
-            if(!g_HasAnimPerms){
-                llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-            }
-            else{
-                redeform();
-            }
+        if(!g_HasAnimPerms){
+            llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
+        }
+        else{
+            redeform();
         }
     }
     http_response(key request_id,integer status,list metadata,string body)
@@ -1041,8 +1047,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.24" ) return;
-        list cur_version_l=llParseString2List( "0.3.24" ,["."],[""]);
+        if(new_version_s== "0.3.25" ) return;
+        list cur_version_l=llParseString2List( "0.3.25" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -1062,21 +1068,23 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         @update;
         string update_title=llJsonGetValue(body,["name"]);
         if(update_title=="﷕")update_title="";
-        else update_title="\n\n"+update_title;
         string update_description=llJsonGetValue(body,["body"]);
         if(update_description=="﷕"){
             update_description="";
         }
-        update_description+="\n";
-        if(llStringLength(update_description) >=350)
-        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.24" +"..."+new_version_s+" Changes for "
-        + "0.3.24" +"↛"+new_version_s+"]\n";
-        string g_cached_updateMsg_s="\nAn update is available!"+update_title+"\n"+update_description+"\n"
-        +"Your new script:\n[https://raw.githubusercontent.com/"
+        string changelog = update_description;
+        update_description="\nAn update is avaible! ("+ "0.3.25"  +"🡂"+new_version_s+")\n\""
+            +update_title+"\"\n"+changelog+"\n";
+        string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
         + "Kemono-Body-Script" +".lsl]";
-        llDialog(g_Owner_k, "Kemono-Body-Script"  + " v"+ "0.3.24"  +"\n"+g_cached_updateMsg_s,["Close"],-1);
+        llOwnerSay(update_description+link);
+        if(llStringLength(update_description) > (512 - llStringLength(link))){
+        update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
+        +"/compare/"+ "0.3.25" +"..."+new_version_s+" Changes for "
+        + "0.3.25" +"🡂"+new_version_s+"]";
+        }
+        llDialog(g_Owner_k,update_description+link,[],-1);
     }
 
 }
