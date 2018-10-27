@@ -874,21 +874,42 @@ resetHands()
     redeform();
 }
 reset(){
-    resetHands();
+
+
+
+    integer i;
+    list params;
+    for(i=0;i<llGetListLength(s_KFTPelvisMeshes);i++)
+    {
+        string mesh_name = llList2String(s_KFTPelvisMeshes,i);
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer link_id=llList2Integer(g_LinkDB_l,
+            llListFindList(g_LinkDB_l ,prim_names)+1);
+        params+=[PRIM_LINK_TARGET,link_id];
+
+
+
+        {
+
+            params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+
+        }
+    }
+    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
     g_LastCommand_s=KM_HUD_RESET_CMD;
     xlProcessCommand(TRUE);
 
-
-    g_CurrentFittedButState= 1 ;
-    g_CurrentFittedNipAlpha= 0 ;
-    g_CurrentFittedNipState= 1 ;
-    g_CurrentFittedVagState= 1 ;
-    g_LastCommand_s= ":nipAlpha:"+(string)g_CurrentFittedNipAlpha
-                        +":vagState:"+(string)g_CurrentFittedVagState
-                        +":buttState:"+(string)g_CurrentFittedButState
-                        +":humLegs:"+(string)human_mode
-                        +":nipOvrd:0" ;
+    g_LastCommand_s = ":nipalpha:"+(string) 0 ;
     xlProcessCommand(TRUE);
+
+
+
+
+    g_LastCommand_s = ":setnip:"+(string) 1 ;
+    xlProcessCommand(TRUE);
+
+
+    resetHands();
 }
 default {
     changed(integer change){
@@ -974,6 +995,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
+                llOwnerSay("["+llKey2Name(id)+"]: " +message);
+
+
         g_LastCommand_s = message;
         g_Last_k = id;
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
