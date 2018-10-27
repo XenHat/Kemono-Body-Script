@@ -252,8 +252,8 @@ list s_KFTPelvisMeshes = [
 /* === Runtime settings and values === */
 /* TODO: Use a bitset if we run out of memory */
 #define g_DefaultFittedButState 1
-#define g_DefaultFittedNipState 1
 #define g_DefaultFittedNipAlpha 0
+#define g_DefaultFittedNipState 1
 #define g_DefaultFittedVagState 1
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
@@ -1384,21 +1384,42 @@ resetHands()
     redeform();
 }
 reset(){
-    resetHands();
-    g_LastCommand_s=KM_HUD_RESET_CMD;
-    xlProcessCommand(TRUE);
     //if(fitted body blah blah TODO)
     // TODO: add defaults as preprocessor strings
-    g_CurrentFittedButState=g_DefaultFittedButState;
-    g_CurrentFittedNipAlpha=g_DefaultFittedNipAlpha;
-    g_CurrentFittedNipState=g_DefaultFittedNipState;
-    g_CurrentFittedVagState=g_DefaultFittedVagState;
-    g_LastCommand_s= ":nipAlpha:"+(string)g_CurrentFittedNipAlpha /* TODO: Implement Alpha State*/
-                        +":vagState:"+(string)g_CurrentFittedVagState
-                        +":buttState:"+(string)g_CurrentFittedButState
-                        +":humLegs:"+(string)human_mode
-                        +":nipOvrd:0" /* TODO: Implement Nipple Override */;
+    // This is ugly as hell but it will reset it for real.
+    integer i;
+    list params;
+    for(i=0;i<llGetListLength(s_KFTPelvisMeshes);i++)
+    {
+        string mesh_name = llList2String(s_KFTPelvisMeshes,i);
+        list prim_names = xlBladeNameToPrimNames(mesh_name);
+        integer link_id=llList2Integer(g_LinkDB_l,
+            llListFindList(g_LinkDB_l ,prim_names)+1);
+        params+=[PRIM_LINK_TARGET,link_id];
+        // list faces = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
+        // integer f;
+        // for(f=0;f<llGetListLength(faces);f++)
+        {
+            // params +=[PRIM_COLOR,llList2Integer(faces,f),<1,1,1>,0.0];
+            params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+            // llOwnerSay(llGetLinkName(link_id)+","+llList2String(faces,f));
+        }
+    }
+    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
+    g_LastCommand_s=KM_HUD_RESET_CMD;
     xlProcessCommand(TRUE);
+    // llSleep(0.1);
+    g_LastCommand_s = ":nipalpha:"+(string)g_DefaultFittedNipAlpha;
+    xlProcessCommand(TRUE);
+    // g_LastCommand_s = ":vagState:"+(string)g_DefaultFittedVagState;
+    // xlProcessCommand(TRUE);
+    // g_LastCommand_s = ":buttState:"+(string)g_DefaultFittedButState;
+    // xlProcessCommand(TRUE);
+    g_LastCommand_s = ":setnip:"+(string)g_DefaultFittedNipState;
+    xlProcessCommand(TRUE);
+    //g_LastCommand_s = ":nipOvrd:0" /* TODO: Implement Nipple Override */;
+    //xlProcessCommand(TRUE);
+    resetHands();
 }
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -1593,9 +1614,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay(knp+"input ["+message+"]");
             #endif
         #else
-            #ifdef DEBUG_LISTEN_LITE
+            // #ifdef DEBUG_LISTEN_LITE
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
-            #endif
+            // #endif
         #endif
         g_LastCommand_s = message;
         g_Last_k = id;
