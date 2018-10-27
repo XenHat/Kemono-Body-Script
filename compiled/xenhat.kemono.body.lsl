@@ -995,9 +995,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
     listen(integer channel,string name,key id,string message){
         key object_owner_k=llGetOwnerKey(id);
-                llOwnerSay("["+llKey2Name(id)+"]: " +message);
-
-
         g_LastCommand_s = message;
         g_Last_k = id;
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
