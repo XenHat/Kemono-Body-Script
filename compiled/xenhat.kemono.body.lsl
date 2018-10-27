@@ -870,8 +870,8 @@ resetHands()
         llStopAnimation("Kem-hand-R-point");
         llStartAnimation("Kem-hand-R-relax");
         llStartAnimation("Kem-hand-L-relax");
+        redeform();
     }
-    redeform();
 }
 reset(){
 
@@ -1033,7 +1033,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     on_rez(integer p){
 
         llSleep(3);
-        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
 
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
             + "XenHat/"+ "Kemono-Body-Script"
@@ -1055,9 +1054,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 
     run_time_permissions(integer perm){
-        if(!g_HasAnimPerms){
-            resetHands();
-        }
+
+
+
+
         g_HasAnimPerms=TRUE;
         llSetTimerEvent(5);
     }
