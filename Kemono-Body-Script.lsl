@@ -1380,8 +1380,8 @@ resetHands()
         llStopAnimation("Kem-hand-R-point");
         llStartAnimation("Kem-hand-R-relax");
         llStartAnimation("Kem-hand-L-relax");
+        redeform();
     }
-    redeform();
 }
 reset(){
     //if(fitted body blah blah TODO)
@@ -1739,7 +1739,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     on_rez(integer p){
     /*Wait a few seconds in case we're still rezzing*/
         llSleep(3);
-        llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         #ifdef GITHUB_UPDATER
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
             +g_internal_repo_s
@@ -1772,9 +1771,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 #endif
     run_time_permissions(integer perm){
-        if(!g_HasAnimPerms){
-            resetHands();
-        }
+        // What?
+        //if(!g_HasAnimPerms){
+        //    resetHands();
+        //}
         g_HasAnimPerms=TRUE;
         #ifdef RESET_ON_PERMS
         /* Send a "reset" message to forcefully trigger clothing autohiders */
