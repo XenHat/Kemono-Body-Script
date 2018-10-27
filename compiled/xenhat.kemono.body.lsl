@@ -727,13 +727,13 @@ xlProcessCommand(integer send_params)
                             ;
                         }
                         integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
-                        integer index = 0;
-                        for(;index < faces_count;index++)
+                        integer i2 = 0;
+                        for(;i2 < faces_count;i2++)
                         {
                             ;
                             ;
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,index),<1,1,1>,
+                                llList2Integer(faces_l,i2),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
@@ -748,11 +748,7 @@ xlProcessCommand(integer send_params)
                     list faces = xlGetFacesByBladeName( "nips" );
                     ;
 
-                    integer mesh_id = llList2Integer(g_LinkDB_l,
-                                llListFindList(g_LinkDB_l, [llList2String(
-                        s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
                     ;
-                    string mesh_name = llGetLinkName(mesh_id);
                     ;
 
 
@@ -812,11 +808,7 @@ xlProcessCommand(integer send_params)
                         list faces = xlGetFacesByBladeName( "nips" );
                         ;
 
-                        integer mesh_id = llList2Integer(g_LinkDB_l,
-                                    llListFindList(g_LinkDB_l, [llList2String(
-                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
                         ;
-                        string mesh_name = llGetLinkName(mesh_id);
                         ;
 
 
@@ -851,7 +843,10 @@ xlProcessCommand(integer send_params)
             }
         }
     }
-        llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
+        if(send_params)
+        {
+            llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
+        }
         local_params=[];
 }
 redeform(){
@@ -881,6 +876,18 @@ resetHands()
 reset(){
     resetHands();
     g_LastCommand_s=KM_HUD_RESET_CMD;
+    xlProcessCommand(TRUE);
+
+
+    g_CurrentFittedButState= 1 ;
+    g_CurrentFittedNipAlpha= 0 ;
+    g_CurrentFittedNipState= 1 ;
+    g_CurrentFittedVagState= 1 ;
+    g_LastCommand_s= ":nipAlpha:"+(string)g_CurrentFittedNipAlpha
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode
+                        +":nipOvrd:0" ;
     xlProcessCommand(TRUE);
 }
 default {
