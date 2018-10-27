@@ -1614,9 +1614,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay(knp+"input ["+message+"]");
             #endif
         #else
-            // #ifdef DEBUG_LISTEN_LITE
+            #ifdef DEBUG_LISTEN_LITE
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
-            // #endif
+            #endif
         #endif
         g_LastCommand_s = message;
         g_Last_k = id;
