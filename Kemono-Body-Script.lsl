@@ -251,6 +251,10 @@ list s_KFTPelvisMeshes = [
 #define script_name "Kemono-Body-Script"
 /* === Runtime settings and values === */
 /* TODO: Use a bitset if we run out of memory */
+#define g_DefaultFittedButState 1
+#define g_DefaultFittedNipState 1
+#define g_DefaultFittedNipAlpha 0
+#define g_DefaultFittedVagState 1
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedNipAlpha=0;
@@ -1106,13 +1110,13 @@ xlProcessCommand(integer send_params)
                             debugLogic(mod_command);
                         }
                         integer faces_count=xlListLen2MaxID(faces_l) + 1;
-                        integer index = 0;
-                        for(;index < faces_count;index++)
+                        integer i2 = 0;
+                        for(;i2 < faces_count;i2++)
                         {
                             dSay("YES4");
-                            debugLogic(index);
+                            debugLogic(i2);
                             local_params+=[PRIM_COLOR,
-                                llList2Integer(faces_l,index),<1,1,1>,
+                                llList2Integer(faces_l,i2),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
                             ];
                         }
@@ -1139,12 +1143,10 @@ xlProcessCommand(integer send_params)
                     list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
                     debugLogic(faces);
                     // i_make_visible=!i_make_visible;
-                    integer mesh_id = llList2Integer(g_LinkDB_l,
+                    debugLogic(llList2Integer(g_LinkDB_l,
                                 llListFindList(g_LinkDB_l, [llList2String(
-                        s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
-                    debugLogic(mesh_id);
-                    string mesh_name = llGetLinkName(mesh_id);
-                    debugLogic(mesh_name);
+                        s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1));
+                    debugLogic(llGetLinkName(mesh_id));
                     // if(i_make_visible){
                     // }
                     list snd_lvl_params = [
@@ -1240,12 +1242,10 @@ xlProcessCommand(integer send_params)
                         list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
                         debugLogic(faces);
                         // i_make_visible=!i_make_visible;
-                        integer mesh_id = llList2Integer(g_LinkDB_l,
+                        debugLogic(llList2Integer(g_LinkDB_l,
                                     llListFindList(g_LinkDB_l, [llList2String(
-                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1);
-                        debugLogic(mesh_id);
-                        string mesh_name = llGetLinkName(mesh_id);
-                        debugLogic(mesh_name);
+                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1));
+                        debugLogic(llGetLinkName(mesh_id));
                         // if(i_make_visible){
                         // }
                         list snd_lvl_params = [
@@ -1349,7 +1349,10 @@ xlProcessCommand(integer send_params)
         #ifdef DEBUG_COMMAND
         llOwnerSay("===== Setting global params =====");
         #endif
-        xlSetLinkPrimitiveParamsFast(LINK_ROOT,local_params);
+        if(send_params)
+        {
+            xlSetLinkPrimitiveParamsFast(LINK_ROOT,local_params);
+        }
         local_params=[];
     // }
     #ifdef DEBUG_COMMAND
@@ -1383,6 +1386,18 @@ resetHands()
 reset(){
     resetHands();
     g_LastCommand_s=KM_HUD_RESET_CMD;
+    xlProcessCommand(TRUE);
+    //if(fitted body blah blah TODO)
+    // TODO: add defaults as preprocessor strings
+    g_CurrentFittedButState=g_DefaultFittedButState;
+    g_CurrentFittedNipAlpha=g_DefaultFittedNipAlpha;
+    g_CurrentFittedNipState=g_DefaultFittedNipState;
+    g_CurrentFittedVagState=g_DefaultFittedVagState;
+    g_LastCommand_s= ":nipAlpha:"+(string)g_CurrentFittedNipAlpha /* TODO: Implement Alpha State*/
+                        +":vagState:"+(string)g_CurrentFittedVagState
+                        +":buttState:"+(string)g_CurrentFittedButState
+                        +":humLegs:"+(string)human_mode
+                        +":nipOvrd:0" /* TODO: Implement Nipple Override */;
     xlProcessCommand(TRUE);
 }
 default {
