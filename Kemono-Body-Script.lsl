@@ -257,6 +257,10 @@ integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedNipAlpha=0;
 integer g_CurrentFittedVagState=1;
+integer g_PreviousFittedButState=1;
+integer g_PreviousFittedNipState=1;
+integer g_PreviousFittedNipAlpha=0;
+integer g_PreviousFittedVagState=1;
 integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
@@ -841,19 +845,40 @@ xlProcessCommandWrapper()
                 if(llSubStringIndex(name,MESH_FITTED_TORSO) > 3)
                 return;
                 #endif
-                if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0){
-                    /* This API isn't public, the best we can do is guess.
-                    /* Do nothing for now.
-                    /* if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)){
-                    /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2'
-                    /* integer clothID = llList2Integer(data,2);
-                    /* integer clothDesc = llList2Integer(data,4);
-                    /* integer attachPoint = llList2Integer(data,6);
-                    /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
-                    /* NOTE: This is part of the internal Starbright API. We shouldn't know
-                    /* how to handle this and that is fine. Staryna says it's for
-                    /* careful ordering of stuff. Private and all.
-                    */
+                if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0)
+                {
+                    /* This API isn't public, the best we can do is guess. */
+                    if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
+                    {
+                        list data = llParseString2List(g_LastCommand_s,[":"], []);
+                        /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2' */
+                        /* integer clothID = llList2Integer(data,2); */
+                        string clothDesc = llList2String(data,4);
+                        integer attachPoint = llList2Integer(data,6);
+                        /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+                        /* NOTE: This is part of the internal Starbright API. We shouldn't know
+                        /* how to handle this and that is fine. Staryna says it's for
+                        /* careful ordering of stuff. Private and all.
+                        /* However some commands are required to be handled here to ensure
+                        /* clothing made for the FKT behave properly */
+                        if("Top"==clothDesc)
+                        {
+                            if(0==attachPoint)
+                            {
+                                // Restore previous nip state
+                                //g_CurrentFittedNipState=g_FKT_stored_nipstate;
+                                // force visible for now ok?
+                                // g_CurrentFittedNipAlpha=1;
+                                g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
+                                xlProcessCommand(TRUE);
+                            }
+                            else
+                            {
+                                // store nip state
+                                g_PreviousFittedNipState=g_CurrentFittedNipState;
+                            }
+                        }
+                    }
                     return;
                 }
                 xlProcessCommand(TRUE);
@@ -911,10 +936,9 @@ xlProcessCommand(integer send_params)
             }
             else if("nipalpha"==command)
             {
-                 /*TODO: Implement. Currently forces PG chest on FKT*/
-                 mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
-                 mod_command_2=CMD_GENITALS;
-                 mod_command=MOD_SB_FKT_NIPH;
+                mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
+                mod_command_2=CMD_GENITALS;
+                mod_command=MOD_SB_FKT_NIPH;
             }
             else if("setbutt"==command)
             {
@@ -1016,11 +1040,39 @@ xlProcessCommand(integer send_params)
                     {
                         dSay("OwO");
                     }
+                    if(MOD_SB_FKT_NIPH==mod_command)
+                    {
+                        g_CurrentFittedNipAlpha=param;
+                        dSay(g_CurrentFittedNipAlpha);
+                        mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
+                        debugLogic(mesh_name);
+                        // mesh_name=MESH_FITTED_TORSO_NIP_A;
+                        i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
+                        debugLogic(i_make_visible);
+                        /* TODO: Properly implement:
+                         Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
+                         Stage1 shows the alpha mesh AND hides the PG mesh
+                         Stage2 hides the alpha mesh AND hides the PG mesh.
+                         */
+                         if(0==param)
+                         {
+                            mod_command=MOD_SB_FKT_NIPS;
+                            // TODO: restore previous nip state
+                            debugLogic(g_CurrentFittedNipState);
+                            param=g_PreviousFittedNipState;
+
+                         }
+                         else
+                         {
+                             g_PreviousFittedNipState=g_CurrentFittedNipState;
+                            debugLogic(g_CurrentFittedNipState);
+                         }
+                    }
                     if(MOD_SB_FKT_NIPS==mod_command)
                     {
                         g_CurrentFittedNipState=param;
                         dSay("YES1");
-                        if(!g_CurrentFittedNipAlpha)
+                        //if(!g_CurrentFittedNipAlpha)
                         {
                             {
                                 i_make_visible=/*!g_CurrentFittedNipAlpha *
@@ -1029,29 +1081,11 @@ xlProcessCommand(integer send_params)
                                 mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
                             }
                         }
-                        else
-                        {
-                            dSay("Ignoring nip change due to nip alpha mode");
-                            i_make_visible=FALSE;
-                        }
-                    }
-                    else if(MOD_SB_FKT_NIPH==mod_command)
-                    {
-                        /* TODO: Properly implement:
-                         Stage0 hides the appropriate mesh, and shows PG mesh
-                         Stage1 shows the appropriate mesh,
-                         Stage2 hides it, AND hides the PG mesh.
-                         */
-                         // if(0==param)
-                         // {
-
-                         // }
-                        g_CurrentFittedNipAlpha=param;
-                        dSay(g_CurrentFittedNipAlpha);
-                        mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
-                        // mesh_name=MESH_FITTED_TORSO_NIP_A;
-                        i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
-                        debugLogic(i_make_visible);
+                        //else
+                        //{
+                        //    dSay("Ignoring nip change due to nip alpha mode");
+                        //    i_make_visible=FALSE;
+                        //}
                     }
                     else if(MOD_SB_FKT_VAGN==mod_command)
                     {
@@ -1200,10 +1234,10 @@ xlProcessCommand(integer send_params)
                     list faces_l=xlGetFacesByBladeName(command);
                     integer faces_index=xlListLen2MaxID(faces_l);
                     #ifdef DEBUG_FACE_SELECT
-                    llOwnerSay("Prim Count   :"+(string)1);
-                    llOwnerSay("Faces List 1 :"+llList2CSV(faces_l));
-                    llOwnerSay("Prim Names   :"+llList2CSV(prim_names));
-                    llOwnerSay("Faces Count  :"+(string)(faces_index+1));
+                    llOwnerSay("Prim Count:"+(string)1);
+                    llOwnerSay("Faces List 1:"+llList2CSV(faces_l));
+                    llOwnerSay("Prim Names:"+llList2CSV(prim_names));
+                    llOwnerSay("Faces Count:"+(string)(faces_index+1));
                     llOwnerSay("Prim Database:"+llList2CSV(g_LinkDB_l));
                     #endif
                 for(;faces_index > -1; faces_index--)
@@ -1382,6 +1416,7 @@ resetHands()
     }
 }
 reset(){
+    // TODO: Respect PG mode. Stock body does this.
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     {
         // This is ugly as hell but it will reset it for real.
@@ -1627,8 +1662,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
             #endif
         #endif
-        g_LastCommand_s = message;
-        g_Last_k = id;
+        
         /*
         ------------------ AUTH SYSTEM PRIMER --------------------------
             Because llGetOwnerKey() returns either returns null key
@@ -1652,24 +1686,54 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
              stock script and is therefore preserved for the time being.
         -----------------------------------------------------------------
         */
-        integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
-        if(separatorIndex < 0) separatorIndex = 0;
-        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
-        if(object_owner_k == g_Owner_k){
+        if(object_owner_k != g_Owner_k)
+        {
+            // Most likely case, make handling other resident's attachments
+            // as impactless as we can.
+            if(object_owner_k != NULL_KEY)
+            {
+                if(object_owner_k != id){
+                    // someboey else's stuff
+                    return;
+                }
+            }
+            #ifdef DEBUG_AUTH
+            llOwnerSay("Bogus Owner Key for '"+name+"'");
+            #endif
+            if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1){
+                #ifdef DEBUG_AUTH
+                llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+                #endif
+                return;
+            }
+            /* probably a detaching object */
+
+        }
+        else /* if(object_owner_k == g_Owner_k) */
+        {
+            integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+            if(separatorIndex < 0) separatorIndex = 0;
             #ifdef DEBUG_AUTH
             llOwnerSay("Owner is correct!");
             #endif
-            if(first_command=="add"){ /* And add if not in the auth list */
+            string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
+            // TODO: Allow chaining (read kemono manual for allowed cases?)
+            if(first_command=="add")
+            { /* And add if not in the auth list */
                 #ifdef DEBUG_AUTH
                 llOwnerSay("Detected Add command!");
                 #endif
                 if(llGetFreeMemory() > 2048){
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                    if (id != g_Owner_k)
                     {
-                        g_AttmntAuthedKeys_l +=[id];
-                        #ifdef DEBUG_AUTH
-                        llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
-                        #endif
+                        if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                        {
+                            g_AttmntAuthedKeys_l +=[id];
+                            #ifdef DEBUG_AUTH
+                            llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
+                            #endif
+                            // return;
+                        }
                     }
                 }
                 #ifdef DEBUG_AUTH
@@ -1679,61 +1743,10 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 }
                 #endif
             }
-            else
-            /* TODO: Insert Auth passthrough between chained 'add' and 'show/hide'*/
-            // non-add messages from same-owner objects
-            xlProcessCommandWrapper();
         }
-        else{
-            #ifdef DEBUG_AUTH
-            llOwnerSay("Owner Key match failure for '"+name+"'");
-            #endif
-            /* Owner key failed, use cached keys from previously added attachments
-                to verify if they belong to us (as they only get added if they do!)
-            */
-            //string name = llKey2Name(id);
-            /* Reminder: LSL does NOT support short-circuiting; this method should be
-            /* as fast as possible
-            */
-            /* TODO: Do not handle here, pass to Processor to handle as a
-                 trailing command
-            */
-
-            {
-                #ifdef DEBUG_AUTH
-                    llOwnerSay("Validating auth god-mode by object name...");
-                #endif
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
-                        #ifdef DEBUG_AUTH
-                            llOwnerSay("Found in List, jumping to authorized");
-                        #endif
-                        jump AUTHORIZED;
-                    }
-                    else
-                    {
-                    #ifdef BENCHMARK
-                        llOwnerSay("Took " + (string)llGetTime() + " (Unauthed)");
-                    #endif
-                    #ifdef DEBUG_AUTH
-                        llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
-                    #endif
-                    }
-                    return;
-                    @AUTHORIZED;
-                    /* Authorized */
-                    #ifdef BENCHMARK
-                        llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
-                    #endif
-                    xlProcessCommandWrapper();
-                #ifdef BENCHMARK
-                    llOwnerSay("Took " + (string)llGetTime() + " (Authed)");
-                #endif
-                #ifdef DEBUG_AUTH
-                    llOwnerSay("Authed " + name);
-                #endif
-            }
-        }
-
+        g_LastCommand_s = message;
+        g_Last_k = id;
+        xlProcessCommandWrapper();
         #ifdef DEBUG_LISTEN
         llOwnerSay("End of listener processing for '" + message + "'");
         llSleep(1);
