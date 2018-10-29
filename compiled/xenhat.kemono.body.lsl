@@ -435,7 +435,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
             }
             else if(g_LastCommand_s=="Flegs"){
 
@@ -447,7 +447,7 @@ xlProcessCommandWrapper()
                     xlProcessCommand(TRUE);
                 }
 
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
             }
 
 
@@ -1022,7 +1022,7 @@ default {
     }
     state_entry(){
         if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
-            llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
+            llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
            state dead;
         }
         ;
@@ -1138,8 +1138,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.27" ) return;
-        list cur_version_l=llParseString2List( "0.3.27" ,["."],[""]);
+        if(new_version_s== "0.3.28" ) return;
+        list cur_version_l=llParseString2List( "0.3.28" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
 
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
@@ -1164,7 +1164,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             update_description="";
         }
         string changelog = update_description;
-        update_description="\nAn update is avaible! ("+ "0.3.27"  +"🡂"+new_version_s+")\n\""
+        update_description="\nAn update is avaible! ("+ "0.3.28"  +"🡂"+new_version_s+")\n\""
             +update_title+"\"\n"+changelog+"\n";
         string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
@@ -1172,8 +1172,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llOwnerSay(update_description+link);
         if(llStringLength(update_description) > (512 - llStringLength(link))){
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.27" +"..."+new_version_s+" Changes for "
-        + "0.3.27" +"🡂"+new_version_s+"]";
+        +"/compare/"+ "0.3.28" +"..."+new_version_s+" Changes for "
+        + "0.3.28" +"🡂"+new_version_s+"]";
         }
         llDialog(g_Owner_k,update_description+link,[],-1);
     }
