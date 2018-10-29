@@ -874,42 +874,96 @@ resetHands()
     }
 }
 reset(){
-
-
-
-    integer i;
-    list params;
-    for(i=0;i<llGetListLength(s_KFTPelvisMeshes);i++)
+    if( (!!(g_RuntimeBodyStateSettings & 1 )) )
     {
-        string mesh_name = llList2String(s_KFTPelvisMeshes,i);
-        list prim_names = xlBladeNameToPrimNames(mesh_name);
-        integer link_id=llList2Integer(g_LinkDB_l,
-            llListFindList(g_LinkDB_l ,prim_names)+1);
-        params+=[PRIM_LINK_TARGET,link_id];
 
-
-
+        integer i;
+        list params;
+        for(i=0;i<llGetListLength(s_KFTPelvisMeshes);i++)
         {
+            string mesh_name = llList2String(s_KFTPelvisMeshes,i);
+            list prim_names = xlBladeNameToPrimNames(mesh_name);
+            integer link_id=llList2Integer(g_LinkDB_l,
+                llListFindList(g_LinkDB_l ,prim_names)+1);
+            params+=[PRIM_LINK_TARGET,link_id];
 
-            params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
 
+
+            {
+
+                params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+
+            }
         }
+        llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
     }
-    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
     g_LastCommand_s=KM_HUD_RESET_CMD;
     xlProcessCommand(TRUE);
+    if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+    {
 
-    g_LastCommand_s = ":nipalpha:"+(string) 0 ;
-    xlProcessCommand(TRUE);
-
-
-
-
-    g_LastCommand_s = ":setnip:"+(string) 1 ;
-    xlProcessCommand(TRUE);
+        g_LastCommand_s = ":nipalpha:"+(string) 0 ;
+        xlProcessCommand(TRUE);
 
 
+
+
+        g_LastCommand_s = ":setnip:"+(string) 1 ;
+        xlProcessCommand(TRUE);
+
+
+    }
     resetHands();
+}
+detectLinkSetMods()
+{
+    integer part=llGetNumberOfPrims();
+    integer found_fitted_torso = FALSE;
+    for (;part > 0;--part){
+        string name=llGetLinkName(part);
+        if(!found_fitted_torso){
+            if(name ==  "Fitted Torso Old Root" ){
+
+                found_fitted_torso = TRUE;
+                name= "Fitted Kemono Torso" ;
+            }
+            else if(llSubStringIndex(name, "Kemono")!=-1 &&
+                llSubStringIndex(name, "Torso")!=-1 &&
+                (llSubStringIndex(name, "Petite")!=-1 ||
+                llSubStringIndex(name, "Busty")!=-1)){
+
+
+
+
+
+                found_fitted_torso = TRUE;
+                llSetLinkPrimitiveParams(part, [PRIM_NAME, "Fitted Torso Old Root" ]);
+                name= "Fitted Kemono Torso" ;
+            }
+        }
+        if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] ,[name])!=-1){
+            g_LinkDB_l+=[name,part];
+        }
+    }
+    if(found_fitted_torso){
+        g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
+    }
+        g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
+        g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
+    list data = llCSV2List(llGetObjectDesc());
+    human_mode = llList2Integer(data,0);
+    if(llListFindList(g_LinkDB_l,[ "LFleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RFleg" ]) == -1){
+
+        g_LastCommand_s="Hlegs";
+        xlProcessCommandWrapper();
+        llOwnerSay("Adjusted for missing animal legs");
+    }
+    else if(llListFindList(g_LinkDB_l,[ "LHleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RHleg" ]) == -1){
+
+        g_LastCommand_s="Flegs";
+        xlProcessCommandWrapper();
+        llOwnerSay("Adjusted for missing human legs");
+    }
 }
 default {
     changed(integer change){
@@ -918,11 +972,14 @@ default {
         }
         else if(change & CHANGED_LINK){
             llOwnerSay("Linkset changed, resetting...");
-            llResetScript();
+            detectLinkSetMods();
         }
     }
     state_entry(){
-        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
+        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
+            llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
+            return;
+        }
         ;
 
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
@@ -938,59 +995,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"/releases/latest?access_token="
             +"603ee815cda6fb45fcc16876effbda017f158bef",
             [HTTP_BODY_MAXLENGTH,16384],"");
-        integer part=llGetNumberOfPrims();
-        integer found_fitted_torso = FALSE;
-        for (;part > 0;--part){
-            string name=llGetLinkName(part);
-            if(!found_fitted_torso){
-                if(name ==  "Fitted Torso Old Root" ){
 
-                    found_fitted_torso = TRUE;
-                    name= "Fitted Kemono Torso" ;
-                }
-                else if(llSubStringIndex(name, "Kemono")!=-1 &&
-                    llSubStringIndex(name, "Torso")!=-1 &&
-                    (llSubStringIndex(name, "Petite")!=-1 ||
-                    llSubStringIndex(name, "Busty")!=-1)){
-
-
-
-
-
-                    found_fitted_torso = TRUE;
-                    llSetLinkPrimitiveParams(part, [PRIM_NAME, "Fitted Torso Old Root" ]);
-                    name= "Fitted Kemono Torso" ;
-                }
-            }
-            if(llListFindList( ["BitState0","BitState1","BitState2","BitState3","cumButtS1","cumButtS2","cumButtS3", "arms" , "body" , "Fitted Kemono Torso" , "TorsoChest" , "TorsoEtc" , "HumanLegs" , "NipState0" , "NipState1" , "NipAlpha" , "handL" , "handR" , "hips" , "LFleg" , "LHleg" , "RFleg" , "RHleg" , "neck" , "PG" , "Kemono - Body" ] ,[name])!=-1){
-                g_LinkDB_l+=[name,part];
-            }
-        }
-        if(found_fitted_torso){
-            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1 ) ;
-        }
-            g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
-            g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-        list data = llCSV2List(llGetObjectDesc());
-        human_mode = llList2Integer(data,0);
-        if(llListFindList(g_LinkDB_l,[ "LFleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RFleg" ]) == -1){
-
-            g_LastCommand_s="Hlegs";
-            xlProcessCommandWrapper();
-            llOwnerSay("Adjusted for missing animal legs");
-        }
-        else if(llListFindList(g_LinkDB_l,[ "LHleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RHleg" ]) == -1){
-
-            g_LastCommand_s="Flegs";
-            xlProcessCommandWrapper();
-            llOwnerSay("Adjusted for missing human legs");
-        }
+        detectLinkSetMods();
         if(llGetAttached()){
             llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
         ;
     }
     listen(integer channel,string name,key id,string message){
