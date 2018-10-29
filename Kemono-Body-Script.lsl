@@ -56,17 +56,16 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 #define g_internal_version_s "0.3.27" /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
+/* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
 // #define PRINT_UNHANDLED_COMMANDS
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
-// #define DISABLE_AUTH
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
 // #define DEBUG_LISTEN_LITE
-// #define DEBUG_LISTEN_ALL
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
 // #define DEBUG_PARAMS
@@ -1068,7 +1067,7 @@ xlProcessCommand(integer send_params)
                             (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
-                    /* TODO: Handle overrides (PG, etc) since bitwise check 
+                    /* TODO: Handle overrides (PG, etc) since bitwise check
                     is removed */
                     debugLogic(i_make_visible);
 
@@ -1599,12 +1598,18 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
-        
+
         dSay("Ready.");
     }
     listen(integer channel,string name,key id,string message){
-        #ifdef DEBUG_LISTEN_FORCE_DROP_SELF
-        if(id==llGetKey()) return;
+        if(id==llGetKey())
+        #ifdef DEBUG_MESSAGE_FROM_SELF
+        {
+            llOwnerSay("Message came from self, what?");
+        #endif
+            return;
+        #ifdef DEBUG_MESSAGE_FROM_SELF
+        }
         #endif
         #ifdef BENCHMARK
             llResetTime();
@@ -1614,15 +1619,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             string oname = llGetObjectName();
             llSetObjectName(llGetSubString((string)llGetKey(),0, 6) + " Debug");
             llOwnerSay("Time:"+(string)llGetTimestamp());
-            #ifdef DEBUG_LISTEN_ALL
                 string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
                 +llKey2Name(object_owner_k)+" ";
                 llOwnerSay(knp+"input ["+message+"]");
-            #else
-                string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-                +llKey2Name(object_owner_k)+" ";
-                llOwnerSay(knp+"input ["+message+"]");
-            #endif
         #else
             #ifdef DEBUG_LISTEN_LITE
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
@@ -1631,25 +1630,27 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         g_LastCommand_s = message;
         g_Last_k = id;
         /*
-        ------------------ AUTH SYSTEM PRIMER ----------------------
-            Because messages sent on detach, either returns null key
-             or the sender object's uuid, for llGetOwnerKey(), the auth list
-             allows an item to have its ownerkey determined, so later on all
-             it has to do is say 'bye' and looking up that sender's key in the
-             auth list, the object can decide what to do with the message
-             (accept, if sender uuid was in auth list, or reject if uuid
-             was not in auth list. (such as from another person's clothing))
-
-            But you only need to check the auth list when llGetOwnerKey() fails
-             And that'd only happen when detach event happens
-             So, the fact that the hud doesn't send 'add' is just abusing
-             the fact that it never sends anything on detach, which would
-             require checking the auth list
-            In summary, this "auth list" is not really an auth list
-             but an owner key cache to filter out messages
-             coming from non-owners, which key is impossible to get
-             from a detaching object.
-        ------------------------------------------------------------
+        ------------------ AUTH SYSTEM PRIMER --------------------------
+            Because llGetOwnerKey() returns either returns null key
+             or the sender object's uuid (instead of its owner's) when
+             checking a message that has been sent by an object which
+             has been detached already and is no longer existing on
+             the sim (98% of the cases),
+             == The traditional owner check cannot be performed. ==
+             For this reason, the 'auth list' keeps track of the
+             objects who 'add' themselves through the api to
+             determine the owner of a detaching object (since the
+             regular way to perform this check will fail).
+             Consequently, we use the aforementioned 'auth list' to
+             perform the required authentication check when receiving
+             an "invalid" owner key by looking for the object's key
+             within it.
+             We then honor any 'remove' command by expunging the list
+             of the object's key. This does not however prevent further
+             commands from being excuted, as the auth list is only
+             used on detach. This behaviour is consistent with the
+             stock script and is therefore preserved for the time being.
+        -----------------------------------------------------------------
         */
         integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
         if(separatorIndex < 0) separatorIndex = 0;
@@ -1717,9 +1718,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                         llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
                     #endif
                     }
-            #ifndef DISABLE_AUTH
                     return;
-            #endif
                     @AUTHORIZED;
                     /* Authorized */
                     #ifdef BENCHMARK
