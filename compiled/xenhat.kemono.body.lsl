@@ -1005,6 +1005,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         ;
     }
     listen(integer channel,string name,key id,string message){
+        if(id==llGetKey())
+            return;
         key object_owner_k=llGetOwnerKey(id);
         g_LastCommand_s = message;
         g_Last_k = id;
@@ -1033,9 +1035,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                     else
                     {
                     }
-
                     return;
-
                     @AUTHORIZED;
                     xlProcessCommandWrapper();
             }
