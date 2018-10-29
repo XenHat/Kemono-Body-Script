@@ -1594,7 +1594,7 @@ default {
     state_entry(){
         if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
             llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
-            return;
+           state dead;
         }
         dSay("Starting up...");
     // llOwnerSay("Resetting... O3O!!!");
@@ -1894,4 +1894,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llDialog(g_Owner_k,update_description+link,[],-1);
     }
     #endif
+}
+state dead
+{
+    state_entry()
+    {
+        // In updater, do nothing.
+    }
 }
