@@ -16,6 +16,10 @@ integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedNipAlpha=0;
 integer g_CurrentFittedVagState=1;
+integer g_PreviousFittedButState=1;
+integer g_PreviousFittedNipState=1;
+integer g_PreviousFittedNipAlpha=0;
+integer g_PreviousFittedVagState=1;
 integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
@@ -540,7 +544,34 @@ xlProcessCommandWrapper()
                 return;
             }
              else{
-                if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0){
+                if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0)
+                {
+
+                    if( (!!(g_RuntimeBodyStateSettings & 1 )) )
+                    {
+                        list data = llParseString2List(g_LastCommand_s,[":"], []);
+
+
+                        string clothDesc = llList2String(data,4);
+                        integer attachPoint = llList2Integer(data,6);
+                        if("Top"==clothDesc)
+                        {
+                            if(0==attachPoint)
+                            {
+
+
+
+
+                                g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
+                                xlProcessCommand(TRUE);
+                            }
+                            else
+                            {
+
+                                g_PreviousFittedNipState=g_CurrentFittedNipState;
+                            }
+                        }
+                    }
                     return;
                 }
                 xlProcessCommand(TRUE);
@@ -581,10 +612,9 @@ xlProcessCommand(integer send_params)
             }
             else if("nipalpha"==command)
             {
-
-                 mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
-                 mod_command_2= 2 ;
-                 mod_command= 64 ;
+                mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
+                mod_command_2= 2 ;
+                mod_command= 64 ;
             }
             else if("setbutt"==command)
             {
@@ -648,11 +678,34 @@ xlProcessCommand(integer send_params)
                     {
                         ;
                     }
+                    if( 64 ==mod_command)
+                    {
+                        g_CurrentFittedNipAlpha=param;
+                        ;
+                        mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
+                        ;
+
+                        i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
+                        ;
+                         if(0==param)
+                         {
+                            mod_command= 16 ;
+
+                            ;
+                            param=g_PreviousFittedNipState;
+
+                         }
+                         else
+                         {
+                             g_PreviousFittedNipState=g_CurrentFittedNipState;
+                            ;
+                         }
+                    }
                     if( 16 ==mod_command)
                     {
                         g_CurrentFittedNipState=param;
                         ;
-                        if(!g_CurrentFittedNipAlpha)
+
                         {
                             {
                                 i_make_visible=
@@ -660,20 +713,11 @@ xlProcessCommand(integer send_params)
                                 mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
                             }
                         }
-                        else
-                        {
-                            ;
-                            i_make_visible=FALSE;
-                        }
-                    }
-                    else if( 64 ==mod_command)
-                    {
-                        g_CurrentFittedNipAlpha=param;
-                        ;
-                        mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
 
-                        i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
-                        ;
+
+
+
+
                     }
                     else if( 32 ==mod_command)
                     {
@@ -874,6 +918,7 @@ resetHands()
     }
 }
 reset(){
+
     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
     {
 
@@ -1008,38 +1053,45 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(id==llGetKey())
             return;
         key object_owner_k=llGetOwnerKey(id);
-        g_LastCommand_s = message;
-        g_Last_k = id;
-        integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
-        if(separatorIndex < 0) separatorIndex = 0;
-        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
-        if(object_owner_k == g_Owner_k){
-            if(first_command=="add"){
+        if(object_owner_k != g_Owner_k)
+        {
+
+
+            if(object_owner_k != NULL_KEY)
+            {
+                if(object_owner_k != id){
+
+                    return;
+                }
+            }
+            if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1){
+                return;
+            }
+
+
+        }
+        else
+        {
+            integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+            if(separatorIndex < 0) separatorIndex = 0;
+            string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
+
+            if(first_command=="add")
+            {
                 if(llGetFreeMemory() > 2048){
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                    if (id != g_Owner_k)
                     {
-                        g_AttmntAuthedKeys_l +=[id];
+                        if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                        {
+                            g_AttmntAuthedKeys_l +=[id];
+                        }
                     }
                 }
             }
-            else
-
-
-            xlProcessCommandWrapper();
         }
-        else{
-            {
-                    if(llListFindList(g_AttmntAuthedKeys_l,[id]) > -1){
-                        jump AUTHORIZED;
-                    }
-                    else
-                    {
-                    }
-                    return;
-                    @AUTHORIZED;
-                    xlProcessCommandWrapper();
-            }
-        }
+        g_LastCommand_s = message;
+        g_Last_k = id;
+        xlProcessCommandWrapper();
     }
     on_rez(integer p){
 
