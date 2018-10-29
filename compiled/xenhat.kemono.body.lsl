@@ -1023,7 +1023,7 @@ default {
     state_entry(){
         if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
             llSetObjectDesc((string)(human_mode) + "," +  "0.3.27" );
-            return;
+           state dead;
         }
         ;
 
@@ -1178,4 +1178,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llDialog(g_Owner_k,update_description+link,[],-1);
     }
 
+}
+state dead
+{
+    state_entry()
+    {
+
+    }
 }
