@@ -39,19 +39,46 @@
 * for the texturing to work at all.
 * This is because I do not have the info required to support the kApp applier.
 *
-.oPYo.               d'b  o                              o   o
-8    8               8                                   8
-8      .oPYo. odYo. o8P  o8 .oPYo. o    o oPYo. .oPYo.  o8P o8 .oPYo. odYo.
-8      8    8 8' `8  8    8 8    8 8    8 8  `' .oooo8   8   8 8    8 8' `8
-8    8 8    8 8   8  8    8 8    8 8    8 8     8    8   8   8 8    8 8   8
-`YooP' `YooP' 8   8  8    8 `YooP8 `YooP' 8     `YooP8   8   8 `YooP' 8   8
-:.....::.....:..::..:..:::..:....8 :.....:..:::::.....:::..::..:.....:..::..
-::::::::::::::::::::::::::::::ooP'.:::::::::::::::::::::::::::::::::::::::::
-::::::::::::::::::::::::::::::...:::::::::::::::::::::::::::::::::::::::::::
+*/
+/*
+ .oOOOo.               .oOo                                    o      O
+.O     o               O    o                                  O      o
+o                      o                                       o      O
+o                      OoO                                     OoOooOOo
+o         .oOo. 'OoOo. o    O  .oOoO O   o  `OoOo. .oOo.       o      O .oOo. `OoOo. .oOo.
+O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o     OooO'
+`o     .o o   O  O   o o    O  O   o O   o   O     O           o      o O      O     O
+ `OoooO'  `OoO'  o   O O'   o' `OoOo `OoO'o  o     `OoO'       o      O `OoO'  o     `OoO'
+                                   O
+                                OoO'
 */
 /* May not be available in all viewers */
 // #define USE_OPTIMIZER
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
+/*
+ .oOOOo.               .oOo                o.OOoOoo             o
+.O     o               O    o               O                  O
+o                      o                    o                  o
+o                      OoO                  ooOO               o
+o         .oOo. 'OoOo. o    O  .oOoO        O       'OoOo. .oOoO
+O         O   o  o   O O    o  o   O        o        o   O o   O
+`o     .o o   O  O   o o    O  O   o        O        O   o O   o
+ `OoooO'  `OoO'  o   O O'   o' `OoOo       ooOooOoO  o   O `OoO'o
+                                   O
+                                OoO'
+*/
+/*
+o.OOOo.         .oOo                                  O OOooOoO
+ O    `o        O    o                               O  o                                 o
+ o      O       o                                  oO   O                             O
+ O      o       OoO                               O     oOooO                        oOo
+ o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
+ O      o OooO' O    o   o   O OooO' `Ooo.     O        o       o   O   o   O O       O   o  O   o  o   O `Ooo.
+ o    .O' O     o    O   O   o O         O   oO         o       O   o   O   o o       o   O  o   O  O   o     O
+ OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O'      `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
+                                           O
+
+*/
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 #define g_internal_version_s "0.3.28" /* NOTE: Only bump on bugfix ok?*/
@@ -121,6 +148,18 @@ string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:sho
 - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
+/*
+o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOOo
+ O    `o        O    o                               O    o  O   O     `O    O
+ o      O       o                                  oO    O    o  o      O    o
+ O      o       OoO                               O     oOooOoOo O     .o    O
+ o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      o      O oOooOO'     o
+ O      o OooO' O    o   o   O OooO' `Ooo.     O        O      o o           O
+ o    .O' O     o    O   O   o O         O   oO         o      O O           O
+ OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O.     O o'       ooOOoOo
+                                           O
+
+*/
 #define API_CMD_ABS "abs"
 #define API_CMD_ANKLE_L "ankleL"
 #define API_CMD_ANKLE_R "ankleR"
@@ -162,6 +201,18 @@ string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:sho
 #define API_CMD_VIRTUAL_BUTT "butt"
 #define API_CMD_WRIST_L "wristL"
 #define API_CMD_WRIST_R "wristR"
+/*
+o.OOOo.         .oOo                                  O Oo      oO              o
+ O    `o        O    o                               O  O O    o o             O
+ o      O       o                                  oO   o  o  O  O             o
+ O      o       OoO                               O     O   Oo   O             O
+ o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O        o .oOo. .oOo  OoOo. .oOo. .oOo
+ O      o OooO' O    o   o   O OooO' `Ooo.     O        o        O OooO' `Ooo. o   o OooO' `Ooo.
+ o    .O' O     o    O   O   o O         O   oO         o        O O         O o   O O         O
+ OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O        o `OoO' `OoO' O   o `OoO' `OoO'
+                                           O
+
+*/
 #define MESH_ARMS "arms"
 #define MESH_BODY "body"
 #define MESH_FITTED_TORSO "Fitted Kemono Torso"
@@ -183,6 +234,18 @@ string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:sho
 #define MESH_ROOT "Kemono - Body"
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
+/*
+o.OOOo.         .oOo                                  O  o
+ O    `o        O    o                               O  O       o
+ o      O       o                                  oO   o                  O
+ O      o       OoO                               O     o                 oOo
+ o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O  .oOo    o   .oOo
+ O      o OooO' O    o   o   O OooO' `Ooo.     O        O       o  `Ooo.   O   `Ooo.
+ o    .O' O     o    O   O   o O         O   oO         o     . O      O   o       O
+ OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           OOoOooO o' `OoO'   `oO `OoO'
+                                           O
+
+*/
 #define g_supported_meshes [\
 "BitState0",\
 "BitState1",\
@@ -223,6 +286,18 @@ list s_KFTPelvisMeshes = [
 "BitState2",
 "BitState3"
 ];
+/*
+o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
+ O    `o        O    o                               O   o     o  o        O    O
+ o      O       o                                  oO    O     O       O   o    o
+ O      o       OoO                               O      oOooOO.      oOo  OoO  O
+ o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO       o     `O O    o   o    o  .oOoO' .oOoO .oOo
+ O      o OooO' O    o   o   O OooO' `Ooo.     O         O      o o    O   O    O  O   o  o   O `Ooo.
+ o    .O' O     o    O   O   o O         O   oO          o     .O O    o   o    o  o   O  O   o     O
+ OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O            `OooOO'  o'   `oO O'   Oo `OoO'o `OoOo `OoO'
+                                           O                                                  O
+                                                                                           OoO'
+*/
 #define FKT_PRESENT 1
 /* PG States */
 #define KSB_PGVAGOO 2
@@ -243,11 +318,36 @@ list s_KFTPelvisMeshes = [
 #define bwSet(a,b) a=(a | b)
 #define bwToggle(a,b) a ^=1 << b
 #define xlListLen2MaxID(a) ((llGetListLength(a))-1)
-/* === Updater settings === */
+/*
+.oOOOo.                                                     O O       o            o
+o     o                    o                               O  o       O           O
+O.               O     O                                 oO   O       o           o           O
+ `OOoo.         oOo   oOo                               O     o       o           o          oOo
+      `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO      o       O .oOo. .oOoO  .oOoO'   o   .oOo. `OoOo.
+       o OooO'   O     O   o   o   O o   O `Ooo.     O        O       O O   o o   O  O   o    O   OooO'  o
+O.    .O O       o     o   O   O   o O   o     O   oO         `o     Oo o   O O   o  o   O    o   O      O
+ `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            `OoooO'O oOoO' `OoO'o `OoO'o   `oO `OoO'  o
+                                         O       O                      O
+                                      OoO'                              o'
+*/
 #define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
 #define script_name "Kemono-Body-Script"
-/* === Runtime settings and values === */
+#ifdef GITHUB_UPDATER
+key g_internal_httprid_k=NULL_KEY;
+#endif
+/*
+.oOOOo.                                                     O `OooOOo.
+o     o                    o                               O   o     `o                     o
+O.               O     O                                 oO    O      O                 O
+ `OOoo.         oOo   oOo                               O      o     .O                oOo
+      `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO       OOooOO'  O   o  'OoOo.   o   O  `oOOoOO. .oOo.
+       o OooO'   O     O   o   o   O o   O `Ooo.     O         o    o   o   O   o   O   O   o   O  o  o OooO'
+O.    .O O       o     o   O   O   o O   o     O   oO          O     O  O   o   O   o   o   O   o  O  O O
+ `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            O      o `OoO'o  o   O   `oO o'  O  o  o `OoO'
+                                         O       O
+                                      OoO'
+*/
 /* TODO: Use a bitset if we run out of memory */
 #define g_DefaultFittedButState 1
 #define g_DefaultFittedNipAlpha 0
@@ -265,9 +365,6 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE; /* Prefer when available*/
-#ifdef GITHUB_UPDATER
-key g_internal_httprid_k=NULL_KEY;
-#endif
 key g_Owner_k;
 key g_Last_k;
 list g_LinkDB_l=[];
@@ -276,7 +373,19 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
-/* === User Functions === */
+/*
+O       o                          .oOo
+o       O                          O                              o
+O       o                          o                          O
+o       o                          OoO                       oOo
+o       O .oOo  .oOo. `OoOo.       o    O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
+O       O `Ooo. OooO'  o           O    o   O   o   O O       O   o  O   o  o   O `Ooo.
+`o     Oo     O O      O           o    O   o   O   o o       o   O  o   O  O   o     O
+ `OoooO'O `OoO' `OoO'  o           O'   `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
+
+
+*/
+
 list xlGetFacesByBladeName(string name){
     #ifdef DEBUG_COMMAND
     llOwnerSay("===== xlGetFacesByBladeName =====");
@@ -1576,6 +1685,18 @@ detectLinkSetMods()
         llOwnerSay("Adjusted for missing human legs");
     }
 }
+/*
+Oo      oO
+O O    o o        o
+o  o  O  O                                O            O
+O   Oo   O                               oOo          oOo
+O        o .oOoO' O  'OoOo.       .oOo    o   .oOoO'   o   .oOo.
+o        O O   o  o   o   O       `Ooo.   O   O   o    O   OooO'
+o        O o   O  O   O   o           O   o   o   O    o   O
+O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
+
+
+*/
 default {
     #ifdef DEBUG_FACE_TOUCH
     touch_start(integer total_number){
