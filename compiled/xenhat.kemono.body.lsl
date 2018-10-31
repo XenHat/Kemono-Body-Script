@@ -426,7 +426,7 @@ xlProcessCommandWrapper()
 
                 if(!human_mode){
                     g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-                    xlProcessCommand(FALSE);
+                    xlProcessCommand(TRUE);
                     human_mode=TRUE;
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
@@ -438,7 +438,7 @@ xlProcessCommandWrapper()
 
                 if(human_mode){
                     g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-                    xlProcessCommand(FALSE);
+                    xlProcessCommand(TRUE);
                     human_mode=FALSE;
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
