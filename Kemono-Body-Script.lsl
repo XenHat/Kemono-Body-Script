@@ -1194,7 +1194,7 @@ xlProcessCommand(integer send_params)
                     {
                         g_CurrentFittedNipState=param;
                         dSay("YES1");
-                        //if(!g_CurrentFittedNipAlpha)
+                        if(!g_CurrentFittedNipAlpha)
                         {
                             {
                                 i_make_visible=/*!g_CurrentFittedNipAlpha *
