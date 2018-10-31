@@ -228,10 +228,10 @@ list s_KFTPelvisMeshes = [
 #define KSB_PGVAGOO 2
 #define KSB_PGNIPLS 4
 /* Flags for blade sync purposes*/
-#define MOD_SB_FKT_BUTT 8
-#define MOD_SB_FKT_NIPS 16
-#define MOD_SB_FKT_VAGN 32
-#define MOD_SB_FKT_NIPH 64
+#define STARBRIGHT_FKT_HUD_BUTT 8
+#define STARBRIGHT_FKT_HUD_NIPS 16
+#define STARBRIGHT_FKT_HUD_VAGN 32
+#define STARBRIGHT_FKT_HUD_NIPH 64
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
 *    usage:
 *        a=variable/set
@@ -931,26 +931,26 @@ xlProcessCommand(integer send_params)
                 {
                     mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
                     mod_command_2=CMD_GENITALS;
-                    mod_command=MOD_SB_FKT_NIPS;
+                    mod_command=STARBRIGHT_FKT_HUD_NIPS;
                 }
             }
             else if("nipalpha"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
                 mod_command_2=CMD_GENITALS;
-                mod_command=MOD_SB_FKT_NIPH;
+                mod_command=STARBRIGHT_FKT_HUD_NIPH;
             }
             else if("setbutt"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_KFTPelvisMeshes);
                 mod_command_2=CMD_GENITALS;
-                mod_command=MOD_SB_FKT_BUTT;
+                mod_command=STARBRIGHT_FKT_HUD_BUTT;
             }
             else if("setvag"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_KFTPelvisMeshes);
                 mod_command_2=CMD_GENITALS;
-                mod_command=MOD_SB_FKT_VAGN;
+                mod_command=STARBRIGHT_FKT_HUD_VAGN;
             }
             else if("show"==command)
             {
@@ -996,14 +996,14 @@ xlProcessCommand(integer send_params)
                 if(API_CMD_NIPS==command)
                 {
                     dSay("nips!");
-                    mod_command_2=CMD_BODYCORE;
                     mod_command=KSB_PGNIPLS;
+                    mod_command_2=CMD_GENITALS;
                 }
                 else if(API_CMD_VAG==command)
                 {
                     dSay("vagoo!");
-                    mod_command_2=CMD_BODYCORE;
                     mod_command=KSB_PGVAGOO;
+                    mod_command_2=CMD_GENITALS;
                 }
                 else
                 {
@@ -1040,7 +1040,7 @@ xlProcessCommand(integer send_params)
                     {
                         dSay("OwO");
                     }
-                    if(MOD_SB_FKT_NIPH==mod_command)
+                    if(STARBRIGHT_FKT_HUD_NIPH==mod_command)
                     {
                         g_CurrentFittedNipAlpha=param;
                         dSay(g_CurrentFittedNipAlpha);
@@ -1056,7 +1056,7 @@ xlProcessCommand(integer send_params)
                          */
                          if(0==param)
                          {
-                            mod_command=MOD_SB_FKT_NIPS;
+                            mod_command=STARBRIGHT_FKT_HUD_NIPS;
                             // TODO: restore previous nip state
                             debugLogic(g_CurrentFittedNipState);
                             param=g_PreviousFittedNipState;
@@ -1068,7 +1068,7 @@ xlProcessCommand(integer send_params)
                             debugLogic(g_CurrentFittedNipState);
                          }
                     }
-                    if(MOD_SB_FKT_NIPS==mod_command)
+                    if(STARBRIGHT_FKT_HUD_NIPS==mod_command)
                     {
                         g_CurrentFittedNipState=param;
                         dSay("YES1");
@@ -1087,14 +1087,14 @@ xlProcessCommand(integer send_params)
                         //    i_make_visible=FALSE;
                         //}
                     }
-                    else if(MOD_SB_FKT_VAGN==mod_command)
+                    else if(STARBRIGHT_FKT_HUD_VAGN==mod_command)
                     {
                         g_CurrentFittedVagState=param;
                         i_make_visible=/*!bwGet(g_RuntimeBodyStateSettings,mod_command) **/
                             (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
-                    else if(MOD_SB_FKT_BUTT==mod_command)
+                    else if(STARBRIGHT_FKT_HUD_BUTT==mod_command)
                     {
                         g_CurrentFittedButState=param;
                         i_make_visible=/*!bwGet(g_RuntimeBodyStateSettings,mod_command) */
@@ -1119,19 +1119,19 @@ xlProcessCommand(integer send_params)
                         local_params +=[PRIM_LINK_TARGET,link_id];
                         // debugLogic(link_id);
                         list faces_l=[];
-                        if(MOD_SB_FKT_NIPS==mod_command || KSB_PGNIPLS==mod_command){
+                        if(STARBRIGHT_FKT_HUD_NIPS==mod_command || KSB_PGNIPLS==mod_command){
                             dSay("YES3");
                             faces_l=xlGetFacesByBladeName(MESH_SK_NIPS);
                         }
-                        else if(MOD_SB_FKT_VAGN==mod_command){
+                        else if(STARBRIGHT_FKT_HUD_VAGN==mod_command){
                             dSay("YES3");
                             faces_l=xlGetFacesByBladeName(API_CMD_VAG);
                         }
-                        else if(MOD_SB_FKT_NIPH==mod_command){
+                        else if(STARBRIGHT_FKT_HUD_NIPH==mod_command){
                             dSay("YES3");
                             faces_l=xlGetFacesByBladeName(MESH_SK_NIPS);
                         }
-                        else if(MOD_SB_FKT_BUTT==mod_command){
+                        else if(STARBRIGHT_FKT_HUD_BUTT==mod_command){
                             dSay("YES3");
                             faces_l=xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
                         }
