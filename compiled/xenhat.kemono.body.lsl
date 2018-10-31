@@ -12,6 +12,7 @@ list s_KFTPelvisMeshes = [
 "BitState2",
 "BitState3"
 ];
+key g_internal_httprid_k=NULL_KEY;
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedNipAlpha=0;
@@ -24,9 +25,6 @@ integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE;
-
-key g_internal_httprid_k=NULL_KEY;
-
 key g_Owner_k;
 key g_Last_k;
 list g_LinkDB_l=[];
@@ -35,7 +33,6 @@ string g_LastCommand_s;
 
 string g_AnimDeform;
 string g_AnimUndeform;
-
 list xlGetFacesByBladeName(string name){
     if(name== "abs" ) return [6,7];
     if(name== "ankleL" ){
@@ -693,7 +690,6 @@ xlProcessCommand(integer send_params)
 
                             ;
                             param=g_PreviousFittedNipState;
-
                          }
                          else
                          {
@@ -734,7 +730,6 @@ xlProcessCommand(integer send_params)
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
                     ;
-
                     if(llStringLength(mesh_name)>0)
                     {
                         ;
@@ -1068,7 +1063,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1){
                 return;
             }
-
 
         }
         else
