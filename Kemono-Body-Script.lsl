@@ -735,7 +735,7 @@ list xlBladeNameToPrimNames(string name){
             if (1==g_CurrentFittedNipAlpha)
             {
                 /* nip alpha stage 1 */
-            return [MESH_FITTED_TORSO_NIP_A];
+                return [MESH_FITTED_TORSO_NIP_A];
             }
             else if (2==g_CurrentFittedNipAlpha)
             {
