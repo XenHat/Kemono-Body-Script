@@ -1690,12 +1690,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         {
             // Most likely case, make handling other resident's attachments
             // as impactless as we can.
-            if(object_owner_k != NULL_KEY)
-            {
-                if(object_owner_k != id){
-                    // someboey else's stuff
-                    return;
-                }
+            if(object_owner_k != id){
+                // someboey else's stuff
+                return;
             }
             #ifdef DEBUG_AUTH
             llOwnerSay("Bogus Owner Key for '"+name+"'");
@@ -1714,7 +1711,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
             if(separatorIndex < 0) separatorIndex = 0;
             #ifdef DEBUG_AUTH
-            llOwnerSay("Owner is correct!");
+            llOwnerSay("Owner for [" +llKey2Name(id)+ "]is correct!");
             #endif
             string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
             // TODO: Allow chaining (read kemono manual for allowed cases?)
