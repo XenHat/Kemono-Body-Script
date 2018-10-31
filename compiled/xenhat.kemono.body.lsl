@@ -800,9 +800,13 @@ xlProcessCommand(integer send_params)
 
                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
                             PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
-                                g_CurrentFittedNipAlpha < 1,
+
+                                !i_make_visible,
+
                             PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
-                                g_CurrentFittedNipAlpha < 1,
+
+                                !i_make_visible,
+
 
                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "TorsoEtc" ])+1),
                             PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
