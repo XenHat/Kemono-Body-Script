@@ -1013,8 +1013,10 @@ xlProcessCommand(integer send_params)
     integer i_make_visible = -1;
     list local_params;
     integer mesh_count_index=0;
-    #define CMD_GENITALS 2
-    #define CMD_BODYCORE 4
+    /* Official commands present in the retail Kemono body */
+    #define CMD_BODYCORE 2
+    /* Unofficial commands added by mod creators */
+    #define CMD_IS_MOD_HIJACK 4
     integer mod_command = -1;
     integer mod_command_2 = -1;
     for (;index < list_size ; index++)
@@ -1032,26 +1034,26 @@ xlProcessCommand(integer send_params)
                 //if(g_CurrentFittedNipAlpha)
                 {
                     mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
-                    mod_command_2=CMD_GENITALS;
                     mod_command=STARBRIGHT_FKT_HUD_NIPS;
+                    mod_command_2=CMD_IS_MOD_HIJACK;
                 }
             }
             else if("nipalpha"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_FittedNipsMeshNames);
-                mod_command_2=CMD_GENITALS;
                 mod_command=STARBRIGHT_FKT_HUD_NIPH;
+                mod_command_2=CMD_IS_MOD_HIJACK;
             }
             else if("setbutt"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_KFTPelvisMeshes);
-                mod_command_2=CMD_GENITALS;
                 mod_command=STARBRIGHT_FKT_HUD_BUTT;
+                mod_command_2=CMD_IS_MOD_HIJACK;
             }
             else if("setvag"==command)
             {
                 mesh_count_index=xlListLen2MaxID(s_KFTPelvisMeshes);
-                mod_command_2=CMD_GENITALS;
+                mod_command_2=CMD_IS_MOD_HIJACK;
                 mod_command=STARBRIGHT_FKT_HUD_VAGN;
             }
             else if("show"==command)
@@ -1099,20 +1101,20 @@ xlProcessCommand(integer send_params)
                 {
                     dSay("nips!");
                     mod_command=KSB_PGNIPLS;
-                    mod_command_2=CMD_GENITALS;
+                    mod_command_2=CMD_BODYCORE;
                 }
                 else if(API_CMD_VAG==command)
                 {
                     dSay("vagoo!");
                     mod_command=KSB_PGVAGOO;
-                    mod_command_2=CMD_GENITALS;
+                    mod_command_2=CMD_BODYCORE;
                 }
                 else
                 {
                     mod_command_2=CMD_BODYCORE;
                 }
             }
-            if(CMD_GENITALS==mod_command_2)
+            if(CMD_IS_MOD_HIJACK==mod_command_2)
             {
                 #ifdef DEBUG_COMMAND
                 llOwnerSay("===== Genitals =====");
