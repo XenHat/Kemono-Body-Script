@@ -77,7 +77,6 @@ o.OOOo.         .oOo                                  O OOooOoO
  o    .O' O     o    O   O   o O         O   oO         o       O   o   O   o o       o   O  o   O  O   o     O
  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O'      `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
                                            O
-
 */
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
@@ -158,7 +157,6 @@ o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOO
  o    .O' O     o    O   O   o O         O   oO         o      O O           O
  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O.     O o'       ooOOoOo
                                            O
-
 */
 #define API_CMD_ABS "abs"
 #define API_CMD_ANKLE_L "ankleL"
@@ -211,7 +209,6 @@ o.OOOo.         .oOo                                  O Oo      oO              
  o    .O' O     o    O   O   o O         O   oO         o        O O         O o   O O         O
  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O        o `OoO' `OoO' O   o `OoO' `OoO'
                                            O
-
 */
 #define MESH_ARMS "arms"
 #define MESH_BODY "body"
@@ -244,7 +241,6 @@ o.OOOo.         .oOo                                  O  o
  o    .O' O     o    O   O   o O         O   oO         o     . O      O   o       O
  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           OOoOooO o' `OoO'   `oO `OoO'
                                            O
-
 */
 #define g_supported_meshes [\
 "BitState0",\
@@ -382,10 +378,7 @@ o       O .oOo  .oOo. `OoOo.       o    O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo
 O       O `Ooo. OooO'  o           O    o   O   o   O O       O   o  O   o  o   O `Ooo.
 `o     Oo     O O      O           o    O   o   O   o o       o   O  o   O  O   o     O
  `OoooO'O `OoO' `OoO'  o           O'   `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
-
-
 */
-
 list xlGetFacesByBladeName(string name){
     #ifdef DEBUG_COMMAND
     llOwnerSay("===== xlGetFacesByBladeName =====");
@@ -1169,7 +1162,6 @@ xlProcessCommand(integer send_params)
                             // TODO: restore previous nip state
                             debugLogic(g_CurrentFittedNipState);
                             param=g_PreviousFittedNipState;
-
                          }
                          else
                          {
@@ -1213,7 +1205,6 @@ xlProcessCommand(integer send_params)
                     /* TODO: Handle overrides (PG, etc) since bitwise check
                     is removed */
                     debugLogic(i_make_visible);
-
                     if(llStringLength(mesh_name)>0)
                     {
                         dSay("YES2");
@@ -1694,8 +1685,6 @@ O        o .oOoO' O  'OoOo.       .oOo    o   .oOoO'   o   .oOo.
 o        O O   o  o   o   O       `Ooo.   O   O   o    O   OooO'
 o        O o   O  O   O   o           O   o   o   O    o   O
 O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
-
-
 */
 default {
     #ifdef DEBUG_FACE_TOUCH
@@ -1759,7 +1748,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
             +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
         #endif
-
         dSay("Ready.");
     }
     listen(integer channel,string name,key id,string message){
@@ -1788,7 +1776,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 llOwnerSay("["+llKey2Name(id)+"]: " +message);
             #endif
         #endif
-        
         /*
         ------------------ AUTH SYSTEM PRIMER --------------------------
             Because llGetOwnerKey() returns either returns null key
@@ -1830,7 +1817,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
                 return;
             }
             /* probably a detaching object */
-
         }
         else /* if(object_owner_k == g_Owner_k) */
         {
