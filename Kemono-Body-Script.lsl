@@ -114,6 +114,7 @@ look stupid in all other cases
         integer undeform_instead=FALSE;
     #endif
 #endif
+#define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifndef DISABLE_GITHUB_UPDATER
 #define GITHUB_UPDATER
 #endif
@@ -1406,10 +1407,6 @@ xlProcessCommand(integer send_params)
                         // if(i_make_visible){
                         // }
                         debugLogic(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS));
-                        llOwnerSay("show_pg="+(string)(i_make_visible
-                                    && (g_CurrentFittedNipState == 0
-                                        || bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
-                                        )));
                         list snd_lvl_params = [
                         // PG meshes
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_0])+1),
@@ -1752,7 +1749,7 @@ default {
         }
     }
     state_entry(){
-        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
+        if(llGetObjectName()==UPDATER_NAME){
             llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
            state dead;
         }
@@ -1925,7 +1922,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 #ifdef USE_DEFORM_ANIMS
     attach(key id){
-        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
+        if(llGetObjectName()==UPDATER_NAME){return;}
         /* Deform on detach, unlike the stock body. This assumes permissions
         *  are granted, which happens on rez or startup if attached.
         *  Needs to be processed as fast as possible to make it before the
