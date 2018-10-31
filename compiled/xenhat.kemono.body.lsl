@@ -1057,12 +1057,9 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         {
 
 
-            if(object_owner_k != NULL_KEY)
-            {
-                if(object_owner_k != id){
+            if(object_owner_k != id){
 
-                    return;
-                }
+                return;
             }
             if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1){
                 return;
