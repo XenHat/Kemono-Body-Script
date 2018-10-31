@@ -651,14 +651,14 @@ xlProcessCommand(integer send_params)
                 if( "nips" ==command)
                 {
                     ;
-                    mod_command_2= 4 ;
                     mod_command= 4 ;
+                    mod_command_2= 2 ;
                 }
                 else if( "vagoo" ==command)
                 {
                     ;
-                    mod_command_2= 4 ;
                     mod_command= 2 ;
+                    mod_command_2= 2 ;
                 }
                 else
                 {
