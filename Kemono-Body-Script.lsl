@@ -1186,7 +1186,7 @@ xlProcessCommand(integer send_params)
                          }
                          else
                          {
-                             g_PreviousFittedNipState=g_CurrentFittedNipState;
+                            g_PreviousFittedNipState=g_CurrentFittedNipState;
                             debugLogic(g_CurrentFittedNipState);
                          }
                     }
