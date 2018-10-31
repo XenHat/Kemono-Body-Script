@@ -1168,6 +1168,7 @@ xlProcessCommand(integer send_params)
                 look at that later
                 */
                 /* Manually hard-code this one for speed and simplicity*/
+                // reminder: make_visible=FALSE == show_PG_face=TRUE
                 debugLogic(i_make_visible);
                 if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
                 {
@@ -1184,9 +1185,13 @@ xlProcessCommand(integer send_params)
                     // alpha meshes
                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_0])+1),
                             PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
-                                g_CurrentFittedNipAlpha < 1,
+                                // i_make_visible * g_CurrentFittedNipAlpha < 1,
+                                !i_make_visible,
+                                // 0,
                             PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
-                                g_CurrentFittedNipAlpha < 1,
+                                // i_make_visible * g_CurrentFittedNipAlpha < 1,
+                                !i_make_visible,
+                                // 0,
                     // nipple meshes
                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_ETC])+1),
                             PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
