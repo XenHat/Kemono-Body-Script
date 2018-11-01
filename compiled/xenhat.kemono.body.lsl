@@ -821,10 +821,6 @@ xlProcessCommand(integer send_params)
 
                         ;
                         ;
-                        llOwnerSay("show_pg="+(string)(i_make_visible
-                                    && (g_CurrentFittedNipState == 0
-                                        ||  (!!(g_RuntimeBodyStateSettings & 2 ))
-                                        )));
                         list snd_lvl_params = [
 
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
@@ -1010,7 +1006,7 @@ default {
         }
     }
     state_entry(){
-        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){
+        if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater" ){
             llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
            state dead;
         }
@@ -1091,7 +1087,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
     }
 
     attach(key id){
-        if(llGetObjectName()=="[Xenhat] Enhanced Kemono Updater"){return;}
+        if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater" ){return;}
         if(id==NULL_KEY){
         }
         else{
