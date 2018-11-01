@@ -25,18 +25,11 @@ Proof of ownership will be asked and required if you request services about this
   
   **Current Status**
   
-  The current factory features are planned and/or implemented:
-  
-  - Stock kemono blades alpha toggle
-  - Genitals and Nipples PG state
-  - Starbright Fitted Kemono Torso Nipple states
-  - Starbright Fitted Kemono Torso Genitals states
-  - Starbright Fitted Kemono Torso Butt States
-  - Some Starbright Fitted Kemono Torso **public** API commands
+  The best way to keep track is to look at the Projects tab.
  
   **The Future**
   
-  I plan to include support for the following parts:
+  I plan to include support for the following:
   
   - `Rei's Stuff Chest`
   - `[BB/MM] Thunder Thighs`
@@ -50,3 +43,5 @@ Proof of ownership will be asked and required if you request services about this
   - `*R* Kemono Male Chest`
   
   How these different body parts will be supported is still TBD.
+
+Support for the kApp skin applier is planned, but closed source requirements prevents this feature from ever touching this repository. An in-world vendor will exist for this feature and similar proprietary conveniences.
