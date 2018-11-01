@@ -54,5 +54,5 @@ More seriously, because I like Open-Source. I realize this is probably a terribl
 
 Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mostly in the form of precompiled scripts, support, personalized modifications, and a closed-source version with an in-world updater and applier support (if I can get that one).
 
-If you are interested in participating in the development and improvement of this product, [hit me up in world](secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/im) ([Alternate link](https://my.secondlife.com/xenhat.liamano)
+If you are interested in participating in the development and improvement of this product, [hit me up in world](https://is.gd/xenhatslim) ([Alternate link](https://my.secondlife.com/xenhat.liamano)
 Donations are welcome, just throw L$ at me. I also have a paypal.
