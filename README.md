@@ -9,7 +9,7 @@ This is a from-scratch, compatible and open-source implementation of the body sc
 
 ### Use of this script/product is only licensed to legal owners of the [UTILIZATOR Kemono body](https://marketplace.secondlife.com/p/UTILIZATOR-Kemono/6070005).
 
-**I do not condone or endorse the use of this script in any other way, nor will I provide any kind of help/service if you do not own the *UTILIZATOR Kemono Body*.
+**I do not condone or endorse the use of this script in any other way, nor will I provide any kind of help/service if you do not own the *UTILIZATOR Kemono Body***.
 
 Proof of ownership is will be required if you request support or service for this product.
 
@@ -38,7 +38,7 @@ Support for the kApp skin applier is planned, but closed source requirements pre
 
 ## FAQ
 
-### Why re-script the Kemono body?**
+### Why re-script the Kemono body?
 
   - I was not satisfied with the stock script included in the Kemono body.
   - When I started writing this script (June 2017), it was impossible to combine the Starbright Fitted Kemono Torso and the Utilizator Kemono body into a single linkset. There were other issues and me and a colleague have been debating re-writing it for a year prior but that was the deciding factor.
