@@ -48,6 +48,7 @@ Support for the kApp skin applier is planned, but closed source requirements pre
 ### Why open-source?
 
 *Science isn't about "Why?", it's about "Why not?!"* - Cave Johnson
+
 More seriously, because I like Open-Source. I realize this is probably a terrible idea and I am probably angering a few people by doing this. I don't really care that much. The UTILIZATOR Kemono and the Starbright Fitted Kemono Torso are good products, you should buy them. I'm only making my personal rescript available to a wider audience in case it helps someone else.
 
 ### Are you rich? Why are you not selling this? SHUT UP AND TAKE MY MONEY?!?!
