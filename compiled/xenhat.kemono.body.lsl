@@ -806,32 +806,29 @@ xlProcessCommand(integer send_params)
                 {
                     local_params+=[
                     PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
-
                     (i_make_visible) *
                     g_Config_MaximumOpacity
                     ];
                 }
                 if( "breast" ==command )
                 {
+
                     ;
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                         list faces = xlGetFacesByBladeName( "nips" );
                         ;
-
                         ;
                         ;
                         list snd_lvl_params = [
 
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
                                 PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
-
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
                                         ||  (!!(g_RuntimeBodyStateSettings & 2 ))
                                         ),
                                 PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
-
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
                                         ||  (!!(g_RuntimeBodyStateSettings & 2 ))
@@ -865,18 +862,17 @@ xlProcessCommand(integer send_params)
                                 PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible && (g_CurrentFittedNipAlpha > 0 && ! (!!(g_RuntimeBodyStateSettings & 2 )) )
                         ];
-
                         local_params+=snd_lvl_params;
                     }
                 }
             }
         }
     }
-        if(send_params)
-        {
-            llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
-        }
-        local_params=[];
+    if(send_params)
+    {
+        llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
+    }
+    local_params=[];
 }
 redeform(){
     if(g_HasAnimPerms)
@@ -916,14 +912,7 @@ reset(){
             integer link_id=llList2Integer(g_LinkDB_l,
                 llListFindList(g_LinkDB_l ,prim_names)+1);
             params+=[PRIM_LINK_TARGET,link_id];
-
-
-
-            {
-
-                params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
-
-            }
+            params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
         }
         llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
     }
@@ -931,7 +920,6 @@ reset(){
     xlProcessCommand(TRUE);
     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
     {
-
         g_LastCommand_s = ":nipalpha:"+(string) 0 ;
         xlProcessCommand(TRUE);
 
@@ -961,11 +949,6 @@ detectLinkSetMods()
                 llSubStringIndex(name, "Torso")!=-1 &&
                 (llSubStringIndex(name, "Petite")!=-1 ||
                 llSubStringIndex(name, "Busty")!=-1)){
-
-
-
-
-
                 found_fitted_torso = TRUE;
                 llSetLinkPrimitiveParams(part, [PRIM_NAME, "Fitted Torso Old Root" ]);
                 name= "Fitted Kemono Torso" ;
@@ -1011,7 +994,6 @@ default {
            state dead;
         }
         ;
-
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
