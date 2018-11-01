@@ -25,25 +25,22 @@ Proof of ownership will be asked and required if you request services about this
   
   **Current Status**
   
-  The current factory features are implemented:
+  The current factory features are planned and/or implemented:
   
   - Stock kemono blades alpha toggle
   - Genitals and Nipples PG state
-  - Fitted Torso Nipple states* (See below)
-  - Fitted Torso Genitals states
-  - Fitted Torso Butt States
-  - Fitted Torso **public** API commands
-  
-  The current stock features need to be implemented:
-  
-  - Fitted Torso Nipple Alpha states
-  
+  - Starbright Fitted Kemono Torso Nipple states
+  - Starbright Fitted Kemono Torso Genitals states
+  - Starbright Fitted Kemono Torso Butt States
+  - Some Starbright Fitted Kemono Torso **public** API commands
+ 
   **The Future**
   
   I plan to include support for the following parts:
   
   - `Rei's Stuff Chest`
   - `[BB/MM] Thunder Thighs`
+  - `Starbright Adult bits`
   
   Support for the following body parts is under evaluation:
   
