@@ -3,31 +3,21 @@
 
 Aftermarket replacement for Utilizator's Kemono Body in Second Life
 
-**What is is?**
+## What is is?
 
 This is a from-scratch, compatible and open-source implementation of the body script used in the Utilizator Kemono body (and other mods for it)
 
-**WARNING**
+### Use of this script/product is only licensed to legal owners of the [UTILIZATOR Kemono body](https://marketplace.secondlife.com/p/UTILIZATOR-Kemono/6070005).
 
-Use of this script/product is only licensed for legal owners of the [UTILIZATOR Kemono body](https://marketplace.secondlife.com/p/UTILIZATOR-Kemono/6070005).
-If you did not purchase the **Kemono body**, this script isn't for you.
+**I do not condone or endorse the use of this script in any other way, nor will I provide any kind of help/service if you do not own the *UTILIZATOR Kemono Body*.
 
-I do not condone or endorse the use of this script in any other way, nor will I provide any kind of help/service if you do not own the **Kemono Body**.
+Proof of ownership is will be required if you request support or service for this product.
 
-Proof of ownership will be asked and required if you request services about this product.
-
-**Why?**
-
-  - I was not satisfied with the stock script included in the Kemono body.
-  - At the time (June 2017), it was impossible to combine the Starbright Fitted Kemono Torso and the Utilizator Kemono body into a single linkset.
-  - To prove (myself and others) that I could do it.
-  - I am easily bored and I can't sit still doing nothing.
+#### Current Status
   
-  **Current Status**
-  
-  The best way to keep track is to look at the Projects tab.
+  The best way to keep track of this product is to look at the Projects tab.
  
-  **The Future**
+#### The Future
   
   I plan to include support for the following:
   
@@ -45,3 +35,24 @@ Proof of ownership will be asked and required if you request services about this
   How these different body parts will be supported is still TBD.
 
 Support for the kApp skin applier is planned, but closed source requirements prevents this feature from ever touching this repository. An in-world vendor will exist for this feature and similar proprietary conveniences.
+
+## FAQ
+
+### Why re-script the Kemono body?**
+
+  - I was not satisfied with the stock script included in the Kemono body.
+  - When I started writing this script (June 2017), it was impossible to combine the Starbright Fitted Kemono Torso and the Utilizator Kemono body into a single linkset. There were other issues and me and a colleague have been debating re-writing it for a year prior but that was the deciding factor.
+  - To prove (myself and others) that I was smart enough to succeed.
+  - Boredom, and developing my ability to focus on a project for more than a week.
+  
+### Why open-source?
+
+*Science isn't about "Why?", it's about "Why not?!" - Cave Johnson
+More seriously, because I like Open-Source. I realize this is probably a terrible idea and I am probably angering a few people by doing this. I don't really care that much. The UTILIZATOR Kemono and the Starbright Fitted Kemono Torso are good products, you should buy them. I'm only making my personal rescript available to a wider audience in case it helps someone else.
+
+### Are you rich? Why are you not selling this? SHUT UP AND TAKE MY MONEY?!?!
+
+Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mostly in the form of precompiled scripts, support, personalized modifications, and a closed-source version with an in-world updater and applier support (if I can get that one).
+
+If you are interested in participating in the development and improvement of this product, [hit me up in world](secondlife:///app/agent/f1a73716-4ad2-4548-9f0e-634c7a98fe86/im) ([Alternate link](https://my.secondlife.com/xenhat.liamano)
+Donations are welcome, just throw L$ at me. I also have a paypal.
