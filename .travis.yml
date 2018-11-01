@@ -3,7 +3,7 @@
 #     packages:
 #     - unzip
 #     - mcpp
-language: generic
+language: none
 git:
   depth: 1
 # branches:
