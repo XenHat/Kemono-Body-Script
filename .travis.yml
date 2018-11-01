@@ -16,13 +16,13 @@ script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
-after_success:
-- git config credential.helper "store --file=.git/credentials"
-- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+# after_success:
+# - git config credential.helper "store --file=.git/credentials"
+# - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 #- git tag | grep travis_ | xargs -n 1 -i% git push origin :refs/tags/%
-- git tag | grep travis_ | xargs -n 1 -I% git push origin :refs/tags/%
-- git add compiled/xenhat.kemono.body.lsl
-- bash ./travis-ci-git-commit.bash
+# - git tag | grep travis_ | xargs -n 1 -I% git push origin :refs/tags/%
+# - git add compiled/xenhat.kemono.body.lsl
+# - bash ./travis-ci-git-commit.bash
 env:
   global:
     secure: yKaFDOhjfiR2EHv8+0MNLP/warrmfeVnttF2TY5AG8lpNptVHDRBvsmRgnXjPjHiBbDMZLD7I4EeXnjxE9e2/E8NViHLDmjznaPJyMXRDgkwVXwcx9hwW1FGdS2vLIJpDv078g+FzPDOcxTF59aBpcDvtwwNn5PcJA6K44QKU0RWQEmn4VrNiufMJRyIDiNI+2Q4jcorRJ4egpQ7e/RXatGUk8SEc1MxZN6vbVyC147EPK6q0gl+NGsrVLIWTSMG43al/rI0iWuWioynwOIhHkUf+NVaUjbW60z48X/2wKOUbRQ9X7BHiSn+qvtmql+QRnhuAM0s6O3XMB4xtuETBxgauDK7RJWySNNnH6AAg670xwgqBNUT6A8XOM0LsT1ycn5Lc8EDdI/+WUaSfTTZK9ZfEOVE25M9b012Jgu/5evBrBHkfm0ADPYFI12NvM/asN1OH2QZIZM0C6L6/s5H4Yj/Ld6D/UmSdGOzBJNCfxnEN3RY13v3PCH6h4Bl16WnHgGY1MXSJl2KCKiDM0ZWy8VSaOvQf3Y4IBqocFjAsu974BvALp6tr9/yug2r3f56ORrx9ZifnxSyzPjEBI0rSeu5c3WrwsLozCOvIn5KDHkiWC07uVStq+vSTE7RHu4FXLfddPWQmieRxWNqglU0qbpcHaii1gOJB2o/9dZGUwc=
