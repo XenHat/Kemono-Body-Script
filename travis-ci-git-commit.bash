@@ -4,10 +4,10 @@
 # see https://github.com/travis-ci/travis-ci/issues/1701
 # 
 # set -o errexit -o nounset
-setup_git() {
+# setup_git() {
   # git config --global user.email "travis@travis-ci.org"
   # git config --global user.name "Travis CI"
-}
+# }
 
 function travis-branch-commit() {
     local head_ref branch_ref
@@ -68,5 +68,5 @@ function err() {
     msg "$*" 1>&2
 }
 
-setup_git
+# setup_git
 travis-branch-commit
