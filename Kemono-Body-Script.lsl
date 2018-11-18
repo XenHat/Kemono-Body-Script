@@ -1257,11 +1257,13 @@ xlProcessCommand(integer send_params)
                             dSay("YES3")
                             faces_l=xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
                         }
+                        #ifdef DEBUG
                         else
                         {
                             dSay("NO3")
                             debugLogic(mod_command)
                         }
+                        #endif
                         integer faces_count=xlListLen2MaxID(faces_l) + 1;
                         integer i2 = 0;
                         for(;i2 < faces_count;i2++)
@@ -1330,7 +1332,7 @@ xlProcessCommand(integer send_params)
                         debugLogic(faces)
                         debugLogic(llList2Integer(g_LinkDB_l,
                                     llListFindList(g_LinkDB_l, [llList2String(
-                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1));
+                            s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1))
                         debugLogic(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                         list snd_lvl_params = [
                         // PG meshes
