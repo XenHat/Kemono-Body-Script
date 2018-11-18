@@ -713,9 +713,6 @@ xlProcessCommand(integer send_params)
                         else if( 8 ==mod_command){
                             faces_l=xlGetFacesByBladeName( "butt" );
                         }
-                        else
-                        {
-                        }
                         integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
                         integer i2 = 0;
                         for(;i2 < faces_count;i2++)
@@ -750,7 +747,6 @@ xlProcessCommand(integer send_params)
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                         list faces = xlGetFacesByBladeName( "nips" );
-                        ;
                         list snd_lvl_params = [
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
                                 PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
