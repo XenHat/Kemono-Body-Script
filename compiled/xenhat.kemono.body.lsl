@@ -30,7 +30,6 @@ key g_Last_k;
 list g_LinkDB_l=[];
 list g_AttmntAuthedKeys_l;
 string g_LastCommand_s;
-
 string g_AnimDeform;
 string g_AnimUndeform;
 list xlGetFacesByBladeName(string name){
@@ -353,12 +352,10 @@ list xlBladeNameToPrimNames(string name){
         {
             if (1==g_CurrentFittedNipAlpha)
             {
-
                 return [ "NipAlpha" ];
             }
             else if (2==g_CurrentFittedNipAlpha)
             {
-
                 return [ "NipState0" ];
             }
             else
@@ -422,8 +419,6 @@ xlProcessCommandWrapper()
                 reset();
             }
             else if(g_LastCommand_s=="Hlegs"){
-
-
                 if(!human_mode){
                     g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
@@ -431,11 +426,9 @@ xlProcessCommandWrapper()
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
                 }
-
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
             }
             else if(g_LastCommand_s=="Flegs"){
-
                 if(human_mode){
                     g_LastCommand_s = "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
@@ -443,11 +436,8 @@ xlProcessCommandWrapper()
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
                 }
-
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
+                llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
             }
-
-
             else if(g_LastCommand_s == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
                 llStopAnimation("Kem-hand-R-hold");
@@ -543,28 +533,20 @@ xlProcessCommandWrapper()
              else{
                 if(llSubStringIndex(g_LastCommand_s, "resCLdat")==0)
                 {
-
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                         list data = llParseString2List(g_LastCommand_s,[":"], []);
-
-
                         string clothDesc = llList2String(data,4);
                         integer attachPoint = llList2Integer(data,6);
                         if("Top"==clothDesc)
                         {
                             if(0==attachPoint)
                             {
-
-
-
-
                                 g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
                                 xlProcessCommand(TRUE);
                             }
                             else
                             {
-
                                 g_PreviousFittedNipState=g_CurrentFittedNipState;
                             }
                         }
@@ -584,10 +566,6 @@ xlProcessCommand(integer send_params)
     integer i_make_visible = -1;
     list local_params;
     integer mesh_count_index=0;
-
-
-
-
     integer mod_command = -1;
     integer mod_command_2 = -1;
     for (;index < list_size ; index++)
@@ -595,14 +573,11 @@ xlProcessCommand(integer send_params)
         ;
         ;
         command = llList2String(input_data,index);
-
         if(0==index )
         {
             ;
             if("setnip"==command)
             {
-
-
                 {
                     mesh_count_index= ((llGetListLength(s_FittedNipsMeshNames))-1) ;
                     mod_command= 16 ;
@@ -695,13 +670,11 @@ xlProcessCommand(integer send_params)
                         ;
                         mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
                         ;
-
                         i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
                         ;
                          if(0==param)
                          {
                             mod_command= 16 ;
-
                             ;
                             param=g_PreviousFittedNipState;
                          }
@@ -723,11 +696,6 @@ xlProcessCommand(integer send_params)
                                 mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
                             }
                         }
-
-
-
-
-
                     }
                     else if( 32 ==mod_command)
                     {
@@ -747,7 +715,6 @@ xlProcessCommand(integer send_params)
                     if(llStringLength(mesh_name)>0)
                     {
                         ;
-
                         ;
                         list prim_names = xlBladeNameToPrimNames(mesh_name);
                         ;
@@ -756,7 +723,6 @@ xlProcessCommand(integer send_params)
                         ;
                         ;
                         local_params +=[PRIM_LINK_TARGET,link_id];
-
                         list faces_l=[];
                         if( 16 ==mod_command ||  2 ==mod_command){
                             ;
@@ -812,7 +778,6 @@ xlProcessCommand(integer send_params)
                 }
                 if( "breast" ==command )
                 {
-
                     ;
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
@@ -821,7 +786,6 @@ xlProcessCommand(integer send_params)
                         ;
                         ;
                         list snd_lvl_params = [
-
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
                                 PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
@@ -833,7 +797,6 @@ xlProcessCommand(integer send_params)
                                     && (g_CurrentFittedNipState == 0
                                         ||  (!!(g_RuntimeBodyStateSettings & 2 ))
                                         ),
-
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "TorsoEtc" ])+1),
                                 PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
@@ -877,7 +840,6 @@ xlProcessCommand(integer send_params)
 redeform(){
     if(g_HasAnimPerms)
     {
-
         llStopAnimation(g_AnimUndeform);
         llStartAnimation(g_AnimDeform);
     }
@@ -899,10 +861,8 @@ resetHands()
     }
 }
 reset(){
-
     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
     {
-
         integer i;
         list params;
         for(i=0;i<llGetListLength(s_KFTPelvisMeshes);i++)
@@ -922,14 +882,8 @@ reset(){
     {
         g_LastCommand_s = ":nipalpha:"+(string) 0 ;
         xlProcessCommand(TRUE);
-
-
-
-
         g_LastCommand_s = ":setnip:"+(string) 1 ;
         xlProcessCommand(TRUE);
-
-
     }
     resetHands();
 }
@@ -941,7 +895,6 @@ detectLinkSetMods()
         string name=llGetLinkName(part);
         if(!found_fitted_torso){
             if(name ==  "Fitted Torso Old Root" ){
-
                 found_fitted_torso = TRUE;
                 name= "Fitted Kemono Torso" ;
             }
@@ -966,13 +919,11 @@ detectLinkSetMods()
     list data = llCSV2List(llGetObjectDesc());
     human_mode = llList2Integer(data,0);
     if(llListFindList(g_LinkDB_l,[ "LFleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RFleg" ]) == -1){
-
         g_LastCommand_s="Hlegs";
         xlProcessCommandWrapper();
         llOwnerSay("Adjusted for missing animal legs");
     }
     else if(llListFindList(g_LinkDB_l,[ "LHleg" ]) == -1 && llListFindList(g_LinkDB_l,[ "RHleg" ]) == -1){
-
         g_LastCommand_s="Flegs";
         xlProcessCommandWrapper();
         llOwnerSay("Adjusted for missing human legs");
@@ -990,7 +941,7 @@ default {
     }
     state_entry(){
         if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater" ){
-            llSetObjectDesc((string)(human_mode) + "," +  "0.3.28" );
+            llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
            state dead;
         }
         ;
@@ -1001,13 +952,11 @@ basename=llGetSubString(self,0,-llStringLength(tail) - 1);}}integer n=llGetInven
 while(n-- > 0){string item=llGetInventoryName(INVENTORY_SCRIPT,n);
 if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item);llOwnerSay("Upgraded to "+ tail);}}
         g_Owner_k=llGetOwner();
-
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
             + "XenHat/"+ "Kemono-Body-Script"
             +"/releases/latest?access_token="
             +"603ee815cda6fb45fcc16876effbda017f158bef",
             [HTTP_BODY_MAXLENGTH,16384],"");
-
         detectLinkSetMods();
         if(llGetAttached()){
             llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
@@ -1022,23 +971,18 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         key object_owner_k=llGetOwnerKey(id);
         if(object_owner_k != g_Owner_k)
         {
-
-
             if(object_owner_k != id){
-
                 return;
             }
             if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1){
                 return;
             }
-
         }
         else
         {
             integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
             if(separatorIndex < 0) separatorIndex = 0;
             string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
-
             if(first_command=="add")
             {
                 if(llGetFreeMemory() > 2048){
@@ -1057,17 +1001,13 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         xlProcessCommandWrapper();
     }
     on_rez(integer p){
-
         llSleep(3);
-
         g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
             + "XenHat/"+ "Kemono-Body-Script"
             +"/releases/latest?access_token="
             +"603ee815cda6fb45fcc16876effbda017f158bef",
             [HTTP_BODY_MAXLENGTH,16384],"");
-
     }
-
     attach(key id){
         if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater" ){return;}
         if(id==NULL_KEY){
@@ -1078,17 +1018,11 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             llStartAnimation(g_AnimDeform);
         }
     }
-
     run_time_permissions(integer perm){
-
-
-
-
         g_HasAnimPerms=TRUE;
         llSetTimerEvent(5);
     }
     timer(){
-
         if(!g_HasAnimPerms){
             llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
         }
@@ -1101,19 +1035,16 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.28" ) return;
-        list cur_version_l=llParseString2List( "0.3.28" ,["."],[""]);
+        if(new_version_s== "0.3.30" ) return;
+        list cur_version_l=llParseString2List( "0.3.30" ,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
-
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
             jump update;
         }
-
         else if(llList2Integer(new_version_l,1) >
             llList2Integer(cur_version_l,1)){
             jump update;
         }
-
         else if(llList2Integer(new_version_l,2) >
             llList2Integer(cur_version_l,2)){
             jump update;
@@ -1127,7 +1058,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             update_description="";
         }
         string changelog = update_description;
-        update_description="\nAn update is avaible! ("+ "0.3.28"  +"🡂"+new_version_s+")\n\""
+        update_description="\nAn update is avaible! ("+ "0.3.30"  +"🡂"+new_version_s+")\n\""
             +update_title+"\"\n"+changelog+"\n";
         string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
@@ -1135,17 +1066,15 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llOwnerSay(update_description+link);
         if(llStringLength(update_description) > (512 - llStringLength(link))){
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.28" +"..."+new_version_s+" Changes for "
-        + "0.3.28" +"🡂"+new_version_s+"]";
+        +"/compare/"+ "0.3.30" +"..."+new_version_s+" Changes for "
+        + "0.3.30" +"🡂"+new_version_s+"]";
         }
         llDialog(g_Owner_k,update_description+link,[],-1);
     }
-
 }
 state dead
 {
     state_entry()
     {
-
     }
 }
