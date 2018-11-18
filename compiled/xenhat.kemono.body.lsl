@@ -1,4 +1,5 @@
 float g_Config_MaximumOpacity=1.00;
+string g_internal_version_s = "0.3.31";
 string KM_HUD_RESET_CMD = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR";
 list s_FittedNipsMeshNames =[
 "NipState0" ,
@@ -426,7 +427,7 @@ xlProcessCommandWrapper()
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
                 }
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
+                llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             else if(g_LastCommand_s=="Flegs"){
                 if(human_mode){
@@ -436,7 +437,7 @@ xlProcessCommandWrapper()
                     g_LastCommand_s = "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
                     xlProcessCommand(TRUE);
                 }
-                llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
+                llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
             }
             else if(g_LastCommand_s == "Rhand:1"){
                 llStopAnimation("Kem-hand-R-fist");
@@ -941,7 +942,7 @@ default {
     }
     state_entry(){
         if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater" ){
-            llSetObjectDesc((string)(human_mode) + "," +  "0.3.30" );
+            llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
            state dead;
         }
         ;
@@ -1035,8 +1036,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         if(request_id !=g_internal_httprid_k) return;
         g_internal_httprid_k=NULL_KEY;
         string new_version_s=llJsonGetValue(body,["tag_name"]);
-        if(new_version_s== "0.3.30" ) return;
-        list cur_version_l=llParseString2List( "0.3.30" ,["."],[""]);
+        if(new_version_s==g_internal_version_s) return;
+        list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
         list new_version_l=llParseString2List(new_version_s,["."],[""]);
         if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0)){
             jump update;
@@ -1058,7 +1059,7 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
             update_description="";
         }
         string changelog = update_description;
-        update_description="\nAn update is avaible! ("+ "0.3.30"  +"🡂"+new_version_s+")\n\""
+        update_description="\nAn update is avaible! ("+g_internal_version_s +"🡂"+new_version_s+")\n\""
             +update_title+"\"\n"+changelog+"\n";
         string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
         + "XenHat/"+ "Kemono-Body-Script" +"/"+new_version_s+"/compiled/"+ "xenhat.kemono.body.lsl" +" "
@@ -1066,8 +1067,8 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         llOwnerSay(update_description+link);
         if(llStringLength(update_description) > (512 - llStringLength(link))){
         update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+ "Kemono-Body-Script"
-        +"/compare/"+ "0.3.30" +"..."+new_version_s+" Changes for "
-        + "0.3.30" +"🡂"+new_version_s+"]";
+        +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
+        +g_internal_version_s+"🡂"+new_version_s+"]";
         }
         llDialog(g_Owner_k,update_description+link,[],-1);
     }
