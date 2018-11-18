@@ -41,7 +41,7 @@ function travis-branch-commit() {
         return 1
     fi
     # Force-replacing travis tag, only keep one
-    export git_tag="travis_ok"
+    export git_tag="ci-ignore"
     if ! git tag "$git_tag" -f -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"; then
         err "failed to create git tag: $git_tag"
         return 1
