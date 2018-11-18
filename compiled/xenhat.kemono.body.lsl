@@ -597,7 +597,7 @@ xlProcessCommand(integer send_params) {
           if(llStringLength(mesh_name)>0) {
             list prim_names = xlBladeNameToPrimNames(mesh_name);
             integer link_id=llList2Integer(g_LinkDB_l,
-                                           llListFindList(g_LinkDB_l ,prim_names)+1);
+                                           llListFindList(g_LinkDB_l,prim_names)+1);
             local_params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
             if(16 ==mod_command ||  2 ==mod_command)
@@ -721,7 +721,7 @@ reset() {
       string mesh_name = llList2String(s_KFTPelvisMeshes,i);
       list prim_names = xlBladeNameToPrimNames(mesh_name);
       integer link_id=llList2Integer(g_LinkDB_l,
-                                     llListFindList(g_LinkDB_l ,prim_names)+1);
+                                     llListFindList(g_LinkDB_l,prim_names)+1);
       params+=[PRIM_LINK_TARGET,link_id];
       params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
     }
@@ -913,8 +913,8 @@ default {
                   + "Kemono-Body-Script" +".lsl]";
     llOwnerSay(update_description+link);
     if(llStringLength(update_description) > (512 - llStringLength(link))) {
-      update_description="Too many changes, see ["+"https://github.com/"+ "XenHat/"+
-                         "Kemono-Body-Script"
+      update_description="Too many changes, see ["+"https://github.com/"
+                         + "XenHat/"+ "Kemono-Body-Script"
                          +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
                          +g_internal_version_s+"🡂"+new_version_s+"]";
     }
