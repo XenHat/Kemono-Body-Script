@@ -3,10 +3,10 @@
 # be sure to avoid creating a Travis CI fork bomb
 # see https://github.com/travis-ci/travis-ci/issues/1701
 # 
-set -o errexit -o nounset
+# set -o errexit -o nounset
 setup_git() {
-  git config --global user.email "travis@travis-ci.org"
-  git config --global user.name "Travis CI"
+  # git config --global user.email "travis@travis-ci.org"
+  # git config --global user.name "Travis CI"
 }
 
 function travis-branch-commit() {
