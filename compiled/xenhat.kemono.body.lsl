@@ -368,7 +368,6 @@ list xlBladeNameToPrimNames(string name){
         return [ "PG" ];
     }
     else if(name== "NipAlpha" ){
-        ;
         if( (!!(g_RuntimeBodyStateSettings & 1 )) )
             return [ "NipAlpha" ];
         return [ "PG" ];
@@ -562,7 +561,6 @@ xlProcessCommand(integer send_params)
     list input_data = llParseString2List(g_LastCommand_s,[":"],[]);
     string command = llList2String(input_data,0);
     integer list_size = llGetListLength(input_data);
-    ;
     integer index = 0;
     integer i_make_visible = -1;
     list local_params;
@@ -571,12 +569,9 @@ xlProcessCommand(integer send_params)
     integer mod_command_2 = -1;
     for (;index < list_size ; index++)
     {
-        ;
-        ;
         command = llList2String(input_data,index);
         if(0==index )
         {
-            ;
             if("setnip"==command)
             {
                 {
@@ -621,11 +616,9 @@ xlProcessCommand(integer send_params)
         }
         else
         {
-            ;
             if(mod_command<1){
                 if( "nips" ==command)
                 {
-                    ;
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                       mod_command= 2 ;
@@ -640,7 +633,6 @@ xlProcessCommand(integer send_params)
                 }
                 else if( "vagoo" ==command)
                 {
-                    ;
                     mod_command= 4 ;
                     mod_command_2= 2 ;
                     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4 )) | ( 4 * !i_make_visible); ;
@@ -653,42 +645,32 @@ xlProcessCommand(integer send_params)
             if( 4 ==mod_command_2)
             {
                 integer param = llList2Integer(input_data,index);
-                ;
                 string mesh_name="";
                 for(;mesh_count_index > -1;mesh_count_index--)
                 {
-                    ;
-                    ;
                     if( 2 ==mod_command)
                     {
-                        ;
                         g_LastCommand_s="setnip:"+(string)i_make_visible;
                         xlProcessCommand(TRUE);
                     }
                     if( 64 ==mod_command)
                     {
                         g_CurrentFittedNipAlpha=param;
-                        ;
                         mesh_name=llList2String(s_FittedNipsMeshNames,mesh_count_index);
-                        ;
                         i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
-                        ;
                          if(0==param)
                          {
                             mod_command= 16 ;
-                            ;
                             param=g_PreviousFittedNipState;
                          }
                          else
                          {
                             g_PreviousFittedNipState=g_CurrentFittedNipState;
-                            ;
                          }
                     }
                     if( 16 ==mod_command)
                     {
                         g_CurrentFittedNipState=param;
-                        ;
                         if(!g_CurrentFittedNipAlpha)
                         {
                             {
@@ -712,46 +694,32 @@ xlProcessCommand(integer send_params)
                             (mesh_count_index==param);
                         mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
                     }
-                    ;
                     if(llStringLength(mesh_name)>0)
                     {
-                        ;
-                        ;
                         list prim_names = xlBladeNameToPrimNames(mesh_name);
-                        ;
                         integer link_id=llList2Integer(g_LinkDB_l,
                             llListFindList(g_LinkDB_l ,prim_names)+1);
-                        ;
-                        ;
                         local_params +=[PRIM_LINK_TARGET,link_id];
                         list faces_l=[];
                         if( 16 ==mod_command ||  2 ==mod_command){
-                            ;
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 32 ==mod_command){
-                            ;
                             faces_l=xlGetFacesByBladeName( "vagoo" );
                         }
                         else if( 64 ==mod_command){
-                            ;
                             faces_l=xlGetFacesByBladeName( "nips" );
                         }
                         else if( 8 ==mod_command){
-                            ;
                             faces_l=xlGetFacesByBladeName( "butt" );
                         }
                         else
                         {
-                            ;
-                            ;
                         }
                         integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
                         integer i2 = 0;
                         for(;i2 < faces_count;i2++)
                         {
-                            ;
-                            ;
                             local_params+=[PRIM_COLOR,
                                 llList2Integer(faces_l,i2),<1,1,1>,
                                     i_make_visible * g_Config_MaximumOpacity
@@ -779,12 +747,9 @@ xlProcessCommand(integer send_params)
                 }
                 if( "breast" ==command )
                 {
-                    ;
                     if( (!!(g_RuntimeBodyStateSettings & 1 )) )
                     {
                         list faces = xlGetFacesByBladeName( "nips" );
-                        ;
-                        ;
                         ;
                         list snd_lvl_params = [
                         PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
@@ -945,7 +910,6 @@ default {
             llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
            state dead;
         }
-        ;
 string self=llGetScriptName();string basename=self;string tail = "MISSING_VERSION";if(llSubStringIndex(self," ") >= 0){integer start=2;
 tail=llGetSubString(self,llStringLength(self) - start,-1);while(llGetSubString(tail,0,0)!=" ")
 {start++;tail=llGetSubString(self,llStringLength(self) - start,-1);}if((integer)tail > 0){
@@ -964,7 +928,6 @@ if(item != self && 0 == llSubStringIndex(item,basename)){llRemoveInventory(item)
         }
         llSetText("",ZERO_VECTOR,0.0);
         llListen( -34525475 ,"","","");
-        ;
     }
     listen(integer channel,string name,key id,string message){
         if(id==llGetKey())
