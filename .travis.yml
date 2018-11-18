@@ -1,8 +1,8 @@
-# addons:
-#   apt:
-#     packages:
-#     - unzip
-#     - mcpp
+addons:
+  apt:
+    packages:
+    - unzip
+    - mcpp
 language: none
 git:
   depth: 1
@@ -13,8 +13,8 @@ before_script:
 - wget https://github.com/Makopo/lslint/releases/download/v1.2/lslint_v1.2_linux.zip -O lslint.zip
 - unzip lslint.zip
 script:
-# - mkdir -p compiled
-# - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
+- mkdir -p compiled
+- mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
 # after_success:
 # - git config credential.helper "store --file=.git/credentials"
