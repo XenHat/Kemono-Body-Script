@@ -7,13 +7,13 @@ git:
 env:
   - secure: CzY0p/8Pb40VLOJ6FqZKG3T3VtBwaWTJassNBHVczxyr2zIpVbILbdfO6u9bwGNX+CWvvGslz1cX2G86/O7XnNOHcTaMvuzjCizX0HuszxobJVznQOocM6JtcuCdJOmoCSjuUgHywNHv1nEmAGp3Gka7Rxz+gPwNbMyFuvDmRfwRniw46eANb1+GzirPvPRMcRDa6S4HdLs8xOickcyRrOpE4FFgmnbOJH2x40bxRraVbHn0Gex6MCod73qX6aQaq+zVcWTUZ+AtZaGvE7L7LD4cunK8pkrtM2bv05MQc8cf/wpfQsHB/oVDJc+CQGMy5tjKnfvyZjjemIlrjguGow== 
 before_script:
-- apt-get install unzip mcpp -y
+- apt-get install astyle unzip mcpp -y
 - wget https://github.com/Makopo/lslint/releases/download/v1.2/lslint_v1.2_linux.zip -O lslint.zip
 - unzip lslint.zip
 script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
-- sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
+- astyle --style=java -xj -c --max-code-length=80 -s2 -xW -U -xe compiled/xenhat.kemono.body.lsl
 - cat compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
 after_success:
