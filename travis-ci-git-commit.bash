@@ -38,7 +38,7 @@ function travis-branch-commit() {
     # make Travis CI skip this build
     if ! git commit -m "Update precompiled version [ci skip]"; then
         err "failed to commit updates"
-        return 1
+        return 0
     fi
     # Force-replacing travis tag, only keep one
     export git_tag="ci-ignore"
