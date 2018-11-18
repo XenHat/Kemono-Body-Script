@@ -12,6 +12,7 @@ script:
 - mkdir -p compiled
 - mcpp -P "Kemono-Body-Script.lsl" > compiled/xenhat.kemono.body.lsl
 - sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
+- cat compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
 # after_success:
 # - git config credential.helper "store --file=.git/credentials"
