@@ -80,7 +80,7 @@ o.OOOo.         .oOo                                  O OOooOoO
 */
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
-#define g_internal_version_s "0.3.30" /* NOTE: Only bump on bugfix ok?*/
+string g_internal_version_s = "0.3.31"; /* NOTE: Only bump on bugfix ok?*/
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
