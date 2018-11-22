@@ -103,7 +103,7 @@ o.OOOo.         .oOo                                  O OOooOoO
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.3.32"; /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.32" /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -112,9 +112,9 @@ string g_internal_version_s = "0.3.32"; /* NOTE: Only bump on bugfix ok?*/
   */
   // #define UNDEFORM_BY_DEFAULT
   #ifdef UNDEFORM_BY_DEFAULT
-    integer undeform_instead=TRUE;
+    #define undeform_instead 1
   #else
-    integer undeform_instead=FALSE;
+    #define undeform_instead 0
   #endif
 #endif
 #ifndef DISABLE_GITHUB_UPDATER
@@ -136,8 +136,11 @@ llSetLinkPrimitiveParamsFast(a,b)
   #define debugLogic(a) /**/
   #define dSay(a) /**/
 #endif
-string KM_HUD_RESET_CMD =
-  "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR";
+#define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
+        :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
+        :thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
+        :shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
+        :armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
 -   Set Nipple Alpha
         0 = None : 1 = Partial : 2 = Full
@@ -274,18 +277,18 @@ MESH_NECK,\
 MESH_PG_LAYER,\
 MESH_ROOT\
 ]
-list s_FittedNipsMeshNames =[
-                              MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/
-                              MESH_FITTED_TORSO_ETC,/* 1 */
-                              MESH_FITTED_TORSO_NIP_1, /* 2 */
-                              MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */
-                             ];
-list s_KFTPelvisMeshes = [
-                           "BitState0",
-                           "BitState1",
-                           "BitState2",
-                           "BitState3"
-                          ];
+#define s_FittedNipsMeshNames [\
+                              MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
+                              MESH_FITTED_TORSO_ETC,/* 1 */\
+                              MESH_FITTED_TORSO_NIP_1, /* 2 */\
+                              MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
+                             ]
+#define s_KFTPelvisMeshes [\
+                           "BitState0",\
+                           "BitState1",\
+                           "BitState2",\
+                           "BitState3"\
+                          ]
 /*
 o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
  O    `o        O    o                               O   o     o  o        O    O
@@ -378,7 +381,7 @@ integer g_PreviousFittedNipAlpha=0;
 integer g_PreviousFittedVagState=1;
 integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
-integer g_TogglingPGMeshes=FALSE;
+// integer g_TogglingPGMeshes=FALSE;
 integer human_mode=TRUE; /* Prefer when available*/
 key g_Owner_k;
 key g_Last_k;
@@ -553,8 +556,8 @@ list xlGetFacesByBladeName(string name) {
       * The bottom hip mesh half is controlled independently using
       * setbutt
       */
-      if(g_TogglingPGMeshes)
-        return [0,1,2,3,4,5];
+      // if(g_TogglingPGMeshes)
+        // return [0,1,2,3,4,5];
       return [0,1];
     }
     return [0,1];
@@ -566,10 +569,10 @@ list xlGetFacesByBladeName(string name) {
       *  setbutt
       */
 #ifdef DEBUG_COMMAND
-      llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
+      //llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
 #endif
-      if(g_TogglingPGMeshes)
-        return [0,1,2,3,4,5];
+      //if(g_TogglingPGMeshes)
+      //  return [0,1,2,3,4,5];
       return [2,3,4,5];
     }
     return [];
@@ -739,8 +742,8 @@ list xlBladeNameToPrimNames(string name) {
     return [MESH_PG_LAYER];
   } else if(name==API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-      if(g_TogglingPGMeshes)
-        return [llList2String(s_KFTPelvisMeshes,0)];
+      //if(g_TogglingPGMeshes)
+      //  return [llList2String(s_KFTPelvisMeshes,0)];
       return [llList2String(s_KFTPelvisMeshes,g_CurrentFittedVagState)];
     }
     return [MESH_PG_LAYER];
@@ -1486,6 +1489,9 @@ default {
     }
   }
   state_entry() {
+#ifdef PROFILE_BODY_SCRIPT
+    llScriptProfiler(PROFILE_SCRIPT_MEMORY);
+#endif
     bwToggle(g_RuntimeBodyStateSettings,FKT_PRESENT);
     if(llGetObjectName()==UPDATER_NAME) {
       llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
@@ -1513,9 +1519,7 @@ default {
         llOwnerSay("Upgraded to "+ tail);
       }
     }
-#ifdef PROFILE_BODY_SCRIPT
-    llScriptProfiler(PROFILE_SCRIPT_MEMORY);
-#endif
+
     g_Owner_k=llGetOwner();
 #ifdef GITHUB_UPDATER
     g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -1652,6 +1656,7 @@ default {
 #ifdef BENCHMARK
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
+  g_Last_k = NULL_KEY;
   }
   on_rez(integer p) {
     /*Wait a few seconds in case we're still rezzing*/
@@ -1722,24 +1727,24 @@ default {
 #endif
     }
 #endif
-#ifdef DEBUG_TEXT
-    string text;
-    text="[DEBUG]"+text;
-    text+="\nU: "+(string)llGetUsedMemory()
+string text;
+#ifdef DEBUG
+    text="[DEBUG]";
+#endif
 #ifdef PROFILE_BODY_SCRIPT
+    text+="\nU: "+(string)llGetUsedMemory()
           +"["+(string)llGetSPMaxMemory()+"]/"
-#else
-          +"/"
-#endif
           +(string)llGetMemoryLimit()+"B";
+#endif
 #ifdef DEBUG_FACE_SELECT
-    text+="\nPG_v:"+(string)g_TogglingPGMeshes;
+    //text+="\nPG_v:"+(string)g_TogglingPGMeshes;
 #endif
+#ifdef DEBUG_AUTH
     text+="\n"+(string)(xlListLen2MaxID(g_AttmntAuthedKeys_l)+1)
-          +" Keys\n \n ";
-    text+="\n \n \n \n \n \n ";
-    llSetText(text+"\n \n \n \n ",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+          +" Keys";
 #endif
+    text+="\n \n \n \n \n \n \n \n \n \n ";
+    llSetText(text,HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
   }
 #ifdef DEBUG_LISTEN
   link_message(integer sender_num, integer num, string message, key id) {
