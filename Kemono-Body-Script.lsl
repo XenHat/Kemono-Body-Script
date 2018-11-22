@@ -310,6 +310,16 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 *    usage:
 *        a=variable/set
 *        b=bit (define, see above)
+* Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
+* play with is:
+* 0000 0000 0000 0000 0000 0000 0000 0000
+* ie 00000000000000000000000000000010 = 2
+* The maximum value we can store is:
+    - 32 booleans, or bits.
+*   - 4294967295
+*   - 11111111111111111111111111111111
+* The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
+*   and so on...
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c);
 #define bwClear(a,b) a=(a & (~b))
@@ -1475,6 +1485,7 @@ default {
     }
   }
   state_entry() {
+    bwToggle(g_RuntimeBodyStateSettings,FKT_PRESENT);
     if(llGetObjectName()==UPDATER_NAME) {
       llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
       state dead;
