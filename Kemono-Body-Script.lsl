@@ -98,6 +98,7 @@ string g_internal_version_s = "0.3.31"; /* NOTE: Only bump on bugfix ok?*/
 // #define DEBUG_FACE_SELECT
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
+// #define PROFILE_BODY_SCRIPT
 /* End of debug defines */
 /* Normal Features that should be enabled */
 #define USE_DEFORM_ANIMS
@@ -1495,7 +1496,7 @@ default {
         llOwnerSay("Upgraded to "+ tail);
       }
     }
-#ifdef DEBUG_TEXT
+#ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
     g_Owner_k=llGetOwner();
@@ -1707,8 +1708,13 @@ default {
 #ifdef DEBUG_TEXT
     string text;
     text="[DEBUG]"+text;
-    text+="\nU: "+(string)llGetUsedMemory()+"["+(string)llGetSPMaxMemory()
-          +"]/"+(string)llGetMemoryLimit()+"B";
+    text+="\nU: "+(string)llGetUsedMemory()
+#ifdef PROFILE_BODY_SCRIPT
+          +"["+(string)llGetSPMaxMemory()+"]/"
+#else
+          +"/"
+#endif
+          +(string)llGetMemoryLimit()+"B";
 #ifdef DEBUG_FACE_SELECT
     text+="\nPG_v:"+(string)g_TogglingPGMeshes;
 #endif
