@@ -53,6 +53,30 @@ O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o
                                 OoO'
 */
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
+/* Debugging */
+/* TODO: Remove no longer needed code toggles here */
+// #define BENCHMARK
+// #define PRINT_UNHANDLED_COMMANDS
+// #define DEBUG
+// #define DEBUG_SELF_TEST
+// #define DEBUG_TEXT
+// #define DEBUG_AUTH
+// #define DEBUG_ENTIRE_BODY_ALPHA
+// #define DEBUG_LISTEN
+// #define DEBUG_LISTEN_LITE
+// #define DEBUG_COMMAND
+// #define DEBUG_DATA
+// #define DEBUG_PARAMS
+// #define DEBUG_FACE_SELECT
+// #define DEBUG_FACE_TOUCH
+// #define DEBUG_FUNCTIONS
+// #define PROFILE_BODY_SCRIPT
+/* End of debug defines */
+/* Normal Features that should be enabled */
+#define USE_DEFORM_ANIMS
+/* Optional features, if you need them. */
+// #define SMART_DEFORM
+// ============================================================================
 /*
  .oOOOo.               .oOo                o.OOoOoo             o
 .O     o               O    o               O                  O
@@ -78,29 +102,9 @@ o.OOOo.         .oOo                                  O OOooOoO
 */
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
+// =============================== Script begins here =========================
 string g_internal_version_s = "0.3.32"; /* NOTE: Only bump on bugfix ok?*/
-/* Debugging */
-/* TODO: Remove no longer needed code toggles here */
-// #define BENCHMARK
-// #define PRINT_UNHANDLED_COMMANDS
-// #define DEBUG
-// #define DEBUG_SELF_TEST
-// #define DEBUG_TEXT
-// #define DEBUG_AUTH
-// #define DEBUG_ENTIRE_BODY_ALPHA
-// #define DEBUG_LISTEN
-// #define DEBUG_LISTEN_LITE
-// #define DEBUG_COMMAND
-// #define DEBUG_DATA
-// #define DEBUG_PARAMS
-// #define DEBUG_FACE_SELECT
-// #define DEBUG_FACE_TOUCH
-// #define DEBUG_FUNCTIONS
-// #define PROFILE_BODY_SCRIPT
-/* End of debug defines */
-/* Normal Features that should be enabled */
-#define USE_DEFORM_ANIMS
-// #define SMART_DEFORM
+#define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
   Your shoulders will appear larger than they should. Small price to pay to not
@@ -113,7 +117,6 @@ string g_internal_version_s = "0.3.32"; /* NOTE: Only bump on bugfix ok?*/
     integer undeform_instead=FALSE;
   #endif
 #endif
-#define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifndef DISABLE_GITHUB_UPDATER
   #define GITHUB_UPDATER
 #endif
