@@ -52,8 +52,6 @@ O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o
                                    O
                                 OoO'
 */
-/* May not be available in all viewers */
-// #define USE_OPTIMIZER
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /*
  .oOOOo.               .oOo                o.OOoOoo             o
