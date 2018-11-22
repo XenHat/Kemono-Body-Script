@@ -315,7 +315,12 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 #define bwClear(a,b) a=(a & (~b))
 #define bwGet(a,b) (!!(a & b))
 #define bwSet(a,b) a=(a | b)
-#define bwToggle(a,b) a ^=1 << b
+/* Why can't we just do "a ^= b"? (C++) It's
+more succinct but it just won't compile that way. So
+"a = a ^ b" (old school) will
+have to do instead. Anyway, toggle using XOR..
+*/
+#define bwToggle(a,b) a=a ^ b
 #define xlListLen2MaxID(a) ((llGetListLength(a))-1)
 /*
 .oOOOo.                                                     O O       o            o
