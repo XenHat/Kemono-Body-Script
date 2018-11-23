@@ -56,7 +56,7 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
-// #define PRINT_UNHANDLED_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
