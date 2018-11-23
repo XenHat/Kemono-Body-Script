@@ -1025,9 +1025,10 @@ xlProcessCommand(integer send_params) {
 #endif
         }
       }
+      #define nope ["tail","skin","add" /* not here! */]
 #ifdef PRINT_UNHANDLED_COMMANDS
-      else
-        llOwnerSay("Unhandled command '"+command+"'");
+        else if(llListFindList(nope,[command]) == -1)
+        llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
 #endif
     } else {
       /* non-standard command done, and/or show/hide set,
@@ -1616,7 +1617,7 @@ default {
     } else { /* if(object_owner_k == g_Owner_k) */
       integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
       if(separatorIndex < 0) separatorIndex = 0;
-#ifdef DEBUG_AUTH
+#ifdef DEBUG_AUTH_POSITIVE
       llOwnerSay("Owner for [" +llKey2Name(id)+ "]is correct!");
 #endif
       string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
