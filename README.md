@@ -15,7 +15,7 @@ Proof of ownership is will be required if you request support or service for thi
 
 #### Current Status
   
-  The best way to keep track of this product is to look at the Projects tab.
+  The best way to keep track of this product is to [look at the Projects tab](https://github.com/XenHat/Kemono-Body-Script/projects/5). Features marked as "Done" are currently implemented.
  
 #### The Future
   
