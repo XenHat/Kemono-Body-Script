@@ -1549,14 +1549,14 @@ default {
     dSay("Ready.")
   }
   listen(integer channel,string name,key id,string message) {
-    if(id==llGetKey())
 #ifdef DEBUG_MESSAGE_FROM_SELF
+    if(id==llGetKey())
     {
       llOwnerSay("Message came from self, what?");
-#endif
       return;
-#ifdef DEBUG_MESSAGE_FROM_SELF
     }
+#else
+if (id != llGetKey()) {
 #endif
 #ifdef BENCHMARK
     llResetTime();
@@ -1658,6 +1658,9 @@ default {
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
   g_Last_k = NULL_KEY;
+#ifndef DEBUG_MESSAGE_FROM_SELF
+    }
+#endif
   }
   on_rez(integer p) {
     /*Wait a few seconds in case we're still rezzing*/
