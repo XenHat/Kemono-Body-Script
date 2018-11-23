@@ -375,74 +375,74 @@ xlProcessCommandWrapper() {
     }
     llSetObjectDesc((string)(human_mode) + "," +  "0.3.32");
   } else if(g_LastCommand_s == "Rhand:1") {
+    llStartAnimation("Kem-hand-R-relax");
     llStopAnimation("Kem-hand-R-fist");
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-point");
-    llStartAnimation("Kem-hand-R-relax");
     return;
   } else if(g_LastCommand_s == "Rhand:2") {
+    llStartAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-fist");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-point");
     llStopAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-R-hold");
     return;
   } else if(g_LastCommand_s == "Rhand:3") {
+    llStartAnimation("Kem-hand-R-fist");
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-point");
     llStopAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-R-fist");
     return;
   } else if(g_LastCommand_s == "Rhand:4") {
+    llStartAnimation("Kem-hand-R-point");
     llStopAnimation("Kem-hand-R-fist");
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-R-point");
     return;
   } else if(g_LastCommand_s == "Rhand:5") {
+    llStartAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-fist");
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-point");
     llStopAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-R-horns");
     return;
   } else if(g_LastCommand_s == "Lhand:1") {
+    llStartAnimation("Kem-hand-L-relax");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-horns");
     llStopAnimation("Kem-hand-L-point");
-    llStartAnimation("Kem-hand-L-relax");
     return;
   } else if(g_LastCommand_s == "Lhand:2") {
+    llStartAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-horns");
     llStopAnimation("Kem-hand-L-point");
     llStopAnimation("Kem-hand-L-relax");
-    llStartAnimation("Kem-hand-L-hold");
     return;
   } else if(g_LastCommand_s == "Lhand:3") {
+    llStartAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-horns");
     llStopAnimation("Kem-hand-L-point");
     llStopAnimation("Kem-hand-L-relax");
-    llStartAnimation("Kem-hand-L-fist");
     return;
   } else if(g_LastCommand_s == "Lhand:4") {
+    llStartAnimation("Kem-hand-L-point");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-horns");
     llStopAnimation("Kem-hand-L-relax");
-    llStartAnimation("Kem-hand-L-point");
     return;
   } else if(g_LastCommand_s == "Lhand:5") {
+    llStartAnimation("Kem-hand-L-horns");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-point");
     llStopAnimation("Kem-hand-L-relax");
-    llStartAnimation("Kem-hand-L-horns");
     return;
   } else if("reqFTdat"==g_LastCommand_s) {
     if((!!(g_RuntimeBodyStateSettings & 1))) {
@@ -683,12 +683,14 @@ xlProcessCommand(integer send_params) {
 }
 redeform() {
   if(g_HasAnimPerms) {
-    llStopAnimation(g_AnimUndeform);
     llStartAnimation(g_AnimDeform);
+    llStopAnimation(g_AnimUndeform);
   }
 }
 resetHands() {
   if(g_HasAnimPerms) {
+    llStartAnimation("Kem-hand-R-relax");
+    llStartAnimation("Kem-hand-L-relax");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-horns");
@@ -697,8 +699,6 @@ resetHands() {
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-point");
-    llStartAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-L-relax");
     redeform();
   }
 }
@@ -822,31 +822,31 @@ default {
     llListen(-34525475 ,"","","");
   }
   listen(integer channel,string name,key id,string message) {
-    if(id==llGetKey())
-      return;
-    key object_owner_k=llGetOwnerKey(id);
-    if(object_owner_k != g_Owner_k) {
-      if(object_owner_k != id)
-        return;
-      if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1)
-        return;
-    } else {
-      integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
-      if(separatorIndex < 0) separatorIndex = 0;
-      string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
-      if(first_command=="add") {
-        if(llGetFreeMemory() > 2048) {
-          if(id != g_Owner_k) {
-            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
-              g_AttmntAuthedKeys_l +=[id];
+    if(id != llGetKey()) {
+      key object_owner_k=llGetOwnerKey(id);
+      if(object_owner_k != g_Owner_k) {
+        if(object_owner_k != id)
+          return;
+        if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1)
+          return;
+      } else {
+        integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+        if(separatorIndex < 0) separatorIndex = 0;
+        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
+        if(first_command=="add") {
+          if(llGetFreeMemory() > 2048) {
+            if(id != g_Owner_k) {
+              if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1)
+                g_AttmntAuthedKeys_l +=[id];
+            }
           }
         }
       }
+      g_LastCommand_s = message;
+      g_Last_k = id;
+      xlProcessCommandWrapper();
+      g_Last_k = NULL_KEY;
     }
-    g_LastCommand_s = message;
-    g_Last_k = id;
-    xlProcessCommandWrapper();
-    g_Last_k = NULL_KEY;
   }
   on_rez(integer p) {
     llSleep(3);
@@ -860,10 +860,14 @@ default {
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater")
       return;
     if(id==NULL_KEY) {
-    } else {
+      llStartAnimation(g_AnimUndeform);
+      llStartAnimation("stand_1");
+      llStopAnimation(g_AnimDeform);
       llStopAnimation(g_AnimUndeform);
-      llSleep(0.1);
+    } else {
       llStartAnimation(g_AnimDeform);
+      llStopAnimation(g_AnimUndeform);
+      llStopAnimation(g_AnimUndeform);
     }
   }
   run_time_permissions(integer perm) {
