@@ -519,7 +519,8 @@ xlProcessCommand(integer send_params) {
           g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
                                                placeinlist,placeinlist);
         }
-      }
+      } else if(llListFindList(["tail","skin","add" ] ,[command]) == -1)
+        llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
     } else {
       if(mod_command<1) {
         if("nips" ==command) {
