@@ -1254,8 +1254,8 @@ xlProcessCommand(integer send_params) {
                                       llListFindList(g_LinkDB_l, [llList2String(
                                             s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1))
             debugLogic(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
-            debugLogic(g_CurrentFittedNipState);
-            debugLogic(i_make_visible);
+            debugLogic(g_CurrentFittedNipState)
+            debugLogic(i_make_visible)
             list snd_lvl_params = [
                                     // PG meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
@@ -1507,13 +1507,13 @@ default {
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
     bwClear(g_RuntimeBodyStateSettings,FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
     bwSet(g_RuntimeBodyStateSettings,FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     dSay("^^^^^^ This should be 1 ^^^^^^")
     bwClear(g_RuntimeBodyStateSettings,FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
     if(llGetObjectName()==UPDATER_NAME) {
       llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
