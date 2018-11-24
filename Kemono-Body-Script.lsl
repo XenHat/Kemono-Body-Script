@@ -1515,13 +1515,9 @@ default {
     bwClear(g_RuntimeBodyStateSettings,FKT_PRESENT);
     debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
-    if(llGetObjectName()==UPDATER_NAME) {
-      llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
-      state dead;
-    }
     dSay("Starting up...")
     string self=llGetScriptName();
-    string basename=self;
+    string basename="Enhanced Kemono Body";
     string tail = "MISSING_VERSION";
     if(llSubStringIndex(self," ") >= 0) {
       integer start=2;
@@ -1533,13 +1529,19 @@ default {
       if((integer)tail > 0)
         basename=llGetSubString(self,0,-llStringLength(tail) - 1);
     }
+    llOwnerSay("basename:"+basename);
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
-      if(item != self && 0 == llSubStringIndex(item,basename)) {
+      if(item != self && -1 != llSubStringIndex(item,basename)) {
+        llOwnerSay("Removing " + item);
         llRemoveInventory(item);
         llOwnerSay("Upgraded to "+ tail);
       }
+    }
+    if(llGetObjectName()==UPDATER_NAME) {
+      llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
+      state dead;
     }
 
     g_Owner_k=llGetOwner();
