@@ -1707,16 +1707,18 @@ if (id != llGetKey()) {
     *  it won't fire.
     */
     if(id==NULL_KEY) {
+      if(g_HasAnimPerms){
 //#ifdef USE_DEFORM_ANIMS_FOR_DETACH
-      llStartAnimation(g_AnimUndeform);
-      llStartAnimation("stand_1");
-      llStopAnimation(g_AnimDeform);
-      llStopAnimation(g_AnimUndeform);
+        llStartAnimation(g_AnimUndeform);
+        llStartAnimation("stand_1");
+        llStopAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
 //#endif
-    } else {
-      llStartAnimation(g_AnimDeform);
-      llStopAnimation(g_AnimUndeform);
-      llStopAnimation(g_AnimUndeform);
+      } else {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
     }
   }
 #endif
