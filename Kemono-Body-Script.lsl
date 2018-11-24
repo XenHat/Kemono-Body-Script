@@ -302,14 +302,23 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
                                                                                            OoO'
 */
 #define FKT_PRESENT 1
+#define HUMAN_LEGS 2
 /* PG States */
-#define KSB_PGNIPLS 2
-#define KSB_PGVAGOO 4
+#define KSB_PGNIPLS 4
+#define KSB_PGVAGOO 8
+//#define RESERVED 16
+//#define RESERVED 32
+//#define RESERVED 64
+//#define RESERVED 128
+//#define RESERVED 256
+//#define RESERVED 512
+//#define RESERVED 1024
+//#define RESERVED 2048
 /* Flags for blade sync purposes*/
-#define STARBRIGHT_FKT_HUD_BUTT 8
-#define STARBRIGHT_FKT_HUD_NIPS 16
-#define STARBRIGHT_FKT_HUD_VAGN 32
-#define STARBRIGHT_FKT_HUD_NIPH 64
+#define STARBRIGHT_FKT_HUD_BUTT 268435455
+#define STARBRIGHT_FKT_HUD_NIPS 536870911
+#define STARBRIGHT_FKT_HUD_VAGN 1073741823
+#define STARBRIGHT_FKT_HUD_NIPH 2147483647
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
 *    usage:
 *        a=variable/set
