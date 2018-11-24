@@ -491,24 +491,24 @@ xlProcessCommand(integer send_params) {
         {
           mesh_count_index= ((llGetListLength([ "NipState0" , "TorsoEtc" , "NipState1" ,
                                                 "NipAlpha" ]))-1) ;
-          mod_command= 16 ;
+          mod_command= 536870911 ;
           mod_command_2= 4 ;
         }
       } else if("nipalpha"==command) {
         mesh_count_index= ((llGetListLength([ "NipState0" , "TorsoEtc" , "NipState1" ,
                                               "NipAlpha" ]))-1) ;
-        mod_command= 64 ;
+        mod_command= 2147483647 ;
         mod_command_2= 4 ;
       } else if("setbutt"==command) {
         mesh_count_index= ((llGetListLength([ "BitState0", "BitState1", "BitState2",
                                               "BitState3" ]))-1) ;
-        mod_command= 8 ;
+        mod_command= 268435455 ;
         mod_command_2= 4 ;
       } else if("setvag"==command) {
         mesh_count_index= ((llGetListLength([ "BitState0", "BitState1", "BitState2",
                                               "BitState3" ]))-1) ;
         mod_command_2= 4 ;
-        mod_command= 32 ;
+        mod_command= 1073741823 ;
       } else if("show"==command)
         i_make_visible = TRUE;
       else if("hide"==command)
@@ -519,25 +519,26 @@ xlProcessCommand(integer send_params) {
           g_AttmntAuthedKeys_l=llDeleteSubList(g_AttmntAuthedKeys_l,
                                                placeinlist,placeinlist);
         }
-      } else if(llListFindList(["tail","skin","add" ] ,[command]) == -1)
+      } else if(llListFindList(["tail","skin","FTExpReq","bitEditState",
+                                "add" ] ,[command]) == -1)
         llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
     } else {
       if(mod_command<1) {
         if("nips" ==command) {
           if(g_RuntimeBodyStateSettings & 1) {
-            mod_command= 2 ;
+            mod_command= 4 ;
             mod_command_2= 4 ;
           } else {
-            mod_command= 2 ;
+            mod_command= 4 ;
             mod_command_2= 2 ;
           }
-          g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 2)) |
-                                     (2 * !i_make_visible); ;
-        } else if("vagoo" ==command) {
-          mod_command= 4 ;
-          mod_command_2= 2 ;
           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4)) |
                                      (4 * !i_make_visible); ;
+        } else if("vagoo" ==command) {
+          mod_command= 8 ;
+          mod_command_2= 2 ;
+          g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 8)) |
+                                     (8 * !i_make_visible); ;
         } else
           mod_command_2= 2 ;
       }
@@ -545,22 +546,22 @@ xlProcessCommand(integer send_params) {
         integer param = llList2Integer(input_data,index);
         string mesh_name="";
         for(; mesh_count_index > -1; mesh_count_index--) {
-          if(2 ==mod_command) {
+          if(4 ==mod_command) {
             g_LastCommand_s="setnip:"+(string)i_make_visible;
             xlProcessCommand(TRUE);
           }
-          if(64 ==mod_command) {
+          if(2147483647 ==mod_command) {
             g_CurrentFittedNipAlpha=param;
             mesh_name=llList2String([ "NipState0" , "TorsoEtc" , "NipState1" ,
                                       "NipAlpha" ] ,mesh_count_index);
             i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
             if(0==param) {
-              mod_command= 16 ;
+              mod_command= 536870911 ;
               param=g_PreviousFittedNipState;
             } else
               g_PreviousFittedNipState=g_CurrentFittedNipState;
           }
-          if(16 ==mod_command) {
+          if(536870911 ==mod_command) {
             g_CurrentFittedNipState=param;
             if(!g_CurrentFittedNipAlpha) {
               {
@@ -570,13 +571,13 @@ xlProcessCommand(integer send_params) {
                                           "NipAlpha" ] ,mesh_count_index);
               }
             }
-          } else if(32 ==mod_command) {
+          } else if(1073741823 ==mod_command) {
             g_CurrentFittedVagState=param;
             i_make_visible=
               (mesh_count_index==param);
             mesh_name=llList2String([ "BitState0", "BitState1", "BitState2", "BitState3" ] ,
                                     mesh_count_index);
-          } else if(8 ==mod_command) {
+          } else if(268435455 ==mod_command) {
             g_CurrentFittedButState=param;
             i_make_visible=
               (mesh_count_index==param);
@@ -589,13 +590,13 @@ xlProcessCommand(integer send_params) {
                                            llListFindList(g_LinkDB_l,prim_names)+1);
             local_params +=[PRIM_LINK_TARGET,link_id];
             list faces_l=[];
-            if(16 ==mod_command ||  2 ==mod_command)
+            if(536870911 ==mod_command ||  4 ==mod_command)
               faces_l=xlGetFacesByBladeName("nips");
-            else if(32 ==mod_command)
+            else if(1073741823 ==mod_command)
               faces_l=xlGetFacesByBladeName("vagoo");
-            else if(64 ==mod_command)
+            else if(2147483647 ==mod_command)
               faces_l=xlGetFacesByBladeName("nips");
-            else if(8 ==mod_command)
+            else if(268435455 ==mod_command)
               faces_l=xlGetFacesByBladeName("butt");
             integer faces_count= ((llGetListLength(faces_l))-1)  + 1;
             integer i2 = 0;
@@ -631,45 +632,45 @@ xlProcessCommand(integer send_params) {
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
-                                        ||  g_RuntimeBodyStateSettings & 2
+                                        ||  g_RuntimeBodyStateSettings & 4
                                        ),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
-                                        ||  g_RuntimeBodyStateSettings & 2
+                                        ||  g_RuntimeBodyStateSettings & 4
                                        ),
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[ "TorsoEtc" ])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 1
-                                        && ! g_RuntimeBodyStateSettings & 2
+                                        && ! g_RuntimeBodyStateSettings & 4
                                         && (g_CurrentFittedNipAlpha < 1)),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 1
-                                        && ! g_RuntimeBodyStateSettings & 2
+                                        && ! g_RuntimeBodyStateSettings & 4
                                         && (g_CurrentFittedNipAlpha < 1)),
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[ "NipState1" ])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 2
-                                        && ! g_RuntimeBodyStateSettings & 2
+                                        && ! g_RuntimeBodyStateSettings & 4
                                         && (g_CurrentFittedNipAlpha < 1)),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 2
-                                        && ! g_RuntimeBodyStateSettings & 2
+                                        && ! g_RuntimeBodyStateSettings & 4
                                         && (g_CurrentFittedNipAlpha < 1)),
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[ "NipAlpha" ])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible && (g_CurrentFittedNipAlpha > 0
-                                        && ! g_RuntimeBodyStateSettings & 2),
+                                        && ! g_RuntimeBodyStateSettings & 4),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible && (g_CurrentFittedNipAlpha > 0
-                                        && ! g_RuntimeBodyStateSettings & 2)
+                                        && ! g_RuntimeBodyStateSettings & 4)
                                   ];
             local_params+=snd_lvl_params;
           }
