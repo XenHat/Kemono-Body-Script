@@ -626,8 +626,6 @@ xlProcessCommand(integer send_params) {
         if("breast" ==command) {
           if(g_RuntimeBodyStateSettings & 1) {
             list faces = xlGetFacesByBladeName("nips");
-            ;
-            ;
             list snd_lvl_params = [
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[ "NipState0" ])+1),
@@ -787,17 +785,10 @@ default {
   }
   state_entry() {
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 1)) ;
-    ;
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1) ;
-    ;
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 1)) ;
-    ;
-    if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
-      llSetObjectDesc((string)(human_mode) + "," +  "0.3.32");
-      state dead;
-    }
     string self=llGetScriptName();
-    string basename=self;
+    string basename="Enhanced Kemono Body";
     string tail = "MISSING_VERSION";
     if(llSubStringIndex(self," ") >= 0) {
       integer start=2;
@@ -809,13 +800,19 @@ default {
       if((integer)tail > 0)
         basename=llGetSubString(self,0,-llStringLength(tail) - 1);
     }
+    llOwnerSay("basename:"+basename);
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
-      if(item != self && 0 == llSubStringIndex(item,basename)) {
+      if(item != self && -1 != llSubStringIndex(item,basename)) {
+        llOwnerSay("Removing " + item);
         llRemoveInventory(item);
         llOwnerSay("Upgraded to "+ tail);
       }
+    }
+    if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
+      llSetObjectDesc((string)(human_mode) + "," +  "0.3.32");
+      state dead;
     }
     g_Owner_k=llGetOwner();
     g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -868,14 +865,16 @@ default {
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater")
       return;
     if(id==NULL_KEY) {
-      llStartAnimation(g_AnimUndeform);
-      llStartAnimation("stand_1");
-      llStopAnimation(g_AnimDeform);
-      llStopAnimation(g_AnimUndeform);
-    } else {
-      llStartAnimation(g_AnimDeform);
-      llStopAnimation(g_AnimUndeform);
-      llStopAnimation(g_AnimUndeform);
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimUndeform);
+        llStartAnimation("stand_1");
+        llStopAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+      } else {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
     }
   }
   run_time_permissions(integer perm) {
