@@ -1254,6 +1254,8 @@ xlProcessCommand(integer send_params) {
                                       llListFindList(g_LinkDB_l, [llList2String(
                                             s_FittedNipsMeshNames,g_CurrentFittedNipState)])+1))
             debugLogic(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+            debugLogic(g_CurrentFittedNipState);
+            debugLogic(i_make_visible);
             list snd_lvl_params = [
                                     // PG meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
@@ -1261,46 +1263,46 @@ xlProcessCommand(integer send_params) {
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
-                                        || bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
+                                        || (bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                                        ),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
-                                        || bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
+                                        || (bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                                        ),
                                     // nipple meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_ETC])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
-                                    && (g_CurrentFittedNipState == 1
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
-                                        && (g_CurrentFittedNipAlpha < 1)),
+                                    && g_CurrentFittedNipState == 1
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                        && g_CurrentFittedNipAlpha < 1,
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
-                                    && (g_CurrentFittedNipState == 1
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
-                                        && (g_CurrentFittedNipAlpha < 1)),
+                                    && g_CurrentFittedNipState == 1
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                        && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_1])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
                                     i_make_visible
-                                    && (g_CurrentFittedNipState == 2
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
-                                        && (g_CurrentFittedNipAlpha < 1)),
+                                    && g_CurrentFittedNipState == 2
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                        && g_CurrentFittedNipAlpha < 1,
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
                                     i_make_visible
-                                    && (g_CurrentFittedNipState == 2
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)
-                                        && (g_CurrentFittedNipAlpha < 1)),
+                                    && g_CurrentFittedNipState == 2
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                        && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_A])+1),
                                     PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
-                                    i_make_visible && (g_CurrentFittedNipAlpha > 0
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)),
+                                    i_make_visible && g_CurrentFittedNipAlpha > 0
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)),
                                     PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
-                                    i_make_visible && (g_CurrentFittedNipAlpha > 0
-                                        && !bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    i_make_visible && g_CurrentFittedNipAlpha > 0
+                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                                   ];
             local_params+=snd_lvl_params;
           }
