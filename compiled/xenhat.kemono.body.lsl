@@ -864,8 +864,8 @@ default {
   attach(key id) {
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater")
       return;
-    if(id==NULL_KEY) {
-      if(g_HasAnimPerms) {
+    if(g_HasAnimPerms) {
+      if(id==NULL_KEY) {
         llStartAnimation(g_AnimUndeform);
         llStartAnimation("stand_1");
         llStopAnimation(g_AnimDeform);
