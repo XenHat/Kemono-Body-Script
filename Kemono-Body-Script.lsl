@@ -327,7 +327,7 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c);
 #define bwClear(a,b) a=(a & (~b))
-#define bwGet(a,b) (a & b)
+#define bwGet(a,b) a & b
 #define bwSet(a,b) a=(a | b)
 /* Why can't we just do "a ^= b"? (C++) It's
 more succinct but it just won't compile that way. So
