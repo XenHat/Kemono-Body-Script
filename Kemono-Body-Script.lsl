@@ -1036,7 +1036,7 @@ xlProcessCommand(integer send_params) {
 #endif
         }
       }
-      #define nope ["tail","skin","add" /* not here! */]
+      #define nope ["tail","skin","FTExpReq","bitEditState","add" /* not here! */]
 #ifdef PRINT_UNHANDLED_COMMANDS
         else if(llListFindList(nope,[command]) == -1)
         llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
