@@ -130,8 +130,8 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #endif
 #ifdef DEBUG
-  #define debugLogic(a) llOwnerSay(#a + " == " + (string)a)
-  #define dSay(a) llOwnerSay((string)a)
+  #define debugLogic(a) llOwnerSay(#a + " == " + (string)a);
+  #define dSay(a) llOwnerSay((string)a);
 #else
   #define debugLogic(a) /**/
   #define dSay(a) /**/
@@ -327,7 +327,7 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c);
 #define bwClear(a,b) a=(a & (~b))
-#define bwGet(a,b) (!!(a & b))
+#define bwGet(a,b) (a & b)
 #define bwSet(a,b) a=(a | b)
 /* Why can't we just do "a ^= b"? (C++) It's
 more succinct but it just won't compile that way. So
@@ -738,7 +738,9 @@ list xlBladeNameToPrimNames(string name) {
   } else if(name==MESH_FITTED_TORSO_NIP_A) {
     dSay("yes, nipalpha was requested")
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
+    {
       return [MESH_FITTED_TORSO_NIP_A];
+    }
     return [MESH_PG_LAYER];
   } else if(name==API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
@@ -1493,7 +1495,15 @@ default {
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
-    bwToggle(g_RuntimeBodyStateSettings,FKT_PRESENT);
+    bwClear(g_RuntimeBodyStateSettings,FKT_PRESENT);
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    dSay("^^^^^^ This should be 0 ^^^^^^")
+    bwSet(g_RuntimeBodyStateSettings,FKT_PRESENT);
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    dSay("^^^^^^ This should be 1 ^^^^^^")
+    bwClear(g_RuntimeBodyStateSettings,FKT_PRESENT);
+    debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT));
+    dSay("^^^^^^ This should be 0 ^^^^^^")
     if(llGetObjectName()==UPDATER_NAME) {
       llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
       state dead;
