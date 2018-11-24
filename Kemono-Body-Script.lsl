@@ -137,10 +137,10 @@ llSetLinkPrimitiveParamsFast(a,b)
   #define dSay(a) /**/
 #endif
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
-        :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
-        :thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
-        :shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
-        :armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
+:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
+:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
+:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
+:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
 -   Set Nipple Alpha
         0 = None : 1 = Partial : 2 = Full
