@@ -1706,8 +1706,8 @@ if (id != llGetKey()) {
     *  object is pruned from the Current Outfit Folder otherwise
     *  it won't fire.
     */
-    if(id==NULL_KEY) {
-      if(g_HasAnimPerms){
+    if(g_HasAnimPerms){
+      if(id==NULL_KEY) {
 //#ifdef USE_DEFORM_ANIMS_FOR_DETACH
         llStartAnimation(g_AnimUndeform);
         llStartAnimation("stand_1");
