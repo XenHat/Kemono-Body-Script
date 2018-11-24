@@ -315,10 +315,10 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 //#define RESERVED 1024
 //#define RESERVED 2048
 /* Flags for blade sync purposes*/
-#define STARBRIGHT_FKT_HUD_BUTT 268435455
-#define STARBRIGHT_FKT_HUD_NIPS 536870911
-#define STARBRIGHT_FKT_HUD_VAGN 1073741823
-#define STARBRIGHT_FKT_HUD_NIPH 2147483647
+#define STARBRIGHT_FKT_HUD_BUTT 134217727
+#define STARBRIGHT_FKT_HUD_NIPS 268435455
+#define STARBRIGHT_FKT_HUD_VAGN 536870911
+#define STARBRIGHT_FKT_HUD_NIPH 1073741824
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
 *    usage:
 *        a=variable/set
@@ -328,9 +328,9 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 * 0000 0000 0000 0000 0000 0000 0000 0000
 * ie 00000000000000000000000000000010 = 2
 * The maximum value we can store is:
-    - 32 booleans, or bits.
-*   - 4294967295
-*   - 11111111111111111111111111111111
+    - 31 booleans, or bits. (-1 for sign)
+*   - 1073741824
+*   - 10000000000000000000000000000000
 * The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
 *   and so on...
 */
