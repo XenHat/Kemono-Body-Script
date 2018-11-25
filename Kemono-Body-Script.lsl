@@ -142,15 +142,10 @@ llSetLinkPrimitiveParamsFast(a,b)
 :shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
 :armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
--   Set Nipple Alpha
-        0 = None : 1 = Partial : 2 = Full
-        0 being replaced by the state number 0 ~ 2:
-        nipalpha:0
 -   Set Nipple Override
         0 = Off : 1 = On
         0 being replaced by the state number 0 ~ 1:
         nipovrd:0
-- Send 'reqCLdat' and handle 'resCLdat' reply (ie  'resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans)
 - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
