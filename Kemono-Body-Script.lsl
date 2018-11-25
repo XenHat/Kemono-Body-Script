@@ -1548,14 +1548,13 @@ default {
       if((integer)tail > 0)
         basename=llGetSubString(self,0,-llStringLength(tail) - 1);
     }
-    llOwnerSay("basename:"+basename);
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
       if(item != self && -1 != llSubStringIndex(item,basename)) {
         llOwnerSay("Removing " + item);
         llRemoveInventory(item);
-        llOwnerSay("Upgraded to "+ tail);
+        llOwnerSay("Upgraded to "+ self);
       }
     }
     if(llGetObjectName()==UPDATER_NAME) {
