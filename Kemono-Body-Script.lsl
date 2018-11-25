@@ -150,7 +150,7 @@ llSetLinkPrimitiveParamsFast(a,b)
         0 = Off : 1 = On
         0 being replaced by the state number 0 ~ 1:
         nipovrd:0
-- Send reqCLdat and handle reply 'resCLdat' (ie  'resCLdat:clothID:1033:clothDesc:Top:attachPoint:1:clothState:0')
+- Send 'reqCLdat' and handle 'resCLdat' reply (ie  'resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans)
 - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
@@ -908,6 +908,7 @@ xlProcessCommandWrapper() {
     llOwnerSay("Sending Data");
 #endif
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+      // Example:  resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
       llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"resFTdat:nipState:"
                     +(string)g_CurrentFittedNipState
                     +":nipAlpha:"+(string)g_CurrentFittedNipAlpha
@@ -929,26 +930,44 @@ xlProcessCommandWrapper() {
       if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
         list data = llParseString2List(g_LastCommand_s,[":"], []);
         /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2' */
+        /* resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans */
         /* integer clothID = llList2Integer(data,2); */
         string clothDesc = llList2String(data,4);
         integer attachPoint = llList2Integer(data,6);
-        /* integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+        integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
+        /* TODO: Treat clothState0 as PG enabled UNLESS it's a special clothing
+          with transparent/exposed nips. God knows how I'm going to figure that
+          one out.
+        */
         /* NOTE: This is part of the internal Starbright API. We shouldn't know
         /* how to handle this and that is fine. Staryna says it's for
         /* careful ordering of stuff. Private and all.
         /* However some commands are required to be handled here to ensure
         /* clothing made for the FKT behave properly */
         if("Top"==clothDesc) {
-          if(0==attachPoint) {
-            // Restore previous nip state
+          // Restore previous genital state
+          if(0==clothState) {
             //g_CurrentFittedNipState=g_FKT_stored_nipstate;
             // force visible for now ok?
-            // g_CurrentFittedNipAlpha=1;
-            g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
-            xlProcessCommand(TRUE);
+            //g_CurrentFittedNipAlpha=1;
+            // g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
+            // xlProcessCommand(TRUE);
           } else {
-            // store nip state
+            // store genital state
             g_PreviousFittedNipState=g_CurrentFittedNipState;
+          }
+        }
+        else if("Jeans"==clothDesc)
+        {
+          if(0==clothState)
+          {
+            // Adjust to clothing perhaps? Find out what this does normally.
+            //g_CurrentFittedVagState=???
+            //g_CurrentFittedButState=???
+          }
+          else /* if(1==clothState) */
+          {
+
           }
         }
       }
@@ -1555,8 +1574,6 @@ default {
     detectLinkSetMods();
     if(llGetAttached())
       llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-    llSetText("",ZERO_VECTOR,0.0);
-    llListen(KEMONO_COM_CH,"","","");
 #ifdef DEBUG_SELF_TEST
     xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                      +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
@@ -1569,6 +1586,9 @@ default {
                   +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
                   +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
 #endif
+    llSetText("",ZERO_VECTOR,0.0);
+    llListen(KEMONO_COM_CH,"","","");
+    llWhisper(KEMONO_COM_CH,"reqCLdat");
     dSay("Ready.")
   }
   listen(integer channel,string name,key id,string message) {
