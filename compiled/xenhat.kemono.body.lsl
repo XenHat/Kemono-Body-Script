@@ -461,12 +461,15 @@ xlProcessCommandWrapper() {
         list data = llParseString2List(g_LastCommand_s,[":"], []);
         string clothDesc = llList2String(data,4);
         integer attachPoint = llList2Integer(data,6);
+        integer clothState = llList2Integer(data,8);
         if("Top"==clothDesc) {
-          if(0==attachPoint) {
-            g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
-            xlProcessCommand(TRUE);
+          if(0==clothState) {
           } else
             g_PreviousFittedNipState=g_CurrentFittedNipState;
+        } else if("Jeans"==clothDesc) {
+          if(0==clothState) {
+          } else {
+          }
         }
       }
       return;
@@ -800,14 +803,13 @@ default {
       if((integer)tail > 0)
         basename=llGetSubString(self,0,-llStringLength(tail) - 1);
     }
-    llOwnerSay("basename:"+basename);
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
       if(item != self && -1 != llSubStringIndex(item,basename)) {
         llOwnerSay("Removing " + item);
         llRemoveInventory(item);
-        llOwnerSay("Upgraded to "+ tail);
+        llOwnerSay("Upgraded to "+ self);
       }
     }
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
@@ -825,6 +827,7 @@ default {
       llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
     llSetText("",ZERO_VECTOR,0.0);
     llListen(-34525475 ,"","","");
+    llWhisper(-34525475 ,"reqCLdat");
   }
   listen(integer channel,string name,key id,string message) {
     if(id != llGetKey()) {
