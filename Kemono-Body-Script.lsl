@@ -395,6 +395,9 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
+integer touch_chan;
+integer touch_listen_h = -1;
+float touch_time;
 /*
 O       o                          .oOo
 o       O                          O                              o
@@ -1498,16 +1501,26 @@ o        O o   O  O   O   o           O   o   o   O    o   O
 O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
 */
 default {
-#ifdef DEBUG_FACE_TOUCH
   touch_start(integer total_number) {
+#ifdef DEBUG_FACE_TOUCH
     key tk=llDetectedKey(0);
     if(tk!=g_Owner_k) return;
     llRegionSayTo(tk,0,
                   "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+
                   llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["
                   +(string)llDetectedTouchFace(0)+"];break;");
-  }
 #endif
+  touch_time=llGetTime();
+  }
+  touch_end(integer num_detected) {
+    // if((llGetTime() - touch_time) >= 3)
+    {
+      touch_chan = (0x80000000 | (integer)("0x"+(string)llGetOwner()) ^ 345);
+      llOwnerSay("DEBUG: touch channel" + (string)touch_chan);
+      llTextBox(g_Owner_k, "body*UUID (both sides)\nbodyL*UUID (Left side)\nbodyR*UUID (Right side)", touch_chan);
+      touch_listen_h = llListen(touch_chan,"", g_Owner_k,"");
+    }
+  }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -1593,7 +1606,44 @@ default {
       return;
     }
 #else
-if (id != llGetKey()) {
+ if(id == g_Owner_k)
+    {
+      if(channel == touch_chan)
+      {
+        llListenRemove(touch_listen_h);
+        // Temporary texture applier. Requires knowing the texture UUID.
+        llOwnerSay("GOT: '" +message + "'");
+        list data = llParseString2List(message, ["\n"], []);
+        llOwnerSay("GOT: '" +llList2CSV(data) + "'");
+        integer i;
+        for(i=0;i < llGetListLength(data);i++)
+        {
+          string d = llList2String(data,i);
+          list ww = llParseString2List(d, ["*"], []);
+          string wh = llList2String(ww,0);
+          key sub = llList2Key(ww,1);
+          debugLogic(sub);
+          if("bodyL" == wh)
+          {
+            // TODO: Go through every "L" body part and accumulate faces
+            // Do not forget to get FTK sides which do not have split meshes
+            //llSetLinkTexture(LINK_SET, sub, ALL_SIDES);
+          }
+          else if("bodyR" == wh)
+          {
+            // TODO: Go through every "R" body part and accumulate faces
+            // Do not forget to get FTK sides which do not have split meshes
+            //llSetLinkTexture(LINK_SET, sub, ALL_SIDES);
+          }
+          else if ("body" == wh)
+          {
+            llSetLinkTexture(LINK_SET, sub, ALL_SIDES);
+          }
+        }
+      }
+      return;
+    }
+else if (id != llGetKey()) {
 #endif
 #ifdef BENCHMARK
     llResetTime();
