@@ -1045,7 +1045,7 @@ xlProcessCommand(integer send_params) {
 #endif
         }
       }
-#define nope ["tail","skin","FTExpReq","bitEditState","add" /* not here! */]
+#define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState" /* not here! */]
 #ifdef PRINT_UNHANDLED_COMMANDS
       else if(llListFindList(nope,[command]) == -1)
         llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
@@ -1255,7 +1255,7 @@ xlProcessCommand(integer send_params) {
         }
         if(API_CMD_BREASTS==command /*API_CMD_NIPS==command*/) {
           /* Manually hard-code this one for speed and simplicity*/
-          debugLogic(i_make_visible)
+          debugLogic(i_make_visible) 
           if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
             debugLogic(faces)
