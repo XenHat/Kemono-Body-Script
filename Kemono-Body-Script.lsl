@@ -800,30 +800,33 @@ xlProcessCommandWrapper() {
     g_AttmntAuthedKeys_l=[];
     reset();
   } else if(g_LastCommand_s=="Hlegs") {
-    // llOwnerSay("Switching to human legs");
 #ifdef PROCESS_LEGS_COMMANDS
-    if(!human_mode) {
+    dSay("Switching to human legs");
+    // if(!human_mode) {
+      human_mode=FALSE;
       g_LastCommand_s =
         "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
       xlProcessCommand(TRUE);
-      human_mode=TRUE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
+    // }
+    human_mode=TRUE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
 #endif
     llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
   } else if(g_LastCommand_s=="Flegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    if(human_mode) {
+    dSay("Switching to animal legs");
+    // if(human_mode) {
+      human_mode=TRUE;
       g_LastCommand_s =
         "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
       xlProcessCommand(TRUE);
-      human_mode=FALSE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
+    // }
+    human_mode=FALSE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
 #endif
     llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
   }
@@ -1324,8 +1327,10 @@ xlProcessCommand(integer send_params) {
   llOwnerSay("===== Setting global params =====");
 #endif
   if(send_params)
+  {
     xlSetLinkPrimitiveParamsFast(LINK_ROOT,local_params);
-  local_params=[];
+    local_params=[];
+  }
 #ifdef DEBUG_COMMAND
   llOwnerSay("=================================");
 #endif
