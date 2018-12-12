@@ -356,27 +356,27 @@ xlProcessCommandWrapper() {
     g_AttmntAuthedKeys_l=[];
     reset();
   } else if(g_LastCommand_s=="Hlegs") {
-    if(!human_mode) {
-      g_LastCommand_s =
-        "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-      human_mode=TRUE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
-    llSetObjectDesc((string)(human_mode) + "," +  "0.3.34");
+    ;
+    human_mode=FALSE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    human_mode=TRUE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    llSetObjectDesc((string)(human_mode) + "," +  "0.3.35");
   } else if(g_LastCommand_s=="Flegs") {
-    if(human_mode) {
-      g_LastCommand_s =
-        "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-      human_mode=FALSE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
-    llSetObjectDesc((string)(human_mode) + "," +  "0.3.34");
+    ;
+    human_mode=TRUE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    human_mode=FALSE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    llSetObjectDesc((string)(human_mode) + "," +  "0.3.35");
   } else if(g_LastCommand_s == "Rhand:1") {
     llStartAnimation("Kem-hand-R-relax");
     llStopAnimation("Kem-hand-R-fist");
@@ -526,7 +526,7 @@ xlProcessCommand(integer send_params) {
                                                placeinlist,placeinlist);
         }
       } else if(llListFindList(["tail","skin","FTExpReq","bitEditState","add",
-                                "reqCLdat","clothState" ] ,[command]) == -1)
+                                "reqCLdat","clothState","FTExp01","FTExp02","FTExp03" ] ,[command]) == -1)
         llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
     } else {
       if(mod_command<1) {
@@ -684,9 +684,10 @@ xlProcessCommand(integer send_params) {
       }
     }
   }
-  if(send_params)
+  if(send_params) {
     llSetLinkPrimitiveParamsFast(LINK_ROOT,local_params) ;
-  local_params=[];
+    local_params=[];
+  }
 }
 redeform() {
   if(g_HasAnimPerms) {
@@ -806,10 +807,20 @@ default {
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 1)) ;
     integer aaa = 0;
     for(; aaa <= llGetNumberOfPrims(); aaa++) {
-      llSetLinkPrimitiveParams(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
-      llSetLinkPrimitiveParams(aaa, [PRIM_ALPHA_MODE,ALL_SIDES, PRIM_ALPHA_MODE_MASK,
-                                     3]);
-      llSetLinkPrimitiveParams(aaa, [PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0]);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES,
+                                         PRIM_ALPHA_MODE_MASK,3]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,0.0]);
+    }
+    for(; aaa > -1; aaa--) {
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES,
+                                         PRIM_ALPHA_MODE_MASK,3]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,1,1>,1.0]);
     }
     string self=llGetScriptName();
     string basename="Enhanced Kemono Body";
@@ -834,7 +845,7 @@ default {
       }
     }
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
-      llSetObjectDesc((string)(human_mode) + "," +  "0.3.34");
+      llSetObjectDesc((string)(human_mode) + "," +  "0.3.35");
       state dead;
     }
     g_Owner_k=llGetOwner();
@@ -945,8 +956,8 @@ default {
     if(request_id !=g_internal_httprid_k) return;
     g_internal_httprid_k=NULL_KEY;
     string new_version_s=llJsonGetValue(body,["tag_name"]);
-    if(new_version_s== "0.3.34") return;
-    list cur_version_l=llParseString2List("0.3.34" ,["."],[""]);
+    if(new_version_s== "0.3.35") return;
+    list cur_version_l=llParseString2List("0.3.35" ,["."],[""]);
     list new_version_l=llParseString2List(new_version_s,["."],[""]);
     if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0))
       jump update;
@@ -964,7 +975,7 @@ default {
     if(update_description=="﷕")
       update_description="";
     string changelog = update_description;
-    update_description="\nAn update is avaible! ("+ "0.3.34"  +"🡂"
+    update_description="\nAn update is avaible! ("+ "0.3.35"  +"🡂"
                        +new_version_s+")\n\""
                        +update_title+"\"\n"+changelog+"\n";
     string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
@@ -975,8 +986,8 @@ default {
     if(llStringLength(update_description) > (512 - llStringLength(link))) {
       update_description="Too many changes, see ["+"https://github.com/"
                          + "XenHat/"+ "Kemono-Body-Script"
-                         +"/compare/"+ "0.3.34" +"..."+new_version_s+" Changes for "
-                         + "0.3.34" +"🡂"+new_version_s+"]";
+                         +"/compare/"+ "0.3.35" +"..."+new_version_s+" Changes for "
+                         + "0.3.35" +"🡂"+new_version_s+"]";
     }
     llDialog(g_Owner_k,update_description+link,[],-1);
   }
