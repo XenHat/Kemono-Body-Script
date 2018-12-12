@@ -1549,9 +1549,19 @@ default {
     integer aaa = 0;
     for(;aaa <= llGetNumberOfPrims();aaa++)
     {
-      llSetLinkPrimitiveParams(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
-      llSetLinkPrimitiveParams(aaa, [PRIM_ALPHA_MODE,ALL_SIDES, PRIM_ALPHA_MODE_MASK,3]);
-      llSetLinkPrimitiveParams(aaa, [PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0]);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES, PRIM_ALPHA_MODE_MASK,3]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,0.0]);
+    }
+    for(;aaa > -1;aaa--)
+    {
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES, PRIM_ALPHA_MODE_MASK,3]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,0,0>,1.0]);
+      llSleep(0.025);
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_COLOR,ALL_SIDES,<1,1,1>,1.0]);
     }
     string self=llGetScriptName();
     string basename="Enhanced Kemono Body";
