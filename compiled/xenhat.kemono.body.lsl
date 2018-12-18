@@ -531,6 +531,10 @@ xlProcessCommand(integer send_params) {
     } else {
       if(mod_command<1) {
         if("nips" ==command) {
+          g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4)) |
+                                     (4 * !i_make_visible); ;
+          if(g_RuntimeBodyStateSettings & 16)
+            return;
           if(g_RuntimeBodyStateSettings & 1) {
             mod_command= 4 ;
             mod_command_2= 4 ;
@@ -538,8 +542,6 @@ xlProcessCommand(integer send_params) {
             mod_command= 4 ;
             mod_command_2= 2 ;
           }
-          g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4)) |
-                                     (4 * !i_make_visible); ;
         } else if("vagoo" ==command) {
           mod_command= 8 ;
           mod_command_2= 2 ;
@@ -631,6 +633,8 @@ xlProcessCommand(integer send_params) {
         }
         if("breast" ==command) {
           if(g_RuntimeBodyStateSettings & 1) {
+            g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16)) |
+                                       (16 * !i_make_visible); ;
             list faces = xlGetFacesByBladeName("nips");
             list snd_lvl_params = [
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
