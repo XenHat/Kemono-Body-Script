@@ -798,6 +798,13 @@ xlProcessCommandWrapper() {
     reset();
   else if(g_LastCommand_s=="resetB") {
     g_AttmntAuthedKeys_l=[];
+    integer i = llGetListLength(g_LinkDB_l);
+    list params;
+    for (i; i > -1; i=i-2)
+    {
+      params+=[PRIM_LINK_TARGET,llList2Integer(g_LinkDB_l,i+1),PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
+    }
+    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
     reset();
   } else if(g_LastCommand_s=="Hlegs") {
 #ifdef PROCESS_LEGS_COMMANDS
