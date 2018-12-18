@@ -873,8 +873,8 @@ default {
     llWhisper(-34525475 ,"reqCLdat");
   }
   listen(integer channel,string name,key id,string message) {
-    if(id == g_Owner_k) {
-      if(channel == touch_chan) {
+    if(channel == touch_chan) {
+      if(id == g_Owner_k) {
         llListenRemove(touch_listen_h);
         list data = llParseString2List(message, ["\n"], []);
         integer i;
