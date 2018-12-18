@@ -715,24 +715,6 @@ resetHands() {
   }
 }
 reset() {
-  if(g_RuntimeBodyStateSettings & 1) {
-    integer i;
-    list params;
-    for(i=0; i<llGetListLength([ "BitState0", "BitState1", "BitState2",
-                                 "BitState3" ]); i++) {
-      string mesh_name = llList2String([ "BitState0", "BitState1", "BitState2",
-                                         "BitState3" ] ,i);
-      list prim_names = xlBladeNameToPrimNames(mesh_name);
-      integer link_id=llList2Integer(g_LinkDB_l,
-                                     llListFindList(g_LinkDB_l,prim_names)+1);
-      params+=[PRIM_LINK_TARGET,link_id];
-      params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
-    }
-    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
-  }
-  g_LastCommand_s=
-    "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
-    ;
   xlProcessCommand(TRUE);
   if(g_RuntimeBodyStateSettings & 1) {
     g_LastCommand_s = ":nipalpha:"+(string) 0 ;
