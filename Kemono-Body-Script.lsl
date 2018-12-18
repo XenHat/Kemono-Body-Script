@@ -301,7 +301,7 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 /* PG States */
 #define KSB_PGNIPLS 4
 #define KSB_PGVAGOO 8
-//#define RESERVED 16
+#define KSB_HDBRSTS 16
 //#define RESERVED 32
 //#define RESERVED 64
 //#define RESERVED 128
@@ -1068,6 +1068,14 @@ xlProcessCommand(integer send_params) {
             as it will not toggle the other required faces
           */
           dSay("nips!")
+          bwChange(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!i_make_visible);
+          if(bwGet(g_RuntimeBodyStateSettings,KSB_HDBRSTS))
+          {
+              /* Don't do anything beyond keeping track of the state it should
+                 be. This is stock behaviour.
+              */
+              return;
+          }
           if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mod_command=KSB_PGNIPLS;
             mod_command_2=CMD_IS_MOD_HIJACK;
@@ -1075,7 +1083,6 @@ xlProcessCommand(integer send_params) {
             mod_command=KSB_PGNIPLS;
             mod_command_2=CMD_BODYCORE;
           }
-          bwChange(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!i_make_visible);
         } else if(API_CMD_VAG==command) {
           dSay("vagoo!")
           mod_command=KSB_PGVAGOO;
@@ -1260,6 +1267,7 @@ xlProcessCommand(integer send_params) {
           /* Manually hard-code this one for speed and simplicity*/
           debugLogic(i_make_visible) 
           if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            bwChange(g_RuntimeBodyStateSettings,KSB_HDBRSTS,!i_make_visible);
             list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
             debugLogic(faces)
             debugLogic(llList2Integer(g_LinkDB_l,
