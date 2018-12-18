@@ -1625,8 +1625,8 @@ default {
       return;
     }
 #else
-    if(id == g_Owner_k) {
-      if(channel == touch_chan) {
+    if(channel == touch_chan) {
+      if(id == g_Owner_k) {
         llListenRemove(touch_listen_h);
         // Temporary texture applier. Requires knowing the texture UUID.
         list data = llParseString2List(message, ["\n"], []);
