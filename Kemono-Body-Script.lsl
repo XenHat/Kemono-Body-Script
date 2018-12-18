@@ -1531,7 +1531,6 @@ default {
     dSay("Starting up...")
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
-    // Doesn't appear to work with LinkParams, have to iterate.
     integer aaa = 0;
     for(;aaa <= llGetNumberOfPrims();aaa++)
     {
