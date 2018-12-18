@@ -1366,34 +1366,12 @@ resetHands() {
   }
 }
 reset() {
-  // TODO: Respect PG mode. Stock body does this.
-  if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-    // This is ugly as hell but it will reset it for real.
-    integer i;
-    list params;
-    for(i=0; i<llGetListLength(s_KFTPelvisMeshes); i++) {
-      string mesh_name = llList2String(s_KFTPelvisMeshes,i);
-      list prim_names = xlBladeNameToPrimNames(mesh_name);
-      integer link_id=llList2Integer(g_LinkDB_l,
-                                     llListFindList(g_LinkDB_l,prim_names)+1);
-      params+=[PRIM_LINK_TARGET,link_id];
-      params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
-    }
-    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
-  }
-  g_LastCommand_s=KM_HUD_RESET_CMD;
   xlProcessCommand(TRUE);
   if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
     g_LastCommand_s = ":nipalpha:"+(string)g_DefaultFittedNipAlpha;
     xlProcessCommand(TRUE);
-    // g_LastCommand_s = ":vagState:"+(string)g_DefaultFittedVagState;
-    // xlProcessCommand(TRUE);
-    // g_LastCommand_s = ":buttState:"+(string)g_DefaultFittedButState;
-    // xlProcessCommand(TRUE);
     g_LastCommand_s = ":setnip:"+(string)g_DefaultFittedNipState;
     xlProcessCommand(TRUE);
-    //g_LastCommand_s = ":nipOvrd:0" /* TODO: Implement Nipple Override */;
-    //xlProcessCommand(TRUE);
   }
   resetHands();
 }
