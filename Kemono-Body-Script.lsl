@@ -104,7 +104,7 @@ vector g_Config_BladeColor=<1,1,1>;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-#define g_internal_version_s "0.3.37" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.38" /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
