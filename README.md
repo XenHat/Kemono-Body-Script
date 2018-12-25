@@ -34,8 +34,6 @@ Proof of ownership is will be required if you request support or service for thi
   
   How these different body parts will be supported is still TBD.
 
-Support for the kApp skin applier is planned, but closed source requirements prevents this feature from ever touching this repository. An in-world vendor will exist for this feature and similar proprietary conveniences.
-
 ## FAQ
 
 ### Why re-script the Kemono body?
@@ -53,7 +51,7 @@ More seriously, because I like Open-Source. I realize this is probably a terribl
 
 ### Are you rich? Why are you not selling this? SHUT UP AND TAKE MY MONEY?!?!
 
-Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mostly in the form of precompiled scripts, support, personalized modifications, and a closed-source version with an in-world updater and applier support (if I can get that one).
+Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mostly in the form of precompiled scripts, support, personalized modifications, and a closed-source version with an in-world updater and (in-house) applier support.
 
 If you are interested in participating in the development and improvement of this product, [hit me up in world](https://is.gd/xenhatslim) ([Alternate link](https://my.secondlife.com/xenhat.liamano)).
 
