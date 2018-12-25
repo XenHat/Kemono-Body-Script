@@ -104,7 +104,7 @@ vector g_Config_BladeColor=<1,1,1>;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-#define g_internal_version_s "0.3.38" /* NOTE: Only bump on bugfix ok?*/
+string g_internal_version_s = "0.4.0"; /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -137,9 +137,9 @@ llSetLinkPrimitiveParamsFast(a,b)
   #define debugLogic(a) /**/
   #define dSay(a) /**/
 #endif
-#define saveSettings() llSetObjectDesc((string)(human_mode)\
-+ "," + g_internal_version_s\
-+ "," + (string)g_Config_BladeColor\
+#define saveSettings() llSetObjectDesc(g_internal_version_s\
++ "*" + (string)human_mode\
++ "*" + (string)g_Config_BladeColor\
 );
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
@@ -1475,8 +1475,8 @@ detectLinkSetMods() {
   llOwnerSay("Undeform:"+g_AnimUndeform);
 #endif
 #endif
-  list data = llCSV2List(llGetObjectDesc());
-  human_mode = llList2Integer(data,0);
+  list data = llParseString2List(llGetObjectDesc(),["*"],[]);
+  human_mode = llList2Integer(data,1);
   string color_desc = llList2String(data, 2);
   if(llSubStringIndex(color_desc, "<") != -1)
   {
@@ -1825,7 +1825,7 @@ default {
     if(new_version_s==g_internal_version_s) return;
     list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
     list new_version_l=llParseString2List(new_version_s,["."],[""]);
-        if(llList2Integer(new_version_l,0) >= llList2Integer(cur_version_l,0) &&
+    if(llList2Integer(new_version_l,0) >= llList2Integer(cur_version_l,0) &&
       llList2Integer(new_version_l,1) >= llList2Integer(cur_version_l,1) &&
         llList2Integer(new_version_l,2) > llList2Integer(cur_version_l,2))
       jump update;
