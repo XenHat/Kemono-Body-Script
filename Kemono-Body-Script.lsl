@@ -104,7 +104,7 @@ vector g_Config_BladeColor=<1,1,1>;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-#define g_internal_version_s "0.3.36" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.37" /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -140,7 +140,7 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define saveSettings() llSetObjectDesc((string)(human_mode)\
 + "," + g_internal_version_s\
 + "," + (string)g_Config_BladeColor\
-)
+);
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
 :thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
@@ -817,7 +817,7 @@ xlProcessCommandWrapper() {
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
 #endif
-    saveSettings();
+    saveSettings()
   } else if(g_LastCommand_s=="Flegs") {
 #ifdef PROCESS_LEGS_COMMANDS
     dSay("Switching to animal legs");
@@ -832,7 +832,7 @@ xlProcessCommandWrapper() {
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
 #endif
-    saveSettings();
+    saveSettings()
   }
   /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
   /* TODO: move all this below inside the command processor */
@@ -1577,7 +1577,7 @@ default {
       }
     }
     if(llGetObjectName()==UPDATER_NAME) {
-      saveSettings();
+      saveSettings()
       state dead;
     }
     g_Owner_k=llGetOwner();
