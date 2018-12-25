@@ -1,44 +1,12 @@
-/* <- Enlarge window so you see this on only one line for better visibility ->
+/* <-- Enlarge window so you see this on only one line for better visibility -->
 
   Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
   Original creation date: 6/06/2017 22:52:37
+
   The latest version of this script is located at:
-  https://github.com/XenHat/Kemono-Body-Script/blob/master/Kemono-Body-Script.lsl
+  https://github.com/XenHat/Kemono-Body-Script/
 
-  Licensed under the Aladdin Free Public License Version 9
-  For the Full license, see
-   https://tldrlegal.com/license/aladdin-free-public-license#fulltext
-
-  The short human readable version of this licence for the benefit of the
-  reader is:
-
-  You CAN:
-  Modify
-  Distribute
-
-  You CANNOT:
-   Hold Liable
-   Sublicense
-   Place Warranty
-   Commercial Use
-
-  You MUST:
-   Include License
-   Include Original
-   State Changes
-
-  An online version of the human-readable version of the AFPL can be found at:
-  https://tldrlegal.com/license/aladdin-free-public-license
-
-  WARNING: Currently the script does not allow custom coloring to be retained
-  due to the way I preserve texturing without needing an applier script.
-
-  Please contact the author of this script if you wish to trade that
-  functionality
-  for custom coloring support (You will need a full-perm copy of your skin
-  for the texturing to work at all.
-  This is because I do not have the info required to support the kApp applier.
-
+  License: https://tldrlegal.com/license/aladdin-free-public-license
 */
 /*
   .oOOOo.               .oOo                                    o      O
