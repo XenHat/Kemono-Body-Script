@@ -1825,16 +1825,9 @@ default {
     if(new_version_s==g_internal_version_s) return;
     list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
     list new_version_l=llParseString2List(new_version_s,["."],[""]);
-    // Major
-    if(llList2Integer(new_version_l,0) > llList2Integer(cur_version_l,0))
-      jump update;
-    // Minor
-    else if(llList2Integer(new_version_l,1) >
-            llList2Integer(cur_version_l,1))
-      jump update;
-    // Patch (bugfix)
-    else if(llList2Integer(new_version_l,2) >
-            llList2Integer(cur_version_l,2))
+        if(llList2Integer(new_version_l,0) >= llList2Integer(cur_version_l,0) &&
+      llList2Integer(new_version_l,1) >= llList2Integer(cur_version_l,1) &&
+        llList2Integer(new_version_l,2) > llList2Integer(cur_version_l,2))
       jump update;
     return;
     @update;
