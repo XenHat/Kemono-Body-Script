@@ -1,5 +1,6 @@
 float g_Config_MaximumOpacity=1.00;
 vector g_Config_BladeColor=<1,1,1>;
+string g_internal_version_s = "0.4.0";
 key g_internal_httprid_k=NULL_KEY;
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
@@ -364,7 +365,7 @@ xlProcessCommandWrapper() {
     g_LastCommand_s =
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
-    llSetObjectDesc((string)(human_mode)+ "," + "0.3.38" + "," +
+    llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                     (string)g_Config_BladeColor);
   } else if(g_LastCommand_s=="Flegs") {
     ;
@@ -376,7 +377,7 @@ xlProcessCommandWrapper() {
     g_LastCommand_s =
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
-    llSetObjectDesc((string)(human_mode)+ "," + "0.3.38" + "," +
+    llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                     (string)g_Config_BladeColor);
   } else if(g_LastCommand_s == "Rhand:1") {
     llStartAnimation("Kem-hand-R-relax");
@@ -759,8 +760,8 @@ detectLinkSetMods() {
   }
   g_AnimDeform=llGetInventoryName(INVENTORY_ANIMATION,0);
   g_AnimUndeform=llGetInventoryName(INVENTORY_ANIMATION,1);
-  list data = llCSV2List(llGetObjectDesc());
-  human_mode = llList2Integer(data,0);
+  list data = llParseString2List(llGetObjectDesc(),["*"],[]);
+  human_mode = llList2Integer(data,1);
   string color_desc = llList2String(data, 2);
   if(llSubStringIndex(color_desc, "<") != -1)
     g_Config_BladeColor = (vector)color_desc;
@@ -817,7 +818,7 @@ default {
       }
     }
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
-      llSetObjectDesc((string)(human_mode)+ "," + "0.3.38" + "," +
+      llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                       (string)g_Config_BladeColor);
       state dead;
     }
@@ -923,8 +924,8 @@ default {
     if(request_id !=g_internal_httprid_k) return;
     g_internal_httprid_k=NULL_KEY;
     string new_version_s=llJsonGetValue(body,["tag_name"]);
-    if(new_version_s== "0.3.38") return;
-    list cur_version_l=llParseString2List("0.3.38" ,["."],[""]);
+    if(new_version_s==g_internal_version_s) return;
+    list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
     list new_version_l=llParseString2List(new_version_s,["."],[""]);
     if(llList2Integer(new_version_l,0) >= llList2Integer(cur_version_l,0) &&
         llList2Integer(new_version_l,1) >= llList2Integer(cur_version_l,1) &&
@@ -938,7 +939,7 @@ default {
     if(update_description=="﷕")
       update_description="";
     string changelog = update_description;
-    update_description="\nAn update is avaible! ("+ "0.3.38"  +"🡂"
+    update_description="\nAn update is avaible! ("+g_internal_version_s +"🡂"
                        +new_version_s+")\n\""
                        +update_title+"\"\n"+changelog+"\n";
     string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
@@ -949,8 +950,8 @@ default {
     if(llStringLength(update_description) > (512 - llStringLength(link))) {
       update_description="Too many changes, see ["+"https://github.com/"
                          + "XenHat/"+ "Kemono-Body-Script"
-                         +"/compare/"+ "0.3.38" +"..."+new_version_s+" Changes for "
-                         + "0.3.38" +"🡂"+new_version_s+"]";
+                         +"/compare/"+g_internal_version_s+"..."+new_version_s+" Changes for "
+                         +g_internal_version_s+"🡂"+new_version_s+"]";
     }
     llDialog(g_Owner_k,update_description+link,[],-1);
   }
