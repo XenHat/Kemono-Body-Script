@@ -1489,14 +1489,6 @@ detectLinkSetMods() {
     llOwnerSay("Adjusted for missing human legs");
   }
 }
-makeApplierDialog() {
-  llTextBox(g_Owner_k, "body*UUID (both sides)"
-            // +"\nbodyL*UUID (Left side)"
-            // +"\nbodyR*UUID (Right side)"
-            +"\ncolor*COLOR_VECTOR (body color)\n\n color is in LSL format\
-            i.e <1,1,1>"
-            , keyed_channel);
-}
 /*
   Oo      oO
   O O    o o        o
@@ -1518,12 +1510,6 @@ default {
                   +(string)llDetectedTouchFace(0)+"];break;");
 #endif
     touch_time=llGetTime();
-  }
-  touch_end(integer num_detected) {
-    // if((llGetTime() - touch_time) >= 3)
-    {
-      makeApplierDialog();
-    }
   }
   changed(integer change) {
     if(change & CHANGED_OWNER)
