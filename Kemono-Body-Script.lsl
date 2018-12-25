@@ -384,10 +384,10 @@ integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
 integer g_CurrentFittedNipAlpha=0;
 integer g_CurrentFittedVagState=1;
-integer g_PreviousFittedButState=1;
+// integer g_PreviousFittedButState=1;
 integer g_PreviousFittedNipState=1;
-integer g_PreviousFittedNipAlpha=0;
-integer g_PreviousFittedVagState=1;
+// integer g_PreviousFittedNipAlpha=0;
+// integer g_PreviousFittedVagState=1;
 integer g_HasAnimPerms=FALSE;
 integer g_RuntimeBodyStateSettings;
 // integer g_TogglingPGMeshes=FALSE;
@@ -401,7 +401,9 @@ string g_LastCommand_s;
 string g_AnimDeform;
 string g_AnimUndeform;
 integer keyed_channel;
+#ifdef DEBUG_FACE_TOUCH
 float touch_time;
+#endif
 /*
   O       o                          .oOo
   o       O                          O                              o
@@ -936,7 +938,7 @@ xlProcessCommandWrapper() {
         /* resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans */
         /* integer clothID = llList2Integer(data,2); */
         string clothDesc = llList2String(data,4);
-        integer attachPoint = llList2Integer(data,6);
+        // integer attachPoint = llList2Integer(data,6);
         integer clothState = llList2Integer(data,8); /*0:on, 1: pulled, 2: removed*/
         /* TODO: Treat clothState0 as PG enabled UNLESS it's a special clothing
           with transparent/exposed nips. God knows how I'm going to figure that
@@ -959,14 +961,15 @@ xlProcessCommandWrapper() {
             // store genital state
             g_PreviousFittedNipState=g_CurrentFittedNipState;
           }
-        } else if("Jeans"==clothDesc) {
-          if(0==clothState) {
-            // Adjust to clothing perhaps? Find out what this does normally.
-            //g_CurrentFittedVagState=???
-            //g_CurrentFittedButState=???
-          } else { /* if(1==clothState) */
-          }
         }
+        // else if("Jeans"==clothDesc) {
+        //  //if(0==clothState) {
+        //  //  // Adjust to clothing perhaps? Find out what this does normally.
+        //  //  //g_CurrentFittedVagState=???
+        //  //  //g_CurrentFittedButState=???
+        //  //} else { /* if(1==clothState) */
+        //  //}
+        //}
       }
       return;
     }
@@ -1474,7 +1477,11 @@ detectLinkSetMods() {
 #endif
   list data = llCSV2List(llGetObjectDesc());
   human_mode = llList2Integer(data,0);
-  g_Config_BladeColor = (vector)llList2String(data, 2);
+  string color_desc = llList2String(data, 2);
+  if(llSubStringIndex(color_desc, "<") != -1)
+  {
+    g_Config_BladeColor = (vector)color_desc;
+  }
   if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1
       && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL]) == -1) {
     // Animal legs are missing
@@ -1500,17 +1507,17 @@ detectLinkSetMods() {
   O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
 */
 default {
-  touch_start(integer total_number) {
 #ifdef DEBUG_FACE_TOUCH
+    touch_start(integer total_number) {
     key tk=llDetectedKey(0);
     if(tk!=g_Owner_k) return;
     llRegionSayTo(tk,0,
                   "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+
                   llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["
                   +(string)llDetectedTouchFace(0)+"];break;");
-#endif
     touch_time=llGetTime();
   }
+#endif
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
