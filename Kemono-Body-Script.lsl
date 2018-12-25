@@ -1,62 +1,63 @@
 /* <- Enlarge window so you see this on only one line for better visibility ->
-*
-* Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
-* Original creation date: 6/06/2017 22:52:37
-* The latest version of this script is located at:
-* https://github.com/XenHat/Kemono-Body-Script/blob/master/Kemono-Body-Script.lsl
-*
-* Licensed under the Aladdin Free Public License Version 9
-* For the Full license, see
-*  https://tldrlegal.com/license/aladdin-free-public-license#fulltext
-*
-* The short human readable version of this licence for the benefit of the
-* reader is:
-*
-* You CAN:
-* Modify
-* Distribute
-*
-* You CANNOT:
-*  Hold Liable
-*  Sublicense
-*  Place Warranty
-*  Commercial Use
-*
-* You MUST:
-*  Include License
-*  Include Original
-*  State Changes
-*
-* An online version of the human-readable version of the AFPL can be found at:
-* https://tldrlegal.com/license/aladdin-free-public-license
-*
-* WARNING: Currently the script does not allow custom coloring to be retained
-* due to the way I preserve texturing without needing an applier script.
-*
-* Please contact the author of this script if you wish to trade that
-* functionality
-* for custom coloring support (You will need a full-perm copy of your skin
-* for the texturing to work at all.
-* This is because I do not have the info required to support the kApp applier.
-*
+
+  Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
+  Original creation date: 6/06/2017 22:52:37
+  The latest version of this script is located at:
+  https://github.com/XenHat/Kemono-Body-Script/blob/master/Kemono-Body-Script.lsl
+
+  Licensed under the Aladdin Free Public License Version 9
+  For the Full license, see
+   https://tldrlegal.com/license/aladdin-free-public-license#fulltext
+
+  The short human readable version of this licence for the benefit of the
+  reader is:
+
+  You CAN:
+  Modify
+  Distribute
+
+  You CANNOT:
+   Hold Liable
+   Sublicense
+   Place Warranty
+   Commercial Use
+
+  You MUST:
+   Include License
+   Include Original
+   State Changes
+
+  An online version of the human-readable version of the AFPL can be found at:
+  https://tldrlegal.com/license/aladdin-free-public-license
+
+  WARNING: Currently the script does not allow custom coloring to be retained
+  due to the way I preserve texturing without needing an applier script.
+
+  Please contact the author of this script if you wish to trade that
+  functionality
+  for custom coloring support (You will need a full-perm copy of your skin
+  for the texturing to work at all.
+  This is because I do not have the info required to support the kApp applier.
+
 */
 /*
- .oOOOo.               .oOo                                    o      O
-.O     o               O    o                                  O      o
-o                      o                                       o      O
-o                      OoO                                     OoOooOOo
-o         .oOo. 'OoOo. o    O  .oOoO O   o  `OoOo. .oOo.       o      O .oOo. `OoOo. .oOo.
-O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o     OooO'
-`o     .o o   O  O   o o    O  O   o O   o   O     O           o      o O      O     O
- `OoooO'  `OoO'  o   O O'   o' `OoOo `OoO'o  o     `OoO'       o      O `OoO'  o     `OoO'
+  .oOOOo.               .oOo                                    o      O
+  .O     o               O    o                                  O      o
+  o                      o                                       o      O
+  o                      OoO                                     OoOooOOo
+  o         .oOo. 'OoOo. o    O  .oOoO O   o  `OoOo. .oOo.       o      O .oOo. `OoOo. .oOo.
+  O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o     OooO'
+  `o     .o o   O  O   o o    O  O   o O   o   O     O           o      o O      O     O
+  `OoooO'  `OoO'  o   O O'   o' `OoOo `OoO'o  o     `OoO'       o      O `OoO'  o     `OoO'
                                    O
                                 OoO'
 */
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
+vector g_Config_BladeColor=<1,1,1>;
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
-#define PRINT_UNHANDLED_COMMANDS
+// #define PRINT_UNHANDLED_COMMANDS
 // #define DEBUG
 // #define DEBUG_SELF_TEST
 // #define DEBUG_TEXT
@@ -78,32 +79,32 @@ float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 // #define SMART_DEFORM
 // ============================================================================
 /*
- .oOOOo.               .oOo                o.OOoOoo             o
-.O     o               O    o               O                  O
-o                      o                    o                  o
-o                      OoO                  ooOO               o
-o         .oOo. 'OoOo. o    O  .oOoO        O       'OoOo. .oOoO
-O         O   o  o   O O    o  o   O        o        o   O o   O
-`o     .o o   O  O   o o    O  O   o        O        O   o O   o
- `OoooO'  `OoO'  o   O O'   o' `OoOo       ooOooOoO  o   O `OoO'o
+  .oOOOo.               .oOo                o.OOoOoo             o
+  .O     o               O    o               O                  O
+  o                      o                    o                  o
+  o                      OoO                  ooOO               o
+  o         .oOo. 'OoOo. o    O  .oOoO        O       'OoOo. .oOoO
+  O         O   o  o   O O    o  o   O        o        o   O o   O
+  `o     .o o   O  O   o o    O  O   o        O        O   o O   o
+  `OoooO'  `OoO'  o   O O'   o' `OoOo       ooOooOoO  o   O `OoO'o
                                    O
                                 OoO'
 */
 /*
-o.OOOo.         .oOo                                  O OOooOoO
- O    `o        O    o                               O  o                                 o
- o      O       o                                  oO   O                             O
- O      o       OoO                               O     oOooO                        oOo
- o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
- O      o OooO' O    o   o   O OooO' `Ooo.     O        o       o   O   o   O O       O   o  O   o  o   O `Ooo.
- o    .O' O     o    O   O   o O         O   oO         o       O   o   O   o o       o   O  o   O  O   o     O
- OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O'      `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
+  o.OOOo.         .oOo                                  O OOooOoO
+  O    `o        O    o                               O  o                                 o
+  o      O       o                                  oO   O                             O
+  O      o       OoO                               O     oOooO                        oOo
+  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
+  O      o OooO' O    o   o   O OooO' `Ooo.     O        o       o   O   o   O O       O   o  O   o  o   O `Ooo.
+  o    .O' O     o    O   O   o O         O   oO         o       O   o   O   o o       o   O  o   O  O   o     O
+  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O'      `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
                                            O
 */
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-#define g_internal_version_s "0.3.33" /* NOTE: Only bump on bugfix ok?*/
+#define g_internal_version_s "0.3.36" /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -136,28 +137,32 @@ llSetLinkPrimitiveParamsFast(a,b)
   #define debugLogic(a) /**/
   #define dSay(a) /**/
 #endif
+#define saveSettings() llSetObjectDesc((string)(human_mode)\
++ "," + g_internal_version_s\
++ "," + (string)g_Config_BladeColor\
+)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
 :thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
 :shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
 :armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
--   Set Nipple Override
+  -   Set Nipple Override
         0 = Off : 1 = On
         0 being replaced by the state number 0 ~ 1:
         nipovrd:0
-- Leg types toggles, see comments below
+  - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
 /*
-o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOOo
- O    `o        O    o                               O    o  O   O     `O    O
- o      O       o                                  oO    O    o  o      O    o
- O      o       OoO                               O     oOooOoOo O     .o    O
- o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      o      O oOooOO'     o
- O      o OooO' O    o   o   O OooO' `Ooo.     O        O      o o           O
- o    .O' O     o    O   O   o O         O   oO         o      O O           O
- OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O.     O o'       ooOOoOo
+  o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOOo
+  O    `o        O    o                               O    o  O   O     `O    O
+  o      O       o                                  oO    O    o  o      O    o
+  O      o       OoO                               O     oOooOoOo O     .o    O
+  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      o      O oOooOO'     o
+  O      o OooO' O    o   o   O OooO' `Ooo.     O        O      o o           O
+  o    .O' O     o    O   O   o O         O   oO         o      O O           O
+  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O.     O o'       ooOOoOo
                                            O
 */
 #define API_CMD_ABS "abs"
@@ -202,14 +207,14 @@ o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOO
 #define API_CMD_WRIST_L "wristL"
 #define API_CMD_WRIST_R "wristR"
 /*
-o.OOOo.         .oOo                                  O Oo      oO              o
- O    `o        O    o                               O  O O    o o             O
- o      O       o                                  oO   o  o  O  O             o
- O      o       OoO                               O     O   Oo   O             O
- o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O        o .oOo. .oOo  OoOo. .oOo. .oOo
- O      o OooO' O    o   o   O OooO' `Ooo.     O        o        O OooO' `Ooo. o   o OooO' `Ooo.
- o    .O' O     o    O   O   o O         O   oO         o        O O         O o   O O         O
- OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O        o `OoO' `OoO' O   o `OoO' `OoO'
+  o.OOOo.         .oOo                                  O Oo      oO              o
+  O    `o        O    o                               O  O O    o o             O
+  o      O       o                                  oO   o  o  O  O             o
+  O      o       OoO                               O     O   Oo   O             O
+  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O        o .oOo. .oOo  OoOo. .oOo. .oOo
+  O      o OooO' O    o   o   O OooO' `Ooo.     O        o        O OooO' `Ooo. o   o OooO' `Ooo.
+  o    .O' O     o    O   O   o O         O   oO         o        O O         O o   O O         O
+  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O        o `OoO' `OoO' O   o `OoO' `OoO'
                                            O
 */
 #define MESH_ARMS "arms"
@@ -234,14 +239,14 @@ o.OOOo.         .oOo                                  O Oo      oO              
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
 /*
-o.OOOo.         .oOo                                  O  o
- O    `o        O    o                               O  O       o
- o      O       o                                  oO   o                  O
- O      o       OoO                               O     o                 oOo
- o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O  .oOo    o   .oOo
- O      o OooO' O    o   o   O OooO' `Ooo.     O        O       o  `Ooo.   O   `Ooo.
- o    .O' O     o    O   O   o O         O   oO         o     . O      O   o       O
- OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           OOoOooO o' `OoO'   `oO `OoO'
+  o.OOOo.         .oOo                                  O  o
+  O    `o        O    o                               O  O       o
+  o      O       o                                  oO   o                  O
+  O      o       OoO                               O     o                 oOo
+  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O  .oOo    o   .oOo
+  O      o OooO' O    o   o   O OooO' `Ooo.     O        O       o  `Ooo.   O   `Ooo.
+  o    .O' O     o    O   O   o O         O   oO         o     . O      O   o       O
+  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           OOoOooO o' `OoO'   `oO `OoO'
                                            O
 */
 #define g_supported_meshes [\
@@ -285,14 +290,14 @@ MESH_ROOT\
                            "BitState3"\
                           ]
 /*
-o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
- O    `o        O    o                               O   o     o  o        O    O
- o      O       o                                  oO    O     O       O   o    o
- O      o       OoO                               O      oOooOO.      oOo  OoO  O
- o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO       o     `O O    o   o    o  .oOoO' .oOoO .oOo
- O      o OooO' O    o   o   O OooO' `Ooo.     O         O      o o    O   O    O  O   o  o   O `Ooo.
- o    .O' O     o    O   O   o O         O   oO          o     .O O    o   o    o  o   O  O   o     O
- OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O            `OooOO'  o'   `oO O'   Oo `OoO'o `OoOo `OoO'
+  o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
+  O    `o        O    o                               O   o     o  o        O    O
+  o      O       o                                  oO    O     O       O   o    o
+  O      o       OoO                               O      oOooOO.      oOo  OoO  O
+  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO       o     `O O    o   o    o  .oOoO' .oOoO .oOo
+  O      o OooO' O    o   o   O OooO' `Ooo.     O         O      o o    O   O    O  O   o  o   O `Ooo.
+  o    .O' O     o    O   O   o O         O   oO          o     .O O    o   o    o  o   O  O   o     O
+  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O            `OooOO'  o'   `oO O'   Oo `OoO'o `OoOo `OoO'
                                            O                                                  O
                                                                                            OoO'
 */
@@ -301,7 +306,7 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 /* PG States */
 #define KSB_PGNIPLS 4
 #define KSB_PGVAGOO 8
-//#define RESERVED 16
+#define KSB_HDBRSTS 16
 //#define RESERVED 32
 //#define RESERVED 64
 //#define RESERVED 128
@@ -315,40 +320,40 @@ o.OOOo.         .oOo                                  O o.oOOOo.           .oOo 
 #define STARBRIGHT_FKT_HUD_VAGN 536870911
 #define STARBRIGHT_FKT_HUD_NIPH 1073741824
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
-*    usage:
-*        a=variable/set
-*        b=bit (define, see above)
-* Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
-* play with is:
-* 0000 0000 0000 0000 0000 0000 0000 0000
-* ie 00000000000000000000000000000010 = 2
-* The maximum value we can store is:
+     usage:
+         a=variable/set
+         b=bit (define, see above)
+  Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
+  play with is:
+  0000 0000 0000 0000 0000 0000 0000 0000
+  ie 00000000000000000000000000000010 = 2
+  The maximum value we can store is:
     - 31 booleans, or bits. (-1 for sign)
-*   - 1073741824
-*   - 10000000000000000000000000000000
-* The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
-*   and so on...
+    - 1073741824
+    - 10000000000000000000000000000000
+  The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
+    and so on...
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c);
 #define bwClear(a,b) a=(a & (~b))
 #define bwGet(a,b) a & b
 #define bwSet(a,b) a=(a | b)
 /* Why can't we just do "a ^= b"? (C++) It's
-more succinct but it just won't compile that way. So
-"a = a ^ b" (old school) will
-have to do instead. Anyway, toggle using XOR..
+  more succinct but it just won't compile that way. So
+  "a = a ^ b" (old school) will
+  have to do instead. Anyway, toggle using XOR..
 */
 #define bwToggle(a,b) a=a ^ b
 #define xlListLen2MaxID(a) ((llGetListLength(a))-1)
 /*
-.oOOOo.                                                     O O       o            o
-o     o                    o                               O  o       O           O
-O.               O     O                                 oO   O       o           o           O
- `OOoo.         oOo   oOo                               O     o       o           o          oOo
+  .oOOOo.                                                     O O       o            o
+  o     o                    o                               O  o       O           O
+  O.               O     O                                 oO   O       o           o           O
+  `OOoo.         oOo   oOo                               O     o       o           o          oOo
       `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO      o       O .oOo. .oOoO  .oOoO'   o   .oOo. `OoOo.
        o OooO'   O     O   o   o   O o   O `Ooo.     O        O       O O   o o   O  O   o    O   OooO'  o
-O.    .O O       o     o   O   O   o O   o     O   oO         `o     Oo o   O O   o  o   O    o   O      O
- `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            `OoooO'O oOoO' `OoO'o `OoO'o   `oO `OoO'  o
+  O.    .O O       o     o   O   O   o O   o     O   oO         `o     Oo o   O O   o  o   O    o   O      O
+  `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            `OoooO'O oOoO' `OoO'o `OoO'o   `oO `OoO'  o
                                          O       O                      O
                                       OoO'                              o'
 */
@@ -359,14 +364,14 @@ O.    .O O       o     o   O   O   o O   o     O   oO         `o     Oo o   O O 
   key g_internal_httprid_k=NULL_KEY;
 #endif
 /*
-.oOOOo.                                                     O `OooOOo.
-o     o                    o                               O   o     `o                     o
-O.               O     O                                 oO    O      O                 O
- `OOoo.         oOo   oOo                               O      o     .O                oOo
+  .oOOOo.                                                     O `OooOOo.
+  o     o                    o                               O   o     `o                     o
+  O.               O     O                                 oO    O      O                 O
+  `OOoo.         oOo   oOo                               O      o     .O                oOo
       `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO       OOooOO'  O   o  'OoOo.   o   O  `oOOoOO. .oOo.
        o OooO'   O     O   o   o   O o   O `Ooo.     O         o    o   o   O   o   O   O   o   O  o  o OooO'
-O.    .O O       o     o   O   O   o O   o     O   oO          O     O  O   o   O   o   o   O   o  O  O O
- `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            O      o `OoO'o  o   O   `oO o'  O  o  o `OoO'
+  O.    .O O       o     o   O   O   o O   o     O   oO          O     O  O   o   O   o   o   O   o  O  O O
+  `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            O      o `OoO'o  o   O   `oO o'  O  o  o `OoO'
                                          O       O
                                       OoO'
 */
@@ -395,15 +400,17 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
+integer keyed_channel;
+float touch_time;
 /*
-O       o                          .oOo
-o       O                          O                              o
-O       o                          o                          O
-o       o                          OoO                       oOo
-o       O .oOo  .oOo. `OoOo.       o    O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
-O       O `Ooo. OooO'  o           O    o   O   o   O O       O   o  O   o  o   O `Ooo.
-`o     Oo     O O      O           o    O   o   O   o o       o   O  o   O  O   o     O
- `OoooO'O `OoO' `OoO'  o           O'   `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
+  O       o                          .oOo
+  o       O                          O                              o
+  O       o                          o                          O
+  o       o                          OoO                       oOo
+  o       O .oOo  .oOo. `OoOo.       o    O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
+  O       O `Ooo. OooO'  o           O    o   O   o   O O       O   o  O   o  o   O `Ooo.
+  `o     Oo     O O      O           o    O   o   O   o o       o   O  o   O  O   o     O
+  `OoooO'O `OoO' `OoO'  o           O'   `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
 */
 list xlGetFacesByBladeName(string name) {
 #ifdef DEBUG_COMMAND
@@ -488,8 +495,8 @@ list xlGetFacesByBladeName(string name) {
   if(name==MESH_SK_NIPS) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
       /* Note: Before changing this again, create a different way of
-      *  handling the request that doesn't match.
-      * This is configured properly for the whole Fitted Torso chest mesh
+         handling the request that doesn't match.
+        This is configured properly for the whole Fitted Torso chest mesh
       */
       return [0,1];
     return [2,3];
@@ -557,11 +564,11 @@ list xlGetFacesByBladeName(string name) {
   if(name==API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
-      * The bottom hip mesh half is controlled independently using
-      * setbutt
+        The bottom hip mesh half is controlled independently using
+        setbutt
       */
       // if(g_TogglingPGMeshes)
-        // return [0,1,2,3,4,5];
+      // return [0,1,2,3,4,5];
       return [0,1];
     }
     return [0,1];
@@ -569,8 +576,8 @@ list xlGetFacesByBladeName(string name) {
   if(name==API_CMD_VIRTUAL_BUTT) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
-      *  The bottom hip mesh half is controlled independently using
-      *  setbutt
+         The bottom hip mesh half is controlled independently using
+         setbutt
       */
 #ifdef DEBUG_COMMAND
       //llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
@@ -589,16 +596,16 @@ list xlGetFacesByBladeName(string name) {
   return [];
 }
 /* This function is like a "translator", it returns
-the specialized mesh name when a generic one is provided.
-i.e. When using the fitted torso. API_CMD_BREASTS => MESH_FITTED_TORSO_CHEST
-This is where the "Compatibility" and "Support" magic happens, for the
-most part.
-I don't particularly like having a mandatory function call for this
-but I can't think of a better way to handle it right now.
+  the specialized mesh name when a generic one is provided.
+  i.e. When using the fitted torso. API_CMD_BREASTS => MESH_FITTED_TORSO_CHEST
+  This is where the "Compatibility" and "Support" magic happens, for the
+  most part.
+  I don't particularly like having a mandatory function call for this
+  but I can't think of a better way to handle it right now.
 */
 list xlBladeNameToPrimNames(string name) {
   /* TODO Can't we return the link number directly (using less than 512 bytes
-  *  of code!) without an additional function call?
+     of code!) without an additional function call?
   */
 #ifdef DEBUG_FACE_SELECT
   llOwnerSay("xlBladeNameToPrimNames("+name+")");
@@ -742,9 +749,7 @@ list xlBladeNameToPrimNames(string name) {
   } else if(name==MESH_FITTED_TORSO_NIP_A) {
     dSay("yes, nipalpha was requested")
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
-    {
       return [MESH_FITTED_TORSO_NIP_A];
-    }
     return [MESH_PG_LAYER];
   } else if(name==API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
@@ -778,14 +783,14 @@ list xlBladeNameToPrimNames(string name) {
   return [name];
 }
 /* Stock Fitted Torso script:
-setnip0==NipState0
-setnip1==TorsoEtc[0,1]
-setnip2==NipState1
-NipAlpha==????
+  setnip0==NipState0
+  setnip1==TorsoEtc[0,1]
+  setnip2==NipState1
+  NipAlpha==????
 */
 /* Note: The Starbright stock behavior is the following:
-Show PG layer when hiding nipples
-Forcefully set the current genital state to Adult, idle on PG disable
+  Show PG layer when hiding nipples
+  Forcefully set the current genital state to Adult, idle on PG disable
 */
 xlProcessCommandWrapper() {
 #ifdef DEBUG_COMMAND
@@ -799,32 +804,35 @@ xlProcessCommandWrapper() {
     g_AttmntAuthedKeys_l=[];
     reset();
   } else if(g_LastCommand_s=="Hlegs") {
-    // llOwnerSay("Switching to human legs");
 #ifdef PROCESS_LEGS_COMMANDS
-    if(!human_mode) {
-      g_LastCommand_s =
-        "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-      human_mode=TRUE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
+    dSay("Switching to human legs");
+    // if(!human_mode) {
+    human_mode=FALSE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    // }
+    human_mode=TRUE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
 #endif
-    llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
+    saveSettings();
   } else if(g_LastCommand_s=="Flegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    if(human_mode) {
-      g_LastCommand_s =
-        "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-      human_mode=FALSE;
-      g_LastCommand_s =
-        "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-      xlProcessCommand(TRUE);
-    }
+    dSay("Switching to animal legs");
+    // if(human_mode) {
+    human_mode=TRUE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    // }
+    human_mode=FALSE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
 #endif
-    llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
+    saveSettings();
   }
   /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
   /* TODO: move all this below inside the command processor */
@@ -935,10 +943,10 @@ xlProcessCommandWrapper() {
           one out.
         */
         /* NOTE: This is part of the internal Starbright API. We shouldn't know
-        /* how to handle this and that is fine. Staryna says it's for
-        /* careful ordering of stuff. Private and all.
-        /* However some commands are required to be handled here to ensure
-        /* clothing made for the FKT behave properly */
+          /* how to handle this and that is fine. Staryna says it's for
+          /* careful ordering of stuff. Private and all.
+          /* However some commands are required to be handled here to ensure
+          /* clothing made for the FKT behave properly */
         if("Top"==clothDesc) {
           // Restore previous genital state
           if(0==clothState) {
@@ -951,18 +959,12 @@ xlProcessCommandWrapper() {
             // store genital state
             g_PreviousFittedNipState=g_CurrentFittedNipState;
           }
-        }
-        else if("Jeans"==clothDesc)
-        {
-          if(0==clothState)
-          {
+        } else if("Jeans"==clothDesc) {
+          if(0==clothState) {
             // Adjust to clothing perhaps? Find out what this does normally.
             //g_CurrentFittedVagState=???
             //g_CurrentFittedButState=???
-          }
-          else /* if(1==clothState) */
-          {
-
+          } else { /* if(1==clothState) */
           }
         }
       }
@@ -979,15 +981,15 @@ xlProcessCommand(integer send_params) {
   llOwnerSay("===== xlProcessCommand =====");
 #endif
   /*   == Some Information about the Kemono API spec ==
-   Generally speaking, command chaining is limited to same-state body parts;
-   it is not possible to combine show and hide commands together
-   (ie 'hide:abs:show:hipR').
-   Some examples:
-   'add:show:abs:hipL:remove' - Does not work
-   'add:show:abs:hipL' - Does not work
-   'add', then 'show:abs:hipL' - Works
-   It is currently unknown if "remove" can be chained as it does not seem to
-   block further messages from a "removed" uuid.
+    Generally speaking, command chaining is limited to same-state body parts;
+    it is not possible to combine show and hide commands together
+    (ie 'hide:abs:show:hipR').
+    Some examples:
+    'add:show:abs:hipL:remove' - Does not work
+    'add:show:abs:hipL' - Does not work
+    'add', then 'show:abs:hipL' - Works
+    It is currently unknown if "remove" can be chained as it does not seem to
+    block further messages from a "removed" uuid.
   */
   list input_data = llParseString2List(g_LastCommand_s,[":"],[]);
   string command = llList2String(input_data,0);
@@ -1049,27 +1051,38 @@ xlProcessCommand(integer send_params) {
                        g_Last_k) + ") from auth list");
 #endif
         }
+      } else if(llSubStringIndex(command,"color*<")!= -1) {
+        g_Config_BladeColor=(vector)llGetSubString(command, 6, -1);
       }
-      #define nope ["tail","skin","FTExpReq","bitEditState","add" /* not here! */]
+      /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
-        else if(llListFindList(nope,[command]) == -1)
+#define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
+,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
+      else if(llListFindList(nope,[command]) == -1)
         llOwnerSay("Unhandled command '"+command+"' from " + llKey2Name(g_Last_k));
 #endif
     } else {
-      /* non-standard command done, and/or show/hide set,
+      /* non-standard command done or unhandled, and/or show/hide set,
            loop through the remaining parameters
       */
       debugLogic(command)
       if(mod_command<1) {
         /* We need to identify these commands as genital commands
-        otherwise they will be processed incorrectly in the
-        non-genitals code path
+          otherwise they will be processed incorrectly in the
+          non-genitals code path
         */
         if(API_CMD_NIPS==command) {
           /* FIXME: Do not use the "core" code path when using mods
             as it will not toggle the other required faces
           */
           dSay("nips!")
+          bwChange(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!i_make_visible);
+          if(bwGet(g_RuntimeBodyStateSettings,KSB_HDBRSTS)) {
+            /* Don't do anything beyond keeping track of the state it should
+               be. This is stock behaviour.
+            */
+            return;
+          }
           if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
             mod_command=KSB_PGNIPLS;
             mod_command_2=CMD_IS_MOD_HIJACK;
@@ -1077,7 +1090,6 @@ xlProcessCommand(integer send_params) {
             mod_command=KSB_PGNIPLS;
             mod_command_2=CMD_BODYCORE;
           }
-          bwChange(g_RuntimeBodyStateSettings,KSB_PGNIPLS,!i_make_visible);
         } else if(API_CMD_VAG==command) {
           dSay("vagoo!")
           mod_command=KSB_PGVAGOO;
@@ -1128,10 +1140,10 @@ xlProcessCommand(integer send_params) {
             i_make_visible=(g_CurrentFittedNipAlpha==1) * (mesh_count_index==3);
             debugLogic(i_make_visible)
             /* TODO: Properly implement:
-             Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
-             Stage1 shows the alpha mesh AND hides the PG mesh
-             Stage2 hides the alpha mesh AND hides the PG mesh.
-             */
+              Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
+              Stage1 shows the alpha mesh AND hides the PG mesh
+              Stage2 hides the alpha mesh AND hides the PG mesh.
+            */
             if(0==param) {
               mod_command=STARBRIGHT_FKT_HUD_NIPS;
               // TODO: restore previous nip state
@@ -1170,7 +1182,7 @@ xlProcessCommand(integer send_params) {
             mesh_name=llList2String(s_KFTPelvisMeshes,mesh_count_index);
           }
           /* TODO: Handle overrides (PG, etc) since bitwise check
-          is removed */
+            is removed */
           debugLogic(i_make_visible)
           if(llStringLength(mesh_name)>0) {
             dSay("YES2")
@@ -1210,7 +1222,7 @@ xlProcessCommand(integer send_params) {
               dSay("YES4")
               debugLogic(i2)
               local_params+=[PRIM_COLOR,
-                             llList2Integer(faces_l,i2),<1,1,1>,
+                             llList2Integer(faces_l,i2),g_Config_BladeColor,
                              i_make_visible * g_Config_MaximumOpacity
                             ];
             }
@@ -1253,7 +1265,7 @@ xlProcessCommand(integer send_params) {
 #endif
         for(; faces_index > -1; faces_index--) {
           local_params+=[
-                          PRIM_COLOR,llList2Integer(faces_l,faces_index),<1,1,1>,
+                          PRIM_COLOR,llList2Integer(faces_l,faces_index),g_Config_BladeColor,
                           (i_make_visible) *
                           g_Config_MaximumOpacity
                         ];
@@ -1262,6 +1274,7 @@ xlProcessCommand(integer send_params) {
           /* Manually hard-code this one for speed and simplicity*/
           debugLogic(i_make_visible)
           if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
+            bwChange(g_RuntimeBodyStateSettings,KSB_HDBRSTS,!i_make_visible);
             list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
             debugLogic(faces)
             debugLogic(llList2Integer(g_LinkDB_l,
@@ -1274,12 +1287,12 @@ xlProcessCommand(integer send_params) {
                                     // PG meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_0])+1),
-                                    PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    PRIM_COLOR, llList2Integer(faces,1), g_Config_BladeColor,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
                                         || (bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                                        ),
-                                    PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    PRIM_COLOR, llList2Integer(faces,0), g_Config_BladeColor,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
                                         || (bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
@@ -1287,36 +1300,36 @@ xlProcessCommand(integer send_params) {
                                     // nipple meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_ETC])+1),
-                                    PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    PRIM_COLOR, llList2Integer(faces,1), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 1
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
-                                        && g_CurrentFittedNipAlpha < 1,
-                                    PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_COLOR, llList2Integer(faces,0), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 1
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
-                                        && g_CurrentFittedNipAlpha < 1,
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_1])+1),
-                                    PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    PRIM_COLOR, llList2Integer(faces,1), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 2
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
-                                        && g_CurrentFittedNipAlpha < 1,
-                                    PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_COLOR, llList2Integer(faces,0), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 2
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
-                                        && g_CurrentFittedNipAlpha < 1,
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l,[MESH_FITTED_TORSO_NIP_A])+1),
-                                    PRIM_COLOR, llList2Integer(faces,1), <1,1,1>,
+                                    PRIM_COLOR, llList2Integer(faces,1), g_Config_BladeColor,
                                     i_make_visible && g_CurrentFittedNipAlpha > 0
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)),
-                                    PRIM_COLOR, llList2Integer(faces,0), <1,1,1>,
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS)),
+                                    PRIM_COLOR, llList2Integer(faces,0), g_Config_BladeColor,
                                     i_make_visible && g_CurrentFittedNipAlpha > 0
-                                        && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
+                                    && !(bwGet(g_RuntimeBodyStateSettings,KSB_PGNIPLS))
                                   ];
             local_params+=snd_lvl_params;
           }
@@ -1328,9 +1341,10 @@ xlProcessCommand(integer send_params) {
 #ifdef DEBUG_COMMAND
   llOwnerSay("===== Setting global params =====");
 #endif
-  if(send_params)
+  if(send_params) {
     xlSetLinkPrimitiveParamsFast(LINK_ROOT,local_params);
-  local_params=[];
+    local_params=[];
+  }
 #ifdef DEBUG_COMMAND
   llOwnerSay("=================================");
 #endif
@@ -1358,35 +1372,13 @@ resetHands() {
   }
 }
 reset() {
-  // TODO: Respect PG mode. Stock body does this.
-  if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
-    // This is ugly as hell but it will reset it for real.
-    integer i;
-    list params;
-    for(i=0; i<llGetListLength(s_KFTPelvisMeshes); i++) {
-      string mesh_name = llList2String(s_KFTPelvisMeshes,i);
-      list prim_names = xlBladeNameToPrimNames(mesh_name);
-      integer link_id=llList2Integer(g_LinkDB_l,
-                                     llListFindList(g_LinkDB_l,prim_names)+1);
-      params+=[PRIM_LINK_TARGET,link_id];
-      params +=[PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0];
-    }
-    llSetLinkPrimitiveParamsFast(LINK_ROOT, params);
-  }
-  g_LastCommand_s=KM_HUD_RESET_CMD;
-  xlProcessCommand(TRUE);
   if(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT)) {
     g_LastCommand_s = ":nipalpha:"+(string)g_DefaultFittedNipAlpha;
     xlProcessCommand(TRUE);
-    // g_LastCommand_s = ":vagState:"+(string)g_DefaultFittedVagState;
-    // xlProcessCommand(TRUE);
-    // g_LastCommand_s = ":buttState:"+(string)g_DefaultFittedButState;
-    // xlProcessCommand(TRUE);
     g_LastCommand_s = ":setnip:"+(string)g_DefaultFittedNipState;
-    xlProcessCommand(TRUE);
-    //g_LastCommand_s = ":nipOvrd:0" /* TODO: Implement Nipple Override */;
-    //xlProcessCommand(TRUE);
   }
+  g_LastCommand_s=KM_HUD_RESET_CMD;
+  xlProcessCommand(TRUE);
   resetHands();
 }
 detectLinkSetMods() {
@@ -1420,7 +1412,7 @@ detectLinkSetMods() {
     if(llListFindList(g_supported_meshes,[name])!=-1) {
 #ifdef DEBUG_ENTIRE_BODY_ALPHA
       prim_params_to_apply +=[
-                               PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,<1,1,1>,0.0
+                               PRIM_LINK_TARGET,part,PRIM_COLOR,ALL_SIDES,g_Config_BladeColor,0.0
                              ];
       if(retexture) {
         prim_params_to_apply+=[
@@ -1431,8 +1423,17 @@ detectLinkSetMods() {
       g_LinkDB_l+=[name,part];
     }
   }
-  if(found_fitted_torso)
+  if(found_fitted_torso) {
     bwSet(g_RuntimeBodyStateSettings,FKT_PRESENT);
+    g_LastCommand_s="setbutt:"+(string)g_CurrentFittedButState;
+    xlProcessCommand(TRUE);
+    g_LastCommand_s="setnip:"+(string)g_CurrentFittedNipState;
+    xlProcessCommand(TRUE);
+    g_LastCommand_s="setvag:"+(string)g_CurrentFittedVagState;
+    xlProcessCommand(TRUE);
+    g_LastCommand_s="nipalpha:"+(string)g_CurrentFittedNipAlpha;
+    xlProcessCommand(TRUE);
+  }
 #ifdef DEBUG_ENTIRE_BODY_ALPHA
   llSetLinkPrimitiveParamsFast(LINK_ROOT,prim_params_to_apply);
 #endif
@@ -1473,6 +1474,7 @@ detectLinkSetMods() {
 #endif
   list data = llCSV2List(llGetObjectDesc());
   human_mode = llList2Integer(data,0);
+  g_Config_BladeColor = (vector)llList2String(data, 2);
   if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1
       && llListFindList(g_LinkDB_l,[MESH_LEG_RIGHT_ANIMAL]) == -1) {
     // Animal legs are missing
@@ -1487,27 +1489,42 @@ detectLinkSetMods() {
     llOwnerSay("Adjusted for missing human legs");
   }
 }
+makeApplierDialog() {
+  llTextBox(g_Owner_k, "body*UUID (both sides)"
+            // +"\nbodyL*UUID (Left side)"
+            // +"\nbodyR*UUID (Right side)"
+            +"\ncolor*COLOR_VECTOR (body color)\n\n color is in LSL format\
+            i.e <1,1,1>"
+            , keyed_channel);
+}
 /*
-Oo      oO
-O O    o o        o
-o  o  O  O                                O            O
-O   Oo   O                               oOo          oOo
-O        o .oOoO' O  'OoOo.       .oOo    o   .oOoO'   o   .oOo.
-o        O O   o  o   o   O       `Ooo.   O   O   o    O   OooO'
-o        O o   O  O   O   o           O   o   o   O    o   O
-O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
+  Oo      oO
+  O O    o o        o
+  o  o  O  O                                O            O
+  O   Oo   O                               oOo          oOo
+  O        o .oOoO' O  'OoOo.       .oOo    o   .oOoO'   o   .oOo.
+  o        O O   o  o   o   O       `Ooo.   O   O   o    O   OooO'
+  o        O o   O  O   O   o           O   o   o   O    o   O
+  O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
 */
 default {
-#ifdef DEBUG_FACE_TOUCH
   touch_start(integer total_number) {
+#ifdef DEBUG_FACE_TOUCH
     key tk=llDetectedKey(0);
     if(tk!=g_Owner_k) return;
     llRegionSayTo(tk,0,
                   "ID:"+(string)llDetectedLinkNumber(0)+";prim_name=\""+
                   llGetLinkName(llDetectedLinkNumber(0))+"\";face_list=["
                   +(string)llDetectedTouchFace(0)+"];break;");
-  }
 #endif
+    touch_time=llGetTime();
+  }
+  touch_end(integer num_detected) {
+    // if((llGetTime() - touch_time) >= 3)
+    {
+      makeApplierDialog();
+    }
+  }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -1530,6 +1547,13 @@ default {
     debugLogic(bwGet(g_RuntimeBodyStateSettings,FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
     dSay("Starting up...")
+    /* Set body to alpha masking */
+    // TODO: Add configurable alpha mask
+    integer aaa = 0;
+    for(; aaa <= llGetNumberOfPrims(); aaa++) {
+      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES,
+                                         PRIM_ALPHA_MODE_MASK,3]);
+    }
     string self=llGetScriptName();
     string basename="Enhanced Kemono Body";
     string tail = "MISSING_VERSION";
@@ -1553,10 +1577,9 @@ default {
       }
     }
     if(llGetObjectName()==UPDATER_NAME) {
-      llSetObjectDesc((string)(human_mode) + "," + g_internal_version_s);
+      saveSettings();
       state dead;
     }
-
     g_Owner_k=llGetOwner();
 #ifdef GITHUB_UPDATER
     g_internal_httprid_k=llHTTPRequest("https://api.github.com/repos/"
@@ -1566,135 +1589,141 @@ default {
                                        [HTTP_BODY_MAXLENGTH,16384],"");
 #endif
     detectLinkSetMods();
-    if(llGetAttached())
+    if(llGetAttached()) {
+      llSetLinkPrimitiveParamsFast(LINK_ROOT,[PRIM_COLOR,ALL_SIDES,
+                                              g_Config_BladeColor,0.0]);
       llRequestPermissions(g_Owner_k,PERMISSION_TRIGGER_ANIMATION);
-#ifdef DEBUG_SELF_TEST
-    xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                     +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                     +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                     +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                     +"elbowR:armLL:armLR:wristL:wristR:handL:handR",TRUE);
+    } else {
+      llSetLinkPrimitiveParamsFast(LINK_ROOT,[PRIM_COLOR,ALL_SIDES,
+                                              g_Config_BladeColor,1.0]);
+    }
+// #ifdef DEBUG_SELF_TEST
+    g_LastCommand_s = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+                      +"shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+                      +"thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+                      +"shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+                      +"elbowR:armLL:armLR:wristL:wristR:handL:handR";
+    xlProcessCommand(TRUE);
     llRegionSayTo(g_Owner_k,KEMONO_COM_CH,"show:neck:collar:shoulderUL:shoulderUR:"
                   +"shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:"
                   +"hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:"
                   +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
                   +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
-#endif
+// #endif
     llSetText("",ZERO_VECTOR,0.0);
     llListen(KEMONO_COM_CH,"","","");
     llWhisper(KEMONO_COM_CH,"reqCLdat");
+    keyed_channel = (0x80000000 | (integer)("0x"+(string)llGetOwner()) ^ 345);
+    llListen(keyed_channel,"","","");
     dSay("Ready.")
   }
   listen(integer channel,string name,key id,string message) {
+    if(id==llGetKey()) {
 #ifdef DEBUG_MESSAGE_FROM_SELF
-    if(id==llGetKey())
-    {
       llOwnerSay("Message came from self, what?");
+#endif
       return;
-    }
-#else
-if (id != llGetKey()) {
-#endif
+    } else {
 #ifdef BENCHMARK
-    llResetTime();
+      llResetTime();
 #endif
-    key object_owner_k=llGetOwnerKey(id);
+      key object_owner_k=llGetOwnerKey(id);
 #ifdef DEBUG_LISTEN
-    string oname = llGetObjectName();
-    llSetObjectName(llGetSubString((string)llGetKey(),0, 6) + " Debug");
-    llOwnerSay("Time:"+(string)llGetTimestamp());
-    string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
-               +llKey2Name(object_owner_k)+" ";
-    llOwnerSay(knp+"input ["+message+"]");
+      string oname = llGetObjectName();
+      llSetObjectName(llGetSubString((string)llGetKey(),0, 6) + " Debug");
+      llOwnerSay("Time:"+(string)llGetTimestamp());
+      string knp="["+(string)id+"]"+"{"+llKey2Name(id)+"}("
+                 +llKey2Name(object_owner_k)+" ";
+      llOwnerSay(knp+"input ["+message+"]");
 #else
 #ifdef DEBUG_LISTEN_LITE
-    llOwnerSay("["+llKey2Name(id)+"]: " +message);
+      llOwnerSay("["+llKey2Name(id)+"]: " +message);
 #endif
 #endif
-    /*
-    ------------------ AUTH SYSTEM PRIMER --------------------------
-        Because llGetOwnerKey() returns either returns null key
-         or the sender object's uuid (instead of its owner's) when
-         checking a message that has been sent by an object which
-         has been detached already and is no longer existing on
-         the sim (98% of the cases),
-         == The traditional owner check cannot be performed. ==
-         For this reason, the 'auth list' keeps track of the
-         objects who 'add' themselves through the api to
-         determine the owner of a detaching object (since the
-         regular way to perform this check will fail).
-         Consequently, we use the aforementioned 'auth list' to
-         perform the required authentication check when receiving
-         an "invalid" owner key by looking for the object's key
-         within it.
-         We then honor any 'remove' command by expunging the list
-         of the object's key. This does not however prevent further
-         commands from being excuted, as the auth list is only
-         used on detach. This behaviour is consistent with the
-         stock script and is therefore preserved for the time being.
-    -----------------------------------------------------------------
-    */
-    if(object_owner_k != g_Owner_k) {
-      // Most likely case, make handling other resident's attachments
-      // as impactless as we can.
-      if(object_owner_k != id) {
-        // someboey else's stuff
-        return;
-      }
-#ifdef DEBUG_AUTH
-      llOwnerSay("Bogus Owner Key for '"+name+"'");
-#endif
-      if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1) {
-#ifdef DEBUG_AUTH
-        llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
-#endif
-        return;
-      }
-      /* probably a detaching object */
-    } else { /* if(object_owner_k == g_Owner_k) */
-      integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
-      if(separatorIndex < 0) separatorIndex = 0;
-#ifdef DEBUG_AUTH_POSITIVE
-      llOwnerSay("Owner for [" +llKey2Name(id)+ "]is correct!");
-#endif
-      string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
-      // TODO: Allow chaining (read kemono manual for allowed cases?)
-      if(first_command=="add") {
-        /* And add if not in the auth list */
-#ifdef DEBUG_AUTH
-        llOwnerSay("Detected Add command!");
-#endif
-        if(llGetFreeMemory() > 2048) {
-          if(id != g_Owner_k) {
-            if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1) {
-              g_AttmntAuthedKeys_l +=[id];
-#ifdef DEBUG_AUTH
-              llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
-#endif
-              // return;
-            }
-          }
+      /*
+        ------------------ AUTH SYSTEM PRIMER --------------------------
+          Because llGetOwnerKey() returns either returns null key
+           or the sender object's uuid (instead of its owner's) when
+           checking a message that has been sent by an object which
+           has been detached already and is no longer existing on
+           the sim (98% of the cases),
+           == The traditional owner check cannot be performed. ==
+           For this reason, the 'auth list' keeps track of the
+           objects who 'add' themselves through the api to
+           determine the owner of a detaching object (since the
+           regular way to perform this check will fail).
+           Consequently, we use the aforementioned 'auth list' to
+           perform the required authentication check when receiving
+           an "invalid" owner key by looking for the object's key
+           within it.
+           We then honor any 'remove' command by expunging the list
+           of the object's key. This does not however prevent further
+           commands from being excuted, as the auth list is only
+           used on detach. This behaviour is consistent with the
+           stock script and is therefore preserved for the time being.
+        -----------------------------------------------------------------
+      */
+      if(object_owner_k != g_Owner_k) {
+        // Most likely case, make handling other resident's attachments
+        // as impactless as we can.
+        if(object_owner_k != id) {
+          // someboey else's stuff
+          return;
         }
 #ifdef DEBUG_AUTH
-        else
-          llOwnerSay("Not enough memory to add!");
+        llOwnerSay("Bogus Owner Key for '"+name+"'");
 #endif
+        if(llListFindList(g_AttmntAuthedKeys_l,[id]) == -1) {
+#ifdef DEBUG_AUTH
+          llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+#endif
+          return;
+        }
+        /* probably a detaching object */
+      } else { /* if(object_owner_k == g_Owner_k) */
+        integer separatorIndex=llSubStringIndex(g_LastCommand_s,":");
+        if(separatorIndex < 0) separatorIndex = 0;
+#ifdef DEBUG_AUTH_POSITIVE
+        llOwnerSay("Owner for [" +llKey2Name(id)+ "]is correct!");
+#endif
+        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex-1);
+        // TODO: Allow chaining (read kemono manual for allowed cases?)
+        if(first_command=="add") {
+          /* And add if not in the auth list */
+#ifdef DEBUG_AUTH
+          llOwnerSay("Detected Add command!");
+#endif
+          if(llGetFreeMemory() > 2048) {
+            if(id != g_Owner_k) {
+              if(llListFindList(g_AttmntAuthedKeys_l,[id])==-1) {
+                g_AttmntAuthedKeys_l +=[id];
+#ifdef DEBUG_AUTH
+                llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
+#endif
+                // return;
+              }
+            }
+          }
+#ifdef DEBUG_AUTH
+          else
+            llOwnerSay("Not enough memory to add!");
+#endif
+        }
       }
-    }
-    g_LastCommand_s = message;
-    g_Last_k = id;
-    xlProcessCommandWrapper();
+      g_LastCommand_s = message;
+      g_Last_k = id;
+      xlProcessCommandWrapper();
 #ifdef DEBUG_LISTEN
-    llOwnerSay("End of listener processing for '" + message + "'");
-    llSleep(1);
+      llOwnerSay("End of listener processing for '" + message + "'");
+      llSleep(1);
 #endif
 #ifdef DEBUG_LISTEN
-    llSetObjectName(oname);
+      llSetObjectName(oname);
 #endif
 #ifdef BENCHMARK
-    llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
+      llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
-  g_Last_k = NULL_KEY;
+      g_Last_k = NULL_KEY;
 #ifndef DEBUG_MESSAGE_FROM_SELF
     }
 #endif
@@ -1715,12 +1744,12 @@ if (id != llGetKey()) {
     if(llGetObjectName()==UPDATER_NAME)
       return;
     /* Deform on detach, unlike the stock body. This assumes permissions
-    *  are granted, which happens on rez or startup if attached.
-    *  Needs to be processed as fast as possible to make it before the
-    *  object is pruned from the Current Outfit Folder otherwise
-    *  it won't fire.
+       are granted, which happens on rez or startup if attached.
+       Needs to be processed as fast as possible to make it before the
+       object is pruned from the Current Outfit Folder otherwise
+       it won't fire.
     */
-    if(g_HasAnimPerms){
+    if(g_HasAnimPerms) {
       if(id==NULL_KEY) {
 //#ifdef USE_DEFORM_ANIMS_FOR_DETACH
         llStartAnimation(g_AnimUndeform);
@@ -1750,7 +1779,7 @@ if (id != llGetKey()) {
                   +"shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
                   +"armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
 #endif
-    llSetTimerEvent(5);
+    llSetTimerEvent(20);
   }
   timer() {
 #ifdef USE_DEFORM_ANIMS
@@ -1771,7 +1800,7 @@ if (id != llGetKey()) {
 #endif
     }
 #endif
-string text;
+    string text;
 #ifdef DEBUG
     text="[DEBUG]";
 #endif
