@@ -24,6 +24,7 @@ Proof of ownership is will be required if you request support or service for thi
   - `Rei's Stuff Chest`
   - `[BB/MM] Thunder Thighs`
   - `Starbright Adult bits`
+  - `Witchcraft Perky nipples`
   
   Support for the following body parts is under evaluation:
   
@@ -55,4 +56,4 @@ Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mos
 
 If you are interested in participating in the development and improvement of this product, [hit me up in world](https://is.gd/xenhatslim) ([Alternate link](https://my.secondlife.com/xenhat.liamano)).
 
-Donations are welcome, just throw L$ at me. I also have a paypal.
+Donations are welcome, just throw L$ at me. I also have a paypal. HMU in-world.
