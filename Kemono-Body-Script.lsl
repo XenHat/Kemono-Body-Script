@@ -370,7 +370,7 @@ string g_AnimDeform;
 string g_AnimUndeform;
 integer keyed_channel;
 #ifdef DEBUG_FACE_TOUCH
-float touch_time;
+  float touch_time;
 #endif
 /*
   O       o                          .oOo
@@ -1446,8 +1446,7 @@ detectLinkSetMods() {
   list data = llParseString2List(llGetObjectDesc(),["*"],[]);
   human_mode = llList2Integer(data,1);
   string color_desc = llList2String(data, 2);
-  if(llSubStringIndex(color_desc, "<") != -1)
-  {
+  if(llSubStringIndex(color_desc, "<") != -1) {
     g_Config_BladeColor = (vector)color_desc;
   }
   if(llListFindList(g_LinkDB_l,[MESH_LEG_LEFT_ANIMAL]) == -1
@@ -1476,7 +1475,7 @@ detectLinkSetMods() {
 */
 default {
 #ifdef DEBUG_FACE_TOUCH
-    touch_start(integer total_number) {
+  touch_start(integer total_number) {
     key tk=llDetectedKey(0);
     if(tk!=g_Owner_k) return;
     llRegionSayTo(tk,0,
@@ -1794,7 +1793,7 @@ default {
     list cur_version_l=llParseString2List(g_internal_version_s,["."],[""]);
     list new_version_l=llParseString2List(new_version_s,["."],[""]);
     if(llList2Integer(new_version_l,0) >= llList2Integer(cur_version_l,0) &&
-      llList2Integer(new_version_l,1) >= llList2Integer(cur_version_l,1) &&
+        llList2Integer(new_version_l,1) >= llList2Integer(cur_version_l,1) &&
         llList2Integer(new_version_l,2) > llList2Integer(cur_version_l,2))
       jump update;
     return;
