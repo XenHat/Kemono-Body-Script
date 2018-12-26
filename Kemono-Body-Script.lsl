@@ -72,7 +72,7 @@ vector g_Config_BladeColor=<1,1,1>;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.4.0"; /* NOTE: Only bump on bugfix ok?*/
+string g_internal_version_s = "0.4.1"; /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -1531,12 +1531,13 @@ default {
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
       if(item != self) {
-        if(-1 != llSubStringIndex(item,"[Kemono 1."))
+        if(-1 != llSubStringIndex(item,"[Kemono 1.")) {
           llOwnerSay("Removing " + item);
-        llRemoveInventory(item);
-      } else if(-1 != llSubStringIndex(item,basename)) {
-        llOwnerSay("Upgraded to "+ self);
-        llRemoveInventory(item);
+          llRemoveInventory(item);
+        } else if(-1 != llSubStringIndex(item,basename)) {
+          llOwnerSay("Upgraded to "+ self);
+          llRemoveInventory(item);
+        }
       }
     }
     if(llGetObjectName()==UPDATER_NAME) {
