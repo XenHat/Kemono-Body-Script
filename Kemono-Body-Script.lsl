@@ -1530,10 +1530,13 @@ default {
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
-      if(item != self && -1 != llSubStringIndex(item,basename)) {
-        llOwnerSay("Removing " + item);
+      if(item != self) {
+        if(-1 != llSubStringIndex(item,"[Kemono 1."))
+          llOwnerSay("Removing " + item);
         llRemoveInventory(item);
+      } else if(-1 != llSubStringIndex(item,basename)) {
         llOwnerSay("Upgraded to "+ self);
+        llRemoveInventory(item);
       }
     }
     if(llGetObjectName()==UPDATER_NAME) {
