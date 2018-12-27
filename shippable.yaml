@@ -12,7 +12,7 @@ before_script:
 - unzip lslint.zip
 script:
 - mkdir -p compiled
-- mcpp -P "Kemono-Body-Script.lsl" | astyle --style=java -xj -c --max-code-length=80 -s2 -xW -U -xe > compiled/xenhat.kemono.body.lsl
+- mcpp -P "Kemono-Body-Script.lsl" | astyle astyle --style=google --max-code-length=80 --indent=spaces=2 --indent-preproc-block --unpad-paren --delete-empty-lines --align-method-colon --remove-comment-prefix --pad-method-colon=all --pad-param-type --close-templates --convert-tabs  > compiled/xenhat.kemono.body.lsl
 - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
 after_success:
 - git config credential.helper "store --file=.git/credentials"
