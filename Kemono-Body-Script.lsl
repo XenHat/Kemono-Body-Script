@@ -1531,7 +1531,8 @@ default {
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
       if(item != self) {
-        if(-1 != llSubStringIndex(item,"[Kemono 1.")) {
+        if(-1 != llSubStringIndex(item,"[Kemono 1.")
+            || -1 != llSubStringIndex(item,"[AdvKem")) {
           llOwnerSay("Removing " + item);
           llRemoveInventory(item);
         } else if(-1 != llSubStringIndex(item,basename)) {
