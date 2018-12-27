@@ -1,6 +1,6 @@
 float g_Config_MaximumOpacity=1.00;
 vector g_Config_BladeColor=<1,1,1>;
-string g_internal_version_s = "0.4.0";
+string g_internal_version_s = "0.4.1";
 key g_internal_httprid_k=NULL_KEY;
 integer g_CurrentFittedButState=1;
 integer g_CurrentFittedNipState=1;
@@ -811,10 +811,15 @@ default {
     integer n=llGetInventoryNumber(INVENTORY_SCRIPT);
     while(n-- > 0) {
       string item=llGetInventoryName(INVENTORY_SCRIPT,n);
-      if(item != self && -1 != llSubStringIndex(item,basename)) {
-        llOwnerSay("Removing " + item);
-        llRemoveInventory(item);
-        llOwnerSay("Upgraded to "+ self);
+      if(item != self) {
+        if(-1 != llSubStringIndex(item,"[Kemono 1.")
+            || -1 != llSubStringIndex(item,"[AdvKem")) {
+          llOwnerSay("Removing " + item);
+          llRemoveInventory(item);
+        } else if(-1 != llSubStringIndex(item,basename)) {
+          llOwnerSay("Upgraded to "+ self);
+          llRemoveInventory(item);
+        }
       }
     }
     if(llGetObjectName()== "[XenLab] Enhanced Kemono Updater") {
