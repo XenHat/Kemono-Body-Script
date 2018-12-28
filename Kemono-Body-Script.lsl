@@ -22,7 +22,7 @@
 */
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 vector g_Config_BladeColor=<1,1,1>;
-integer g_Config_EnsureMaskingMode = 1;
+integer g_Config_EnsureMaskingMode = 0;
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
