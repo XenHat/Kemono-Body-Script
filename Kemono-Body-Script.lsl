@@ -22,6 +22,7 @@
 */
 float g_Config_MaximumOpacity=1.00; // 0.8 // for goo
 vector g_Config_BladeColor=<1,1,1>;
+integer g_Config_EnsureMaskingMode = 1;
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
@@ -1509,10 +1510,13 @@ default {
     dSay("Starting up...")
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
-    integer aaa = 0;
-    for(; aaa <= llGetNumberOfPrims(); aaa++) {
-      llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES,
-                                         PRIM_ALPHA_MODE_MASK,3]);
+    if(g_Config_EnsureMaskingMode)
+    {
+      integer aaa = 0;
+      for(; aaa <= llGetNumberOfPrims(); aaa++) {
+        llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE,ALL_SIDES,
+                                           PRIM_ALPHA_MODE_MASK,3]);
+      }
     }
     string self=llGetScriptName();
     string basename="Enhanced Kemono Body";
