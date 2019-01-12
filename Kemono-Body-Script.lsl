@@ -73,7 +73,7 @@ integer g_Config_EnsureMaskingMode = 0;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.4.1"; /* NOTE: Only bump on bugfix ok?*/
+string g_internal_version_s = "0.4.2"; /* NOTE: Only bump on bugfix ok?*/
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
