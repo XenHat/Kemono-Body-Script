@@ -1706,7 +1706,6 @@ default {
                                          [HTTP_BODY_MAXLENGTH, 16384], "");
 #endif
   }
-#ifdef USE_DEFORM_ANIMS
   attach(key id) {
     if(llGetObjectName() == UPDATER_NAME)
       return;
@@ -1716,22 +1715,27 @@ default {
        object is pruned from the Current Outfit Folder otherwise
        it won't fire.
     */
-    if(g_HasAnimPerms) {
-      if(id == NULL_KEY) {
-//#ifdef USE_DEFORM_ANIMS_FOR_DETACH
+    if(id == NULL_KEY) {
+#ifdef USE_DEFORM_ANIMS
+      if(g_HasAnimPerms) {
         llStartAnimation(g_AnimUndeform);
         llStartAnimation("stand_1");
         llStopAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
-//#endif
-      } else {
+      }
+#endif
+    } else {
+#ifdef USE_DEFORM_ANIMS
+      if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
+#endif
+      reset();
+      llRegionSayTo(g_Owner_k, KEMONO_COM_CH, KM_HUD_RESET_CMD);
     }
   }
-#endif
   run_time_permissions(integer perm) {
     // What?
     //if(!g_HasAnimPerms){
