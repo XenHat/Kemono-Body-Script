@@ -33,7 +33,7 @@ integer g_Config_EnsureMaskingMode = 0;
 // #define DEBUG_AUTH
 // #define DEBUG_ENTIRE_BODY_ALPHA
 // #define DEBUG_LISTEN
-// #define DEBUG_LISTEN_LITE
+// #define DEBUG_LISTEN_ALL // Everything, including other users' commands
 // #define DEBUG_COMMAND
 // #define DEBUG_DATA
 // #define DEBUG_PARAMS
@@ -883,6 +883,8 @@ xlProcessCommandWrapper() {
 #endif
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       // Example:  resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
+      // resFTdat:nipState:" + (string)nipState + ":nipAlpha:" + (string)nipAlpha + ":nipOvrd:" + (string)nipOvrd +
+      // ":vagState:" + (string)vagState + ":buttState:" + (string)buttState + ":humLegs:" + (string)humLegs)
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, "resFTdat:nipState:"
                     + (string)g_CurrentFittedNipState
                     + ":nipAlpha:" + (string)g_CurrentFittedNipAlpha
@@ -1505,7 +1507,7 @@ default {
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
     debugLogic(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
-    dSay("Starting up...")
+    llOwnerSay("Starting up...");
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
     if(g_Config_EnsureMaskingMode) {
@@ -1544,6 +1546,7 @@ default {
     }
     if(llGetObjectName() == UPDATER_NAME) {
       saveSettings()
+      llOwnerSay("Ready for updater");
       state dead;
     }
     g_Owner_k = llGetOwner();
@@ -1582,7 +1585,7 @@ default {
     llWhisper(KEMONO_COM_CH, "reqCLdat");
     keyed_channel = (0x80000000 | (integer)("0x" + (string)llGetOwner()) ^ 345);
     llListen(keyed_channel, "", "", "");
-    dSay("Ready.")
+    llOwnerSay("Ready");
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
@@ -1595,17 +1598,13 @@ default {
       llResetTime();
 #endif
       key object_owner_k = llGetOwnerKey(id);
-#ifdef DEBUG_LISTEN
+#ifdef DEBUG_LISTEN_ALL
       string oname = llGetObjectName();
       llSetObjectName(llGetSubString((string)llGetKey(), 0, 6) + " Debug");
       llOwnerSay("Time:" + (string)llGetTimestamp());
       string knp = "[" + (string)id + "]" + "{" + llKey2Name(id) + "}("
                    + llKey2Name(object_owner_k) + " ";
       llOwnerSay(knp + "input [" + message + "]");
-#else
-#ifdef DEBUG_LISTEN_LITE
-      llOwnerSay("[" + llKey2Name(id) + "]: " + message);
-#endif
 #endif
       /*
         ------------------ AUTH SYSTEM PRIMER --------------------------
@@ -1637,6 +1636,9 @@ default {
           // someboey else's stuff
           return;
         }
+#ifdef DEBUG_LISTEN
+      llOwnerSay("[" + llKey2Name(id) + "]: " + message);
+#endif
 #ifdef DEBUG_AUTH
         llOwnerSay("Bogus Owner Key for '" + name + "'");
 #endif
@@ -1684,7 +1686,7 @@ default {
       llOwnerSay("End of listener processing for '" + message + "'");
       llSleep(1);
 #endif
-#ifdef DEBUG_LISTEN
+#ifdef DEBUG_LISTEN_ALL
       llSetObjectName(oname);
 #endif
 #ifdef BENCHMARK
