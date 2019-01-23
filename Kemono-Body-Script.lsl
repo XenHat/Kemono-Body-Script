@@ -1699,8 +1699,8 @@ default {
   }
   on_rez(integer p) {
     /*Wait a few seconds in case we're still rezzing*/
-    llSleep(3);
 #ifdef GITHUB_UPDATER
+    llSleep(3);
     g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
                                          + g_internal_repo_s
                                          + "/releases/latest?access_token="
