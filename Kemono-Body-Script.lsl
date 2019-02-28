@@ -808,74 +808,94 @@ xlProcessCommandWrapper() {
   /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
   /* TODO: move all this below inside the command processor */
   else if(g_LastCommand_s == "Rhand:1") {
-    llStartAnimation("Kem-hand-R-relax");
-    llStopAnimation("Kem-hand-R-fist");
-    llStopAnimation("Kem-hand-R-hold");
-    llStopAnimation("Kem-hand-R-horns");
-    llStopAnimation("Kem-hand-R-point");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-relax");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
+    }
     return;
   } else if(g_LastCommand_s == "Rhand:2") {
-    llStartAnimation("Kem-hand-R-hold");
-    llStopAnimation("Kem-hand-R-fist");
-    llStopAnimation("Kem-hand-R-horns");
-    llStopAnimation("Kem-hand-R-point");
-    llStopAnimation("Kem-hand-R-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Rhand:3") {
-    llStartAnimation("Kem-hand-R-fist");
-    llStopAnimation("Kem-hand-R-hold");
-    llStopAnimation("Kem-hand-R-horns");
-    llStopAnimation("Kem-hand-R-point");
-    llStopAnimation("Kem-hand-R-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Rhand:4") {
-    llStartAnimation("Kem-hand-R-point");
-    llStopAnimation("Kem-hand-R-fist");
-    llStopAnimation("Kem-hand-R-hold");
-    llStopAnimation("Kem-hand-R-horns");
-    llStopAnimation("Kem-hand-R-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Rhand:5") {
-    llStartAnimation("Kem-hand-R-horns");
-    llStopAnimation("Kem-hand-R-fist");
-    llStopAnimation("Kem-hand-R-hold");
-    llStopAnimation("Kem-hand-R-point");
-    llStopAnimation("Kem-hand-R-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Lhand:1") {
-    llStartAnimation("Kem-hand-L-relax");
-    llStopAnimation("Kem-hand-L-fist");
-    llStopAnimation("Kem-hand-L-hold");
-    llStopAnimation("Kem-hand-L-horns");
-    llStopAnimation("Kem-hand-L-point");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-relax");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+    }
     return;
   } else if(g_LastCommand_s == "Lhand:2") {
-    llStartAnimation("Kem-hand-L-hold");
-    llStopAnimation("Kem-hand-L-fist");
-    llStopAnimation("Kem-hand-L-horns");
-    llStopAnimation("Kem-hand-L-point");
-    llStopAnimation("Kem-hand-L-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Lhand:3") {
-    llStartAnimation("Kem-hand-L-fist");
-    llStopAnimation("Kem-hand-L-hold");
-    llStopAnimation("Kem-hand-L-horns");
-    llStopAnimation("Kem-hand-L-point");
-    llStopAnimation("Kem-hand-L-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Lhand:4") {
-    llStartAnimation("Kem-hand-L-point");
-    llStopAnimation("Kem-hand-L-fist");
-    llStopAnimation("Kem-hand-L-hold");
-    llStopAnimation("Kem-hand-L-horns");
-    llStopAnimation("Kem-hand-L-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-relax");
+    }
     return;
   } else if(g_LastCommand_s == "Lhand:5") {
-    llStartAnimation("Kem-hand-L-horns");
-    llStopAnimation("Kem-hand-L-fist");
-    llStopAnimation("Kem-hand-L-hold");
-    llStopAnimation("Kem-hand-L-point");
-    llStopAnimation("Kem-hand-L-relax");
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
     return;
   } else if("reqFTdat" == g_LastCommand_s) {
 #ifdef DEBUG_FUNCTIONS
@@ -1744,7 +1764,10 @@ default {
     //if(!g_HasAnimPerms){
     //    resetHands();
     //}
-    g_HasAnimPerms = TRUE;
+    if(perm & PERMISSION_TRIGGER_ANIMATION)
+    {
+      g_HasAnimPerms = TRUE;
+    }
 #ifdef RESET_ON_PERMS
     /* Send a "reset" message to forcefully trigger clothing autohiders */
     llRegionSayTo(g_Owner_k, KEMONO_COM_CH,
@@ -1758,6 +1781,7 @@ default {
   }
   timer() {
 #ifdef USE_DEFORM_ANIMS
+    g_HasAnimPerms = (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION);
     if(!g_HasAnimPerms)
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     else {
