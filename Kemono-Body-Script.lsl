@@ -1527,7 +1527,6 @@ default {
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
     debugLogic(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
     dSay("^^^^^^ This should be 0 ^^^^^^")
-    llOwnerSay("Starting up...");
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
     if(g_Config_EnsureMaskingMode) {
@@ -1605,7 +1604,6 @@ default {
     llWhisper(KEMONO_COM_CH, "reqCLdat");
     keyed_channel = (0x80000000 | (integer)("0x" + (string)llGetOwner()) ^ 345);
     llListen(keyed_channel, "", "", "");
-    llOwnerSay("Ready");
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
