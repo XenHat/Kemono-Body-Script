@@ -1738,6 +1738,7 @@ default {
     */
     if(id == NULL_KEY) {
 #ifdef USE_DEFORM_ANIMS
+      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimUndeform);
         llStartAnimation("stand_1");
@@ -1747,6 +1748,7 @@ default {
 #endif
     } else {
 #ifdef USE_DEFORM_ANIMS
+      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
@@ -1778,6 +1780,7 @@ default {
     llSetTimerEvent(20);
   }
   timer() {
+    string text;
 #ifdef USE_DEFORM_ANIMS
     g_HasAnimPerms = (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION);
     if(!g_HasAnimPerms)
@@ -1797,7 +1800,6 @@ default {
 #endif
     }
 #endif
-    string text;
 #ifdef DEBUG
     text = "[DEBUG]";
 #endif
