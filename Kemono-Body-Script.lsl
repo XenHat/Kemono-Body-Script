@@ -207,6 +207,29 @@ llSetLinkPrimitiveParamsFast(a,b)
 #define MESH_ROOT "Kemono - Body"
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
+// Piercings
+#define MESH_DERMAL_BACK0 "Triple Back Dimple Dermals0"
+#define MESH_DERMAL_BACK1 "Triple Back Dimple Dermals1"
+#define MESH_DERMAL_BACK2 "Triple Back Dimple Dermals2"
+#define MESH_DERMAL_HIPS0 "Triple Hip Bone Dermals0"
+#define MESH_DERMAL_HIPS1 "Triple Hip Bone Dermals1"
+#define MESH_DERMAL_HIPS2 "Triple Hip Bone Dermals2"
+#define MESH_DERMAL_CLLR0 "Triple Collar Bone Dermals0"
+#define MESH_DERMAL_CLLR1 "Triple Collar Bone Dermals1"
+#define MESH_DERMAL_CLLR2 "Triple Collar Bone Dermals2"
+#define MESH_BELLY_RING0 "Belly Ring"
+#define MESH_NIPPLE_RING0 "Busty Nipple Rings"
+// #define MESH_NIPPLE_RING1 ""
+// #define MESH_NIPPLE_RING2 ""
+#define MESH_NIPPLE_LOOP0 "Busty Nipple Loops"
+// #define MESH_NIPPLE_LOOP1 ""
+// #define MESH_NIPPLE_LOOP2 ""
+#define MESH_NIPPLE_BARB0 "Busty Nipple Barbells"
+// #define MESH_NIPPLE_BARB1 ""
+// #define MESH_NIPPLE_BARB2 ""
+#define MESH_VAGINA_CLIT0 "Clit Ring"
+// #define MESH_VAGINA_CLIT1 ""
+// #define MESH_VAGINA_CLIT2 ""
 /*
   o.OOOo.         .oOo                                  O  o
   O    `o        O    o                               O  O       o
@@ -246,6 +269,21 @@ MESH_NECK,\
 MESH_PG_LAYER,\
 MESH_ROOT\
 ]
+// These go above. Can't comment out defined list parts.
+/*MESH_DERMAL_BACK0,\*/
+/*MESH_DERMAL_BACK1,\*/
+/*MESH_DERMAL_BACK2,\*/
+/*MESH_DERMAL_HIPS0,\*/
+/*MESH_DERMAL_HIPS1,\*/
+/*MESH_DERMAL_HIPS2,\*/
+/*MESH_DERMAL_CLLR0,\*/
+/*MESH_DERMAL_CLLR1,\*/
+/*MESH_DERMAL_CLLR2,\*/
+/*MESH_NIPPLE_RING0,\*/
+/*MESH_NIPPLE_LOOP0,\*/
+/*MESH_NIPPLE_BARB0,\*/
+/*MESH_VAGINA_CLIT0,\*/
+/*MESH_BELLY_RING0,\*/
 #define s_FittedNipsMeshNames [\
                               MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
                               MESH_FITTED_TORSO_ETC,/* 1 */\
@@ -258,6 +296,14 @@ MESH_ROOT\
                            "BitState2",\
                            "BitState3"\
                           ]
+//#define s_NipplePiercingsNames [\
+//MESH_NIPPLE_RING0,\
+//MESH_NIPPLE_LOOP0,\
+//MESH_NIPPLE_BARB0\
+//]
+//#define s_VaginalPiercingsNames [\
+//MESH_VAGINA_CLIT0\
+//]
 /*
   o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
   O    `o        O    o                               O   o     o  o        O    O
