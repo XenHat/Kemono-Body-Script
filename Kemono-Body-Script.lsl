@@ -1655,7 +1655,7 @@ default {
           return;
         }
 #ifdef DEBUG_LISTEN
-      llOwnerSay("[" + llKey2Name(id) + "]: " + message);
+        llOwnerSay("[" + llKey2Name(id) + "]: " + message);
 #endif
 #ifdef DEBUG_AUTH
         llOwnerSay("Bogus Owner Key for '" + name + "'");
@@ -1765,9 +1765,7 @@ default {
     //    resetHands();
     //}
     if(perm & PERMISSION_TRIGGER_ANIMATION)
-    {
       g_HasAnimPerms = TRUE;
-    }
 #ifdef RESET_ON_PERMS
     /* Send a "reset" message to forcefully trigger clothing autohiders */
     llRegionSayTo(g_Owner_k, KEMONO_COM_CH,
