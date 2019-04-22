@@ -1610,7 +1610,7 @@ default {
       }
     }
     if(llGetSubString(llGetObjectName(), 0,
-                      llStringLength(UPDATER_NAME) -1) == UPDATER_NAME) {
+                      llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       saveSettings()
       llSetObjectName(UPDATER_NAME + " v" + g_internal_version_s);
       llOwnerSay("Ready for updater");
@@ -1777,7 +1777,7 @@ default {
   }
   attach(key id) {
     if(llGetSubString(llGetObjectName(), 0,
-                      llStringLength(UPDATER_NAME) -1) == UPDATER_NAME) {
+                      llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       llOwnerSay("Updater mode detected.");
       return;
     }
