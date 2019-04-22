@@ -1,3 +1,4 @@
 lslint*
 private*
 *.orig
+*.sublime*
