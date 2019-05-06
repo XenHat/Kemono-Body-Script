@@ -1476,20 +1476,20 @@ detectLinkSetMods() {
   llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
 #endif
 #ifdef DEBUG_SELF_TEST
-  g_LastCommand_s = "hide:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                    + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                    + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                    + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                    + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
-  xlProcessCommand(TRUE);
-  llSleep(0.25);
-  g_LastCommand_s = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                    + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                    + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                    + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                    + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
-  llSleep(0.25);
-  xlProcessCommand(TRUE);
+  //g_LastCommand_s = "hide:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+  //                 + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+  //                 + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+  //                 + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+  //                 + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
+  //xlProcessCommand(TRUE);
+  //llSleep(0.25);
+  //g_LastCommand_s = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+  //                 + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+  //                 + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+  //                 + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+  //                 + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
+  //llSleep(0.25);
+  //xlProcessCommand(TRUE);
   list selftest = ["neck", "shoulderUL", "shoulderUR", "collar", "shoulderLL",
                            "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
                            "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
@@ -1499,18 +1499,14 @@ detectLinkSetMods() {
   integer id = 0;
   // integer len = xlListLen2MaxID(selftest) + 1;
   integer len = llGetListLength(selftest);
-  for(; id < len; ++id) {
+  for(; id < len; ++id)
     g_LastCommand_s = "hide:" + llList2String(selftest, id);
-    llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
-    xlProcessCommand(TRUE);
-    llSleep(0.0125);
-  }
-  for(; id > -1; id--) {
+  llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
+  llSleep(0.25);
+  xlProcessCommand(TRUE);
+  for(; id > -1; id--)
     g_LastCommand_s = "show:" + llList2String(selftest, id);
-    llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
-    xlProcessCommand(TRUE);
-    llSleep(0.0125);
-  }
+  xlProcessCommand(TRUE);
 #endif
 #ifdef USE_DEFORM_ANIMS
   g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
