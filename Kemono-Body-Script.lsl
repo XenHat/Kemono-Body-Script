@@ -73,7 +73,7 @@ integer g_Config_EnsureMaskingMode = 0;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.5.0"; /* NOTE: Only bump on bugfix ok?*/
+string g_internal_version_s = "0.5.2";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -415,7 +415,6 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
-integer keyed_channel;
 #ifdef DEBUG_FACE_TOUCH
   float touch_time;
 #endif
@@ -1477,18 +1476,20 @@ detectLinkSetMods() {
   llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
 #endif
 #ifdef DEBUG_SELF_TEST
-  xlProcessCommand("hide:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                   + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                   + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                   + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                   + "elbowR:armLL:armLR:wristL:wristR:handL:handR", TRUE);
-  llSleep(0.25);
-  xlProcessCommand("show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
-                   + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
-                   + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
-                   + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
-                   + "elbowR:armLL:armLR:wristL:wristR:handL:handR", TRUE);
-  llSleep(0.25);
+  //g_LastCommand_s = "hide:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+  //                 + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+  //                 + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+  //                 + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+  //                 + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
+  //xlProcessCommand(TRUE);
+  //llSleep(0.25);
+  //g_LastCommand_s = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
+  //                 + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
+  //                 + "thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:"
+  //                 + "shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:"
+  //                 + "elbowR:armLL:armLR:wristL:wristR:handL:handR";
+  //llSleep(0.25);
+  //xlProcessCommand(TRUE);
   list selftest = ["neck", "shoulderUL", "shoulderUR", "collar", "shoulderLL",
                            "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
                            "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
@@ -1496,11 +1497,16 @@ detectLinkSetMods() {
                            "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
                            "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
   integer id = 0;
-  integer len = xlListLen2MaxID(selftest) + 1;
+  // integer len = xlListLen2MaxID(selftest) + 1;
+  integer len = llGetListLength(selftest);
   for(; id < len; ++id)
-    xlProcessCommand("hide:" + llList2String(selftest, id), TRUE);
+    g_LastCommand_s = "hide:" + llList2String(selftest, id);
+  llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
+  llSleep(0.25);
+  xlProcessCommand(TRUE);
   for(; id > -1; id--)
-    xlProcessCommand("show:" + llList2String(selftest, id), TRUE);
+    g_LastCommand_s = "show:" + llList2String(selftest, id);
+  xlProcessCommand(TRUE);
 #endif
 #ifdef USE_DEFORM_ANIMS
   g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
@@ -1650,8 +1656,9 @@ default {
     llSetText("", ZERO_VECTOR, 0.0);
     llListen(KEMONO_COM_CH, "", "", "");
     llWhisper(KEMONO_COM_CH, "reqCLdat");
-    keyed_channel = (0x80000000 | (integer)("0x" + (string)llGetOwner()) ^ 345);
-    llListen(keyed_channel, "", "", "");
+#ifdef XL_EKB_APPLIER_INCLUDED
+    state_entry_applier_hook();
+#endif
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
@@ -1660,6 +1667,9 @@ default {
 #endif
       return;
     } else {
+#ifdef textureListener
+      textureListener()
+#endif
 #ifdef BENCHMARK
       llResetTime();
 #endif
