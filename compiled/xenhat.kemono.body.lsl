@@ -1,7 +1,7 @@
 float g_Config_MaximumOpacity = 1.00;
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
-string g_internal_version_s = "0.4.2";
+string g_internal_version_s = "0.5.2";
 key g_internal_httprid_k = NULL_KEY;
 integer g_CurrentFittedButState = 1;
 integer g_CurrentFittedNipState = 1;
@@ -23,7 +23,6 @@ string g_LastCommand_s;
 
 string g_AnimDeform;
 string g_AnimUndeform;
-integer keyed_channel;
 list xlGetFacesByBladeName(string name) {
   if(name ==  "abs") return [6, 7];
   if(name ==  "ankleL") {
@@ -853,9 +852,13 @@ default {
         }
       }
     }
-    if(llGetObjectName() ==  "[XenLab] Enhanced Kemono Updater") {
+    if(llGetSubString(llGetObjectName(), 0,
+                      llStringLength("[XenLab] Enhanced Kemono Updater") - 1) ==
+        "[XenLab] Enhanced Kemono Updater") {
       llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                       (string)g_Config_BladeColor);
+      llSetObjectName("[XenLab] Enhanced Kemono Updater"  + " v" +
+                      g_internal_version_s);
       llOwnerSay("Ready for updater");
       state dead;
     }
@@ -889,8 +892,6 @@ default {
     llSetText("", ZERO_VECTOR, 0.0);
     llListen(-34525475 , "", "", "");
     llWhisper(-34525475 , "reqCLdat");
-    keyed_channel = (0x80000000 | (integer)("0x" + (string)llGetOwner()) ^ 345);
-    llListen(keyed_channel, "", "", "");
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
@@ -935,8 +936,12 @@ default {
                                          [HTTP_BODY_MAXLENGTH, 16384], "");
   }
   attach(key id) {
-    if(llGetObjectName() ==  "[XenLab] Enhanced Kemono Updater")
+    if(llGetSubString(llGetObjectName(), 0,
+                      llStringLength("[XenLab] Enhanced Kemono Updater") - 1) ==
+        "[XenLab] Enhanced Kemono Updater") {
+      llOwnerSay("Updater mode detected.");
       return;
+    }
     if(id == NULL_KEY) {
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       if(g_HasAnimPerms) {
