@@ -73,7 +73,7 @@ integer g_Config_EnsureMaskingMode = 0;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.5.2";
+string g_internal_version_s = "0.5.3";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -1411,9 +1411,11 @@ resetHands() {
 }
 reset() {
   if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-    g_LastCommand_s = ":nipalpha:" + (string)g_DefaultFittedNipAlpha;
+    // g_LastCommand_s = ":nipalpha:" + (string)g_DefaultFittedNipAlpha;
+    // xlProcessCommand(FALSE);
+    g_LastCommand_s = ":setnip:" + (string)g_DefaultFittedNipState + ":setnip:" +
+                      (string)g_DefaultFittedNipState;
     xlProcessCommand(TRUE);
-    g_LastCommand_s = ":setnip:" + (string)g_DefaultFittedNipState;
   }
   g_LastCommand_s = KM_HUD_RESET_CMD;
   xlProcessCommand(TRUE);
@@ -1671,7 +1673,7 @@ default {
 #endif
       return;
     } else {
-#ifdef textureListener
+#ifdef XL_EKB_APPLIER_INCLUDED
       textureListener()
 #endif
 #ifdef BENCHMARK
