@@ -1,7 +1,7 @@
 float g_Config_MaximumOpacity = 1.00;
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
-string g_internal_version_s = "0.5.2";
+string g_internal_version_s = "0.5.3";
 key g_internal_httprid_k = NULL_KEY;
 integer g_CurrentFittedButState = 1;
 integer g_CurrentFittedNipState = 1;
@@ -739,9 +739,9 @@ resetHands() {
 }
 reset() {
   if(g_RuntimeBodyStateSettings & 1) {
-    g_LastCommand_s = ":nipalpha:" + (string) 0 ;
+    g_LastCommand_s = ":setnip:" + (string) 1  + ":setnip:" +
+                      (string) 1 ;
     xlProcessCommand(TRUE);
-    g_LastCommand_s = ":setnip:" + (string) 1 ;
   }
   g_LastCommand_s =
     "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
