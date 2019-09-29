@@ -1,4 +1,8 @@
-lslint*
-private*
-*.orig
-*.sublime*
+*
+!compiled/xenhat.kemono.body.lsl
+!Kemono-Body-Script.lsl
+!LICENSE.md
+!README.md
+!shippable.xml
+!.gitignore
+!.gitattributes
