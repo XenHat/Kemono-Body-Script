@@ -1,7 +1,7 @@
 float g_Config_MaximumOpacity = 1.00;
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
-string g_internal_version_s = "0.5.4";
+string g_internal_version_s = "0.5.7";
 key g_internal_httprid_k = NULL_KEY;
 integer g_CurrentFittedButState = 1;
 integer g_CurrentFittedNipState = 1;
@@ -786,8 +786,29 @@ detectLinkSetMods() {
     g_LastCommand_s = "nipalpha:" + (string)g_CurrentFittedNipAlpha;
     xlProcessCommand(TRUE);
   }
-  g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
-  g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
+  list InventoryAnims;
+  integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
+  integer index = 0;
+  string name;
+  for(; index < AnimsCount; index++) {
+    name = llGetInventoryName(INVENTORY_ANIMATION, index);
+    if(g_AnimUndeform == "") {
+      if(llSubStringIndex(name, "undeform") > -1) {
+        g_AnimUndeform = name;
+        llOwnerSay("Set undeform anim to " + name);
+      }
+    }
+    if(g_AnimDeform == "") {
+      if(llSubStringIndex(name, "deform") > -1
+          && llSubStringIndex(name, "undeform") == -1) {
+        g_AnimDeform = name;
+        llOwnerSay("Set undeform anim to " + name);
+      }
+    }
+  }
+  llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
+  llOwnerSay("Deform:" + g_AnimDeform);
+  llOwnerSay("Undeform:" + g_AnimUndeform);
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
   string color_desc = llList2String(data, 2);
@@ -806,6 +827,8 @@ detectLinkSetMods() {
   }
 }
 default {
+  touch_start(integer total_number) {
+  }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -923,6 +946,12 @@ default {
       g_Last_k = id;
       xlProcessCommandWrapper();
       g_Last_k = NULL_KEY;
+    }
+    llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+    if(g_HasAnimPerms) {
+      llStartAnimation(g_AnimDeform);
+      llStopAnimation(g_AnimUndeform);
+      llStopAnimation(g_AnimUndeform);
     }
   }
   on_rez(integer p) {
