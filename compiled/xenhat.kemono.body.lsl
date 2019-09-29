@@ -795,20 +795,15 @@ detectLinkSetMods() {
     if(g_AnimUndeform == "") {
       if(llSubStringIndex(name, "undeform") > -1) {
         g_AnimUndeform = name;
-        llOwnerSay("Set undeform anim to " + name);
       }
     }
     if(g_AnimDeform == "") {
       if(llSubStringIndex(name, "deform") > -1
           && llSubStringIndex(name, "undeform") == -1) {
         g_AnimDeform = name;
-        llOwnerSay("Set undeform anim to " + name);
       }
     }
   }
-  llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
-  llOwnerSay("Deform:" + g_AnimDeform);
-  llOwnerSay("Undeform:" + g_AnimUndeform);
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
   string color_desc = llList2String(data, 2);
