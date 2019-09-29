@@ -73,7 +73,7 @@ integer g_Config_EnsureMaskingMode = 0;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.5.4";
+string g_internal_version_s = "0.5.7";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
   /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
@@ -1515,13 +1515,36 @@ detectLinkSetMods() {
   }
 #endif
 #ifdef USE_DEFORM_ANIMS
-  g_AnimDeform = llGetInventoryName(INVENTORY_ANIMATION, 0);
-  g_AnimUndeform = llGetInventoryName(INVENTORY_ANIMATION, 1);
+  list InventoryAnims;
+  integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
+  integer index = 0;
+  string name;
+  for(;index < AnimsCount;index++){
+      name = llGetInventoryName(INVENTORY_ANIMATION, index);
+      if(g_AnimUndeform == "")
+      {
+        if(llSubStringIndex(name, "undeform") > -1)
+        {
+          g_AnimUndeform = name;
+          llOwnerSay("Set undeform anim to " + name);
+        }
+      }
+      if(g_AnimDeform == "")
+      {
+        if(llSubStringIndex(name, "deform") > -1 && llSubStringIndex(name, "undeform") == -1)
+        {
+          g_AnimDeform = name;
+          llOwnerSay("Set undeform anim to " + name);
+        }
+      }
+  }
+#define DEBUG_DATA
 #ifdef DEBUG_DATA
   llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
   llOwnerSay("Deform:" + g_AnimDeform);
   llOwnerSay("Undeform:" + g_AnimUndeform);
 #endif
+#undef DEBUG_DATA
 #endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
@@ -1553,8 +1576,8 @@ detectLinkSetMods() {
   O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
 */
 default {
-#ifdef DEBUG_FACE_TOUCH
   touch_start(integer total_number) {
+#ifdef DEBUG_FACE_TOUCH
     key tk = llDetectedKey(0);
     if(tk != g_Owner_k) return;
     llRegionSayTo(tk, 0,
@@ -1562,8 +1585,17 @@ default {
                   llGetLinkName(llDetectedLinkNumber(0)) + "\";face_list=["
                   + (string)llDetectedTouchFace(0) + "];break;");
     touch_time = llGetTime();
+    human_mode
+    #ifdef USE_DEFORM_ANIMS
+      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
+    #endif
+    #endif
   }
-#endif
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -1778,6 +1810,14 @@ default {
 #ifndef DEBUG_MESSAGE_FROM_SELF
     }
 #endif
+ #ifdef USE_DEFORM_ANIMS
+      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
+    #endif
   }
   on_rez(integer p) {
     /*Wait a few seconds in case we're still rezzing*/
