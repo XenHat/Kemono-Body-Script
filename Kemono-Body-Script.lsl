@@ -1526,7 +1526,9 @@ detectLinkSetMods() {
         if(llSubStringIndex(name, "undeform") > -1)
         {
           g_AnimUndeform = name;
+          #ifdef DEBUG_DATA
           llOwnerSay("Set undeform anim to " + name);
+          #endif
         }
       }
       if(g_AnimDeform == "")
@@ -1534,17 +1536,17 @@ detectLinkSetMods() {
         if(llSubStringIndex(name, "deform") > -1 && llSubStringIndex(name, "undeform") == -1)
         {
           g_AnimDeform = name;
+          #ifdef DEBUG_DATA
           llOwnerSay("Set undeform anim to " + name);
+          #endif
         }
       }
   }
-#define DEBUG_DATA
 #ifdef DEBUG_DATA
   llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
   llOwnerSay("Deform:" + g_AnimDeform);
   llOwnerSay("Undeform:" + g_AnimUndeform);
 #endif
-#undef DEBUG_DATA
 #endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
