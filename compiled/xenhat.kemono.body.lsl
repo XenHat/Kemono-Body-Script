@@ -1,7 +1,7 @@
 float g_Config_MaximumOpacity = 1.00;
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
-string g_internal_version_s = "0.5.3";
+string g_internal_version_s = "0.5.4";
 key g_internal_httprid_k = NULL_KEY;
 integer g_CurrentFittedButState = 1;
 integer g_CurrentFittedNipState = 1;
