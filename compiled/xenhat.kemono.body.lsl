@@ -319,6 +319,7 @@ list xlBladeNameToPrimNames(string name) {
     }
     return [ "PG" ];
   } else if(name ==  "NipAlpha") {
+    ;
     if(g_RuntimeBodyStateSettings & 1)
       return [ "NipAlpha" ];
     return [ "PG" ];
@@ -369,7 +370,7 @@ xlProcessCommandWrapper() {
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
     llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
-                    (string)g_Config_BladeColor);
+                    (string)g_Config_BladeColor) ;
   } else if(g_LastCommand_s == "Flegs") {
     ;
     human_mode = TRUE;
@@ -381,7 +382,7 @@ xlProcessCommandWrapper() {
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
     llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
-                    (string)g_Config_BladeColor);
+                    (string)g_Config_BladeColor) ;
   } else if(g_LastCommand_s == "Rhand:1") {
     if(g_HasAnimPerms) {
       llStartAnimation("Kem-hand-R-relax");
@@ -505,6 +506,7 @@ xlProcessCommand(integer send_params) {
   list input_data = llParseString2List(g_LastCommand_s, [":"], []);
   string command = llList2String(input_data, 0);
   integer list_size = llGetListLength(input_data);
+  ;
   integer index = 0;
   integer i_make_visible = -1;
   list local_params;
@@ -512,8 +514,11 @@ xlProcessCommand(integer send_params) {
   integer mod_command = -1;
   integer mod_command_2 = -1;
   for(; index < list_size ; index++) {
+    ;
+    ;
     command = llList2String(input_data, index);
     if(0 == index) {
+      ;
       if("setnip" == command) {
         {
           mesh_count_index = ((llGetListLength([ "NipState0" , "TorsoEtc" , "NipState1" ,
@@ -549,10 +554,12 @@ xlProcessCommand(integer send_params) {
       } else if(llSubStringIndex(command, "color*<") != -1)
         g_Config_BladeColor = (vector)llGetSubString(command, 6, -1);
     } else {
+      ;
       if(mod_command < 1) {
         if("nips"  == command) {
+          ;
           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 4)) |
-                                     (4 * !i_make_visible); ;
+                                     (4 * !i_make_visible) ;
           if(g_RuntimeBodyStateSettings & 16) {
             return;
           }
@@ -564,35 +571,46 @@ xlProcessCommand(integer send_params) {
             mod_command_2 =  2 ;
           }
         } else if("vagoo"  == command) {
+          ;
           mod_command =  8 ;
           mod_command_2 =  2 ;
           g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 8)) |
-                                     (8 * !i_make_visible); ;
+                                     (8 * !i_make_visible) ;
         } else
           mod_command_2 =  2 ;
       }
       if(4  == mod_command_2) {
         integer param = llList2Integer(input_data, index);
+        ;
         string mesh_name = "";
         for(; mesh_count_index > -1; mesh_count_index--) {
+          ;
+          ;
           if(4  == mod_command) {
+            ;
             g_LastCommand_s = "setnip:" + (string)i_make_visible;
             xlProcessCommand(TRUE);
           }
           if(1073741824  == mod_command) {
             g_CurrentFittedNipAlpha = param;
+            ;
             mesh_name = llList2String([ "NipState0" , "TorsoEtc" , "NipState1" ,
                                         "NipAlpha" ] , mesh_count_index);
+            ;
             i_make_visible = (g_CurrentFittedNipAlpha == 1) * (mesh_count_index == 3);
+            ;
             if(0 == param) {
               mod_command =  268435455 ;
+              ;
               param = g_PreviousFittedNipState;
             } else {
               g_PreviousFittedNipState = g_CurrentFittedNipState;
+              ;
             }
           }
           if(268435455  == mod_command) {
             g_CurrentFittedNipState = param;
+            ;
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =
@@ -614,24 +632,36 @@ xlProcessCommand(integer send_params) {
             mesh_name = llList2String([ "BitState0", "BitState1", "BitState2",
                                         "BitState3" ] , mesh_count_index);
           }
+          ;
           if(llStringLength(mesh_name) > 0) {
+            ;
+            ;
             list prim_names = xlBladeNameToPrimNames(mesh_name);
+            ;
             integer link_id = llList2Integer(g_LinkDB_l,
                                              llListFindList(g_LinkDB_l, prim_names) + 1);
+            ;
+            ;
             local_params += [PRIM_LINK_TARGET, link_id];
             list faces_l = [];
             if(268435455  == mod_command ||  4  == mod_command) {
+              ;
               faces_l = xlGetFacesByBladeName("nips");
             } else if(536870911  == mod_command) {
+              ;
               faces_l = xlGetFacesByBladeName("vagoo");
             } else if(1073741824  == mod_command) {
+              ;
               faces_l = xlGetFacesByBladeName("nips");
             } else if(134217727  == mod_command) {
+              ;
               faces_l = xlGetFacesByBladeName("butt");
             }
             integer faces_count = ((llGetListLength(faces_l))-1)  + 1;
             integer i2 = 0;
             for(; i2 < faces_count; i2++) {
+              ;
+              ;
               local_params += [PRIM_COLOR,
                                llList2Integer(faces_l, i2), g_Config_BladeColor,
                                i_make_visible * g_Config_MaximumOpacity
@@ -655,10 +685,16 @@ xlProcessCommand(integer send_params) {
                           ];
         }
         if("breast"  == command) {
+          ;
           if(g_RuntimeBodyStateSettings & 1) {
             g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 16)) |
-                                       (16 * !i_make_visible); ;
+                                       (16 * !i_make_visible) ;
             list faces = xlGetFacesByBladeName("nips");
+            ;
+            ;
+            ;
+            ;
+            ;
             list snd_lvl_params = [
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                                         llListFindList(g_LinkDB_l, [ "NipState0" ]) + 1),
@@ -834,8 +870,14 @@ default {
   }
   state_entry() {
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 1)) ;
+    ;
+    ;
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings | 1) ;
+    ;
+    ;
     g_RuntimeBodyStateSettings=(g_RuntimeBodyStateSettings & (~ 1)) ;
+    ;
+    ;
     if(g_Config_EnsureMaskingMode) {
       integer aaa = 0;
       for(; aaa <= llGetNumberOfPrims(); aaa++) {
@@ -874,7 +916,7 @@ default {
                       llStringLength("[XenLab] Enhanced Kemono Updater") - 1) ==
         "[XenLab] Enhanced Kemono Updater") {
       llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
-                      (string)g_Config_BladeColor);
+                      (string)g_Config_BladeColor) ;
       llSetObjectName("[XenLab] Enhanced Kemono Updater"  + " v" +
                       g_internal_version_s);
       llOwnerSay("Ready for updater");
@@ -951,7 +993,7 @@ default {
   }
   on_rez(integer p) {
     llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
-                    (string)g_Config_BladeColor);
+                    (string)g_Config_BladeColor) ;
     llSleep(3);
     g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
                                          +  "XenHat/"+ "Kemono-Body-Script"
