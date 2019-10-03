@@ -359,7 +359,7 @@ MESH_ROOT\
   have to do instead. Anyway, toggle using XOR..
 */
 #define bwToggle(a,b) a=a ^ b
-#define xlListLen2MaxID(a) ((llGetListLength(a))-1)
+#define llGetListSize(a) ((llGetListLength(a))-1)
 /*
   .oOOOo.                                                     O O       o            o
   o     o                    o                               O  o       O           O
@@ -1055,20 +1055,20 @@ xlProcessCommand(integer send_params) {
         // Completely ignore nipple changes if alpha mode is on
         //if(g_CurrentFittedNipAlpha)
         {
-          mesh_count_index = xlListLen2MaxID(s_FittedNipsMeshNames);
+          mesh_count_index = llGetListSize(s_FittedNipsMeshNames);
           mod_command = STARBRIGHT_FKT_HUD_NIPS;
           mod_command_2 = CMD_IS_MOD_HIJACK;
         }
       } else if("nipalpha" == command) {
-        mesh_count_index = xlListLen2MaxID(s_FittedNipsMeshNames);
+        mesh_count_index = llGetListSize(s_FittedNipsMeshNames);
         mod_command = STARBRIGHT_FKT_HUD_NIPH;
         mod_command_2 = CMD_IS_MOD_HIJACK;
       } else if("setbutt" == command) {
-        mesh_count_index = xlListLen2MaxID(s_KFTPelvisMeshes);
+        mesh_count_index = llGetListSize(s_KFTPelvisMeshes);
         mod_command = STARBRIGHT_FKT_HUD_BUTT;
         mod_command_2 = CMD_IS_MOD_HIJACK;
       } else if("setvag" == command) {
-        mesh_count_index = xlListLen2MaxID(s_KFTPelvisMeshes);
+        mesh_count_index = llGetListSize(s_KFTPelvisMeshes);
         mod_command_2 = CMD_IS_MOD_HIJACK;
         mod_command = STARBRIGHT_FKT_HUD_VAGN;
       } else if("show" == command)
@@ -1254,7 +1254,7 @@ xlProcessCommand(integer send_params) {
               debugLogic(mod_command);
             }
 #endif
-            integer faces_count = xlListLen2MaxID(faces_l) + 1;
+            integer faces_count = llGetListLength(faces_l);
             integer i2 = 0;
             for(; i2 < faces_count; i2++) {
               dSay("YES4");
@@ -1293,7 +1293,7 @@ xlProcessCommand(integer send_params) {
                               llListFindList(g_LinkDB_l, prim_names) + 1)
                         ];
         list faces_l = xlGetFacesByBladeName(command);
-        integer faces_index = xlListLen2MaxID(faces_l);
+        integer faces_index = llGetListSize(faces_l);
 #ifdef DEBUG_FACE_SELECT
         llOwnerSay("Prim Count:" + (string)1);
         llOwnerSay("Faces List 1:" + llList2CSV(faces_l));
@@ -1499,7 +1499,6 @@ detectLinkSetMods() {
                            "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
                            "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
   integer id = 0;
-  // integer len = xlListLen2MaxID(selftest) + 1;
   integer len = llGetListLength(selftest);
   for(; id < len; ++id) {
     g_LastCommand_s = "hide:" + llList2String(selftest, id);
@@ -1917,7 +1916,7 @@ default {
     //text+="\nPG_v:"+(string)g_TogglingPGMeshes;
 #endif
 #ifdef DEBUG_AUTH
-    text += "\n" + (string)(xlListLen2MaxID(g_AttmntAuthedKeys_l) + 1)
+    text += "\n" + (string)(llGetListLength(g_AttmntAuthedKeys_l))
             + " Keys";
 #endif
     text += "\n \n \n \n \n \n \n \n \n \n ";
