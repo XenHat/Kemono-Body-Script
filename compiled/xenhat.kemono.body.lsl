@@ -822,7 +822,6 @@ detectLinkSetMods() {
     g_LastCommand_s = "nipalpha:" + (string)g_CurrentFittedNipAlpha;
     xlProcessCommand(TRUE);
   }
-  list InventoryAnims;
   integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
   integer index = 0;
   string name;
