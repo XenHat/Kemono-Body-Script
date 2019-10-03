@@ -1868,7 +1868,6 @@ default {
   timer() {
     string text;
 #ifdef USE_DEFORM_ANIMS
-    g_HasAnimPerms = (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION);
     if(!g_HasAnimPerms)
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
     else {
