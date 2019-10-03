@@ -1515,7 +1515,6 @@ detectLinkSetMods() {
   }
 #endif
 #ifdef USE_DEFORM_ANIMS
-  list InventoryAnims;
   integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
   integer index = 0;
   string name;
