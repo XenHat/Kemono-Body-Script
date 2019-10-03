@@ -41,6 +41,7 @@ integer g_Config_EnsureMaskingMode = 0;
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
 // #define PROFILE_BODY_SCRIPT
+// #define DISABLE_GITHUB_UPDATER
 /* End of debug defines */
 /* Normal Features that should be enabled */
 #define USE_DEFORM_ANIMS
@@ -93,23 +94,13 @@ string g_internal_version_s = "0.5.7";
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
-#ifdef DEBUG
-#define xlSetLinkPrimitiveParamsFast(a,b) llOwnerSay("PARAMS:"+llList2CSV(b));\
-llSetLinkPrimitiveParamsFast(a,b)
-#else
-#define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
-#endif
-#ifdef DEBUG
-  #define debugLogic(a) llOwnerSay(#a + " == " + (string)a)
-  #define dSay(a) llOwnerSay((string)a)
-#else
-  #define debugLogic(a)
-  #define dSay(a)
-#endif
+#define debugLogic(a) llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
+#define dSay(a) llOwnerSay((string)a)
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
 + "*" + (string)human_mode\
 + "*" + (string)g_Config_BladeColor\
 )
+#define xlSetLinkPrimitiveParamsFast(a,b) /*debugLogic(b); */ llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
 :thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
@@ -763,7 +754,7 @@ list xlBladeNameToPrimNames(string name) {
     }
     return [MESH_PG_LAYER];
   } else if(name == MESH_FITTED_TORSO_NIP_A) {
-    dSay("yes, nipalpha was requested");
+    
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
       return [MESH_FITTED_TORSO_NIP_A];
     return [MESH_PG_LAYER];
@@ -821,7 +812,7 @@ xlProcessCommandWrapper() {
     reset();
   } else if(g_LastCommand_s == "Hlegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    dSay("Switching to human legs");
+    
     // if(!human_mode) {
     human_mode = FALSE;
     g_LastCommand_s =
@@ -836,7 +827,7 @@ xlProcessCommandWrapper() {
     saveSettings();
   } else if(g_LastCommand_s == "Flegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    dSay("Switching to animal legs");
+    
     // if(human_mode) {
     human_mode = TRUE;
     g_LastCommand_s =
@@ -1033,7 +1024,6 @@ xlProcessCommand(integer send_params) {
   list input_data = llParseString2List(g_LastCommand_s, [":"], []);
   string command = llList2String(input_data, 0);
   integer list_size = llGetListLength(input_data);
-  debugLogic(list_size);
   integer index = 0;
   integer i_make_visible = -1;
   list local_params;
@@ -1045,12 +1035,10 @@ xlProcessCommand(integer send_params) {
   integer mod_command = -1;
   integer mod_command_2 = -1;
   for(; index < list_size ; index++) {
-    debugLogic(index);
-    debugLogic(i_make_visible);
     command = llList2String(input_data, index);
     /* evaluate non-standard commands before looping through stock api */
     if(0 == index/*-1==i_make_visible*/) {
-      debugLogic(command);
+      
       if("setnip" == command) {
         // Completely ignore nipple changes if alpha mode is on
         //if(g_CurrentFittedNipAlpha)
@@ -1103,7 +1091,7 @@ xlProcessCommand(integer send_params) {
       /* non-standard command done or unhandled, and/or show/hide set,
            loop through the remaining parameters
       */
-      debugLogic(command);
+      
       if(mod_command < 1) {
         /* We need to identify these commands as genital commands
           otherwise they will be processed incorrectly in the
@@ -1113,7 +1101,7 @@ xlProcessCommand(integer send_params) {
           /* FIXME: Do not use the "core" code path when using mods
             as it will not toggle the other required faces
           */
-          dSay("nips!");
+          
           bwChange(g_RuntimeBodyStateSettings, KSB_PGNIPLS, !i_make_visible);
           if(bwGet(g_RuntimeBodyStateSettings, KSB_HDBRSTS)) {
             /* Don't do anything beyond keeping track of the state it should
@@ -1129,7 +1117,7 @@ xlProcessCommand(integer send_params) {
             mod_command_2 = CMD_BODYCORE;
           }
         } else if(API_CMD_VAG == command) {
-          dSay("vagoo!");
+          
           mod_command = KSB_PGVAGOO;
           mod_command_2 = CMD_BODYCORE;
           bwChange(g_RuntimeBodyStateSettings, KSB_PGVAGOO, !i_make_visible);
@@ -1141,14 +1129,14 @@ xlProcessCommand(integer send_params) {
         llOwnerSay("===== Genitals =====");
 #endif
         integer param = llList2Integer(input_data, index);
-        debugLogic(param);
+        
 #ifdef DEBUG_FUNCTIONS
         // llOwnerSay("===== xlSetGenitals =====");
 #endif
         string mesh_name = "";
         for(; mesh_count_index > -1; mesh_count_index--) {
-          debugLogic(mesh_count_index);
-          debugLogic(mod_command);
+          
+          
           /* Mods */
           /* TODO: Use preprocessor-able checks to hard-code mods
               for released compiled scripts*/
@@ -1156,12 +1144,12 @@ xlProcessCommand(integer send_params) {
           /* Standard Kemono API stuff */
           //if(KSB_PGNIPLS==mod_command)
           //{
-          //    dSay("Oh yeah!")
+          //    
           //    mesh_name=(string)xlBladeNameToPrimNames(MESH_SK_NIPS);
           //}
           //#else
           if(KSB_PGNIPLS == mod_command) {
-            dSay("OwO");
+            
             /* Pretend this is a FKT hud command because that logic
                 already exists
             */
@@ -1171,12 +1159,12 @@ xlProcessCommand(integer send_params) {
           }
           if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
             g_CurrentFittedNipAlpha = param;
-            dSay(g_CurrentFittedNipAlpha);
+            
             mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
-            debugLogic(mesh_name);
+            
             // mesh_name=MESH_FITTED_TORSO_NIP_A;
             i_make_visible = (g_CurrentFittedNipAlpha == 1) * (mesh_count_index == 3);
-            debugLogic(i_make_visible);
+            
             /* TODO: Properly implement:
               Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
               Stage1 shows the alpha mesh AND hides the PG mesh
@@ -1185,16 +1173,16 @@ xlProcessCommand(integer send_params) {
             if(0 == param) {
               mod_command = STARBRIGHT_FKT_HUD_NIPS;
               // TODO: restore previous nip state
-              debugLogic(g_CurrentFittedNipState);
+              
               param = g_PreviousFittedNipState;
             } else {
               g_PreviousFittedNipState = g_CurrentFittedNipState;
-              debugLogic(g_CurrentFittedNipState);
+              
             }
           }
           if(STARBRIGHT_FKT_HUD_NIPS == mod_command) {
             g_CurrentFittedNipState = param;
-            dSay("YES1");
+            
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =/*!g_CurrentFittedNipAlpha *
@@ -1205,7 +1193,7 @@ xlProcessCommand(integer send_params) {
             }
             //else
             //{
-            //    dSay("Ignoring nip change due to nip alpha mode")
+            //    
             //    i_make_visible=FALSE;
             //}
           } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
@@ -1221,44 +1209,44 @@ xlProcessCommand(integer send_params) {
           }
           /* TODO: Handle overrides (PG, etc) since bitwise check
             is removed */
-          debugLogic(i_make_visible);
+          
           if(llStringLength(mesh_name) > 0) {
-            dSay("YES2");
+            
             /* FIXME: PG nipple state briefly shows up mid-loop */
-            debugLogic(mesh_name);
+            
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            debugLogic(prim_names);
+            
             integer link_id = llList2Integer(g_LinkDB_l,
                                              llListFindList(g_LinkDB_l, prim_names) + 1);
-            debugLogic(link_id);
-            debugLogic(llGetLinkName(link_id));
+            
+            
             local_params += [PRIM_LINK_TARGET, link_id];
-            // debugLogic(link_id)
+            // 
             list faces_l = [];
             if(STARBRIGHT_FKT_HUD_NIPS == mod_command || KSB_PGNIPLS == mod_command) {
-              dSay("YES3");
+              
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
             } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
-              dSay("YES3");
+              
               faces_l = xlGetFacesByBladeName(API_CMD_VAG);
             } else if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
-              dSay("YES3");
+              
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
             } else if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
-              dSay("YES3");
+              
               faces_l = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
             }
 #ifdef DEBUG
             else {
-              dSay("NO3");
-              debugLogic(mod_command);
+              
+              
             }
 #endif
             integer faces_count = llGetListLength(faces_l);
             integer i2 = 0;
             for(; i2 < faces_count; i2++) {
-              dSay("YES4");
-              debugLogic(i2);
+              
+              
               local_params += [PRIM_COLOR,
                                llList2Integer(faces_l, i2), g_Config_BladeColor,
                                i_make_visible * g_Config_MaximumOpacity
@@ -1285,8 +1273,8 @@ xlProcessCommand(integer send_params) {
 #ifdef DEBUG
         integer target_link = llList2Integer(g_LinkDB_l,
                                              llListFindList(g_LinkDB_l, prim_names) + 1);
-        debugLogic(target_link);
-        debugLogic(llGetLinkName(target_link));
+        
+        
 #endif
         local_params += [
                           PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
@@ -1310,17 +1298,10 @@ xlProcessCommand(integer send_params) {
         }
         if(API_CMD_BREASTS == command /*API_CMD_NIPS==command*/) {
           /* Manually hard-code this one for speed and simplicity*/
-          debugLogic(i_make_visible);
+          
           if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
             bwChange(g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible);
             list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
-            debugLogic(faces);
-            debugLogic(llList2Integer(g_LinkDB_l,
-                                      llListFindList(g_LinkDB_l, [llList2String(
-                                            s_FittedNipsMeshNames, g_CurrentFittedNipState)]) + 1));
-            debugLogic(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS));
-            debugLogic(g_CurrentFittedNipState);
-            debugLogic(i_make_visible);
             list snd_lvl_params = [
                                     // PG meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
@@ -1608,14 +1589,11 @@ default {
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT));
-    dSay("^^^^^^ This should be 0 ^^^^^^");
+    
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT));
-    dSay("^^^^^^ This should be 1 ^^^^^^");
+    
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    debugLogic(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT));
-    dSay("^^^^^^ This should be 0 ^^^^^^");
+    
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
     if(g_Config_EnsureMaskingMode) {
@@ -1661,13 +1639,14 @@ default {
     }
     g_Owner_k = llGetOwner();
 #ifdef GITHUB_UPDATER
-    g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
+	string request = "https://api.github.com/repos/"
                                          + g_internal_repo_s
                                          + "/releases/latest?access_token="
-                                         + "603ee815cda6fb45fcc16876effbda017f158bef",
-                                         [HTTP_BODY_MAXLENGTH, 16384], "");
+                                         + "603ee815cda6fb45fcc16876effbda017f158bef";
+    g_internal_httprid_k = llHTTPRequest(request,[HTTP_BODY_MAXLENGTH, 16384], "");
 #endif
     detectLinkSetMods();
+    
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
                                                g_Config_BladeColor, 0.0]);
@@ -1696,6 +1675,9 @@ default {
 #ifdef XL_EKB_APPLIER_INCLUDED
     state_entry_applier_hook();
 #endif
+	#ifdef PROFILE_BODY_SCRIPT
+	llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
+	#endif
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
