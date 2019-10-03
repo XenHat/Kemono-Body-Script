@@ -884,6 +884,9 @@ default {
                      + "603ee815cda6fb45fcc16876effbda017f158bef";
     g_internal_httprid_k = llHTTPRequest(request,[HTTP_BODY_MAXLENGTH, 16384], "");
     detectLinkSetMods();
+    llOwnerSay("llGetAttached()" + " == " + (string)llGetAttached());
+    llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() +
+              "]/" + (string)llGetMemoryLimit() + "B", <0.925,0.925,0.925> , 0.75) ;
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
                                    g_Config_BladeColor, 0.0]);
@@ -910,6 +913,7 @@ default {
   }
   listen(integer channel, string name, key id, string message) {
     if(id == llGetKey()) {
+      llOwnerSay("Message came from self, what?");
       return;
     } else {
       key object_owner_k = llGetOwnerKey(id);
@@ -939,11 +943,15 @@ default {
       xlProcessCommandWrapper();
       g_Last_k = NULL_KEY;
     }
-    llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-    if(g_HasAnimPerms) {
-      llStartAnimation(g_AnimDeform);
-      llStopAnimation(g_AnimUndeform);
-      llStopAnimation(g_AnimUndeform);
+    if(llGetAttached()) {
+      if(!g_HasAnimPerms) {
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      }
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
     }
   }
   on_rez(integer p) {
@@ -964,7 +972,6 @@ default {
       return;
     }
     if(id == NULL_KEY) {
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimUndeform);
         llStartAnimation("stand_1");
@@ -990,11 +997,12 @@ default {
   }
   timer() {
     string text;
-    g_HasAnimPerms = (llGetPermissions() & PERMISSION_TRIGGER_ANIMATION);
-    if(!g_HasAnimPerms)
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-    else {
-      redeform();
+    if(llGetAttached()) {
+      if(!g_HasAnimPerms)
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      else {
+        redeform();
+      }
     }
     text += "\n \n \n \n \n \n \n \n \n \n ";
     llSetText(text,  <0.925,0.925,0.925> ,  0.75);
