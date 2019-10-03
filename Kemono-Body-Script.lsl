@@ -40,6 +40,7 @@ integer g_Config_EnsureMaskingMode = 0;
 // #define DEBUG_FACE_SELECT
 // #define DEBUG_FACE_TOUCH
 // #define DEBUG_FUNCTIONS
+#define DEBUG_MESSAGE_FROM_SELF
 // #define PROFILE_BODY_SCRIPT
 // #define DISABLE_GITHUB_UPDATER
 /* End of debug defines */
@@ -1567,12 +1568,16 @@ default {
                   + (string)llDetectedTouchFace(0) + "];break;");
     touch_time = llGetTime();
     #ifdef USE_DEFORM_ANIMS
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+    if(llGetAttached(){
+      if(!g_HasAnimPerms){
+      	llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      }
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
+  	}
     #endif
     #endif
   }
@@ -1646,7 +1651,7 @@ default {
     g_internal_httprid_k = llHTTPRequest(request,[HTTP_BODY_MAXLENGTH, 16384], "");
 #endif
     detectLinkSetMods();
-    
+    debugLogic(llGetAttached());
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
                                                g_Config_BladeColor, 0.0]);
@@ -1788,16 +1793,18 @@ default {
       llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
       g_Last_k = NULL_KEY;
-#ifndef DEBUG_MESSAGE_FROM_SELF
     }
-#endif
  #ifdef USE_DEFORM_ANIMS
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimDeform);
-        llStopAnimation(g_AnimUndeform);
-        llStopAnimation(g_AnimUndeform);
-      }
+ 		if(llGetAttached()){
+ 			if(!g_HasAnimPerms){
+				llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+			}
+	      	if(g_HasAnimPerms) {
+        		llStartAnimation(g_AnimDeform);
+        		llStopAnimation(g_AnimUndeform);
+        		llStopAnimation(g_AnimUndeform);
+      		}
+      	}
     #endif
   }
   on_rez(integer p) {
@@ -1826,17 +1833,19 @@ default {
     */
     if(id == NULL_KEY) {
 #ifdef USE_DEFORM_ANIMS
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimUndeform);
-        llStartAnimation("stand_1");
-        llStopAnimation(g_AnimDeform);
-        llStopAnimation(g_AnimUndeform);
-      }
+		// Don't bother asking for permissions if they were not given
+		// The animations are 98% sure to not be applied in that case.
+		if(g_HasAnimPerms) {
+    	  llStartAnimation(g_AnimUndeform);
+          llStartAnimation("stand_1");
+          llStopAnimation(g_AnimDeform);
+          llStopAnimation(g_AnimUndeform);
+      	}
 #endif
     } else {
 #ifdef USE_DEFORM_ANIMS
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      // Permissions auto-accepted, this will work immediately
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
@@ -1867,24 +1876,24 @@ default {
   }
   timer() {
     string text;
+    if(llGetAttached()){
 #ifdef USE_DEFORM_ANIMS
-    if(!g_HasAnimPerms)
-      llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-    else {
+	    if(!g_HasAnimPerms)
+      		llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+    	else {
 #ifdef SMART_DEFORM
-      if(
-        undeform_instead ||
-        llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
-        llStartAnimation(g_AnimUndeform);
-        llStopAnimation(g_AnimDeform);
-      } else {
+      	if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
+        	llStartAnimation(g_AnimUndeform);
+        	llStopAnimation(g_AnimDeform);
+      	} else {
 #endif
-        redeform();
+	        redeform();
 #ifdef SMART_DEFORM
-      }
+      	}
 #endif
-    }
+    	}
 #endif
+	}
 #ifdef DEBUG
     text = "[DEBUG]";
 #endif
