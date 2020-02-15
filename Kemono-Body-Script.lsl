@@ -8,18 +8,6 @@
 
   License: https://tldrlegal.com/license/aladdin-free-public-license
 */
-/*
-  .oOOOo.               .oOo                                    o      O
-  .O     o               O    o                                  O      o
-  o                      o                                       o      O
-  o                      OoO                                     OoOooOOo
-  o         .oOo. 'OoOo. o    O  .oOoO O   o  `OoOo. .oOo.       o      O .oOo. `OoOo. .oOo.
-  O         O   o  o   O O    o  o   O o   O   o     OooO'       O      o OooO'  o     OooO'
-  `o     .o o   O  O   o o    O  O   o O   o   O     O           o      o O      O     O
-  `OoooO'  `OoO'  o   O O'   o' `OoOo `OoO'o  o     `OoO'       o      O `OoO'  o     `OoO'
-                                   O
-                                OoO'
-*/
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
@@ -49,29 +37,6 @@ integer g_Config_EnsureMaskingMode = 0;
 /* Optional features, if you need them. */
 // #define SMART_DEFORM
 // ============================================================================
-/*
-  .oOOOo.               .oOo                o.OOoOoo             o
-  .O     o               O    o               O                  O
-  o                      o                    o                  o
-  o                      OoO                  ooOO               o
-  o         .oOo. 'OoOo. o    O  .oOoO        O       'OoOo. .oOoO
-  O         O   o  o   O O    o  o   O        o        o   O o   O
-  `o     .o o   O  O   o o    O  O   o        O        O   o O   o
-  `OoooO'  `OoO'  o   O O'   o' `OoOo       ooOooOoO  o   O `OoO'o
-                                   O
-                                OoO'
-*/
-/*
-  o.OOOo.         .oOo                                  O OOooOoO
-  O    `o        O    o                               O  o                                 o
-  o      O       o                                  oO   O                             O
-  O      o       OoO                               O     oOooO                        oOo
-  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
-  O      o OooO' O    o   o   O OooO' `Ooo.     O        o       o   O   o   O O       O   o  O   o  o   O `Ooo.
-  o    .O' O     o    O   O   o O         O   oO         o       O   o   O   o o       o   O  o   O  O   o     O
-  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O'      `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
-                                           O
-*/
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
@@ -95,37 +60,26 @@ string g_internal_version_s = "0.5.7";
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
-#define debugLogic(a) llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
-#define dSay(a) llOwnerSay((string)a)
+// #define debugLogic(a)//llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
+// #define dSay(a)//llOwnerSay((string)a)
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
-+ "*" + (string)human_mode\
-+ "*" + (string)g_Config_BladeColor\
-)
+    + "*" + (string)human_mode\
+    + "*" + (string)g_Config_BladeColor\
+    )
 #define xlSetLinkPrimitiveParamsFast(a,b) /*debugLogic(b); */ llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
-:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
-:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
-:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
-:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
+	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
+	:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
+	:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
+	:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
-  -   Set Nipple Override
-        0 = Off : 1 = On
-        0 being replaced by the state number 0 ~ 1:
-        nipovrd:0
+  -  Set Nipple Override
+    0 = Off : 1 = On
+    0 being replaced by the state number 0 ~ 1:
+    nipovrd:0
   - Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
-/*
-  o.OOOo.         .oOo                                  O    Oo    OooOOo.  ooOoOOo
-  O    `o        O    o                               O    o  O   O     `O    O
-  o      O       o                                  oO    O    o  o      O    o
-  O      o       OoO                               O     oOooOoOo O     .o    O
-  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      o      O oOooOO'     o
-  O      o OooO' O    o   o   O OooO' `Ooo.     O        O      o o           O
-  o    .O' O     o    O   O   o O         O   oO         o      O O           O
-  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O.     O o'       ooOOoOo
-                                           O
-*/
 #define API_CMD_ABS "abs"
 #define API_CMD_ANKLE_L "ankleL"
 #define API_CMD_ANKLE_R "ankleR"
@@ -167,17 +121,6 @@ string g_internal_version_s = "0.5.7";
 #define API_CMD_VIRTUAL_BUTT "butt"
 #define API_CMD_WRIST_L "wristL"
 #define API_CMD_WRIST_R "wristR"
-/*
-  o.OOOo.         .oOo                                  O Oo      oO              o
-  O    `o        O    o                               O  O O    o o             O
-  o      O       o                                  oO   o  o  O  O             o
-  O      o       OoO                               O     O   Oo   O             O
-  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O        o .oOo. .oOo  OoOo. .oOo. .oOo
-  O      o OooO' O    o   o   O OooO' `Ooo.     O        o        O OooO' `Ooo. o   o OooO' `Ooo.
-  o    .O' O     o    O   O   o O         O   oO         o        O O         O o   O O         O
-  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           O        o `OoO' `OoO' O   o `OoO' `OoO'
-                                           O
-*/
 #define MESH_ARMS "arms"
 #define MESH_BODY "body"
 #define MESH_FITTED_TORSO "Fitted Kemono Torso"
@@ -222,45 +165,34 @@ string g_internal_version_s = "0.5.7";
 #define MESH_VAGINA_CLIT0 "Clit Ring"
 // #define MESH_VAGINA_CLIT1 ""
 // #define MESH_VAGINA_CLIT2 ""
-/*
-  o.OOOo.         .oOo                                  O  o
-  O    `o        O    o                               O  O       o
-  o      O       o                                  oO   o                  O
-  O      o       OoO                               O     o                 oOo
-  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO      O       O  .oOo    o   .oOo
-  O      o OooO' O    o   o   O OooO' `Ooo.     O        O       o  `Ooo.   O   `Ooo.
-  o    .O' O     o    O   O   o O         O   oO         o     . O      O   o       O
-  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O           OOoOooO o' `OoO'   `oO `OoO'
-                                           O
-*/
 #define g_supported_meshes [\
-"BitState0",\
-"BitState1",\
-"BitState2",\
-"BitState3",\
-"cumButtS1",\
-"cumButtS2",\
-"cumButtS3",\
-MESH_ARMS,\
-MESH_BODY,\
-MESH_FITTED_TORSO,\
-MESH_FITTED_TORSO_CHEST,\
-MESH_FITTED_TORSO_ETC,\
-MESH_FITTED_TORSO_HLEGS,\
-MESH_FITTED_TORSO_NIP_0,\
-MESH_FITTED_TORSO_NIP_1,\
-MESH_FITTED_TORSO_NIP_A,\
-MESH_HAND_LEFT,\
-MESH_HAND_RIGHT,\
-MESH_HIPS,\
-MESH_LEG_LEFT_ANIMAL,\
-MESH_LEG_LEFT_HUMAN,\
-MESH_LEG_RIGHT_ANIMAL,\
-MESH_LEG_RIGHT_HUMAN,\
-MESH_NECK,\
-MESH_PG_LAYER,\
-MESH_ROOT\
-]
+                       "BitState0",\
+                       "BitState1",\
+                       "BitState2",\
+                       "BitState3",\
+                       "cumButtS1",\
+                       "cumButtS2",\
+                       "cumButtS3",\
+                       MESH_ARMS,\
+                       MESH_BODY,\
+                       MESH_FITTED_TORSO,\
+                       MESH_FITTED_TORSO_CHEST,\
+                       MESH_FITTED_TORSO_ETC,\
+                       MESH_FITTED_TORSO_HLEGS,\
+                       MESH_FITTED_TORSO_NIP_0,\
+                       MESH_FITTED_TORSO_NIP_1,\
+                       MESH_FITTED_TORSO_NIP_A,\
+                       MESH_HAND_LEFT,\
+                       MESH_HAND_RIGHT,\
+                       MESH_HIPS,\
+                       MESH_LEG_LEFT_ANIMAL,\
+                       MESH_LEG_LEFT_HUMAN,\
+                       MESH_LEG_RIGHT_ANIMAL,\
+                       MESH_LEG_RIGHT_HUMAN,\
+                       MESH_NECK,\
+                       MESH_PG_LAYER,\
+                       MESH_ROOT\
+                       ]
 // These go above. Can't comment out defined list parts.
 /*MESH_DERMAL_BACK0,\*/
 /*MESH_DERMAL_BACK1,\*/
@@ -277,17 +209,17 @@ MESH_ROOT\
 /*MESH_VAGINA_CLIT0,\*/
 /*MESH_BELLY_RING0,\*/
 #define s_FittedNipsMeshNames [\
-                              MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
-                              MESH_FITTED_TORSO_ETC,/* 1 */\
-                              MESH_FITTED_TORSO_NIP_1, /* 2 */\
-                              MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
-                             ]
+MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
+MESH_FITTED_TORSO_ETC,/* 1 */\
+MESH_FITTED_TORSO_NIP_1, /* 2 */\
+MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
+]
 #define s_KFTPelvisMeshes [\
-                           "BitState0",\
-                           "BitState1",\
-                           "BitState2",\
-                           "BitState3"\
-                          ]
+"BitState0",\
+"BitState1",\
+"BitState2",\
+"BitState3"\
+]
 //#define s_NipplePiercingsNames [\
 //MESH_NIPPLE_RING0,\
 //MESH_NIPPLE_LOOP0,\
@@ -296,18 +228,6 @@ MESH_ROOT\
 //#define s_VaginalPiercingsNames [\
 //MESH_VAGINA_CLIT0\
 //]
-/*
-  o.OOOo.         .oOo                                  O o.oOOOo.           .oOo  o
-  O    `o        O    o                               O   o     o  o        O    O
-  o      O       o                                  oO    O     O       O   o    o
-  O      o       OoO                               O      oOooOO.      oOo  OoO  O
-  o      O .oOo. o    O  'OoOo. .oOo. .oOo       oO       o     `O O    o   o    o  .oOoO' .oOoO .oOo
-  O      o OooO' O    o   o   O OooO' `Ooo.     O         O      o o    O   O    O  O   o  o   O `Ooo.
-  o    .O' O     o    O   O   o O         O   oO          o     .O O    o   o    o  o   O  O   o     O
-  OooOO'   `OoO' O'   o'  o   O `OoO' `OoO'  O            `OooOO'  o'   `oO O'   Oo `OoO'o `OoOo `OoO'
-                                           O                                                  O
-                                                                                           OoO'
-*/
 #define FKT_PRESENT 1
 #define HUMAN_LEGS 2
 /* PG States */
@@ -327,61 +247,37 @@ MESH_ROOT\
 #define STARBRIGHT_FKT_HUD_VAGN 536870911
 #define STARBRIGHT_FKT_HUD_NIPH 1073741824
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
-     usage:
-         a=variable/set
-         b=bit (define, see above)
+   usage:
+     a=variable/set
+     b=bit (define, see above)
   Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
   play with is:
   0000 0000 0000 0000 0000 0000 0000 0000
   ie 00000000000000000000000000000010 = 2
   The maximum value we can store is:
-    - 31 booleans, or bits. (-1 for sign)
-    - 1073741824
-    - 10000000000000000000000000000000
+  - 31 booleans, or bits. (-1 for sign)
+  - 1073741824
+  - 10000000000000000000000000000000
   The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
-    and so on...
+  and so on...
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c)
 #define bwClear(a,b) a=(a & (~b))
 #define bwGet(a,b) a & b
 #define bwSet(a,b) a=(a | b)
-/* Why can't we just do "a ^= b"? (C++) It's
+/* Why can't we just do "a ^= b"? It's
   more succinct but it just won't compile that way. So
   "a = a ^ b" (old school) will
   have to do instead. Anyway, toggle using XOR..
 */
 #define bwToggle(a,b) a=a ^ b
 #define llGetListSize(a) ((llGetListLength(a))-1)
-/*
-  .oOOOo.                                                     O O       o            o
-  o     o                    o                               O  o       O           O
-  O.               O     O                                 oO   O       o           o           O
-  `OOoo.         oOo   oOo                               O     o       o           o          oOo
-      `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO      o       O .oOo. .oOoO  .oOoO'   o   .oOo. `OoOo.
-       o OooO'   O     O   o   o   O o   O `Ooo.     O        O       O O   o o   O  O   o    O   OooO'  o
-  O.    .O O       o     o   O   O   o O   o     O   oO         `o     Oo o   O O   o  o   O    o   O      O
-  `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            `OoooO'O oOoO' `OoO'o `OoO'o   `oO `OoO'  o
-                                         O       O                      O
-                                      OoO'                              o'
-*/
 #define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
 #define script_name "Kemono-Body-Script"
 #ifdef GITHUB_UPDATER
   key g_internal_httprid_k = NULL_KEY;
 #endif
-/*
-  .oOOOo.                                                     O `OooOOo.
-  o     o                    o                               O   o     `o                     o
-  O.               O     O                                 oO    O      O                 O
-  `OOoo.         oOo   oOo                               O      o     .O                oOo
-      `O .oOo.   o     o   O  'OoOo. .oOoO .oOo       oO       OOooOO'  O   o  'OoOo.   o   O  `oOOoOO. .oOo.
-       o OooO'   O     O   o   o   O o   O `Ooo.     O         o    o   o   O   o   O   O   o   O  o  o OooO'
-  O.    .O O       o     o   O   O   o O   o     O   oO          O     O  O   o   O   o   o   O   o  O  O O
-  `oooO'  `OoO'   `oO   `oO o'  o   O `OoOo `OoO'  O            O      o `OoO'o  o   O   `oO o'  O  o  o `OoO'
-                                         O       O
-                                      OoO'
-*/
 /* TODO: Use a bitset if we run out of memory */
 #define g_DefaultFittedButState 1
 #define g_DefaultFittedNipAlpha 0
@@ -410,19 +306,9 @@ string g_AnimUndeform;
 #ifdef DEBUG_FACE_TOUCH
   float touch_time;
 #endif
-/*
-  O       o                          .oOo
-  o       O                          O                              o
-  O       o                          o                          O
-  o       o                          OoO                       oOo
-  o       O .oOo  .oOo. `OoOo.       o    O   o  'OoOo. .oOo    o   O  .oOo. 'OoOo. .oOo
-  O       O `Ooo. OooO'  o           O    o   O   o   O O       O   o  O   o  o   O `Ooo.
-  `o     Oo     O O      O           o    O   o   O   o o       o   O  o   O  O   o     O
-  `OoooO'O `OoO' `OoO'  o           O'   `OoO'o  o   O `OoO'   `oO o' `OoO'  o   O `OoO'
-*/
 list xlGetFacesByBladeName(string name) {
 #ifdef DEBUG_COMMAND
-  llOwnerSay("===== xlGetFacesByBladeName =====");
+  //llOwnerSay("===== xlGetFacesByBladeName =====");
 #endif
   if(name == API_CMD_ABS) return [6, 7];
   if(name == API_CMD_ANKLE_L) {
@@ -503,7 +389,7 @@ list xlGetFacesByBladeName(string name) {
   if(name == MESH_SK_NIPS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
       /* Note: Before changing this again, create a different way of
-         handling the request that doesn't match.
+        handling the request that doesn't match.
         This is configured properly for the whole Fitted Torso chest mesh
       */
       return [0, 1];
@@ -584,8 +470,8 @@ list xlGetFacesByBladeName(string name) {
   if(name == API_CMD_VIRTUAL_BUTT) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
-         The bottom hip mesh half is controlled independently using
-         setbutt
+        The bottom hip mesh half is controlled independently using
+        setbutt
       */
 #ifdef DEBUG_COMMAND
       //llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
@@ -599,7 +485,7 @@ list xlGetFacesByBladeName(string name) {
   if(name == API_CMD_WRIST_L) return [3];
   if(name == API_CMD_WRIST_R) return [1];
 #ifdef DEBUG_COMMAND
-  llOwnerSay("UNIMPLEMENTED:" + name + "!");
+  //llOwnerSay("UNIMPLEMENTED:" + name + "!");
 #endif
   return [];
 }
@@ -613,10 +499,10 @@ list xlGetFacesByBladeName(string name) {
 */
 list xlBladeNameToPrimNames(string name) {
   /* TODO Can't we return the link number directly (using less than 512 bytes
-     of code!) without an additional function call?
+    of code!) without an additional function call?
   */
 #ifdef DEBUG_FACE_SELECT
-  llOwnerSay("xlBladeNameToPrimNames(" + name + ")");
+  //llOwnerSay("xlBladeNameToPrimNames(" + name + ")");
 #endif
   if(name == API_CMD_ARM_L_L) return [MESH_ARMS];
   else if(name == API_CMD_ARM_L_R) return [MESH_ARMS];
@@ -755,7 +641,6 @@ list xlBladeNameToPrimNames(string name) {
     }
     return [MESH_PG_LAYER];
   } else if(name == MESH_FITTED_TORSO_NIP_A) {
-    
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
       return [MESH_FITTED_TORSO_NIP_A];
     return [MESH_PG_LAYER];
@@ -786,7 +671,7 @@ list xlBladeNameToPrimNames(string name) {
     return [MESH_LEG_LEFT_ANIMAL];
   }
 #ifdef DEBUG_COMMAND
-  llOwnerSay("=================================");
+  //llOwnerSay("=================================");
 #endif
   return [name];
 }
@@ -802,7 +687,7 @@ list xlBladeNameToPrimNames(string name) {
 */
 xlProcessCommandWrapper() {
 #ifdef DEBUG_COMMAND
-  llOwnerSay("===== xlProcessCommandWrapper:" + g_LastCommand_s + "===== ");
+  //llOwnerSay("===== xlProcessCommandWrapper:" + g_LastCommand_s + "===== ");
 #endif
   if(g_LastCommand_s == KM_HUD_RESET_CMD)
     reset();
@@ -813,7 +698,6 @@ xlProcessCommandWrapper() {
     reset();
   } else if(g_LastCommand_s == "Hlegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    
     // if(!human_mode) {
     human_mode = FALSE;
     g_LastCommand_s =
@@ -828,7 +712,6 @@ xlProcessCommandWrapper() {
     saveSettings();
   } else if(g_LastCommand_s == "Flegs") {
 #ifdef PROCESS_LEGS_COMMANDS
-    
     // if(human_mode) {
     human_mode = TRUE;
     g_LastCommand_s =
@@ -936,10 +819,10 @@ xlProcessCommandWrapper() {
     return;
   } else if("reqFTdat" == g_LastCommand_s) {
 #ifdef DEBUG_FUNCTIONS
-    llOwnerSay("Sending Data");
+    //llOwnerSay("Sending Data");
 #endif
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-      // Example:  resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
+      // Example: resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
       // resFTdat:nipState:" + (string)nipState + ":nipAlpha:" + (string)nipAlpha + ":nipOvrd:" + (string)nipOvrd +
       // ":vagState:" + (string)vagState + ":buttState:" + (string)buttState + ":humLegs:" + (string)humLegs)
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, "resFTdat:nipState:"
@@ -973,10 +856,11 @@ xlProcessCommandWrapper() {
           one out.
         */
         /* NOTE: This is part of the internal Starbright API. We shouldn't know
-          /* how to handle this and that is fine. Staryna says it's for
-          /* careful ordering of stuff. Private and all.
-          /* However some commands are required to be handled here to ensure
-          /* clothing made for the FKT behave properly */
+          how to handle this and that is fine. Staryna says it's for
+            careful ordering of stuff. Private and all.
+            However some commands are required to be handled here to ensure
+            clothing made for the FKT behave properly
+        */
         if("Top" == clothDesc) {
           // Restore previous genital state
           if(0 == clothState) {
@@ -1004,12 +888,12 @@ xlProcessCommandWrapper() {
     xlProcessCommand(TRUE);
   }
 #ifdef DEBUG_COMMAND
-  llOwnerSay("=================================");
+  //llOwnerSay("=================================");
 #endif
 }
 xlProcessCommand(integer send_params) {
 #ifdef DEBUG_COMMAND
-  llOwnerSay("===== xlProcessCommand =====");
+  //llOwnerSay("===== xlProcessCommand =====");
 #endif
   /*   == Some Information about the Kemono API spec ==
     Generally speaking, command chaining is limited to same-state body parts;
@@ -1039,7 +923,6 @@ xlProcessCommand(integer send_params) {
     command = llList2String(input_data, index);
     /* evaluate non-standard commands before looping through stock api */
     if(0 == index/*-1==i_make_visible*/) {
-      
       if("setnip" == command) {
         // Completely ignore nipple changes if alpha mode is on
         //if(g_CurrentFittedNipAlpha)
@@ -1066,17 +949,17 @@ xlProcessCommand(integer send_params) {
         i_make_visible = FALSE;
       else if("remove" == command) {
         /* Object signals they no longer need to talk with the API;
-             Remove their key from the list of authorized attachments.
-             This object will need to use the 'add' command
-             to interact with us again
+           Remove their key from the list of authorized attachments.
+           This object will need to use the 'add' command
+           to interact with us again
         */
         integer placeinlist = llListFindList(g_AttmntAuthedKeys_l, [g_Last_k]);
         if(placeinlist != -1) {
           g_AttmntAuthedKeys_l = llDeleteSubList(g_AttmntAuthedKeys_l,
                                                  placeinlist, placeinlist);
 #ifdef DEBUG_AUTH
-          llOwnerSay("Removed [" + (string)g_Last_k + "] (" + llKey2Name(
-                       g_Last_k) + ") from auth list");
+          //llOwnerSay("Removed [" + (string)g_Last_k + "] (" + llKey2Name(
+          g_Last_k) + ") from auth list");
 #endif
         }
       } else if(llSubStringIndex(command, "color*<") != -1)
@@ -1084,15 +967,14 @@ xlProcessCommand(integer send_params) {
       /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
-,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
+       ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
       else if(llListFindList(nope, [command]) == -1)
-        llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
+        //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
 #endif
-    } else {
+      } else {
       /* non-standard command done or unhandled, and/or show/hide set,
-           loop through the remaining parameters
+         loop through the remaining parameters
       */
-      
       if(mod_command < 1) {
         /* We need to identify these commands as genital commands
           otherwise they will be processed incorrectly in the
@@ -1102,7 +984,6 @@ xlProcessCommand(integer send_params) {
           /* FIXME: Do not use the "core" code path when using mods
             as it will not toggle the other required faces
           */
-          
           bwChange(g_RuntimeBodyStateSettings, KSB_PGNIPLS, !i_make_visible);
           if(bwGet(g_RuntimeBodyStateSettings, KSB_HDBRSTS)) {
             /* Don't do anything beyond keeping track of the state it should
@@ -1118,7 +999,6 @@ xlProcessCommand(integer send_params) {
             mod_command_2 = CMD_BODYCORE;
           }
         } else if(API_CMD_VAG == command) {
-          
           mod_command = KSB_PGVAGOO;
           mod_command_2 = CMD_BODYCORE;
           bwChange(g_RuntimeBodyStateSettings, KSB_PGVAGOO, !i_make_visible);
@@ -1127,32 +1007,28 @@ xlProcessCommand(integer send_params) {
       }
       if(CMD_IS_MOD_HIJACK == mod_command_2) {
 #ifdef DEBUG_COMMAND
-        llOwnerSay("===== Genitals =====");
+        //llOwnerSay("===== Genitals =====");
 #endif
         integer param = llList2Integer(input_data, index);
-        
 #ifdef DEBUG_FUNCTIONS
-        // llOwnerSay("===== xlSetGenitals =====");
+        //llOwnerSay("===== xlSetGenitals =====");
 #endif
         string mesh_name = "";
         for(; mesh_count_index > -1; mesh_count_index--) {
-          
-          
           /* Mods */
           /* TODO: Use preprocessor-able checks to hard-code mods
-              for released compiled scripts*/
+            for released compiled scripts*/
           /*#ifndef SB_FKT*/
           /* Standard Kemono API stuff */
           //if(KSB_PGNIPLS==mod_command)
           //{
-          //    
-          //    mesh_name=(string)xlBladeNameToPrimNames(MESH_SK_NIPS);
+          //
+          //  mesh_name=(string)xlBladeNameToPrimNames(MESH_SK_NIPS);
           //}
           //#else
           if(KSB_PGNIPLS == mod_command) {
-            
             /* Pretend this is a FKT hud command because that logic
-                already exists
+              already exists
             */
             // mod_command=STARBRIGHT_FKT_HUD_NIPS;
             g_LastCommand_s = "setnip:" + (string)i_make_visible;
@@ -1160,12 +1036,9 @@ xlProcessCommand(integer send_params) {
           }
           if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
             g_CurrentFittedNipAlpha = param;
-            
             mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
-            
             // mesh_name=MESH_FITTED_TORSO_NIP_A;
             i_make_visible = (g_CurrentFittedNipAlpha == 1) * (mesh_count_index == 3);
-            
             /* TODO: Properly implement:
               Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
               Stage1 shows the alpha mesh AND hides the PG mesh
@@ -1174,28 +1047,24 @@ xlProcessCommand(integer send_params) {
             if(0 == param) {
               mod_command = STARBRIGHT_FKT_HUD_NIPS;
               // TODO: restore previous nip state
-              
               param = g_PreviousFittedNipState;
-            } else {
+            } else
               g_PreviousFittedNipState = g_CurrentFittedNipState;
-              
-            }
           }
           if(STARBRIGHT_FKT_HUD_NIPS == mod_command) {
             g_CurrentFittedNipState = param;
-            
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =/*!g_CurrentFittedNipAlpha *
-                                !bwGet(g_RuntimeBodyStateSettings,mod_command) */
+        !bwGet(g_RuntimeBodyStateSettings,mod_command) */
                   (mesh_count_index == g_CurrentFittedNipState);
                 mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
               }
             }
             //else
             //{
-            //    
-            //    i_make_visible=FALSE;
+            //
+            //  i_make_visible=FALSE;
             //}
           } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
             g_CurrentFittedVagState = param;
@@ -1210,72 +1079,55 @@ xlProcessCommand(integer send_params) {
           }
           /* TODO: Handle overrides (PG, etc) since bitwise check
             is removed */
-          
           if(llStringLength(mesh_name) > 0) {
-            
             /* FIXME: PG nipple state briefly shows up mid-loop */
-            
             list prim_names = xlBladeNameToPrimNames(mesh_name);
-            
             integer link_id = llList2Integer(g_LinkDB_l,
                                              llListFindList(g_LinkDB_l, prim_names) + 1);
-            
-            
             local_params += [PRIM_LINK_TARGET, link_id];
-            // 
+            //
             list faces_l = [];
-            if(STARBRIGHT_FKT_HUD_NIPS == mod_command || KSB_PGNIPLS == mod_command) {
-              
+            if(STARBRIGHT_FKT_HUD_NIPS == mod_command || KSB_PGNIPLS == mod_command)
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
-            } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
-              
+            else if(STARBRIGHT_FKT_HUD_VAGN == mod_command)
               faces_l = xlGetFacesByBladeName(API_CMD_VAG);
-            } else if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
-              
+            else if(STARBRIGHT_FKT_HUD_NIPH == mod_command)
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
-            } else if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
-              
+            else if(STARBRIGHT_FKT_HUD_BUTT == mod_command)
               faces_l = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
-            }
 #ifdef DEBUG
             else {
-              
-              
             }
 #endif
             integer faces_count = llGetListLength(faces_l);
             integer i2 = 0;
             for(; i2 < faces_count; i2++) {
-              
-              
               local_params += [PRIM_COLOR,
                                llList2Integer(faces_l, i2), g_Config_BladeColor,
                                i_make_visible * g_Config_MaximumOpacity
                               ];
             }
 #ifdef DEBUG_FACE_SELECT
-            llOwnerSay("visible:" + (string)i_make_visible
-                       + "\nFACES_COUNT:" + (string)faces_count
-                       + "\nFACES:" + llList2CSV(faces_l)
-                       + "\nTOGGLE_PART:" + (string)mod_command
-                       + "\nMESH_NAME:" + mesh_name
-                       + "\nPRIM_NAME:" + (string)prim_names);
+            //llOwnerSay("visible:" + (string)i_make_visible
+            + "\nFACES_COUNT:" + (string)faces_count
+            + "\nFACES:" + llList2CSV(faces_l)
+            + "\nTOGGLE_PART:" + (string)mod_command
+            + "\nMESH_NAME:" + mesh_name
+            + "\nPRIM_NAME:" + (string)prim_names);
 #endif
           }
         }
       } else if(CMD_BODYCORE == mod_command_2) {
         list prim_names = xlBladeNameToPrimNames(command);
 #ifdef DEBUG_DATA
-        llOwnerSay("prim_names:{" + llList2CSV(prim_names) + "}");
-        llOwnerSay("prim_count=" + (string)1);
+        //llOwnerSay("prim_names:{" + llList2CSV(prim_names) + "}");
+        //llOwnerSay("prim_count=" + (string)1);
 #endif
         /* TODO: Be less nuclear and only fix the faces we asked for*/
         /* TODO: inline as much as possible */
 #ifdef DEBUG
         integer target_link = llList2Integer(g_LinkDB_l,
                                              llListFindList(g_LinkDB_l, prim_names) + 1);
-        
-        
 #endif
         local_params += [
                           PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
@@ -1284,11 +1136,11 @@ xlProcessCommand(integer send_params) {
         list faces_l = xlGetFacesByBladeName(command);
         integer faces_index = llGetListSize(faces_l);
 #ifdef DEBUG_FACE_SELECT
-        llOwnerSay("Prim Count:" + (string)1);
-        llOwnerSay("Faces List 1:" + llList2CSV(faces_l));
-        llOwnerSay("Prim Names:" + llList2CSV(prim_names));
-        llOwnerSay("Faces Count:" + (string)(faces_index + 1));
-        llOwnerSay("Prim Database:" + llList2CSV(g_LinkDB_l));
+        //llOwnerSay("Prim Count:" + (string)1);
+        //llOwnerSay("Faces List 1:" + llList2CSV(faces_l));
+        //llOwnerSay("Prim Names:" + llList2CSV(prim_names));
+        //llOwnerSay("Faces Count:" + (string)(faces_index + 1));
+        //llOwnerSay("Prim Database:" + llList2CSV(g_LinkDB_l));
 #endif
         for(; faces_index > -1; faces_index--) {
           local_params += [
@@ -1299,7 +1151,6 @@ xlProcessCommand(integer send_params) {
         }
         if(API_CMD_BREASTS == command /*API_CMD_NIPS==command*/) {
           /* Manually hard-code this one for speed and simplicity*/
-          
           if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
             bwChange(g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible);
             list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
@@ -1359,19 +1210,23 @@ xlProcessCommand(integer send_params) {
   }
   /* Send params to prim now */
 #ifdef DEBUG_COMMAND
-  llOwnerSay("===== Setting global params =====");
+  //llOwnerSay("===== Setting global params =====");
 #endif
   if(send_params) {
+#ifdef DEBUG_APPLY
+    //llOwnerSay("Pausing Application for a few...");
+    llSleep(0.5);
+#endif
     xlSetLinkPrimitiveParamsFast(LINK_ROOT, local_params);
     local_params = [];
   }
 #ifdef DEBUG_COMMAND
-  llOwnerSay("=================================");
+  //llOwnerSay("=================================");
 #endif
 }
 redeform() {
   if(g_HasAnimPerms) {
-    // llOwnerSay("Redeform");
+    //llOwnerSay("Redeform");
     llStartAnimation(g_AnimDeform);
     llStopAnimation(g_AnimUndeform);
   }
@@ -1404,6 +1259,7 @@ reset() {
   resetHands();
 }
 detectLinkSetMods() {
+  g_LinkDB_l = [];
 #ifdef DEBUG_ENTIRE_BODY_ALPHA
   string texture = llGetInventoryName(INVENTORY_TEXTURE, 0);
   integer retexture = texture != "";
@@ -1499,33 +1355,30 @@ detectLinkSetMods() {
   integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
   integer index = 0;
   string name;
-  for(;index < AnimsCount;index++){
-      name = llGetInventoryName(INVENTORY_ANIMATION, index);
-      if(g_AnimUndeform == "")
-      {
-        if(llSubStringIndex(name, "undeform") > -1)
-        {
-          g_AnimUndeform = name;
-          #ifdef DEBUG_DATA
-          llOwnerSay("Set undeform anim to " + name);
-          #endif
-        }
+  for(; index < AnimsCount; index++) {
+    name = llGetInventoryName(INVENTORY_ANIMATION, index);
+    if(g_AnimUndeform == "") {
+      if(llSubStringIndex(name, "undeform") > -1) {
+        g_AnimUndeform = name;
+#ifdef DEBUG_DATA
+        //llOwnerSay("Set undeform anim to " + name);
+#endif
       }
-      if(g_AnimDeform == "")
-      {
-        if(llSubStringIndex(name, "deform") > -1 && llSubStringIndex(name, "undeform") == -1)
-        {
-          g_AnimDeform = name;
-          #ifdef DEBUG_DATA
-          llOwnerSay("Set undeform anim to " + name);
-          #endif
-        }
+    }
+    if(g_AnimDeform == "") {
+      if(llSubStringIndex(name, "deform") > -1
+          && llSubStringIndex(name, "undeform") == -1) {
+        g_AnimDeform = name;
+#ifdef DEBUG_DATA
+        //llOwnerSay("Set undeform anim to " + name);
+#endif
       }
+    }
   }
 #ifdef DEBUG_DATA
-  llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
-  llOwnerSay("Deform:" + g_AnimDeform);
-  llOwnerSay("Undeform:" + g_AnimUndeform);
+  //llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
+  //llOwnerSay("Deform:" + g_AnimDeform);
+  //llOwnerSay("Undeform:" + g_AnimUndeform);
 #endif
 #endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
@@ -1538,25 +1391,15 @@ detectLinkSetMods() {
     // Animal legs are missing
     g_LastCommand_s = "Hlegs";
     xlProcessCommandWrapper();
-    llOwnerSay("Adjusted for missing animal legs");
+    //llOwnerSay("Adjusted for missing animal legs");
   } else if(llListFindList(g_LinkDB_l, [MESH_LEG_LEFT_HUMAN]) == -1
             && llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
     // Human Legs are missing
     g_LastCommand_s = "Flegs";
     xlProcessCommandWrapper();
-    llOwnerSay("Adjusted for missing human legs");
+    //llOwnerSay("Adjusted for missing human legs");
   }
 }
-/*
-  Oo      oO
-  O O    o o        o
-  o  o  O  O                                O            O
-  O   Oo   O                               oOo          oOo
-  O        o .oOoO' O  'OoOo.       .oOo    o   .oOoO'   o   .oOo.
-  o        O O   o  o   o   O       `Ooo.   O   O   o    O   OooO'
-  o        O o   O  O   O   o           O   o   o   O    o   O
-  O        o `OoO'o o'  o   O       `OoO'   `oO `OoO'o   `oO `OoO'
-*/
 default {
   touch_start(integer total_number) {
 #ifdef DEBUG_FACE_TOUCH
@@ -1567,25 +1410,24 @@ default {
                   llGetLinkName(llDetectedLinkNumber(0)) + "\";face_list=["
                   + (string)llDetectedTouchFace(0) + "];break;");
     touch_time = llGetTime();
-    #ifdef USE_DEFORM_ANIMS
-    if(llGetAttached(){
-      if(!g_HasAnimPerms){
-      	llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      }
+#ifdef USE_DEFORM_ANIMS
+    if(llGetAttached() {
+    if(!g_HasAnimPerms)
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
-  	}
-    #endif
-    #endif
+    }
+#endif
+#endif
   }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
     else if(change & CHANGED_LINK) {
-      llOwnerSay("Linkset changed, resetting...");
+      //llOwnerSay("Linkset changed, resetting...");
       detectLinkSetMods();
     }
   }
@@ -1594,11 +1436,8 @@ default {
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
-    
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
     if(g_Config_EnsureMaskingMode) {
@@ -1627,10 +1466,10 @@ default {
       if(item != self) {
         if(-1 != llSubStringIndex(item, "[Kemono 1.")
             || -1 != llSubStringIndex(item, "[AdvKem")) {
-          llOwnerSay("Removing " + item);
+          //llOwnerSay("Removing " + item);
           llRemoveInventory(item);
         } else if(-1 != llSubStringIndex(item, basename)) {
-          llOwnerSay("Upgraded to " + self);
+          //llOwnerSay("Upgraded to " + self);
           llRemoveInventory(item);
         }
       }
@@ -1639,19 +1478,19 @@ default {
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       saveSettings();
       llSetObjectName(UPDATER_NAME + " v" + g_internal_version_s);
-      llOwnerSay("Ready for updater");
-      state dead;
+      //llOwnerSay("Ready for updater");
+      llSleep(999);
+      llResetScript();
     }
     g_Owner_k = llGetOwner();
 #ifdef GITHUB_UPDATER
-	string request = "https://api.github.com/repos/"
-                                         + g_internal_repo_s
-                                         + "/releases/latest?access_token="
-                                         + "603ee815cda6fb45fcc16876effbda017f158bef";
-    g_internal_httprid_k = llHTTPRequest(request,[HTTP_BODY_MAXLENGTH, 16384], "");
+    string request = "https://api.github.com/repos/"
+                     + g_internal_repo_s
+                     + "/releases/latest?access_token="
+                     + "603ee815cda6fb45fcc16876effbda017f158bef";
+    g_internal_httprid_k = llHTTPRequest(request, [HTTP_BODY_MAXLENGTH, 16384], "");
 #endif
     detectLinkSetMods();
-    debugLogic(llGetAttached());
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
                                                g_Config_BladeColor, 0.0]);
@@ -1680,132 +1519,125 @@ default {
 #ifdef XL_EKB_APPLIER_INCLUDED
     state_entry_applier_hook();
 #endif
-	#ifdef PROFILE_BODY_SCRIPT
-	llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA);
-	#endif
+#ifdef PROFILE_BODY_SCRIPT
+    llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() +
+              "]/" + (string)llGetMemoryLimit() + "B", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+#endif
   }
   listen(integer channel, string name, key id, string message) {
-    if(id == llGetKey()) {
-#ifdef DEBUG_MESSAGE_FROM_SELF
-      llOwnerSay("Message came from self, what?");
-#endif
-      return;
-    } else {
 #ifdef XL_EKB_APPLIER_INCLUDED
-      textureListener()
+    textureListener()
 #endif
 #ifdef BENCHMARK
-      llResetTime();
+    llResetTime();
 #endif
-      key object_owner_k = llGetOwnerKey(id);
+    key object_owner_k = llGetOwnerKey(id);
 #ifdef DEBUG_LISTEN_ALL
-      string oname = llGetObjectName();
-      llSetObjectName(llGetSubString((string)llGetKey(), 0, 6) + " Debug");
-      llOwnerSay("Time:" + (string)llGetTimestamp());
-      string knp = "[" + (string)id + "]" + "{" + llKey2Name(id) + "}("
-                   + llKey2Name(object_owner_k) + " ";
-      llOwnerSay(knp + "input [" + message + "]");
+    string oname = llGetObjectName();
+    llSetObjectName(llGetSubString((string)llGetKey(), 0, 6) + " Debug");
+    //llOwnerSay("Time:" + (string)llGetTimestamp());
+    string knp = "[" + (string)id + "]" + "{" + llKey2Name(id) + "}("
+                 + llKey2Name(object_owner_k) + " ";
+    //llOwnerSay(knp + "input [" + message + "]");
 #endif
-      /*
-        ------------------ AUTH SYSTEM PRIMER --------------------------
-          Because llGetOwnerKey() returns either returns null key
-           or the sender object's uuid (instead of its owner's) when
-           checking a message that has been sent by an object which
-           has been detached already and is no longer existing on
-           the sim (98% of the cases),
-           == The traditional owner check cannot be performed. ==
-           For this reason, the 'auth list' keeps track of the
-           objects who 'add' themselves through the api to
-           determine the owner of a detaching object (since the
-           regular way to perform this check will fail).
-           Consequently, we use the aforementioned 'auth list' to
-           perform the required authentication check when receiving
-           an "invalid" owner key by looking for the object's key
-           within it.
-           We then honor any 'remove' command by expunging the list
-           of the object's key. This does not however prevent further
-           commands from being excuted, as the auth list is only
-           used on detach. This behaviour is consistent with the
-           stock script and is therefore preserved for the time being.
-        -----------------------------------------------------------------
-      */
-      if(object_owner_k != g_Owner_k) {
-        // Most likely case, make handling other resident's attachments
-        // as impactless as we can.
-        if(object_owner_k != id) {
-          // someboey else's stuff
-          return;
-        }
+    /*
+      ------------------ AUTH SYSTEM PRIMER --------------------------
+      Because llGetOwnerKey() returns either returns null key
+       or the sender object's uuid (instead of its owner's) when
+       checking a message that has been sent by an object which
+       has been detached already and is no longer existing on
+       the sim (98% of the cases),
+       == The traditional owner check cannot be performed. ==
+       For this reason, the 'auth list' keeps track of the
+       objects who 'add' themselves through the api to
+       determine the owner of a detaching object (since the
+       regular way to perform this check will fail).
+       Consequently, we use the aforementioned 'auth list' to
+       perform the required authentication check when receiving
+       an "invalid" owner key by looking for the object's key
+       within it.
+       We then honor any 'remove' command by expunging the list
+       of the object's key. This does not however prevent further
+       commands from being excuted, as the auth list is only
+       used on detach. This behaviour is consistent with the
+       stock script and is therefore preserved for the time being.
+      -----------------------------------------------------------------
+    */
+    if(object_owner_k != g_Owner_k) {
+      // Most likely case, make handling other resident's attachments
+      // as impactless as we can.
+      if(object_owner_k != id) {
+        // someboey else's stuff
+        return;
+      }
 #ifdef DEBUG_LISTEN
-        llOwnerSay("[" + llKey2Name(id) + "]: " + message);
+      //llOwnerSay("[" + llKey2Name(id) + "]: " + message);
 #endif
 #ifdef DEBUG_AUTH
-        llOwnerSay("Bogus Owner Key for '" + name + "'");
+      //llOwnerSay("Bogus Owner Key for '" + name + "'");
 #endif
-        if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
+      if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
 #ifdef DEBUG_AUTH
-          llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
+        //llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
 #endif
-          return;
-        }
-        /* probably a detaching object */
-      } else { /* if(object_owner_k == g_Owner_k) */
-        integer separatorIndex = llSubStringIndex(g_LastCommand_s, ":");
-        if(separatorIndex < 0) separatorIndex = 0;
+        return;
+      }
+      /* probably a detaching object */
+    } else { /* if(object_owner_k == g_Owner_k) */
+      integer separatorIndex = llSubStringIndex(g_LastCommand_s, ":");
+      if(separatorIndex < 0) separatorIndex = 0;
 #ifdef DEBUG_AUTH_POSITIVE
-        llOwnerSay("Owner for [" + llKey2Name(id) + "]is correct!");
+      //llOwnerSay("Owner for [" + llKey2Name(id) + "]is correct!");
 #endif
-        string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex - 1);
-        // TODO: Allow chaining (read kemono manual for allowed cases?)
-        if(first_command == "add") {
-          /* And add if not in the auth list */
+      string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex - 1);
+      // TODO: Allow chaining (read kemono manual for allowed cases?)
+      if(first_command == "add") {
+        /* And add if not in the auth list */
 #ifdef DEBUG_AUTH
-          llOwnerSay("Detected Add command!");
+        //llOwnerSay("Detected Add command!");
 #endif
-          if(llGetFreeMemory() > 2048) {
-            if(id != g_Owner_k) {
-              if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
-                g_AttmntAuthedKeys_l += [id];
+        if(llGetFreeMemory() > 2048) {
+          if(id != g_Owner_k) {
+            if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
+              g_AttmntAuthedKeys_l += [id];
 #ifdef DEBUG_AUTH
-                llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
+              //llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
 #endif
-                // return;
-              }
+              // return;
             }
           }
+        }
 #ifdef DEBUG_AUTH
-          else
-            llOwnerSay("Not enough memory to add!");
+        else
+          //llOwnerSay("Not enough memory to add!");
 #endif
         }
-      }
-      g_LastCommand_s = message;
-      g_Last_k = id;
-      xlProcessCommandWrapper();
+    }
+    g_LastCommand_s = message;
+    g_Last_k = id;
+    xlProcessCommandWrapper();
 #ifdef DEBUG_LISTEN
-      llOwnerSay("End of listener processing for '" + message + "'");
-      llSleep(1);
+    //llOwnerSay("End of listener processing for '" + message + "'");
+    llSleep(1);
 #endif
 #ifdef DEBUG_LISTEN_ALL
-      llSetObjectName(oname);
+    llSetObjectName(oname);
 #endif
 #ifdef BENCHMARK
-      llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
+    //llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
-      g_Last_k = NULL_KEY;
+    g_Last_k = NULL_KEY;
+#ifdef USE_DEFORM_ANIMS
+    if(llGetAttached()) {
+      if(!g_HasAnimPerms)
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+        llStopAnimation(g_AnimUndeform);
+      }
     }
- #ifdef USE_DEFORM_ANIMS
- 		if(llGetAttached()){
- 			if(!g_HasAnimPerms){
-				llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-			}
-	      	if(g_HasAnimPerms) {
-        		llStartAnimation(g_AnimDeform);
-        		llStopAnimation(g_AnimUndeform);
-        		llStopAnimation(g_AnimUndeform);
-      		}
-      	}
-    #endif
+#endif
   }
   on_rez(integer p) {
     /*Wait a few seconds in case we're still rezzing*/
@@ -1822,7 +1654,7 @@ default {
   attach(key id) {
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
-      llOwnerSay("Updater mode detected.");
+      //llOwnerSay("Updater mode detected.");
       return;
     }
     /* Deform on detach, unlike the stock body. This assumes permissions
@@ -1833,14 +1665,14 @@ default {
     */
     if(id == NULL_KEY) {
 #ifdef USE_DEFORM_ANIMS
-		// Don't bother asking for permissions if they were not given
-		// The animations are 98% sure to not be applied in that case.
-		if(g_HasAnimPerms) {
-    	  llStartAnimation(g_AnimUndeform);
-          llStartAnimation("stand_1");
-          llStopAnimation(g_AnimDeform);
-          llStopAnimation(g_AnimUndeform);
-      	}
+      // Don't bother asking for permissions if they were not given
+      // The animations are 98% sure to not be applied in that case.
+      if(g_HasAnimPerms) {
+        llStartAnimation(g_AnimUndeform);
+        llStartAnimation("stand_1");
+        llStopAnimation(g_AnimDeform);
+        llStopAnimation(g_AnimUndeform);
+      }
 #endif
     } else {
 #ifdef USE_DEFORM_ANIMS
@@ -1859,7 +1691,7 @@ default {
   run_time_permissions(integer perm) {
     // What?
     //if(!g_HasAnimPerms){
-    //    resetHands();
+    //  resetHands();
     //}
     if(perm & PERMISSION_TRIGGER_ANIMATION)
       g_HasAnimPerms = TRUE;
@@ -1876,31 +1708,26 @@ default {
   }
   timer() {
     string text;
-    if(llGetAttached()){
+    if(llGetAttached()) {
 #ifdef USE_DEFORM_ANIMS
-	    if(!g_HasAnimPerms)
-      		llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-    	else {
+      if(!g_HasAnimPerms)
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+      else {
 #ifdef SMART_DEFORM
-      	if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
-        	llStartAnimation(g_AnimUndeform);
-        	llStopAnimation(g_AnimDeform);
-      	} else {
+        if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
+          llStartAnimation(g_AnimUndeform);
+          llStopAnimation(g_AnimDeform);
+        } else {
 #endif
-	        redeform();
+          redeform();
 #ifdef SMART_DEFORM
-      	}
+        }
 #endif
-    	}
+      }
 #endif
-	}
+    }
 #ifdef DEBUG
     text = "[DEBUG]";
-#endif
-#ifdef PROFILE_BODY_SCRIPT
-    text += "\nU: " + (string)llGetUsedMemory()
-            + "[" + (string)llGetSPMaxMemory() + "]/"
-            + (string)llGetMemoryLimit() + "B";
 #endif
 #ifdef DEBUG_FACE_SELECT
     //text+="\nPG_v:"+(string)g_TogglingPGMeshes;
@@ -1911,10 +1738,15 @@ default {
 #endif
     text += "\n \n \n \n \n \n \n \n \n \n ";
     llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+#ifdef PROFILE_BODY_SCRIPT
+    llSetText("\nU: " + (string)llGetUsedMemory()
+              + "[" + (string)llGetSPMaxMemory() + "]/"
+              + (string)llGetMemoryLimit() + "B", <1, 1, 1>, 1.0);
+#endif
   }
 #ifdef DEBUG_LISTEN
   link_message(integer sender_num, integer num, string message, key id) {
-    llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
+    //llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
   }
 #endif
 #ifdef GITHUB_UPDATER
@@ -1943,7 +1775,7 @@ default {
     string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
                   + g_internal_repo_s + "/" + new_version_s + "/compiled/" + compiled_name + " "
                   + script_name + ".lsl]";
-    llOwnerSay(update_description + link);
+    //llOwnerSay(update_description + link);
     if(llStringLength(update_description) > (512 - llStringLength(link))) {
       update_description = "Too many changes, see [" + "https://github.com/"
                            + g_internal_repo_s
@@ -1953,9 +1785,4 @@ default {
     llDialog(g_Owner_k, update_description + link, [], -1);
   }
 #endif
-}
-state dead {
-  state_entry() {
-    // In updater, do nothing.
-  }
 }
