@@ -7,7 +7,6 @@ style="--style=otbs --max-code-length=80 --indent=spaces=2 --convert-tabs  \
 	--break-blocks=all --indent-col1-comments"
 # --align-method-colon --pad-method-colon=all
 for i in **/*.lsl; do # Whitespace-safe and recursive
-	echo "> $i"
 	if [ "$i" = "Kemono-Body-Script.lsl" ]; then
 		astyle $style "$i"
 		mcpp -P "$i" compiled/xenhat.kemono.body.lsl
@@ -18,6 +17,6 @@ for i in **/*.lsl; do # Whitespace-safe and recursive
 	fi
 done
 # if [ "$i" = "compiled/xenhat.kemono.body.lsl" ]; then
-	retval=$(lslint -m -i "compiled/xenhat.kemono.body.lsl")
+	retval=$(lslint -m -i "compiled/xenhat.kemono.body.lsl" >/dev/null 2>&1)
 # fi
 exit $retval;
