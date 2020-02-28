@@ -1704,7 +1704,7 @@ default {
                   + "shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:"
                   + "armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
 #endif
-    llSetTimerEvent(20);
+    llSetTimerEvent(1);
   }
   timer() {
     string text;
@@ -1743,6 +1743,7 @@ default {
               + "[" + (string)llGetSPMaxMemory() + "]/"
               + (string)llGetMemoryLimit() + "B", <1, 1, 1>, 1.0);
 #endif
+    llWhisper(-83744,(string)llGetUsedMemory());
   }
 #ifdef DEBUG_LISTEN
   link_message(integer sender_num, integer num, string message, key id) {
