@@ -822,8 +822,6 @@ detectLinkSetMods() {
   }
 }
 default {
-  touch_start(integer total_number) {
-  }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -994,10 +992,12 @@ default {
         redeform();
       }
     }
-    text += "\n \n \n \n \n \n \n \n \n \n ";
-    llSetText(text,  <0.925,0.925,0.925>,  0.75);
     llWhisper(-83744,(string)llGetUsedMemory());
   }
+  link_message(integer sender_num, integer num, string message, key id) {
+    llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
+  }
+
   http_response(key request_id, integer status, list metadata, string body) {
     if(request_id != g_internal_httprid_k) return;
     g_internal_httprid_k = NULL_KEY;

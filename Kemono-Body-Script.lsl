@@ -14,21 +14,6 @@ integer g_Config_EnsureMaskingMode = 0;
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
-// #define PRINT_UNHANDLED_COMMANDS
-// #define DEBUG
-// #define DEBUG_SELF_TEST
-// #define DEBUG_TEXT
-// #define DEBUG_AUTH
-// #define DEBUG_ENTIRE_BODY_ALPHA
-// #define DEBUG_LISTEN
-// #define DEBUG_LISTEN_ALL // Everything, including other users' commands
-// #define DEBUG_COMMAND
-// #define DEBUG_DATA
-// #define DEBUG_PARAMS
-// #define DEBUG_FACE_SELECT
-// #define DEBUG_FACE_TOUCH
-// #define DEBUG_FUNCTIONS
-#define DEBUG_MESSAGE_FROM_SELF
 // #define PROFILE_BODY_SCRIPT
 // #define DISABLE_GITHUB_UPDATER
 /* End of debug defines */
@@ -303,13 +288,7 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
-#ifdef DEBUG_FACE_TOUCH
-  float touch_time;
-#endif
 list xlGetFacesByBladeName(string name) {
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("===== xlGetFacesByBladeName =====");
-#endif
   if(name == API_CMD_ABS) return [6, 7];
   if(name == API_CMD_ANKLE_L) {
     if(human_mode) return [1];
@@ -473,9 +452,6 @@ list xlGetFacesByBladeName(string name) {
         The bottom hip mesh half is controlled independently using
         setbutt
       */
-#ifdef DEBUG_COMMAND
-      //llOwnerSay("uuuuuuuuu["+(string)g_TogglingPGMeshes+"]");
-#endif
       //if(g_TogglingPGMeshes)
       //  return [0,1,2,3,4,5];
       return [2, 3, 4, 5];
@@ -484,9 +460,6 @@ list xlGetFacesByBladeName(string name) {
   }
   if(name == API_CMD_WRIST_L) return [3];
   if(name == API_CMD_WRIST_R) return [1];
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("UNIMPLEMENTED:" + name + "!");
-#endif
   return [];
 }
 /* This function is like a "translator", it returns
@@ -501,9 +474,6 @@ list xlBladeNameToPrimNames(string name) {
   /* TODO Can't we return the link number directly (using less than 512 bytes
     of code!) without an additional function call?
   */
-#ifdef DEBUG_FACE_SELECT
-  //llOwnerSay("xlBladeNameToPrimNames(" + name + ")");
-#endif
   if(name == API_CMD_ARM_L_L) return [MESH_ARMS];
   else if(name == API_CMD_ARM_L_R) return [MESH_ARMS];
   else if(name == API_CMD_ARM_U_L) return [MESH_ARMS];
@@ -670,9 +640,6 @@ list xlBladeNameToPrimNames(string name) {
       return [MESH_LEG_LEFT_HUMAN];
     return [MESH_LEG_LEFT_ANIMAL];
   }
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("=================================");
-#endif
   return [name];
 }
 /* Stock Fitted Torso script:
@@ -686,9 +653,6 @@ list xlBladeNameToPrimNames(string name) {
   Forcefully set the current genital state to Adult, idle on PG disable
 */
 xlProcessCommandWrapper() {
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("===== xlProcessCommandWrapper:" + g_LastCommand_s + "===== ");
-#endif
   if(g_LastCommand_s == KM_HUD_RESET_CMD)
     reset();
   else if(g_LastCommand_s == "resetA")
@@ -818,9 +782,6 @@ xlProcessCommandWrapper() {
     }
     return;
   } else if("reqFTdat" == g_LastCommand_s) {
-#ifdef DEBUG_FUNCTIONS
-    //llOwnerSay("Sending Data");
-#endif
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       // Example: resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
       // resFTdat:nipState:" + (string)nipState + ":nipAlpha:" + (string)nipAlpha + ":nipOvrd:" + (string)nipOvrd +
@@ -887,14 +848,8 @@ xlProcessCommandWrapper() {
     }
     xlProcessCommand(TRUE);
   }
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("=================================");
-#endif
 }
 xlProcessCommand(integer send_params) {
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("===== xlProcessCommand =====");
-#endif
   /*   == Some Information about the Kemono API spec ==
     Generally speaking, command chaining is limited to same-state body parts;
     it is not possible to combine show and hide commands together
@@ -957,10 +912,6 @@ xlProcessCommand(integer send_params) {
         if(placeinlist != -1) {
           g_AttmntAuthedKeys_l = llDeleteSubList(g_AttmntAuthedKeys_l,
                                                  placeinlist, placeinlist);
-#ifdef DEBUG_AUTH
-          //llOwnerSay("Removed [" + (string)g_Last_k + "] (" + llKey2Name(
-          g_Last_k) + ") from auth list");
-#endif
         }
       } else if(llSubStringIndex(command, "color*<") != -1)
         g_Config_BladeColor = (vector)llGetSubString(command, 6, -1);
@@ -1006,13 +957,7 @@ xlProcessCommand(integer send_params) {
           mod_command_2 = CMD_BODYCORE;
       }
       if(CMD_IS_MOD_HIJACK == mod_command_2) {
-#ifdef DEBUG_COMMAND
-        //llOwnerSay("===== Genitals =====");
-#endif
         integer param = llList2Integer(input_data, index);
-#ifdef DEBUG_FUNCTIONS
-        //llOwnerSay("===== xlSetGenitals =====");
-#endif
         string mesh_name = "";
         for(; mesh_count_index > -1; mesh_count_index--) {
           /* Mods */
@@ -1095,10 +1040,6 @@ xlProcessCommand(integer send_params) {
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
             else if(STARBRIGHT_FKT_HUD_BUTT == mod_command)
               faces_l = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
-#ifdef DEBUG
-            else {
-            }
-#endif
             integer faces_count = llGetListLength(faces_l);
             integer i2 = 0;
             for(; i2 < faces_count; i2++) {
@@ -1107,41 +1048,18 @@ xlProcessCommand(integer send_params) {
                                i_make_visible * g_Config_MaximumOpacity
                               ];
             }
-#ifdef DEBUG_FACE_SELECT
-            //llOwnerSay("visible:" + (string)i_make_visible
-            + "\nFACES_COUNT:" + (string)faces_count
-            + "\nFACES:" + llList2CSV(faces_l)
-            + "\nTOGGLE_PART:" + (string)mod_command
-            + "\nMESH_NAME:" + mesh_name
-            + "\nPRIM_NAME:" + (string)prim_names);
-#endif
           }
         }
       } else if(CMD_BODYCORE == mod_command_2) {
         list prim_names = xlBladeNameToPrimNames(command);
-#ifdef DEBUG_DATA
-        //llOwnerSay("prim_names:{" + llList2CSV(prim_names) + "}");
-        //llOwnerSay("prim_count=" + (string)1);
-#endif
         /* TODO: Be less nuclear and only fix the faces we asked for*/
         /* TODO: inline as much as possible */
-#ifdef DEBUG
-        integer target_link = llList2Integer(g_LinkDB_l,
-                                             llListFindList(g_LinkDB_l, prim_names) + 1);
-#endif
         local_params += [
                           PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
                               llListFindList(g_LinkDB_l, prim_names) + 1)
                         ];
         list faces_l = xlGetFacesByBladeName(command);
         integer faces_index = llGetListSize(faces_l);
-#ifdef DEBUG_FACE_SELECT
-        //llOwnerSay("Prim Count:" + (string)1);
-        //llOwnerSay("Faces List 1:" + llList2CSV(faces_l));
-        //llOwnerSay("Prim Names:" + llList2CSV(prim_names));
-        //llOwnerSay("Faces Count:" + (string)(faces_index + 1));
-        //llOwnerSay("Prim Database:" + llList2CSV(g_LinkDB_l));
-#endif
         for(; faces_index > -1; faces_index--) {
           local_params += [
                             PRIM_COLOR, llList2Integer(faces_l, faces_index), g_Config_BladeColor,
@@ -1209,20 +1127,10 @@ xlProcessCommand(integer send_params) {
     }
   }
   /* Send params to prim now */
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("===== Setting global params =====");
-#endif
   if(send_params) {
-#ifdef DEBUG_APPLY
-    //llOwnerSay("Pausing Application for a few...");
-    llSleep(0.5);
-#endif
     xlSetLinkPrimitiveParamsFast(LINK_ROOT, local_params);
     local_params = [];
   }
-#ifdef DEBUG_COMMAND
-  //llOwnerSay("=================================");
-#endif
 }
 redeform() {
   if(g_HasAnimPerms) {
@@ -1269,10 +1177,6 @@ detectLinkSetMods() {
   integer found_fitted_torso = FALSE;
   for(; part > 0; --part) {
     string name = llGetLinkName(part);
-#ifdef DEBUG_TEXT
-    llSetText("\n \n \n \n \n \n[" + (string)llGetFreeMemory()
-              + "]Processing " + name + "...", <0, 0, 0>, 1.0);
-#endif
     if(!found_fitted_torso) {
       if(name == API_CMD_FITTED_TORSO) {
         /* Shortcut if previously renamed */
@@ -1360,26 +1264,15 @@ detectLinkSetMods() {
     if(g_AnimUndeform == "") {
       if(llSubStringIndex(name, "undeform") > -1) {
         g_AnimUndeform = name;
-#ifdef DEBUG_DATA
-        //llOwnerSay("Set undeform anim to " + name);
-#endif
       }
     }
     if(g_AnimDeform == "") {
       if(llSubStringIndex(name, "deform") > -1
           && llSubStringIndex(name, "undeform") == -1) {
         g_AnimDeform = name;
-#ifdef DEBUG_DATA
-        //llOwnerSay("Set undeform anim to " + name);
-#endif
       }
     }
   }
-#ifdef DEBUG_DATA
-  //llOwnerSay("Link database: " + llList2CSV(g_LinkDB_l));
-  //llOwnerSay("Deform:" + g_AnimDeform);
-  //llOwnerSay("Undeform:" + g_AnimUndeform);
-#endif
 #endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
@@ -1401,28 +1294,6 @@ detectLinkSetMods() {
   }
 }
 default {
-  touch_start(integer total_number) {
-#ifdef DEBUG_FACE_TOUCH
-    key tk = llDetectedKey(0);
-    if(tk != g_Owner_k) return;
-    llRegionSayTo(tk, 0,
-                  "ID:" + (string)llDetectedLinkNumber(0) + ";prim_name=\"" +
-                  llGetLinkName(llDetectedLinkNumber(0)) + "\";face_list=["
-                  + (string)llDetectedTouchFace(0) + "];break;");
-    touch_time = llGetTime();
-#ifdef USE_DEFORM_ANIMS
-    if(llGetAttached() {
-    if(!g_HasAnimPerms)
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimDeform);
-        llStopAnimation(g_AnimUndeform);
-        llStopAnimation(g_AnimUndeform);
-      }
-    }
-#endif
-#endif
-  }
   changed(integer change) {
     if(change & CHANGED_OWNER)
       llResetScript();
@@ -1532,14 +1403,6 @@ default {
     llResetTime();
 #endif
     key object_owner_k = llGetOwnerKey(id);
-#ifdef DEBUG_LISTEN_ALL
-    string oname = llGetObjectName();
-    llSetObjectName(llGetSubString((string)llGetKey(), 0, 6) + " Debug");
-    //llOwnerSay("Time:" + (string)llGetTimestamp());
-    string knp = "[" + (string)id + "]" + "{" + llKey2Name(id) + "}("
-                 + llKey2Name(object_owner_k) + " ";
-    //llOwnerSay(knp + "input [" + message + "]");
-#endif
     /*
       ------------------ AUTH SYSTEM PRIMER --------------------------
       Because llGetOwnerKey() returns either returns null key
@@ -1570,61 +1433,32 @@ default {
         // someboey else's stuff
         return;
       }
-#ifdef DEBUG_LISTEN
-      //llOwnerSay("[" + llKey2Name(id) + "]: " + message);
-#endif
-#ifdef DEBUG_AUTH
-      //llOwnerSay("Bogus Owner Key for '" + name + "'");
-#endif
       if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
-#ifdef DEBUG_AUTH
-        //llOwnerSay("Ignoring unauthed [" + (string)id + "]" + llKey2Name(id));
-#endif
         return;
       }
       /* probably a detaching object */
     } else { /* if(object_owner_k == g_Owner_k) */
       integer separatorIndex = llSubStringIndex(g_LastCommand_s, ":");
       if(separatorIndex < 0) separatorIndex = 0;
-#ifdef DEBUG_AUTH_POSITIVE
-      //llOwnerSay("Owner for [" + llKey2Name(id) + "]is correct!");
-#endif
       string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex - 1);
       // TODO: Allow chaining (read kemono manual for allowed cases?)
       if(first_command == "add") {
         /* And add if not in the auth list */
-#ifdef DEBUG_AUTH
-        //llOwnerSay("Detected Add command!");
-#endif
         if(llGetFreeMemory() > 2048) {
           if(id != g_Owner_k) {
             if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
               g_AttmntAuthedKeys_l += [id];
-#ifdef DEBUG_AUTH
-              //llOwnerSay("Adding [" + (string)id + "] (" + llKey2Name(id) + ") to auth list");
-#endif
               // return;
             }
           }
         }
-#ifdef DEBUG_AUTH
-        else
-          //llOwnerSay("Not enough memory to add!");
-#endif
-        }
+      }
     }
     g_LastCommand_s = message;
     g_Last_k = id;
     xlProcessCommandWrapper();
-#ifdef DEBUG_LISTEN
-    //llOwnerSay("End of listener processing for '" + message + "'");
-    llSleep(1);
-#endif
-#ifdef DEBUG_LISTEN_ALL
-    llSetObjectName(oname);
-#endif
 #ifdef BENCHMARK
-    //llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
+    llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
     g_Last_k = NULL_KEY;
 #ifdef USE_DEFORM_ANIMS
@@ -1726,30 +1560,11 @@ default {
       }
 #endif
     }
-#ifdef DEBUG
-    text = "[DEBUG]";
-#endif
-#ifdef DEBUG_FACE_SELECT
-    //text+="\nPG_v:"+(string)g_TogglingPGMeshes;
-#endif
-#ifdef DEBUG_AUTH
-    text += "\n" + (string)(llGetListLength(g_AttmntAuthedKeys_l))
-            + " Keys";
-#endif
-    text += "\n \n \n \n \n \n \n \n \n \n ";
-    llSetText(text, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
-#ifdef PROFILE_BODY_SCRIPT
-    llSetText("\nU: " + (string)llGetUsedMemory()
-              + "[" + (string)llGetSPMaxMemory() + "]/"
-              + (string)llGetMemoryLimit() + "B", <1, 1, 1>, 1.0);
-#endif
     llWhisper(-83744,(string)llGetUsedMemory());
   }
-#ifdef DEBUG_LISTEN
   link_message(integer sender_num, integer num, string message, key id) {
-    //llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
+    llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
   }
-#endif
 #ifdef GITHUB_UPDATER
   http_response(key request_id, integer status, list metadata, string body) {
     if(request_id != g_internal_httprid_k) return; // exit if unknown
