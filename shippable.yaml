@@ -14,10 +14,9 @@ before_script:
   - wget https://github.com/Makopo/lslint/releases/download/v1.2.1/lslint_v1.2.1_linux.zip -O lslint.zip
   - unzip lslint.zip
 script:
-  - mkdir -p compiled
   # - mcpp -P "Kemono-Body-Script.lsl" | astyle --style=google --max-code-length=80 --indent=spaces=2 --indent-preproc-block --unpad-paren --delete-empty-lines --align-method-colon --pad-method-colon=all --close-templates --convert-tabs  --indent-col1-comments > compiled/xenhat.kemono.body.lsl
   # - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
-  - bash ./build.bash
+  # - bash ./build.bash
   - bash -c 'for i in **/*.lsl; do
       if [ "$(basename $i)" != "compiled" ]; then
         if [ "$i" = "Kemono-Body-Script.lsl" ]; then
