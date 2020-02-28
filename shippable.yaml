@@ -17,7 +17,7 @@ script:
  # - mcpp -P "Kemono-Body-Script.lsl" | astyle --style=google --max-code-length=80 --indent=spaces=2 --indent-preproc-block --unpad-paren --delete-empty-lines --align-method-colon --pad-method-colon=all --close-templates --convert-tabs --indent-col1-comments > compiled/xenhat.kemono.body.lsl
  # - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
  # - bash ./build.bash
- - for i in **/*.lsl; do if [ "$(basename $i)" != "compiled" ]; then if [ "$i" = "Kemono-Body-Script.lsl" ]; then astyle $style "$i"; mcpp -P "$i" compiled/xenhat.kemono.body.lsl; sed -i '/^$/d' compiled/xenhat.kemono.body.lsl; astyle $style compiled/xenhat.kemono.body.lsl; fi; else astyle  $style $i; fi; done
+ - bash -c 'for i in **/*.lsl; do if [ "$(basename $i)" != "compiled" ]; then if [ "$i" = "Kemono-Body-Script.lsl" ]; then astyle $style "$i"; mcpp -P "$i" compiled/xenhat.kemono.body.lsl; sed -i '/^$/d' compiled/xenhat.kemono.body.lsl; astyle $style compiled/xenhat.kemono.body.lsl; fi; else astyle  $style $i; fi; done'
 
 post_script:
  - lslint -m -i "compiled/xenhat.kemono.body.lsl"
