@@ -357,7 +357,7 @@ list xlBladeNameToPrimNames(string name) {
 }
 xlProcessCommandWrapper() {
   if(g_LastCommand_s ==
-      "show:neck:collar:shoulderUL:shoulderUR:shoulderLL	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR	:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR	:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR	:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR")
+      "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR")
     reset();
   else if(g_LastCommand_s == "resetA")
     reset();
@@ -373,7 +373,7 @@ xlProcessCommandWrapper() {
     g_LastCommand_s =
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
-    llSetObjectDesc(g_internal_version_s + "*" + (string)human_mode + "*" +
+    llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                     (string)g_Config_BladeColor) ;
   } else if(g_LastCommand_s == "Flegs") {
     human_mode = TRUE;
@@ -384,7 +384,7 @@ xlProcessCommandWrapper() {
     g_LastCommand_s =
       "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
     xlProcessCommand(TRUE);
-    llSetObjectDesc(g_internal_version_s + "*" + (string)human_mode + "*" +
+    llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                     (string)g_Config_BladeColor) ;
   } else if(g_LastCommand_s == "Rhand:1") {
     if(g_HasAnimPerms) {
@@ -746,7 +746,7 @@ reset() {
     xlProcessCommand(TRUE);
   }
   g_LastCommand_s =
-    "show:neck:collar:shoulderUL:shoulderUR:shoulderLL	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR	:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR	:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR	:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
+    "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
     ;
   xlProcessCommand(TRUE);
   resetHands();
@@ -770,11 +770,11 @@ detectLinkSetMods() {
         name =  "Fitted Kemono Torso" ;
       }
     }
-    if(llListFindList([ "BitState0", "BitState1", "BitState2", "BitState3",
-                                     "cumButtS1", "cumButtS2", "cumButtS3", "arms", "body", "Fitted Kemono Torso",
-                                     "TorsoChest", "TorsoEtc", "HumanLegs", "NipState0", "NipState1", "NipAlpha",
-                                     "handL", "handR", "hips", "LFleg", "LHleg", "RFleg", "RHleg", "neck", "PG",
-                        "Kemono - Body" ], [name]) != -1) {
+    if(llListFindList(["BitState0","BitState1","BitState2","BitState3","cumButtS1",
+                       "cumButtS2","cumButtS3", "arms", "body", "Fitted Kemono Torso", "TorsoChest",
+                       "TorsoEtc", "HumanLegs", "NipState0", "NipState1", "NipAlpha", "handL", "handR",
+                       "hips", "LFleg", "LHleg", "RFleg", "RHleg", "neck", "PG",
+                       "Kemono - Body" ], [name]) != -1) {
       g_LinkDB_l += [name, part];
     }
   }
@@ -868,7 +868,7 @@ default {
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength("[XenLab] Enhanced Kemono Updater") - 1) ==
         "[XenLab] Enhanced Kemono Updater") {
-      llSetObjectDesc(g_internal_version_s + "*" + (string)human_mode + "*" +
+      llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                       (string)g_Config_BladeColor) ;
       llSetObjectName("[XenLab] Enhanced Kemono Updater"  + " v" +
                       g_internal_version_s);
@@ -944,7 +944,7 @@ default {
     }
   }
   on_rez(integer p) {
-    llSetObjectDesc(g_internal_version_s + "*" + (string)human_mode + "*" +
+    llSetObjectDesc(g_internal_version_s+ "*" + (string)human_mode+ "*" +
                     (string)g_Config_BladeColor) ;
     llSleep(3);
     g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
@@ -975,7 +975,7 @@ default {
       }
       reset();
       llRegionSayTo(g_Owner_k,  -34525475,
-                    "show:neck:collar:shoulderUL:shoulderUR:shoulderLL	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR	:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR	:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR	:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
+                    "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR");
     }
   }
   run_time_permissions(integer perm) {

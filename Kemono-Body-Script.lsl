@@ -1,12 +1,12 @@
 /* <-- Enlarge window so you see this on only one line for better visibility -->
 
-  Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
-  Original creation date: 6/06/2017 22:52:37
+Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
+Original creation date: 6/06/2017 22:52:37
 
-  The latest version of this script is located at:
-  https://github.com/XenHat/Kemono-Body-Script/
+The latest version of this script is located at:
+https://github.com/XenHat/Kemono-Body-Script/
 
-  License: https://tldrlegal.com/license/aladdin-free-public-license
+License: https://tldrlegal.com/license/aladdin-free-public-license
 */
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 vector g_Config_BladeColor = <1, 1, 1>;
@@ -48,21 +48,21 @@ string g_internal_version_s = "0.5.7";
 // #define debugLogic(a)//llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
 // #define dSay(a)//llOwnerSay((string)a)
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
-    + "*" + (string)human_mode\
-    + "*" + (string)g_Config_BladeColor\
-    )
++ "*" + (string)human_mode\
++ "*" + (string)g_Config_BladeColor\
+)
 #define xlSetLinkPrimitiveParamsFast(a,b) /*debugLogic(b); */ llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
-	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
-	:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
-	:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
-	:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
+:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
+:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
+:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
+:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
-  -  Set Nipple Override
-    0 = Off : 1 = On
-    0 being replaced by the state number 0 ~ 1:
-    nipovrd:0
-  - Leg types toggles, see comments below
+-  Set Nipple Override
+0 = Off : 1 = On
+0 being replaced by the state number 0 ~ 1:
+nipovrd:0
+- Leg types toggles, see comments below
 */
 #define KEMONO_COM_CH -34525475
 #define API_CMD_ABS "abs"
@@ -151,33 +151,33 @@ string g_internal_version_s = "0.5.7";
 // #define MESH_VAGINA_CLIT1 ""
 // #define MESH_VAGINA_CLIT2 ""
 #define g_supported_meshes [\
-                       "BitState0",\
-                       "BitState1",\
-                       "BitState2",\
-                       "BitState3",\
-                       "cumButtS1",\
-                       "cumButtS2",\
-                       "cumButtS3",\
-                       MESH_ARMS,\
-                       MESH_BODY,\
-                       MESH_FITTED_TORSO,\
-                       MESH_FITTED_TORSO_CHEST,\
-                       MESH_FITTED_TORSO_ETC,\
-                       MESH_FITTED_TORSO_HLEGS,\
-                       MESH_FITTED_TORSO_NIP_0,\
-                       MESH_FITTED_TORSO_NIP_1,\
-                       MESH_FITTED_TORSO_NIP_A,\
-                       MESH_HAND_LEFT,\
-                       MESH_HAND_RIGHT,\
-                       MESH_HIPS,\
-                       MESH_LEG_LEFT_ANIMAL,\
-                       MESH_LEG_LEFT_HUMAN,\
-                       MESH_LEG_RIGHT_ANIMAL,\
-                       MESH_LEG_RIGHT_HUMAN,\
-                       MESH_NECK,\
-                       MESH_PG_LAYER,\
-                       MESH_ROOT\
-                       ]
+"BitState0",\
+"BitState1",\
+"BitState2",\
+"BitState3",\
+"cumButtS1",\
+"cumButtS2",\
+"cumButtS3",\
+MESH_ARMS,\
+MESH_BODY,\
+MESH_FITTED_TORSO,\
+MESH_FITTED_TORSO_CHEST,\
+MESH_FITTED_TORSO_ETC,\
+MESH_FITTED_TORSO_HLEGS,\
+MESH_FITTED_TORSO_NIP_0,\
+MESH_FITTED_TORSO_NIP_1,\
+MESH_FITTED_TORSO_NIP_A,\
+MESH_HAND_LEFT,\
+MESH_HAND_RIGHT,\
+MESH_HIPS,\
+MESH_LEG_LEFT_ANIMAL,\
+MESH_LEG_LEFT_HUMAN,\
+MESH_LEG_RIGHT_ANIMAL,\
+MESH_LEG_RIGHT_HUMAN,\
+MESH_NECK,\
+MESH_PG_LAYER,\
+MESH_ROOT\
+]
 // These go above. Can't comment out defined list parts.
 /*MESH_DERMAL_BACK0,\*/
 /*MESH_DERMAL_BACK1,\*/
@@ -232,28 +232,28 @@ MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
 #define STARBRIGHT_FKT_HUD_VAGN 536870911
 #define STARBRIGHT_FKT_HUD_NIPH 1073741824
 /* Some shorthand operators are not allowed in LSL, so let's do some hackery
-   usage:
-     a=variable/set
-     b=bit (define, see above)
-  Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
-  play with is:
-  0000 0000 0000 0000 0000 0000 0000 0000
-  ie 00000000000000000000000000000010 = 2
-  The maximum value we can store is:
-  - 31 booleans, or bits. (-1 for sign)
-  - 1073741824
-  - 10000000000000000000000000000000
-  The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
-  and so on...
+usage:
+a=variable/set
+b=bit (define, see above)
+Reminder: All LSL integers are 32 Bits-wide. This means the data we have to
+play with is:
+0000 0000 0000 0000 0000 0000 0000 0000
+ie 00000000000000000000000000000010 = 2
+The maximum value we can store is:
+- 31 booleans, or bits. (-1 for sign)
+- 1073741824
+- 10000000000000000000000000000000
+The increment is by base 2, so: 0, 1, 2, 4, 8, 16, 32, 64, 128, 256, 512, 1024
+and so on...
 */
 #define bwChange(a,b,c) a=(a & (~b)) | (b * c)
 #define bwClear(a,b) a=(a & (~b))
 #define bwGet(a,b) a & b
 #define bwSet(a,b) a=(a | b)
 /* Why can't we just do "a ^= b"? It's
-  more succinct but it just won't compile that way. So
-  "a = a ^ b" (old school) will
-  have to do instead. Anyway, toggle using XOR..
+more succinct but it just won't compile that way. So
+"a = a ^ b" (old school) will
+have to do instead. Anyway, toggle using XOR..
 */
 #define bwToggle(a,b) a=a ^ b
 #define llGetListSize(a) ((llGetListLength(a))-1)
@@ -368,8 +368,8 @@ list xlGetFacesByBladeName(string name) {
   if(name == MESH_SK_NIPS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
       /* Note: Before changing this again, create a different way of
-        handling the request that doesn't match.
-        This is configured properly for the whole Fitted Torso chest mesh
+      handling the request that doesn't match.
+      This is configured properly for the whole Fitted Torso chest mesh
       */
       return [0, 1];
     return [2, 3];
@@ -437,8 +437,8 @@ list xlGetFacesByBladeName(string name) {
   if(name == API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
-        The bottom hip mesh half is controlled independently using
-        setbutt
+      The bottom hip mesh half is controlled independently using
+      setbutt
       */
       // if(g_TogglingPGMeshes)
       // return [0,1,2,3,4,5];
@@ -449,8 +449,8 @@ list xlGetFacesByBladeName(string name) {
   if(name == API_CMD_VIRTUAL_BUTT) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
-        The bottom hip mesh half is controlled independently using
-        setbutt
+      The bottom hip mesh half is controlled independently using
+      setbutt
       */
       //if(g_TogglingPGMeshes)
       //  return [0,1,2,3,4,5];
@@ -463,16 +463,16 @@ list xlGetFacesByBladeName(string name) {
   return [];
 }
 /* This function is like a "translator", it returns
-  the specialized mesh name when a generic one is provided.
-  i.e. When using the fitted torso. API_CMD_BREASTS => MESH_FITTED_TORSO_CHEST
-  This is where the "Compatibility" and "Support" magic happens, for the
-  most part.
-  I don't particularly like having a mandatory function call for this
-  but I can't think of a better way to handle it right now.
+the specialized mesh name when a generic one is provided.
+i.e. When using the fitted torso. API_CMD_BREASTS => MESH_FITTED_TORSO_CHEST
+This is where the "Compatibility" and "Support" magic happens, for the
+most part.
+I don't particularly like having a mandatory function call for this
+but I can't think of a better way to handle it right now.
 */
 list xlBladeNameToPrimNames(string name) {
   /* TODO Can't we return the link number directly (using less than 512 bytes
-    of code!) without an additional function call?
+  of code!) without an additional function call?
   */
   if(name == API_CMD_ARM_L_L) return [MESH_ARMS];
   else if(name == API_CMD_ARM_L_R) return [MESH_ARMS];
@@ -643,14 +643,14 @@ list xlBladeNameToPrimNames(string name) {
   return [name];
 }
 /* Stock Fitted Torso script:
-  setnip0==NipState0
-  setnip1==TorsoEtc[0,1]
-  setnip2==NipState1
-  NipAlpha==????
+setnip0==NipState0
+setnip1==TorsoEtc[0,1]
+setnip2==NipState1
+NipAlpha==????
 */
 /* Note: The Starbright stock behavior is the following:
-  Show PG layer when hiding nipples
-  Forcefully set the current genital state to Adult, idle on PG disable
+Show PG layer when hiding nipples
+Forcefully set the current genital state to Adult, idle on PG disable
 */
 xlProcessCommandWrapper() {
   if(g_LastCommand_s == KM_HUD_RESET_CMD)
@@ -813,14 +813,14 @@ xlProcessCommandWrapper() {
         // integer attachPoint = llList2Integer(data,6);
         integer clothState = llList2Integer(data, 8); /*0:on, 1: pulled, 2: removed*/
         /* TODO: Treat clothState0 as PG enabled UNLESS it's a special clothing
-          with transparent/exposed nips. God knows how I'm going to figure that
-          one out.
+        with transparent/exposed nips. God knows how I'm going to figure that
+        one out.
         */
         /* NOTE: This is part of the internal Starbright API. We shouldn't know
-          how to handle this and that is fine. Staryna says it's for
-            careful ordering of stuff. Private and all.
-            However some commands are required to be handled here to ensure
-            clothing made for the FKT behave properly
+        how to handle this and that is fine. Staryna says it's for
+        careful ordering of stuff. Private and all.
+        However some commands are required to be handled here to ensure
+        clothing made for the FKT behave properly
         */
         if("Top" == clothDesc) {
           // Restore previous genital state
@@ -851,15 +851,15 @@ xlProcessCommandWrapper() {
 }
 xlProcessCommand(integer send_params) {
   /*   == Some Information about the Kemono API spec ==
-    Generally speaking, command chaining is limited to same-state body parts;
-    it is not possible to combine show and hide commands together
-    (ie 'hide:abs:show:hipR').
-    Some examples:
-    'add:show:abs:hipL:remove' - Does not work
-    'add:show:abs:hipL' - Does not work
-    'add', then 'show:abs:hipL' - Works
-    It is currently unknown if "remove" can be chained as it does not seem to
-    block further messages from a "removed" uuid.
+  Generally speaking, command chaining is limited to same-state body parts;
+  it is not possible to combine show and hide commands together
+  (ie 'hide:abs:show:hipR').
+  Some examples:
+  'add:show:abs:hipL:remove' - Does not work
+  'add:show:abs:hipL' - Does not work
+  'add', then 'show:abs:hipL' - Works
+  It is currently unknown if "remove" can be chained as it does not seem to
+  block further messages from a "removed" uuid.
   */
   list input_data = llParseString2List(g_LastCommand_s, [":"], []);
   string command = llList2String(input_data, 0);
@@ -904,9 +904,9 @@ xlProcessCommand(integer send_params) {
         i_make_visible = FALSE;
       else if("remove" == command) {
         /* Object signals they no longer need to talk with the API;
-           Remove their key from the list of authorized attachments.
-           This object will need to use the 'add' command
-           to interact with us again
+        Remove their key from the list of authorized attachments.
+        This object will need to use the 'add' command
+        to interact with us again
         */
         integer placeinlist = llListFindList(g_AttmntAuthedKeys_l, [g_Last_k]);
         if(placeinlist != -1) {
@@ -918,27 +918,27 @@ xlProcessCommand(integer send_params) {
       /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
-       ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
+,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
       else if(llListFindList(nope, [command]) == -1)
         //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
 #endif
       } else {
       /* non-standard command done or unhandled, and/or show/hide set,
-         loop through the remaining parameters
+      loop through the remaining parameters
       */
       if(mod_command < 1) {
         /* We need to identify these commands as genital commands
-          otherwise they will be processed incorrectly in the
-          non-genitals code path
+        otherwise they will be processed incorrectly in the
+        non-genitals code path
         */
         if(API_CMD_NIPS == command) {
           /* FIXME: Do not use the "core" code path when using mods
-            as it will not toggle the other required faces
+          as it will not toggle the other required faces
           */
           bwChange(g_RuntimeBodyStateSettings, KSB_PGNIPLS, !i_make_visible);
           if(bwGet(g_RuntimeBodyStateSettings, KSB_HDBRSTS)) {
             /* Don't do anything beyond keeping track of the state it should
-               be. This is stock behaviour.
+            be. This is stock behaviour.
             */
             return;
           }
@@ -962,7 +962,7 @@ xlProcessCommand(integer send_params) {
         for(; mesh_count_index > -1; mesh_count_index--) {
           /* Mods */
           /* TODO: Use preprocessor-able checks to hard-code mods
-            for released compiled scripts*/
+          for released compiled scripts*/
           /*#ifndef SB_FKT*/
           /* Standard Kemono API stuff */
           //if(KSB_PGNIPLS==mod_command)
@@ -973,7 +973,7 @@ xlProcessCommand(integer send_params) {
           //#else
           if(KSB_PGNIPLS == mod_command) {
             /* Pretend this is a FKT hud command because that logic
-              already exists
+            already exists
             */
             // mod_command=STARBRIGHT_FKT_HUD_NIPS;
             g_LastCommand_s = "setnip:" + (string)i_make_visible;
@@ -985,9 +985,9 @@ xlProcessCommand(integer send_params) {
             // mesh_name=MESH_FITTED_TORSO_NIP_A;
             i_make_visible = (g_CurrentFittedNipAlpha == 1) * (mesh_count_index == 3);
             /* TODO: Properly implement:
-              Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
-              Stage1 shows the alpha mesh AND hides the PG mesh
-              Stage2 hides the alpha mesh AND hides the PG mesh.
+            Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
+            Stage1 shows the alpha mesh AND hides the PG mesh
+            Stage2 hides the alpha mesh AND hides the PG mesh.
             */
             if(0 == param) {
               mod_command = STARBRIGHT_FKT_HUD_NIPS;
@@ -1001,7 +1001,7 @@ xlProcessCommand(integer send_params) {
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =/*!g_CurrentFittedNipAlpha *
-        !bwGet(g_RuntimeBodyStateSettings,mod_command) */
+!bwGet(g_RuntimeBodyStateSettings,mod_command) */
                   (mesh_count_index == g_CurrentFittedNipState);
                 mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
               }
@@ -1023,7 +1023,7 @@ xlProcessCommand(integer send_params) {
             mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
           }
           /* TODO: Handle overrides (PG, etc) since bitwise check
-            is removed */
+          is removed */
           if(llStringLength(mesh_name) > 0) {
             /* FIXME: PG nipple state briefly shows up mid-loop */
             list prim_names = xlBladeNameToPrimNames(mesh_name);
@@ -1404,27 +1404,27 @@ default {
 #endif
     key object_owner_k = llGetOwnerKey(id);
     /*
-      ------------------ AUTH SYSTEM PRIMER --------------------------
-      Because llGetOwnerKey() returns either returns null key
-       or the sender object's uuid (instead of its owner's) when
-       checking a message that has been sent by an object which
-       has been detached already and is no longer existing on
-       the sim (98% of the cases),
-       == The traditional owner check cannot be performed. ==
-       For this reason, the 'auth list' keeps track of the
-       objects who 'add' themselves through the api to
-       determine the owner of a detaching object (since the
-       regular way to perform this check will fail).
-       Consequently, we use the aforementioned 'auth list' to
-       perform the required authentication check when receiving
-       an "invalid" owner key by looking for the object's key
-       within it.
-       We then honor any 'remove' command by expunging the list
-       of the object's key. This does not however prevent further
-       commands from being excuted, as the auth list is only
-       used on detach. This behaviour is consistent with the
-       stock script and is therefore preserved for the time being.
-      -----------------------------------------------------------------
+    ------------------ AUTH SYSTEM PRIMER --------------------------
+    Because llGetOwnerKey() returns either returns null key
+    or the sender object's uuid (instead of its owner's) when
+    checking a message that has been sent by an object which
+    has been detached already and is no longer existing on
+    the sim (98% of the cases),
+    == The traditional owner check cannot be performed. ==
+    For this reason, the 'auth list' keeps track of the
+    objects who 'add' themselves through the api to
+    determine the owner of a detaching object (since the
+    regular way to perform this check will fail).
+    Consequently, we use the aforementioned 'auth list' to
+    perform the required authentication check when receiving
+    an "invalid" owner key by looking for the object's key
+    within it.
+    We then honor any 'remove' command by expunging the list
+    of the object's key. This does not however prevent further
+    commands from being excuted, as the auth list is only
+    used on detach. This behaviour is consistent with the
+    stock script and is therefore preserved for the time being.
+    -----------------------------------------------------------------
     */
     if(object_owner_k != g_Owner_k) {
       // Most likely case, make handling other resident's attachments
@@ -1492,10 +1492,10 @@ default {
       return;
     }
     /* Deform on detach, unlike the stock body. This assumes permissions
-       are granted, which happens on rez or startup if attached.
-       Needs to be processed as fast as possible to make it before the
-       object is pruned from the Current Outfit Folder otherwise
-       it won't fire.
+    are granted, which happens on rez or startup if attached.
+    Needs to be processed as fast as possible to make it before the
+    object is pruned from the Current Outfit Folder otherwise
+    it won't fire.
     */
     if(id == NULL_KEY) {
 #ifdef USE_DEFORM_ANIMS
