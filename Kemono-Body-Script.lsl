@@ -125,6 +125,8 @@ nipovrd:0
 #define MESH_NECK "neck"
 #define MESH_PG_LAYER "PG"
 #define MESH_ROOT "Kemono - Body"
+#define MESH_ROOTALT "Kemono Body"
+
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
 // Piercings
@@ -176,7 +178,8 @@ nipovrd:0
                             MESH_LEG_RIGHT_HUMAN,\
                             MESH_NECK,\
                             MESH_PG_LAYER,\
-                            MESH_ROOT\
+                            MESH_ROOT,\
+                            MESH_ROOTALT\
                            ]
 // These go above. Can't comment out defined list parts.
 /*MESH_DERMAL_BACK0,\*/
@@ -205,6 +208,7 @@ nipovrd:0
                            "BitState2",\
                            "BitState3"\
                           ]
+integer s_KFTPelvisMeshes_size = 0;
 //#define s_NipplePiercingsNames [\
 //MESH_NIPPLE_RING0,\
 //MESH_NIPPLE_LOOP0,\
@@ -1189,12 +1193,12 @@ xlProcessCommand(integer send_params)
         mod_command_2 = CMD_IS_MOD_HIJACK;
 
       } else if("setbutt" == command) {
-        mesh_count_index = llGetListSize(s_KFTPelvisMeshes);
+        mesh_count_index = s_KFTPelvisMeshes_size;
         mod_command = STARBRIGHT_FKT_HUD_BUTT;
         mod_command_2 = CMD_IS_MOD_HIJACK;
 
       } else if("setvag" == command) {
-        mesh_count_index = llGetListSize(s_KFTPelvisMeshes);
+        mesh_count_index = s_KFTPelvisMeshes_size;
         mod_command_2 = CMD_IS_MOD_HIJACK;
         mod_command = STARBRIGHT_FKT_HUD_VAGN;
 
@@ -1669,6 +1673,7 @@ default {
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
+    s_KFTPelvisMeshes_size = s_KFTPelvisMeshes_size;
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
