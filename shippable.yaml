@@ -5,20 +5,37 @@ git:
 #   except:
 #   - "/^travis_ok*.$/"
 env:
-  - secure: CzY0p/8Pb40VLOJ6FqZKG3T3VtBwaWTJassNBHVczxyr2zIpVbILbdfO6u9bwGNX+CWvvGslz1cX2G86/O7XnNOHcTaMvuzjCizX0HuszxobJVznQOocM6JtcuCdJOmoCSjuUgHywNHv1nEmAGp3Gka7Rxz+gPwNbMyFuvDmRfwRniw46eANb1+GzirPvPRMcRDa6S4HdLs8xOickcyRrOpE4FFgmnbOJH2x40bxRraVbHn0Gex6MCod73qX6aQaq+zVcWTUZ+AtZaGvE7L7LD4cunK8pkrtM2bv05MQc8cf/wpfQsHB/oVDJc+CQGMy5tjKnfvyZjjemIlrjguGow== 
+  - secure: CzY0p/8Pb40VLOJ6FqZKG3T3VtBwaWTJassNBHVczxyr2zIpVbILbdfO6u9bwGNX+CWvvGslz1cX2G86/O7XnNOHcTaMvuzjCizX0HuszxobJVznQOocM6JtcuCdJOmoCSjuUgHywNHv1nEmAGp3Gka7Rxz+gPwNbMyFuvDmRfwRniw46eANb1+GzirPvPRMcRDa6S4HdLs8xOickcyRrOpE4FFgmnbOJH2x40bxRraVbHn0Gex6MCod73qX6aQaq+zVcWTUZ+AtZaGvE7L7LD4cunK8pkrtM2bv05MQc8cf/wpfQsHB/oVDJc+CQGMy5tjKnfvyZjjemIlrjguGow==
+  - style="--style=otbs --max-code-length=80 --indent=spaces=2 --convert-tabs --delete-empty-lines --indent-switches --indent-preproc-block --unpad-paren --indent-preproc-define --pad-oper --close-templates --break-blocks=all --indent-col1-comments"
 before_script:
-- apt-get install astyle unzip mcpp -y
-- wget https://github.com/Makopo/lslint/releases/download/v1.2.1/lslint_v1.2.1_linux.zip -O lslint.zip
-- unzip lslint.zip
+  - command -v astyle || apt-get install -y astyle
+  - command -v unzip || apt-get install -y unzip
+  - command -v mcpp || apt-get install -y mcpp
+  - wget https://github.com/Makopo/lslint/releases/download/v1.2.1/lslint_v1.2.1_linux.zip -O lslint.zip
+  - unzip lslint.zip
 script:
-- mkdir -p compiled
-# - mcpp -P "Kemono-Body-Script.lsl" | astyle --style=google --max-code-length=80 --indent=spaces=2 --indent-preproc-block --unpad-paren --delete-empty-lines --align-method-colon --pad-method-colon=all --close-templates --convert-tabs  --indent-col1-comments > compiled/xenhat.kemono.body.lsl
-# - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
-- bash ./build.bash
+  - mkdir -p compiled
+  # - mcpp -P "Kemono-Body-Script.lsl" | astyle --style=google --max-code-length=80 --indent=spaces=2 --indent-preproc-block --unpad-paren --delete-empty-lines --align-method-colon --pad-method-colon=all --close-templates --convert-tabs  --indent-col1-comments > compiled/xenhat.kemono.body.lsl
+  # - "./lslint -m -i < compiled/xenhat.kemono.body.lsl"
+  - bash ./build.bash
+  - bash -c 'for i in **/*.lsl; do
+      if [ "$(basename $i)" != "compiled" ]; then
+        if [ "$i" = "Kemono-Body-Script.lsl" ]; then
+          astyle $style "$i"
+          mcpp -P "$i" compiled/xenhat.kemono.body.lsl
+          sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
+          astyle $style compiled/xenhat.kemono.body.lsl
+        fi
+      else
+        astyle $style "$i"
+      fi
+    done'
+post_script:
+ - lslint -m -i "compiled/xenhat.kemono.body.lsl"
 after_success:
-- git config credential.helper "store --file=.git/credentials"
-- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
-# - git tag | grep ci-ignore | xargs -n 1 -i% git push origin :refs/tags/%
-- git tag | grep ci-ignore | xargs -n 1 -I% git push origin :refs/tags/%
-- git add compiled/xenhat.kemono.body.lsl
-- bash ./travis-ci-git-commit.bash
+  - git config credential.helper "store --file=.git/credentials"
+  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+  # - git tag | grep ci-ignore | xargs -n 1 -i% git push origin :refs/tags/%
+  - git tag | grep ci-ignore | xargs -n 1 -I% git push origin :refs/tags/%
+  - git add compiled/xenhat.kemono.body.lsl
+  - bash ./travis-ci-git-commit.bash
