@@ -16,7 +16,3 @@ for i in **/*.lsl; do # Whitespace-safe and recursive
 		astyle $style "$i"
 	fi
 done
-# if [ "$i" = "compiled/xenhat.kemono.body.lsl" ]; then
-	retval=$(lslint -m -i "compiled/xenhat.kemono.body.lsl" >/dev/null 2>&1)
-# fi
-exit $retval;
