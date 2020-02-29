@@ -5,10 +5,10 @@ style="--style=otbs --max-code-length=80 --indent=spaces=2 --convert-tabs  \
 	--delete-empty-lines --indent-switches --indent-preproc-block \
 	--unpad-paren --pad-oper --close-templates \
 	--break-blocks=all --indent-col1-comments --align-method-colon \
-	--pad-method-colon=all --close-templates"
+	--pad-method-colon=all --close-templates -Q"
 # --align-method-colon --pad-method-colon=all
 for i in **/*.lsl; do # Whitespace-safe and recursive
-	if [ "$i" = "Kemono-Body-Script.lsl" ]; then
+	if [ "$i" == "Kemono-Body-Script.lsl" ]; then
 		astyle $style "$i"
 		mcpp -P "$i" compiled/xenhat.kemono.body.lsl
 		sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
