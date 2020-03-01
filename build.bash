@@ -8,12 +8,17 @@ style="--style=otbs --max-code-length=80 --indent=spaces=2 --convert-tabs  \
 	--pad-method-colon=all --close-templates -Q"
 # --align-method-colon --pad-method-colon=all
 for i in **/*.lsl; do # Whitespace-safe and recursive
-	if [ "$i" == "Kemono-Body-Script.lsl" ]; then
+	if [[ "$i" == "Kemono-Body-Script.lsl" ]]; then
 		astyle $style "$i"
 		mcpp -P "$i" compiled/xenhat.kemono.body.lsl
 		sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
 		astyle $style compiled/xenhat.kemono.body.lsl
-	else 
-		astyle $style "$i"
+		if [[ "$do_lint" == "1" ]]; then
+			lslint -w -i -z -m compiled/xenhat.kemono.body.lsl
+		fi
+	else
+		if [[ ! "$(basename ${i})" =~ "compiled" ]]; then
+			astyle $style "$i"
+		fi
 	fi
 done
