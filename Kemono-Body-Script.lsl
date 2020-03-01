@@ -1,11 +1,8 @@
 /* <-- Enlarge window so you see this on only one line for better visibility -->
-
 Aftermarket Kemono Body Script Replacement by Xenhat Liamano @ Second Life
 Original creation date: 6/06/2017 22:52:37
-
 The latest version of this script is located at:
 https://github.com/XenHat/Kemono-Body-Script/
-
 License: https://tldrlegal.com/license/aladdin-free-public-license
 */
 float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
@@ -126,7 +123,20 @@ nipovrd:0
 #define MESH_PG_LAYER "PG"
 #define MESH_ROOT "Kemono - Body"
 #define MESH_ROOTALT "Kemono Body"
-
+// TODO: Remove entries that have the same values
+// TODO: Implement overridable faces and finish separating stock and fitted torso associations
+list names_assoc = [API_CMD_ANKLE_L, API_CMD_ANKLE_R,
+                                     API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
+                                     API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
+                                     API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
+                                     MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
+                                     API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
+                                     API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
+                                     API_CMD_THIGH_U_R, API_CMD_WRIST_L,
+                                     API_CMD_WRIST_R];
+list faces_assoc = [5, 5, 4, 4, 1, 1, 4, 4, "6,7", 7, 2, 0, 6, "2,3", 0, 4, 5,
+                       0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
+list faceshumanmode = [1, 1, 2, 2, 5, 5, 2, 2];
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
 // Piercings
@@ -294,6 +304,19 @@ string g_AnimDeform;
 string g_AnimUndeform;
 list xlGetFacesByBladeName(string name)
 {
+  integer index = llListFindList(names_assoc, [name]);
+
+  if(index > -1) {
+    string f = llList2String(faces_assoc, index);
+
+    if(f) {
+      // llOwnerSay("Optimized call for " + name);
+      // return llParseString2List(f, [","], []);
+      return llCSV2List(f);
+    }
+  }
+
+  // llOwnerSay("Falling back to old method for: " + name);
   if(name == API_CMD_ABS) {
     return [6, 7];
   }
