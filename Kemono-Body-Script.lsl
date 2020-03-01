@@ -367,10 +367,6 @@ list xlGetFacesByBladeName(string name)
       return [0, 1];
     }
 
-    if(human_mode) {
-      return [0, 4];
-    }
-
     return [0, 4];
   }
 
