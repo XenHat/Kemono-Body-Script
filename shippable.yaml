@@ -7,7 +7,6 @@ git:
 env:
   global:
     - secure: CzY0p/8Pb40VLOJ6FqZKG3T3VtBwaWTJassNBHVczxyr2zIpVbILbdfO6u9bwGNX+CWvvGslz1cX2G86/O7XnNOHcTaMvuzjCizX0HuszxobJVznQOocM6JtcuCdJOmoCSjuUgHywNHv1nEmAGp3Gka7Rxz+gPwNbMyFuvDmRfwRniw46eANb1+GzirPvPRMcRDa6S4HdLs8xOickcyRrOpE4FFgmnbOJH2x40bxRraVbHn0Gex6MCod73qX6aQaq+zVcWTUZ+AtZaGvE7L7LD4cunK8pkrtM2bv05MQc8cf/wpfQsHB/oVDJc+CQGMy5tjKnfvyZjjemIlrjguGow==
-    - style="--style=otbs --max-code-length=80 --indent=spaces=2 --convert-tabs --delete-empty-lines --indent-switches --indent-preproc-block --unpad-paren --indent-preproc-define --pad-oper --close-templates --break-blocks=all --indent-col1-comments"
 before_script:
  - command -v astyle || apt-get install -y astyle
  - command -v unzip || apt-get install -y unzip
