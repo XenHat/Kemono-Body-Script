@@ -33,16 +33,6 @@ string g_AnimDeform;
 string g_AnimUndeform;
 list xlGetFacesByBladeName(string name)
 {
-  integer index = llListFindList(names_assoc, [name]);
-
-  if(index > -1) {
-    string f = llList2String(faces_assoc, index);
-
-    if(f) {
-      return llCSV2List(f);
-    }
-  }
-
   if(name ==  "abs") {
     return [6, 7];
   }

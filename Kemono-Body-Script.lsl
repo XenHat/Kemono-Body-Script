@@ -25,19 +25,19 @@ integer g_Config_EnsureMaskingMode = 0;
 string g_internal_version_s = "0.5.7";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #ifdef SMART_DEFORM
-/* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
-Your shoulders will appear larger than they should. Small price to pay to not
-look stupid in all other cases
-*/
-// #define UNDEFORM_BY_DEFAULT
-#ifdef UNDEFORM_BY_DEFAULT
-#define undeform_instead 1
-#else
-#define undeform_instead 0
-#endif
+  /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
+  Your shoulders will appear larger than they should. Small price to pay to not
+  look stupid in all other cases
+  */
+  // #define UNDEFORM_BY_DEFAULT
+  #ifdef UNDEFORM_BY_DEFAULT
+    #define undeform_instead 1
+  #else
+    #define undeform_instead 0
+  #endif
 #endif
 #ifndef DISABLE_GITHUB_UPDATER
-#define GITHUB_UPDATER
+  #define GITHUB_UPDATER
 #endif
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
@@ -126,16 +126,16 @@ nipovrd:0
 // TODO: Remove entries that have the same values
 // TODO: Implement overridable faces and finish separating stock and fitted torso associations
 list names_assoc = [API_CMD_ANKLE_L, API_CMD_ANKLE_R,
-                                     API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
-                                     API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
-                                     API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
-                                     MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
-                                     API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
-                                     API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
-                                     API_CMD_THIGH_U_R, API_CMD_WRIST_L,
-                                     API_CMD_WRIST_R];
+                    API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
+                    API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
+                    API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
+                    MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
+                    API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
+                    API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
+                    API_CMD_THIGH_U_R, API_CMD_WRIST_L,
+                    API_CMD_WRIST_R];
 list faces_assoc = [5, 5, 4, 4, 1, 1, 4, 4, "6,7", 7, 2, 0, 6, "2,3", 0, 4, 5,
-                       0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
+                    0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
 list faceshumanmode = [1, 1, 2, 2, 5, 5, 2, 2];
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
@@ -275,7 +275,7 @@ have to do instead. Anyway, toggle using XOR..
 #define g_internal_repo_s "XenHat/"+script_name
 #define script_name "Kemono-Body-Script"
 #ifdef GITHUB_UPDATER
-key g_internal_httprid_k = NULL_KEY;
+  key g_internal_httprid_k = NULL_KEY;
 #endif
 /* TODO: Use a bitset if we run out of memory */
 #define g_DefaultFittedButState 1
@@ -306,127 +306,168 @@ list xlGetFacesByBladeName(string name)
 {
 #ifdef NEW_ASSOC_LOGIC
   integer index = llListFindList(names_assoc, [name]);
+
   if(index > -1) {
     string f = llList2String(faces_assoc, index);
+
     if(f) {
       // llOwnerSay("Optimized call for " + name);
       // return llParseString2List(f, [","], []);
       return llCSV2List(f);
     }
   }
+
   // llOwnerSay("Falling back to old method for: " + name);
 #endif
+
   if(name == API_CMD_ABS) {
     return [6, 7];
   }
+
   if(name == API_CMD_ANKLE_L) {
     if(human_mode) {
       return [1];
     }
+
     return [5];
   }
+
   if(name == API_CMD_ANKLE_R) {
     if(human_mode) {
       return [1];
     }
+
     return [5];
   }
+
   if(name == API_CMD_ARM_L_L) {
     return [7];
   }
+
   if(name == API_CMD_ARM_L_R) {
     return [2];
   }
+
   if(name == API_CMD_ARM_U_L) {
     return [0];
   }
+
   if(name == API_CMD_ARM_U_R) {
     return [6];
   }
+
   if(name == API_CMD_BELLY) {
     return [2, 3];
   }
+
   if(name == MESH_BODY) {
     return [0];
   }
+
   if(name == API_CMD_BREASTS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [2, 3];
     }
+
     return [2, 5];
   }
+
   if(name == API_CMD_CALF_L) {
     if(human_mode) {
       return [4];
     }
+
     return [2];
   }
+
   if(name == API_CMD_CALF_R) {
     if(human_mode) {
       return [4];
     }
+
     return [2];
   }
+
   if(name == API_CMD_CHEST) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [0, 1];
     }
+
     return [0, 4];
   }
+
   if(name == API_CMD_COLLAR) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [6, 7];
     }
+
     return [1, 6];
   }
+
   if(name == API_CMD_ELBOW_L) {
     return [4];
   }
+
   if(name == API_CMD_ELBOW_R) {
     return [5];
   }
+
   if(name == API_CMD_FOOT_L) {
     return [0];
   }
+
   if(name == API_CMD_FOOT_R) {
     return [0];
   }
+
   if(name == API_CMD_HIP_L) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [5];
     }
+
     return [6];
   }
+
   if(name == API_CMD_HIP_R) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [4];
     }
+
     return [5];
   }
+
   if(name == API_CMD_KNEE_L) {
     if(human_mode) {
       return [5];
     }
+
     return [1];
   }
+
   if(name == API_CMD_KNEE_R) {
     if(human_mode) {
       return [5];
     }
+
     return [1];
   }
+
   if(name == MESH_HAND_LEFT) {
     return [-1];
   }
+
   if(name == MESH_HAND_RIGHT) {
     return [-1];
   }
+
   if(name == MESH_NECK) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [0, 1];
     }
+
     return [2, 5];
   }
+
   if(name == MESH_SK_NIPS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
       /* Note: Before changing this again, create a different way of
@@ -436,83 +477,110 @@ list xlGetFacesByBladeName(string name)
     {
       return [0, 1];
     }
+
     return [2, 3];
   }
+
   if(name == API_CMD_PELVIS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [0, 1, 2, 3];
     }
+
     return [0, 1];
   }
+
   if(name == API_CMD_RIBS) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [4, 5];
     }
+
     return [1, 3];
   }
+
   if(name == API_CMD_SHIN_L_L) {
     if(human_mode) {
       return [2];
     }
+
     return [4];
   }
+
   if(name == API_CMD_SHIN_L_R) {
     if(human_mode) {
       return [2];
     }
+
     return [4];
   }
+
   if(name == API_CMD_SHIN_U_L) {
     return [3];
   }
+
   if(name == API_CMD_SHIN_U_R) {
     return [3];
   }
+
   if(name == API_CMD_SHOULDER_L_L) {
     return [3];
   }
+
   if(name == API_CMD_SHOULDER_L_R) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [2];
     }
+
     return [0];
   }
+
   if(name == API_CMD_SHOULDER_U_L) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [5];
     }
+
     return [7];
   }
+
   if(name == API_CMD_SHOULDER_U_R) {
     return [4];
   }
+
   if(name == API_CMD_THIGH_L_L) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       if(human_mode) {
         return [1];
       }
+
       return [7];
     }
+
     return [6];
   }
+
   if(name == API_CMD_THIGH_L_R) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       if(human_mode) {
         return [0];
       }
+
       return [6];
     }
+
     return [6];
   }
+
   if(name == API_CMD_THIGH_U_L) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       return [5];
     }
+
     return [7];
   }
+
   if(name == API_CMD_THIGH_U_R) {
     return [4];
   }
+
   if(name == API_CMD_VAG) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
@@ -523,8 +591,10 @@ list xlGetFacesByBladeName(string name)
       // return [0,1,2,3,4,5];
       return [0, 1];
     }
+
     return [0, 1];
   }
+
   if(name == API_CMD_VIRTUAL_BUTT) {
     if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
       /* Reminder: On the Fitted Torso, this is the upper hip mesh half.
@@ -535,14 +605,18 @@ list xlGetFacesByBladeName(string name)
       //  return [0,1,2,3,4,5];
       return [2, 3, 4, 5];
     }
+
     return [];
   }
+
   if(name == API_CMD_WRIST_L) {
     return [3];
   }
+
   if(name == API_CMD_WRIST_R) {
     return [1];
   }
+
   return [];
 }
 /* This function is like a "translator", it returns
@@ -560,300 +634,295 @@ list xlBladeNameToPrimNames(string name)
   */
   if(name == API_CMD_ARM_L_L) {
     return [MESH_ARMS];
-  }
-  else
-    if(name == API_CMD_ARM_L_R) {
-      return [MESH_ARMS];
+
+  } else if(name == API_CMD_ARM_L_R) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_ARM_U_L) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_ARM_U_R) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_ELBOW_L) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_ELBOW_R) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_WRIST_L) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_WRIST_R) {
+    return [MESH_ARMS];
+
+  } else if(name == API_CMD_RIBS) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_CHEST];
     }
-    else
-      if(name == API_CMD_ARM_U_L) {
-        return [MESH_ARMS];
+
+    return [MESH_BODY];
+
+  } else if(name == API_CMD_ABS) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_CHEST];
+    }
+
+    return [MESH_BODY];
+
+  } else if(name == MESH_BODY) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_CHEST];
+    }
+
+    return [MESH_BODY];
+
+  } else if(name == API_CMD_BREASTS) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_CHEST];
+    }
+
+    return [MESH_BODY];
+
+  } else if(name == API_CMD_CHEST) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_CHEST];
+    }
+
+    return [MESH_BODY];
+
+  } else if(name == API_CMD_COLLAR) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == MESH_HAND_LEFT) {
+    return [MESH_HAND_LEFT];
+
+  } else if(name == MESH_HAND_RIGHT) {
+    return [MESH_HAND_RIGHT];
+
+  } else if(name == API_CMD_HIP_L || name == API_CMD_HIP_R) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+    }
+
+    return [MESH_HIPS];
+
+  } else if(name == MESH_NECK) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == API_CMD_PELVIS) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+    }
+
+    return [MESH_HIPS];
+
+  } else if(name == API_CMD_KNEE_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_FOOT_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_ANKLE_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_SHIN_U_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_CALF_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_SHIN_L_R) {
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_CALF_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_ANKLE_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_FOOT_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_KNEE_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_SHIN_L_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_SHIN_U_L) {
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+
+  } else if(name == API_CMD_SHOULDER_L_L) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == API_CMD_SHOULDER_L_R) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == API_CMD_SHOULDER_U_L) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == API_CMD_SHOULDER_U_R) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO];
+    }
+
+    return [MESH_NECK];
+
+  } else if(name == API_CMD_THIGH_U_L) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_ETC];
+    }
+
+    return [MESH_HIPS];
+
+  } else if(name == API_CMD_THIGH_U_R) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_ETC];
+    }
+
+    return [MESH_HIPS];
+
+  } else if(name == API_CMD_BELLY) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_ETC];
+    }
+
+    return [MESH_HIPS];
+
+  } else if(name == MESH_SK_NIPS) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      if(1 == g_CurrentFittedNipAlpha) {
+        /* nip alpha stage 1 */
+        return [MESH_FITTED_TORSO_NIP_A];
+
+      } else if(2 == g_CurrentFittedNipAlpha) {
+        /*  nip alpha stage 2 */
+        return [MESH_FITTED_TORSO_NIP_0];
+
+      } else {
+        return [llList2String(s_FittedNipsMeshNames,
+                              g_CurrentFittedNipState)];
       }
-      else
-        if(name == API_CMD_ARM_U_R) {
-          return [MESH_ARMS];
-        }
-        else
-          if(name == API_CMD_ELBOW_L) {
-            return [MESH_ARMS];
-          }
-          else
-            if(name == API_CMD_ELBOW_R) {
-              return [MESH_ARMS];
-            }
-            else
-              if(name == API_CMD_WRIST_L) {
-                return [MESH_ARMS];
-              }
-              else
-                if(name == API_CMD_WRIST_R) {
-                  return [MESH_ARMS];
-                }
-                else
-                  if(name == API_CMD_RIBS) {
-                    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                      return [MESH_FITTED_TORSO_CHEST];
-                    }
-                    return [MESH_BODY];
-                  }
-                  else
-                    if(name == API_CMD_ABS) {
-                      if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                        return [MESH_FITTED_TORSO_CHEST];
-                      }
-                      return [MESH_BODY];
-                    }
-                    else
-                      if(name == MESH_BODY) {
-                        if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                          return [MESH_FITTED_TORSO_CHEST];
-                        }
-                        return [MESH_BODY];
-                      }
-                      else
-                        if(name == API_CMD_BREASTS) {
-                          if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                            return [MESH_FITTED_TORSO_CHEST];
-                          }
-                          return [MESH_BODY];
-                        }
-                        else
-                          if(name == API_CMD_CHEST) {
-                            if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                              return [MESH_FITTED_TORSO_CHEST];
-                            }
-                            return [MESH_BODY];
-                          }
-                          else
-                            if(name == API_CMD_COLLAR) {
-                              if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                return [MESH_FITTED_TORSO];
-                              }
-                              return [MESH_NECK];
-                            }
-                            else
-                              if(name == MESH_HAND_LEFT) {
-                                return [MESH_HAND_LEFT];
-                              }
-                              else
-                                if(name == MESH_HAND_RIGHT) {
-                                  return [MESH_HAND_RIGHT];
-                                }
-                                else
-                                  if(name == API_CMD_HIP_L || name == API_CMD_HIP_R) {
-                                    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
-                                    }
-                                    return [MESH_HIPS];
-                                  }
-                                  else
-                                    if(name == MESH_NECK) {
-                                      if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                        return [MESH_FITTED_TORSO];
-                                      }
-                                      return [MESH_NECK];
-                                    }
-                                    else
-                                      if(name == API_CMD_PELVIS) {
-                                        if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                          return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
-                                        }
-                                        return [MESH_HIPS];
-                                      }
-                                      else
-                                        if(name == API_CMD_KNEE_R) {
-                                          if(human_mode) {
-                                            return [MESH_LEG_RIGHT_HUMAN];
-                                          }
-                                          return [MESH_LEG_RIGHT_ANIMAL];
-                                        }
-                                        else
-                                          if(name == API_CMD_FOOT_R) {
-                                            if(human_mode) {
-                                              return [MESH_LEG_RIGHT_HUMAN];
-                                            }
-                                            return [MESH_LEG_RIGHT_ANIMAL];
-                                          }
-                                          else
-                                            if(name == API_CMD_ANKLE_R) {
-                                              if(human_mode) {
-                                                return [MESH_LEG_RIGHT_HUMAN];
-                                              }
-                                              return [MESH_LEG_RIGHT_ANIMAL];
-                                            }
-                                            else
-                                              if(name == API_CMD_SHIN_U_R) {
-                                                if(human_mode) {
-                                                  return [MESH_LEG_RIGHT_HUMAN];
-                                                }
-                                                return [MESH_LEG_RIGHT_ANIMAL];
-                                              }
-                                              else
-                                                if(name == API_CMD_CALF_R) {
-                                                  if(human_mode) {
-                                                    return [MESH_LEG_RIGHT_HUMAN];
-                                                  }
-                                                  return [MESH_LEG_RIGHT_ANIMAL];
-                                                }
-                                                else
-                                                  if(name == API_CMD_SHIN_L_R) {
-                                                    if(human_mode) {
-                                                      return [MESH_LEG_RIGHT_HUMAN];
-                                                    }
-                                                    return [MESH_LEG_RIGHT_ANIMAL];
-                                                  }
-                                                  else
-                                                    if(name == API_CMD_CALF_L) {
-                                                      if(human_mode) {
-                                                        return [MESH_LEG_LEFT_HUMAN];
-                                                      }
-                                                      return [MESH_LEG_LEFT_ANIMAL];
-                                                    }
-                                                    else
-                                                      if(name == API_CMD_ANKLE_L) {
-                                                        if(human_mode) {
-                                                          return [MESH_LEG_LEFT_HUMAN];
-                                                        }
-                                                        return [MESH_LEG_LEFT_ANIMAL];
-                                                      }
-                                                      else
-                                                        if(name == API_CMD_FOOT_L) {
-                                                          if(human_mode) {
-                                                            return [MESH_LEG_LEFT_HUMAN];
-                                                          }
-                                                          return [MESH_LEG_LEFT_ANIMAL];
-                                                        }
-                                                        else
-                                                          if(name == API_CMD_KNEE_L) {
-                                                            if(human_mode) {
-                                                              return [MESH_LEG_LEFT_HUMAN];
-                                                            }
-                                                            return [MESH_LEG_LEFT_ANIMAL];
-                                                          }
-                                                          else
-                                                            if(name == API_CMD_SHIN_L_L) {
-                                                              if(human_mode) {
-                                                                return [MESH_LEG_LEFT_HUMAN];
-                                                              }
-                                                              return [MESH_LEG_LEFT_ANIMAL];
-                                                            }
-                                                            else
-                                                              if(name == API_CMD_SHIN_U_L) {
-                                                                if(human_mode) {
-                                                                  return [MESH_LEG_LEFT_HUMAN];
-                                                                }
-                                                                return [MESH_LEG_LEFT_ANIMAL];
-                                                              }
-                                                              else
-                                                                if(name == API_CMD_SHOULDER_L_L) {
-                                                                  if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                    return [MESH_FITTED_TORSO];
-                                                                  }
-                                                                  return [MESH_NECK];
-                                                                }
-                                                                else
-                                                                  if(name == API_CMD_SHOULDER_L_R) {
-                                                                    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                      return [MESH_FITTED_TORSO];
-                                                                    }
-                                                                    return [MESH_NECK];
-                                                                  }
-                                                                  else
-                                                                    if(name == API_CMD_SHOULDER_U_L) {
-                                                                      if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                        return [MESH_FITTED_TORSO];
-                                                                      }
-                                                                      return [MESH_NECK];
-                                                                    }
-                                                                    else
-                                                                      if(name == API_CMD_SHOULDER_U_R) {
-                                                                        if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                          return [MESH_FITTED_TORSO];
-                                                                        }
-                                                                        return [MESH_NECK];
-                                                                      }
-                                                                      else
-                                                                        if(name == API_CMD_THIGH_U_L) {
-                                                                          if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                            return [MESH_FITTED_TORSO_ETC];
-                                                                          }
-                                                                          return [MESH_HIPS];
-                                                                        }
-                                                                        else
-                                                                          if(name == API_CMD_THIGH_U_R) {
-                                                                            if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                              return [MESH_FITTED_TORSO_ETC];
-                                                                            }
-                                                                            return [MESH_HIPS];
-                                                                          }
-                                                                          else
-                                                                            if(name == API_CMD_BELLY) {
-                                                                              if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                return [MESH_FITTED_TORSO_ETC];
-                                                                              }
-                                                                              return [MESH_HIPS];
-                                                                            }
-                                                                            else
-                                                                              if(name == MESH_SK_NIPS) {
-                                                                                if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                  if(1 == g_CurrentFittedNipAlpha) {
-                                                                                    /* nip alpha stage 1 */
-                                                                                    return [MESH_FITTED_TORSO_NIP_A];
-                                                                                  }
-                                                                                  else
-                                                                                    if(2 == g_CurrentFittedNipAlpha) {
-                                                                                      /*  nip alpha stage 2 */
-                                                                                      return [MESH_FITTED_TORSO_NIP_0];
-                                                                                    }
-                                                                                    else {
-                                                                                      return [llList2String(s_FittedNipsMeshNames,
-                                                                                                            g_CurrentFittedNipState)];
-                                                                                    }
-                                                                                }
-                                                                                return [MESH_PG_LAYER];
-                                                                              }
-                                                                              else
-                                                                                if(name == MESH_FITTED_TORSO_NIP_A) {
-                                                                                  if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                    return [MESH_FITTED_TORSO_NIP_A];
-                                                                                  }
-                                                                                  return [MESH_PG_LAYER];
-                                                                                }
-                                                                                else
-                                                                                  if(name == API_CMD_VAG) {
-                                                                                    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                      //if(g_TogglingPGMeshes)
-                                                                                      //  return [llList2String(s_KFTPelvisMeshes,0)];
-                                                                                      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
-                                                                                    }
-                                                                                    return [MESH_PG_LAYER];
-                                                                                  }
-                                                                                  else
-                                                                                    if(name == API_CMD_THIGH_L_R) {
-                                                                                      if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                        if(human_mode) {
-                                                                                          return [MESH_FITTED_TORSO_HLEGS];
-                                                                                        }
-                                                                                        return [MESH_FITTED_TORSO_ETC];
-                                                                                      }
-                                                                                      if(human_mode) {
-                                                                                        return [MESH_LEG_RIGHT_HUMAN];
-                                                                                      }
-                                                                                      return [MESH_LEG_RIGHT_ANIMAL];
-                                                                                    }
-                                                                                    else
-                                                                                      if(name == API_CMD_THIGH_L_L) {
-                                                                                        if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                                                                          if(human_mode) {
-                                                                                            return [MESH_FITTED_TORSO_HLEGS];
-                                                                                          }
-                                                                                          return [MESH_FITTED_TORSO_ETC];
-                                                                                        }
-                                                                                        if(human_mode) {
-                                                                                          return [MESH_LEG_LEFT_HUMAN];
-                                                                                        }
-                                                                                        return [MESH_LEG_LEFT_ANIMAL];
-                                                                                      }
+    }
+
+    return [MESH_PG_LAYER];
+
+  } else if(name == MESH_FITTED_TORSO_NIP_A) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      return [MESH_FITTED_TORSO_NIP_A];
+    }
+
+    return [MESH_PG_LAYER];
+
+  } else if(name == API_CMD_VAG) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      //if(g_TogglingPGMeshes)
+      //  return [llList2String(s_KFTPelvisMeshes,0)];
+      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+    }
+
+    return [MESH_PG_LAYER];
+
+  } else if(name == API_CMD_THIGH_L_R) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      if(human_mode) {
+        return [MESH_FITTED_TORSO_HLEGS];
+      }
+
+      return [MESH_FITTED_TORSO_ETC];
+    }
+
+    if(human_mode) {
+      return [MESH_LEG_RIGHT_HUMAN];
+    }
+
+    return [MESH_LEG_RIGHT_ANIMAL];
+
+  } else if(name == API_CMD_THIGH_L_L) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      if(human_mode) {
+        return [MESH_FITTED_TORSO_HLEGS];
+      }
+
+      return [MESH_FITTED_TORSO_ETC];
+    }
+
+    if(human_mode) {
+      return [MESH_LEG_LEFT_HUMAN];
+    }
+
+    return [MESH_LEG_LEFT_ANIMAL];
+  }
+
   return [name];
 }
 /* Stock Fitted Torso script:
@@ -870,231 +939,234 @@ xlProcessCommandWrapper()
 {
   if(g_LastCommand_s == KM_HUD_RESET_CMD) {
     reset();
+
+  } else if(g_LastCommand_s == "resetA") {
+    reset();
+
+  } else if(g_LastCommand_s == "resetB") {
+    g_AttmntAuthedKeys_l = [];
+    reset();
+
+  } else if(g_LastCommand_s == "Hlegs") {
+#ifdef PROCESS_LEGS_COMMANDS
+    // if(!human_mode) {
+    human_mode = FALSE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    // }
+    human_mode = TRUE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+#endif
+    saveSettings();
+
+  } else if(g_LastCommand_s == "Flegs") {
+#ifdef PROCESS_LEGS_COMMANDS
+    // if(human_mode) {
+    human_mode = TRUE;
+    g_LastCommand_s =
+      "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+    // }
+    human_mode = FALSE;
+    g_LastCommand_s =
+      "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
+    xlProcessCommand(TRUE);
+#endif
+    saveSettings();
   }
-  else
-    if(g_LastCommand_s == "resetA") {
-      reset();
+
+  /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
+  /* TODO: move all this below inside the command processor */
+  else if(g_LastCommand_s == "Rhand:1") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-relax");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
     }
-    else
-      if(g_LastCommand_s == "resetB") {
-        g_AttmntAuthedKeys_l = [];
-        reset();
-      }
-      else
-        if(g_LastCommand_s == "Hlegs") {
-#ifdef PROCESS_LEGS_COMMANDS
-          // if(!human_mode) {
-          human_mode = FALSE;
-          g_LastCommand_s =
-            "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-          xlProcessCommand(TRUE);
-          // }
-          human_mode = TRUE;
-          g_LastCommand_s =
-            "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-          xlProcessCommand(TRUE);
-#endif
-          saveSettings();
-        }
-        else
-          if(g_LastCommand_s == "Flegs") {
-#ifdef PROCESS_LEGS_COMMANDS
-            // if(human_mode) {
-            human_mode = TRUE;
-            g_LastCommand_s =
-              "hide:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-            xlProcessCommand(TRUE);
-            // }
-            human_mode = FALSE;
-            g_LastCommand_s =
-              "show:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR";
-            xlProcessCommand(TRUE);
-#endif
-            saveSettings();
-          }
-          /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
-          /* TODO: move all this below inside the command processor */
-          else
-            if(g_LastCommand_s == "Rhand:1") {
-              if(g_HasAnimPerms) {
-                llStartAnimation("Kem-hand-R-relax");
-                llStopAnimation("Kem-hand-R-fist");
-                llStopAnimation("Kem-hand-R-hold");
-                llStopAnimation("Kem-hand-R-horns");
-                llStopAnimation("Kem-hand-R-point");
-              }
-              return;
-            }
-            else
-              if(g_LastCommand_s == "Rhand:2") {
-                if(g_HasAnimPerms) {
-                  llStartAnimation("Kem-hand-R-hold");
-                  llStopAnimation("Kem-hand-R-fist");
-                  llStopAnimation("Kem-hand-R-horns");
-                  llStopAnimation("Kem-hand-R-point");
-                  llStopAnimation("Kem-hand-R-relax");
-                }
-                return;
-              }
-              else
-                if(g_LastCommand_s == "Rhand:3") {
-                  if(g_HasAnimPerms) {
-                    llStartAnimation("Kem-hand-R-fist");
-                    llStopAnimation("Kem-hand-R-hold");
-                    llStopAnimation("Kem-hand-R-horns");
-                    llStopAnimation("Kem-hand-R-point");
-                    llStopAnimation("Kem-hand-R-relax");
-                  }
-                  return;
-                }
-                else
-                  if(g_LastCommand_s == "Rhand:4") {
-                    if(g_HasAnimPerms) {
-                      llStartAnimation("Kem-hand-R-point");
-                      llStopAnimation("Kem-hand-R-fist");
-                      llStopAnimation("Kem-hand-R-hold");
-                      llStopAnimation("Kem-hand-R-horns");
-                      llStopAnimation("Kem-hand-R-relax");
-                    }
-                    return;
-                  }
-                  else
-                    if(g_LastCommand_s == "Rhand:5") {
-                      if(g_HasAnimPerms) {
-                        llStartAnimation("Kem-hand-R-horns");
-                        llStopAnimation("Kem-hand-R-fist");
-                        llStopAnimation("Kem-hand-R-hold");
-                        llStopAnimation("Kem-hand-R-point");
-                        llStopAnimation("Kem-hand-R-relax");
-                      }
-                      return;
-                    }
-                    else
-                      if(g_LastCommand_s == "Lhand:1") {
-                        if(g_HasAnimPerms) {
-                          llStartAnimation("Kem-hand-L-relax");
-                          llStopAnimation("Kem-hand-L-fist");
-                          llStopAnimation("Kem-hand-L-hold");
-                          llStopAnimation("Kem-hand-L-horns");
-                          llStopAnimation("Kem-hand-L-point");
-                        }
-                        return;
-                      }
-                      else
-                        if(g_LastCommand_s == "Lhand:2") {
-                          if(g_HasAnimPerms) {
-                            llStartAnimation("Kem-hand-L-hold");
-                            llStopAnimation("Kem-hand-L-fist");
-                            llStopAnimation("Kem-hand-L-horns");
-                            llStopAnimation("Kem-hand-L-point");
-                            llStopAnimation("Kem-hand-L-relax");
-                          }
-                          return;
-                        }
-                        else
-                          if(g_LastCommand_s == "Lhand:3") {
-                            if(g_HasAnimPerms) {
-                              llStartAnimation("Kem-hand-L-fist");
-                              llStopAnimation("Kem-hand-L-hold");
-                              llStopAnimation("Kem-hand-L-horns");
-                              llStopAnimation("Kem-hand-L-point");
-                              llStopAnimation("Kem-hand-L-relax");
-                            }
-                            return;
-                          }
-                          else
-                            if(g_LastCommand_s == "Lhand:4") {
-                              if(g_HasAnimPerms) {
-                                llStartAnimation("Kem-hand-L-point");
-                                llStopAnimation("Kem-hand-L-fist");
-                                llStopAnimation("Kem-hand-L-hold");
-                                llStopAnimation("Kem-hand-L-horns");
-                                llStopAnimation("Kem-hand-L-relax");
-                              }
-                              return;
-                            }
-                            else
-                              if(g_LastCommand_s == "Lhand:5") {
-                                if(g_HasAnimPerms) {
-                                  llStartAnimation("Kem-hand-L-horns");
-                                  llStopAnimation("Kem-hand-L-fist");
-                                  llStopAnimation("Kem-hand-L-hold");
-                                  llStopAnimation("Kem-hand-L-point");
-                                  llStopAnimation("Kem-hand-L-relax");
-                                }
-                                return;
-                              }
-                              else
-                                if("reqFTdat" == g_LastCommand_s) {
-                                  if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                    // Example: resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
-                                    // resFTdat:nipState:" + (string)nipState + ":nipAlpha:" + (string)nipAlpha + ":nipOvrd:" + (string)nipOvrd +
-                                    // ":vagState:" + (string)vagState + ":buttState:" + (string)buttState + ":humLegs:" + (string)humLegs)
-                                    llRegionSayTo(g_Owner_k, KEMONO_COM_CH, "resFTdat:nipState:"
-                                                  + (string)g_CurrentFittedNipState
-                                                  + ":nipAlpha:" + (string)g_CurrentFittedNipAlpha
-                                                  + ":nipOvrd:0" /* TODO: Implement Nipple Override */
-                                                  + ":vagState:" + (string)g_CurrentFittedVagState
-                                                  + ":buttState:" + (string)g_CurrentFittedButState
-                                                  + ":humLegs:" + (string)human_mode);
-                                  }
-                                  return;
-                                }
-                                else {
+
+    return;
+
+  } else if(g_LastCommand_s == "Rhand:2") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Rhand:3") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Rhand:4") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Rhand:5") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-R-horns");
+      llStopAnimation("Kem-hand-R-fist");
+      llStopAnimation("Kem-hand-R-hold");
+      llStopAnimation("Kem-hand-R-point");
+      llStopAnimation("Kem-hand-R-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Lhand:1") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-relax");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Lhand:2") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Lhand:3") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Lhand:4") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-relax");
+    }
+
+    return;
+
+  } else if(g_LastCommand_s == "Lhand:5") {
+    if(g_HasAnimPerms) {
+      llStartAnimation("Kem-hand-L-horns");
+      llStopAnimation("Kem-hand-L-fist");
+      llStopAnimation("Kem-hand-L-hold");
+      llStopAnimation("Kem-hand-L-point");
+      llStopAnimation("Kem-hand-L-relax");
+    }
+
+    return;
+
+  } else if("reqFTdat" == g_LastCommand_s) {
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+      // Example: resFTdat:nipState:0:nipAlpha:0:nipOvrd:1:vagState:0:buttState:0:humLegs:0
+      // resFTdat:nipState:" + (string)nipState + ":nipAlpha:" + (string)nipAlpha + ":nipOvrd:" + (string)nipOvrd +
+      // ":vagState:" + (string)vagState + ":buttState:" + (string)buttState + ":humLegs:" + (string)humLegs)
+      llRegionSayTo(g_Owner_k, KEMONO_COM_CH, "resFTdat:nipState:"
+                    + (string)g_CurrentFittedNipState
+                    + ":nipAlpha:" + (string)g_CurrentFittedNipAlpha
+                    + ":nipOvrd:0" /* TODO: Implement Nipple Override */
+                    + ":vagState:" + (string)g_CurrentFittedVagState
+                    + ":buttState:" + (string)g_CurrentFittedButState
+                    + ":humLegs:" + (string)human_mode);
+    }
+
+    return;
+
+  } else {
 #ifdef FTK_MULTI_DROP
-                                  /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
-                                  if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
-                                    if(llSubStringIndex(name, MESH_FITTED_TORSO) > 3) {
-                                      return;
-                                    }
+
+    /* Ignore Starbright's Kemono Torso messages when handling that mesh*/
+    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT))
+      if(llSubStringIndex(name, MESH_FITTED_TORSO) > 3) {
+        return;
+      }
+
 #endif
-                                  if(llSubStringIndex(g_LastCommand_s, "resCLdat") == 0) {
-                                    /* This API isn't public, the best we can do is guess. */
-                                    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-                                      list data = llParseString2List(g_LastCommand_s, [":"], []);
-                                      /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2' */
-                                      /* resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans */
-                                      /* integer clothID = llList2Integer(data,2); */
-                                      string clothDesc = llList2String(data, 4);
-                                      // integer attachPoint = llList2Integer(data,6);
-                                      integer clothState = llList2Integer(data, 8); /*0:on, 1: pulled, 2: removed*/
-                                      /* TODO: Treat clothState0 as PG enabled UNLESS it's a special clothing
-                                      with transparent/exposed nips. God knows how I'm going to figure that
-                                      one out.
-                                      */
-                                      /* NOTE: This is part of the internal Starbright API. We shouldn't know
-                                      how to handle this and that is fine. Staryna says it's for
-                                      careful ordering of stuff. Private and all.
-                                      However some commands are required to be handled here to ensure
-                                      clothing made for the FKT behave properly
-                                      */
-                                      if("Top" == clothDesc) {
-                                        // Restore previous genital state
-                                        if(0 == clothState) {
-                                          //g_CurrentFittedNipState=g_FKT_stored_nipstate;
-                                          // force visible for now ok?
-                                          //g_CurrentFittedNipAlpha=1;
-                                          // g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
-                                          // xlProcessCommand(TRUE);
-                                        }
-                                        else {
-                                          // store genital state
-                                          g_PreviousFittedNipState = g_CurrentFittedNipState;
-                                        }
-                                      }
-                                      // else if("Jeans"==clothDesc) {
-                                      //  //if(0==clothState) {
-                                      //  //  // Adjust to clothing perhaps? Find out what this does normally.
-                                      //  //  //g_CurrentFittedVagState=???
-                                      //  //  //g_CurrentFittedButState=???
-                                      //  //} else { /* if(1==clothState) */
-                                      //  //}
-                                      //}
-                                    }
-                                    return;
-                                  }
-                                  xlProcessCommand(TRUE);
-                                }
+
+    if(llSubStringIndex(g_LastCommand_s, "resCLdat") == 0) {
+      /* This API isn't public, the best we can do is guess. */
+      if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+        list data = llParseString2List(g_LastCommand_s, [":"], []);
+        /* ie 'resCLdat:clothID:1064:clothDesc:Top:attachPoint:30:clothState:2' */
+        /* resCLdat:clothID:1003:clothDesc:Jeans:attachPoint:28:clothState:0' <= Starbright Fitted Jeans */
+        /* integer clothID = llList2Integer(data,2); */
+        string clothDesc = llList2String(data, 4);
+        // integer attachPoint = llList2Integer(data,6);
+        integer clothState = llList2Integer(data, 8); /*0:on, 1: pulled, 2: removed*/
+
+        /* TODO: Treat clothState0 as PG enabled UNLESS it's a special clothing
+        with transparent/exposed nips. God knows how I'm going to figure that
+        one out.
+        */
+        /* NOTE: This is part of the internal Starbright API. We shouldn't know
+        how to handle this and that is fine. Staryna says it's for
+        careful ordering of stuff. Private and all.
+        However some commands are required to be handled here to ensure
+        clothing made for the FKT behave properly
+        */
+        if("Top" == clothDesc) {
+          // Restore previous genital state
+          if(0 == clothState) {
+            //g_CurrentFittedNipState=g_FKT_stored_nipstate;
+            // force visible for now ok?
+            //g_CurrentFittedNipAlpha=1;
+            // g_LastCommand_s="setnip:"+(string)g_PreviousFittedNipState;
+            // xlProcessCommand(TRUE);
+          } else {
+            // store genital state
+            g_PreviousFittedNipState = g_CurrentFittedNipState;
+          }
+        }
+
+        // else if("Jeans"==clothDesc) {
+        //  //if(0==clothState) {
+        //  //  // Adjust to clothing perhaps? Find out what this does normally.
+        //  //  //g_CurrentFittedVagState=???
+        //  //  //g_CurrentFittedButState=???
+        //  //} else { /* if(1==clothState) */
+        //  //}
+        //}
+      }
+
+      return;
+    }
+
+    xlProcessCommand(TRUE);
+  }
 }
 xlProcessCommand(integer send_params)
 {
@@ -1122,8 +1194,10 @@ xlProcessCommand(integer send_params)
 #define CMD_IS_MOD_HIJACK 4
   integer mod_command = -1;
   integer mod_command_2 = -1;
+
   for(; index < list_size ; index++) {
     command = llList2String(input_data, index);
+
     /* evaluate non-standard commands before looping through stock api */
     if(0 == index/*-1==i_make_visible*/) {
       if("setnip" == command) {
@@ -1134,60 +1208,54 @@ xlProcessCommand(integer send_params)
           mod_command = STARBRIGHT_FKT_HUD_NIPS;
           mod_command_2 = CMD_IS_MOD_HIJACK;
         }
-      }
-      else
-        if("nipalpha" == command) {
-          mesh_count_index = llGetListSize(s_FittedNipsMeshNames);
-          mod_command = STARBRIGHT_FKT_HUD_NIPH;
-          mod_command_2 = CMD_IS_MOD_HIJACK;
+
+      } else if("nipalpha" == command) {
+        mesh_count_index = llGetListSize(s_FittedNipsMeshNames);
+        mod_command = STARBRIGHT_FKT_HUD_NIPH;
+        mod_command_2 = CMD_IS_MOD_HIJACK;
+
+      } else if("setbutt" == command) {
+        mesh_count_index = s_KFTPelvisMeshes_size;
+        mod_command = STARBRIGHT_FKT_HUD_BUTT;
+        mod_command_2 = CMD_IS_MOD_HIJACK;
+
+      } else if("setvag" == command) {
+        mesh_count_index = s_KFTPelvisMeshes_size;
+        mod_command_2 = CMD_IS_MOD_HIJACK;
+        mod_command = STARBRIGHT_FKT_HUD_VAGN;
+
+      } else if("show" == command) {
+        i_make_visible = TRUE;
+
+      } else if("hide" == command) {
+        i_make_visible = FALSE;
+
+      } else if("remove" == command) {
+        /* Object signals they no longer need to talk with the API;
+        Remove their key from the list of authorized attachments.
+        This object will need to use the 'add' command
+        to interact with us again
+        */
+        integer placeinlist = llListFindList(g_AttmntAuthedKeys_l, [g_Last_k]);
+
+        if(placeinlist != -1) {
+          g_AttmntAuthedKeys_l = llDeleteSubList(g_AttmntAuthedKeys_l,
+                                                 placeinlist, placeinlist);
         }
-        else
-          if("setbutt" == command) {
-            mesh_count_index = s_KFTPelvisMeshes_size;
-            mod_command = STARBRIGHT_FKT_HUD_BUTT;
-            mod_command_2 = CMD_IS_MOD_HIJACK;
-          }
-          else
-            if("setvag" == command) {
-              mesh_count_index = s_KFTPelvisMeshes_size;
-              mod_command_2 = CMD_IS_MOD_HIJACK;
-              mod_command = STARBRIGHT_FKT_HUD_VAGN;
-            }
-            else
-              if("show" == command) {
-                i_make_visible = TRUE;
-              }
-              else
-                if("hide" == command) {
-                  i_make_visible = FALSE;
-                }
-                else
-                  if("remove" == command) {
-                    /* Object signals they no longer need to talk with the API;
-                    Remove their key from the list of authorized attachments.
-                    This object will need to use the 'add' command
-                    to interact with us again
-                    */
-                    integer placeinlist = llListFindList(g_AttmntAuthedKeys_l, [g_Last_k]);
-                    if(placeinlist != -1) {
-                      g_AttmntAuthedKeys_l = llDeleteSubList(g_AttmntAuthedKeys_l,
-                                                             placeinlist, placeinlist);
-                    }
-                  }
-                  else
-                    if(llSubStringIndex(command, "color*<") != -1) {
-                      g_Config_BladeColor = (vector)llGetSubString(command, 6, -1);
-                    }
+
+      } else if(llSubStringIndex(command, "color*<") != -1) {
+        g_Config_BladeColor = (vector)llGetSubString(command, 6, -1);
+      }
+
       /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
 ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
-                    else
-                      if(llListFindList(nope, [command]) == -1)
-                        //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
+      else if(llListFindList(nope, [command]) == -1)
+        //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
 #endif
-                      }
-    else {
+
+      } else {
       /* non-standard command done or unhandled, and/or show/hide set,
       loop through the remaining parameters
       */
@@ -1201,34 +1269,37 @@ xlProcessCommand(integer send_params)
           as it will not toggle the other required faces
           */
           bwChange(g_RuntimeBodyStateSettings, KSB_PGNIPLS, !i_make_visible);
+
           if(bwGet(g_RuntimeBodyStateSettings, KSB_HDBRSTS)) {
             /* Don't do anything beyond keeping track of the state it should
             be. This is stock behaviour.
             */
             return;
           }
+
           if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
             mod_command = KSB_PGNIPLS;
             mod_command_2 = CMD_IS_MOD_HIJACK;
-          }
-          else {
+
+          } else {
             mod_command = KSB_PGNIPLS;
             mod_command_2 = CMD_BODYCORE;
           }
+
+        } else if(API_CMD_VAG == command) {
+          mod_command = KSB_PGVAGOO;
+          mod_command_2 = CMD_BODYCORE;
+          bwChange(g_RuntimeBodyStateSettings, KSB_PGVAGOO, !i_make_visible);
+
+        } else {
+          mod_command_2 = CMD_BODYCORE;
         }
-        else
-          if(API_CMD_VAG == command) {
-            mod_command = KSB_PGVAGOO;
-            mod_command_2 = CMD_BODYCORE;
-            bwChange(g_RuntimeBodyStateSettings, KSB_PGVAGOO, !i_make_visible);
-          }
-          else {
-            mod_command_2 = CMD_BODYCORE;
-          }
       }
+
       if(CMD_IS_MOD_HIJACK == mod_command_2) {
         integer param = llList2Integer(input_data, index);
         string mesh_name = "";
+
         for(; mesh_count_index > -1; mesh_count_index--) {
           /* Mods */
           /* TODO: Use preprocessor-able checks to hard-code mods
@@ -1249,11 +1320,13 @@ xlProcessCommand(integer send_params)
             g_LastCommand_s = "setnip:" + (string)i_make_visible;
             xlProcessCommand(TRUE);
           }
+
           if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
             g_CurrentFittedNipAlpha = param;
             mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
             // mesh_name=MESH_FITTED_TORSO_NIP_A;
             i_make_visible = (g_CurrentFittedNipAlpha == 1) * (mesh_count_index == 3);
+
             /* TODO: Properly implement:
             Stage0 hides the alpha mesh, and shows TorsoEtc/PG meshes
             Stage1 shows the alpha mesh AND hides the PG mesh
@@ -1263,13 +1336,15 @@ xlProcessCommand(integer send_params)
               mod_command = STARBRIGHT_FKT_HUD_NIPS;
               // TODO: restore previous nip state
               param = g_PreviousFittedNipState;
-            }
-            else {
+
+            } else {
               g_PreviousFittedNipState = g_CurrentFittedNipState;
             }
           }
+
           if(STARBRIGHT_FKT_HUD_NIPS == mod_command) {
             g_CurrentFittedNipState = param;
+
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =/*!g_CurrentFittedNipAlpha *
@@ -1278,26 +1353,26 @@ xlProcessCommand(integer send_params)
                 mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
               }
             }
+
             //else
             //{
             //
             //  i_make_visible=FALSE;
             //}
+
+          } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
+            g_CurrentFittedVagState = param;
+            i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) **/
+              (mesh_count_index == param);
+            mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
+
+          } else if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
+            g_CurrentFittedButState = param;
+            i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) */
+              (mesh_count_index == param);
+            mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
           }
-          else
-            if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
-              g_CurrentFittedVagState = param;
-              i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) **/
-                (mesh_count_index == param);
-              mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
-            }
-            else
-              if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
-                g_CurrentFittedButState = param;
-                i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) */
-                  (mesh_count_index == param);
-                mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
-              }
+
           /* TODO: Handle overrides (PG, etc) since bitwise check
           is removed */
           if(llStringLength(mesh_name) > 0) {
@@ -1308,23 +1383,23 @@ xlProcessCommand(integer send_params)
             local_params += [PRIM_LINK_TARGET, link_id];
             //
             list faces_l = [];
+
             if(STARBRIGHT_FKT_HUD_NIPS == mod_command || KSB_PGNIPLS == mod_command) {
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
+
+            } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
+              faces_l = xlGetFacesByBladeName(API_CMD_VAG);
+
+            } else if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
+              faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
+
+            } else if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
+              faces_l = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
             }
-            else
-              if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
-                faces_l = xlGetFacesByBladeName(API_CMD_VAG);
-              }
-              else
-                if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
-                  faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
-                }
-                else
-                  if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
-                    faces_l = xlGetFacesByBladeName(API_CMD_VIRTUAL_BUTT);
-                  }
+
             integer faces_count = llGetListLength(faces_l);
             integer i2 = 0;
+
             for(; i2 < faces_count; i2++) {
               local_params += [PRIM_COLOR,
                                llList2Integer(faces_l, i2), g_Config_BladeColor,
@@ -1333,84 +1408,86 @@ xlProcessCommand(integer send_params)
             }
           }
         }
-      }
-      else
-        if(CMD_BODYCORE == mod_command_2) {
-          list prim_names = xlBladeNameToPrimNames(command);
-          /* TODO: Be less nuclear and only fix the faces we asked for*/
-          /* TODO: inline as much as possible */
+
+      } else if(CMD_BODYCORE == mod_command_2) {
+        list prim_names = xlBladeNameToPrimNames(command);
+        /* TODO: Be less nuclear and only fix the faces we asked for*/
+        /* TODO: inline as much as possible */
+        local_params += [
+                          PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                              llListFindList(g_LinkDB_l, prim_names) + 1)
+                        ];
+        list faces_l = xlGetFacesByBladeName(command);
+        integer faces_index = llGetListSize(faces_l);
+
+        for(; faces_index > -1; faces_index--) {
           local_params += [
-                            PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                llListFindList(g_LinkDB_l, prim_names) + 1)
+                            PRIM_COLOR, llList2Integer(faces_l, faces_index), g_Config_BladeColor,
+                            (i_make_visible) *
+                            g_Config_MaximumOpacity
                           ];
-          list faces_l = xlGetFacesByBladeName(command);
-          integer faces_index = llGetListSize(faces_l);
-          for(; faces_index > -1; faces_index--) {
-            local_params += [
-                              PRIM_COLOR, llList2Integer(faces_l, faces_index), g_Config_BladeColor,
-                              (i_make_visible) *
-                              g_Config_MaximumOpacity
-                            ];
-          }
-          if(API_CMD_BREASTS == command /*API_CMD_NIPS==command*/) {
-            /* Manually hard-code this one for speed and simplicity*/
-            if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-              bwChange(g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible);
-              list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
-              list snd_lvl_params = [
-                                      // PG meshes
-                                      PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                          llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_0]) + 1),
-                                      PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
-                                      i_make_visible
-                                      && (g_CurrentFittedNipState == 0
-                                          || (bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                         ),
-                                      PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
-                                      i_make_visible
-                                      && (g_CurrentFittedNipState == 0
-                                          || (bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                         ),
-                                      // nipple meshes
-                                      PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                          llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_ETC]) + 1),
-                                      PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
-                                      i_make_visible
-                                      && g_CurrentFittedNipState == 1
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                      && g_CurrentFittedNipAlpha < 1,
-                                      PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
-                                      i_make_visible
-                                      && g_CurrentFittedNipState == 1
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                      && g_CurrentFittedNipAlpha < 1,
-                                      PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                          llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_1]) + 1),
-                                      PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
-                                      i_make_visible
-                                      && g_CurrentFittedNipState == 2
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                      && g_CurrentFittedNipAlpha < 1,
-                                      PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
-                                      i_make_visible
-                                      && g_CurrentFittedNipState == 2
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                      && g_CurrentFittedNipAlpha < 1,
-                                      PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                          llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_A]) + 1),
-                                      PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
-                                      i_make_visible && g_CurrentFittedNipAlpha > 0
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS)),
-                                      PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
-                                      i_make_visible && g_CurrentFittedNipAlpha > 0
-                                      && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
-                                    ];
-              local_params += snd_lvl_params;
-            }
+        }
+
+        if(API_CMD_BREASTS == command /*API_CMD_NIPS==command*/) {
+          /* Manually hard-code this one for speed and simplicity*/
+          if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+            bwChange(g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible);
+            list faces = xlGetFacesByBladeName(MESH_SK_NIPS);
+            list snd_lvl_params = [
+                                    // PG meshes
+                                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_0]) + 1),
+                                    PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
+                                    i_make_visible
+                                    && (g_CurrentFittedNipState == 0
+                                        || (bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                       ),
+                                    PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
+                                    i_make_visible
+                                    && (g_CurrentFittedNipState == 0
+                                        || (bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                       ),
+                                    // nipple meshes
+                                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_ETC]) + 1),
+                                    PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
+                                    i_make_visible
+                                    && g_CurrentFittedNipState == 1
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
+                                    i_make_visible
+                                    && g_CurrentFittedNipState == 1
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_1]) + 1),
+                                    PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
+                                    i_make_visible
+                                    && g_CurrentFittedNipState == 2
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
+                                    i_make_visible
+                                    && g_CurrentFittedNipState == 2
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                    && g_CurrentFittedNipAlpha < 1,
+                                    PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_A]) + 1),
+                                    PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
+                                    i_make_visible && g_CurrentFittedNipAlpha > 0
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS)),
+                                    PRIM_COLOR, llList2Integer(faces, 0), g_Config_BladeColor,
+                                    i_make_visible && g_CurrentFittedNipAlpha > 0
+                                    && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
+                                  ];
+            local_params += snd_lvl_params;
           }
         }
+      }
     }
   }
+
   /* Send params to prim now */
   if(send_params) {
     xlSetLinkPrimitiveParamsFast(LINK_ROOT, local_params);
@@ -1450,6 +1527,7 @@ reset()
                       (string)g_DefaultFittedNipState;
     xlProcessCommand(TRUE);
   }
+
   g_LastCommand_s = KM_HUD_RESET_CMD;
   xlProcessCommand(TRUE);
   resetHands();
@@ -1464,38 +1542,43 @@ detectLinkSetMods()
 #endif
   integer part = llGetNumberOfPrims();
   integer found_fitted_torso = FALSE;
+
   for(; part > 0; --part) {
     string name = llGetLinkName(part);
+
     if(!found_fitted_torso) {
       if(name == API_CMD_FITTED_TORSO) {
         /* Shortcut if previously renamed */
         found_fitted_torso = TRUE;
         name = MESH_FITTED_TORSO;
+
+      } else if(llSubStringIndex(name, "Kemono") != -1 &&
+                llSubStringIndex(name, "Torso") != -1 &&
+                (llSubStringIndex(name, "Petite") != -1 ||
+                 llSubStringIndex(name, "Busty") != -1)) {
+        found_fitted_torso = TRUE;
+        llSetLinkPrimitiveParams(part, [PRIM_NAME, API_CMD_FITTED_TORSO]);
+        name = MESH_FITTED_TORSO;
       }
-      else
-        if(llSubStringIndex(name, "Kemono") != -1 &&
-            llSubStringIndex(name, "Torso") != -1 &&
-            (llSubStringIndex(name, "Petite") != -1 ||
-             llSubStringIndex(name, "Busty") != -1)) {
-          found_fitted_torso = TRUE;
-          llSetLinkPrimitiveParams(part, [PRIM_NAME, API_CMD_FITTED_TORSO]);
-          name = MESH_FITTED_TORSO;
-        }
     }
+
     if(llListFindList(g_supported_meshes, [name]) != -1) {
 #ifdef DEBUG_ENTIRE_BODY_ALPHA
       prim_params_to_apply += [
                                 PRIM_LINK_TARGET, part, PRIM_COLOR, ALL_SIDES, g_Config_BladeColor, 0.0
                               ];
+
       if(retexture) {
         prim_params_to_apply += [
                                   PRIM_TEXTURE, ALL_SIDES, texture, <1, 1, 0>, <0, 0, 0>, 0.0
                                 ];
       }
+
 #endif
       g_LinkDB_l += [name, part];
     }
   }
+
   if(found_fitted_torso) {
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
     g_LastCommand_s = "setbutt:" + (string)g_CurrentFittedButState;
@@ -1507,6 +1590,7 @@ detectLinkSetMods()
     g_LastCommand_s = "nipalpha:" + (string)g_CurrentFittedNipAlpha;
     xlProcessCommand(TRUE);
   }
+
 #ifdef DEBUG_ENTIRE_BODY_ALPHA
   llSetLinkPrimitiveParamsFast(LINK_ROOT, prim_params_to_apply);
 #endif
@@ -1526,37 +1610,43 @@ detectLinkSetMods()
   llSleep(0.25);
   xlProcessCommand(TRUE);
   list selftest = ["neck", "shoulderUL", "shoulderUR", "collar", "shoulderLL",
-                           "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
-                           "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
-                           "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
-                           "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
-                           "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
+                   "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
+                   "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
+                   "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
+                   "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
+                   "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
   integer id = 0;
   integer len = llGetListLength(selftest);
+
   for(; id < len; ++id) {
     g_LastCommand_s = "hide:" + llList2String(selftest, id);
     llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
     xlProcessCommand(TRUE);
     llSleep(0.0125);
   }
+
   for(; id > -1; id--) {
     g_LastCommand_s = "show:" + llList2String(selftest, id);
     llSetText(g_LastCommand_s, <1, 0, 0>, 1.0);
     xlProcessCommand(TRUE);
     llSleep(0.0125);
   }
+
 #endif
 #ifdef USE_DEFORM_ANIMS
   integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
   integer index = 0;
   string name;
+
   for(; index < AnimsCount; index++) {
     name = llGetInventoryName(INVENTORY_ANIMATION, index);
+
     if(g_AnimUndeform == "") {
       if(llSubStringIndex(name, "undeform") > -1) {
         g_AnimUndeform = name;
       }
     }
+
     if(g_AnimDeform == "") {
       if(llSubStringIndex(name, "deform") > -1
           && llSubStringIndex(name, "undeform") == -1) {
@@ -1564,28 +1654,30 @@ detectLinkSetMods()
       }
     }
   }
+
 #endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
   string color_desc = llList2String(data, 2);
+
   if(llSubStringIndex(color_desc, "<") != -1) {
     g_Config_BladeColor = (vector)color_desc;
   }
+
   if(llListFindList(g_LinkDB_l, [MESH_LEG_LEFT_ANIMAL]) == -1
       && llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_ANIMAL]) == -1) {
     // Animal legs are missing
     g_LastCommand_s = "Hlegs";
     xlProcessCommandWrapper();
     //llOwnerSay("Adjusted for missing animal legs");
+
+  } else if(llListFindList(g_LinkDB_l, [MESH_LEG_LEFT_HUMAN]) == -1
+            && llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
+    // Human Legs are missing
+    g_LastCommand_s = "Flegs";
+    xlProcessCommandWrapper();
+    //llOwnerSay("Adjusted for missing human legs");
   }
-  else
-    if(llListFindList(g_LinkDB_l, [MESH_LEG_LEFT_HUMAN]) == -1
-        && llListFindList(g_LinkDB_l, [MESH_LEG_RIGHT_HUMAN]) == -1) {
-      // Human Legs are missing
-      g_LastCommand_s = "Flegs";
-      xlProcessCommandWrapper();
-      //llOwnerSay("Adjusted for missing human legs");
-    }
 }
 
 default
@@ -1593,12 +1685,11 @@ default
   changed(integer change) {
     if(change & CHANGED_OWNER) {
       llResetScript();
+
+    } else if(change & CHANGED_LINK) {
+      //llOwnerSay("Linkset changed, resetting...");
+      detectLinkSetMods();
     }
-    else
-      if(change & CHANGED_LINK) {
-        //llOwnerSay("Linkset changed, resetting...");
-        detectLinkSetMods();
-      }
   }
   state_entry() {
 #ifdef PROFILE_BODY_SCRIPT
@@ -1608,45 +1699,54 @@ default
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
+
     /* Set body to alpha masking */
     // TODO: Add configurable alpha mask
     if(g_Config_EnsureMaskingMode) {
       integer aaa = 0;
+
       for(; aaa <= llGetNumberOfPrims(); aaa++) {
         llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE, ALL_SIDES,
-                                                            PRIM_ALPHA_MODE_MASK, 3]);
+                                           PRIM_ALPHA_MODE_MASK, 3]);
       }
     }
+
     string self = llGetScriptName();
     string basename = "Enhanced Kemono Body";
     string tail = "MISSING_VERSION";
+
     if(llSubStringIndex(self, " ") >= 0) {
       integer start = 2;
       tail = llGetSubString(self, llStringLength(self) - start, -1);
+
       while(llGetSubString(tail, 0, 0) != " ") {
         start++;
         tail = llGetSubString(self, llStringLength(self) - start, -1);
       }
+
       if((integer)tail > 0) {
         basename = llGetSubString(self, 0, -llStringLength(tail) - 1);
       }
     }
+
     integer n = llGetInventoryNumber(INVENTORY_SCRIPT);
+
     while(n-- > 0) {
       string item = llGetInventoryName(INVENTORY_SCRIPT, n);
+
       if(item != self) {
         if(-1 != llSubStringIndex(item, "[Kemono 1.")
             || -1 != llSubStringIndex(item, "[AdvKem")) {
           //llOwnerSay("Removing " + item);
           llRemoveInventory(item);
+
+        } else if(-1 != llSubStringIndex(item, basename)) {
+          //llOwnerSay("Upgraded to " + self);
+          llRemoveInventory(item);
         }
-        else
-          if(-1 != llSubStringIndex(item, basename)) {
-            //llOwnerSay("Upgraded to " + self);
-            llRemoveInventory(item);
-          }
       }
     }
+
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       saveSettings();
@@ -1655,6 +1755,7 @@ default
       llSleep(999);
       llResetScript();
     }
+
     g_Owner_k = llGetOwner();
 #ifdef GITHUB_UPDATER
     string request = "https://api.github.com/repos/"
@@ -1664,15 +1765,17 @@ default
     g_internal_httprid_k = llHTTPRequest(request, [HTTP_BODY_MAXLENGTH, 16384], "");
 #endif
     detectLinkSetMods();
+
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                               g_Config_BladeColor, 0.0]);
+                                   g_Config_BladeColor, 0.0]);
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-    }
-    else {
+
+    } else {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                               g_Config_BladeColor, 1.0]);
+                                   g_Config_BladeColor, 1.0]);
     }
+
     // #ifdef DEBUG_SELF_TEST
     g_LastCommand_s = "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:"
                       + "shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:"
@@ -1706,6 +1809,7 @@ default
     llResetTime();
 #endif
     key object_owner_k = llGetOwnerKey(id);
+
     /*
     ------------------ AUTH SYSTEM PRIMER --------------------------
     Because llGetOwnerKey() returns either returns null key
@@ -1736,17 +1840,22 @@ default
         // someboey else's stuff
         return;
       }
+
       if(llListFindList(g_AttmntAuthedKeys_l, [id]) == -1) {
         return;
       }
+
       /* probably a detaching object */
-    }
-    else {   /* if(object_owner_k == g_Owner_k) */
+
+    } else { /* if(object_owner_k == g_Owner_k) */
       integer separatorIndex = llSubStringIndex(g_LastCommand_s, ":");
+
       if(separatorIndex < 0) {
         separatorIndex = 0;
       }
+
       string first_command = llGetSubString(g_LastCommand_s, 0, separatorIndex - 1);
+
       // TODO: Allow chaining (read kemono manual for allowed cases?)
       if(first_command == "add") {
         /* And add if not in the auth list */
@@ -1760,6 +1869,7 @@ default
         }
       }
     }
+
     g_LastCommand_s = message;
     g_Last_k = id;
     xlProcessCommandWrapper();
@@ -1768,16 +1878,19 @@ default
 #endif
     g_Last_k = NULL_KEY;
 #ifdef USE_DEFORM_ANIMS
+
     if(llGetAttached()) {
       if(!g_HasAnimPerms) {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       }
+
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
     }
+
 #endif
   }
   on_rez(integer p) {
@@ -1798,6 +1911,7 @@ default
       //llOwnerSay("Updater mode detected.");
       return;
     }
+
     /* Deform on detach, unlike the stock body. This assumes permissions
     are granted, which happens on rez or startup if attached.
     Needs to be processed as fast as possible to make it before the
@@ -1806,6 +1920,7 @@ default
     */
     if(id == NULL_KEY) {
 #ifdef USE_DEFORM_ANIMS
+
       // Don't bother asking for permissions if they were not given
       // The animations are 98% sure to not be applied in that case.
       if(g_HasAnimPerms) {
@@ -1814,17 +1929,20 @@ default
         llStopAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
       }
+
 #endif
-    }
-    else {
+
+    } else {
 #ifdef USE_DEFORM_ANIMS
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
+
       // Permissions auto-accepted, this will work immediately
       if(g_HasAnimPerms) {
         llStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
+
 #endif
       reset();
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, KM_HUD_RESET_CMD);
@@ -1838,6 +1956,7 @@ default
     if(perm & PERMISSION_TRIGGER_ANIMATION) {
       g_HasAnimPerms = TRUE;
     }
+
 #ifdef RESET_ON_PERMS
     /* Send a "reset" message to forcefully trigger clothing autohiders */
     llRegionSayTo(g_Owner_k, KEMONO_COM_CH,
@@ -1851,26 +1970,32 @@ default
   }
   timer() {
     string text;
+
     if(llGetAttached()) {
 #ifdef USE_DEFORM_ANIMS
+
       if(!g_HasAnimPerms) {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      }
-      else {
+
+      } else {
 #ifdef SMART_DEFORM
+
         if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
           llStartAnimation(g_AnimUndeform);
           llStopAnimation(g_AnimDeform);
-        }
-        else {
+
+        } else {
 #endif
           redeform();
 #ifdef SMART_DEFORM
         }
+
 #endif
       }
+
 #endif
     }
+
     llWhisper(-83744, (string)llGetUsedMemory());
   }
   link_message(integer sender_num, integer num, string message, key id) {
@@ -1881,28 +2006,37 @@ default
     if(request_id != g_internal_httprid_k) {
       return;  // exit if unknown
     }
+
     g_internal_httprid_k = NULL_KEY;
     string new_version_s = llJsonGetValue(body, ["tag_name"]);
+
     if(new_version_s == g_internal_version_s) {
       return;
     }
+
     list cur_version_l = llParseString2List(g_internal_version_s, ["."], [""]);
     list new_version_l = llParseString2List(new_version_s, ["."], [""]);
+
     if(llList2Integer(new_version_l, 0) >= llList2Integer(cur_version_l, 0) &&
         llList2Integer(new_version_l, 1) >= llList2Integer(cur_version_l, 1) &&
         llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)) {
       jump update;
     }
+
     return;
     @update;
     string update_title = llJsonGetValue(body, ["name"]);
+
     if(update_title == "﷕") {
       update_title = "";
     }
+
     string update_description = llJsonGetValue(body, ["body"]);
+
     if(update_description == "﷕") {
       update_description = "";
     }
+
     string changelog = update_description;
     update_description = "\nAn update is avaible! (" + g_internal_version_s + "🡂"
                          + new_version_s + ")\n\""
@@ -1910,6 +2044,7 @@ default
     string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
                   + g_internal_repo_s + "/" + new_version_s + "/compiled/" + compiled_name + " "
                   + script_name + ".lsl]";
+
     //llOwnerSay(update_description + link);
     if(llStringLength(update_description) > (512 - llStringLength(link))) {
       update_description = "Too many changes, see [" + "https://github.com/"
@@ -1917,6 +2052,7 @@ default
                            + "/compare/" + g_internal_version_s + "..." + new_version_s + " Changes for "
                            + g_internal_version_s + "🡂" + new_version_s + "]";
     }
+
     llDialog(g_Owner_k, update_description + link, [], -1);
   }
 #endif
