@@ -14,7 +14,7 @@ integer g_Config_EnsureMaskingMode = 0;
 // #define PROFILE_BODY_SCRIPT
 /* End of debug defines */
 /* Normal Features that should be enabled */
-#define USE_DEFORM_ANIMS
+integer anim_count;
 /* Optional features, if you need them. */
 // #define SMART_DEFORM
 // ============================================================================
@@ -110,16 +110,16 @@ nipovrd:0
 // TODO: Remove entries that have the same values
 // TODO: Implement overridable faces and finish separating stock and fitted torso associations
 list names_assoc = [API_CMD_ANKLE_L, API_CMD_ANKLE_R,
-                    API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
-                    API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
-                    API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
-                    MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
-                    API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
-                    API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
-                    API_CMD_THIGH_U_R, API_CMD_WRIST_L,
-                    API_CMD_WRIST_R];
+                                     API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
+                                     API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
+                                     API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
+                                     MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
+                                     API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
+                                     API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
+                                     API_CMD_THIGH_U_R, API_CMD_WRIST_L,
+                                     API_CMD_WRIST_R];
 list faces_assoc = [5, 5, 4, 4, 1, 1, 4, 4, "6,7", 7, 2, 0, 6, "2,3", 0, 4, 5,
-                    0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
+                       0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
 list faceshumanmode = [1, 1, 2, 2, 5, 5, 2, 2];
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
@@ -1479,14 +1479,6 @@ xlProcessCommand(integer send_params)
     local_params = [];
   }
 }
-redeform()
-{
-  if(g_HasAnimPerms) {
-    //llOwnerSay("Redeform");
-    xlStartAnimation(g_AnimDeform);
-    llStopAnimation(g_AnimUndeform);
-  }
-}
 resetHands()
 {
   if(g_HasAnimPerms) {
@@ -1500,7 +1492,8 @@ resetHands()
     llStopAnimation("Kem-hand-R-hold");
     llStopAnimation("Kem-hand-R-horns");
     llStopAnimation("Kem-hand-R-point");
-    redeform();
+    xlStartAnimation(g_AnimDeform);
+    llStopAnimation(g_AnimUndeform);
   }
 }
 reset()
@@ -1595,11 +1588,11 @@ detectLinkSetMods()
   llSleep(0.25);
   xlProcessCommand(TRUE);
   list selftest = ["neck", "shoulderUL", "shoulderUR", "collar", "shoulderLL",
-                   "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
-                   "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
-                   "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
-                   "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
-                   "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
+                           "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
+                           "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
+                           "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
+                           "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
+                           "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
   integer id = 0;
   integer len = llGetListLength(selftest);
 
@@ -1618,7 +1611,6 @@ detectLinkSetMods()
   }
 
 #endif
-#ifdef USE_DEFORM_ANIMS
   integer AnimsCount = llGetInventoryNumber(INVENTORY_ANIMATION);
   integer index = 0;
   string name;
@@ -1640,7 +1632,6 @@ detectLinkSetMods()
     }
   }
 
-#endif
   list data = llParseString2List(llGetObjectDesc(), ["*"], []);
   human_mode = llList2Integer(data, 1);
   string color_desc = llList2String(data, 2);
@@ -1664,10 +1655,9 @@ detectLinkSetMods()
     //llOwnerSay("Adjusted for missing human legs");
   }
 }
-
-default
-{
-  changed(integer change) {
+default {
+  changed(integer change)
+  {
     if(change & CHANGED_OWNER) {
       llResetScript();
 
@@ -1676,7 +1666,8 @@ default
       detectLinkSetMods();
     }
   }
-  state_entry() {
+  state_entry()
+  {
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
@@ -1692,7 +1683,7 @@ default
 
       for(; aaa <= llGetNumberOfPrims(); aaa++) {
         llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE, ALL_SIDES,
-                                           PRIM_ALPHA_MODE_MASK, 3]);
+                                                            PRIM_ALPHA_MODE_MASK, 3]);
       }
     }
 
@@ -1746,12 +1737,12 @@ default
 
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                   g_Config_BladeColor, 0.0]);
+                                               g_Config_BladeColor, 0.0]);
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
 
     } else {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                   g_Config_BladeColor, 1.0]);
+                                               g_Config_BladeColor, 1.0]);
     }
 
     // #ifdef DEBUG_SELF_TEST
@@ -1779,7 +1770,8 @@ default
               "]/" + (string)llGetMemoryLimit() + "B", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
 #endif
   }
-  listen(integer channel, string name, key id, string message) {
+  listen(integer channel, string name, key id, string message)
+  {
 #ifdef XL_EKB_APPLIER_INCLUDED
     textureListener()
 #endif
@@ -1855,27 +1847,25 @@ default
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
 #endif
     g_Last_k = NULL_KEY;
-#ifdef USE_DEFORM_ANIMS
 
     if(llGetAttached()) {
       if(!g_HasAnimPerms) {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-      }
 
-      if(g_HasAnimPerms) {
+      } else {
         xlStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
     }
-
-#endif
   }
-  on_rez(integer p) {
+  on_rez(integer p)
+  {
     /*Wait a few seconds in case we're still rezzing*/
     saveSettings();
   }
-  attach(key id) {
+  attach(key id)
+  {
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       //llOwnerSay("Updater mode detected.");
@@ -1889,8 +1879,6 @@ default
     it won't fire.
     */
     if(id == NULL_KEY) {
-#ifdef USE_DEFORM_ANIMS
-
       // Don't bother asking for permissions if they were not given
       // The animations are 98% sure to not be applied in that case.
       if(g_HasAnimPerms) {
@@ -1900,10 +1888,7 @@ default
         llStopAnimation(g_AnimUndeform);
       }
 
-#endif
-
     } else {
-#ifdef USE_DEFORM_ANIMS
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
 
       // Permissions auto-accepted, this will work immediately
@@ -1913,12 +1898,12 @@ default
         llStopAnimation(g_AnimUndeform);
       }
 
-#endif
       reset();
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, KM_HUD_RESET_CMD);
     }
   }
-  run_time_permissions(integer perm) {
+  run_time_permissions(integer perm)
+  {
     // What?
     //if(!g_HasAnimPerms){
     //  resetHands();
@@ -1938,16 +1923,11 @@ default
 #endif
     llSetTimerEvent(1);
   }
-  timer() {
-    string text;
-
+  timer()
+  // #undef SMART_DEFORM
+  {
     if(llGetAttached()) {
-#ifdef USE_DEFORM_ANIMS
-
-      if(!g_HasAnimPerms) {
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
-
-      } else {
+      if(g_HasAnimPerms) {
 #ifdef SMART_DEFORM
 
         if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
@@ -1956,19 +1936,21 @@ default
 
         } else {
 #endif
-          redeform();
+          xlStartAnimation(g_AnimDeform);
+          llStopAnimation(g_AnimUndeform);
 #ifdef SMART_DEFORM
         }
 
 #endif
+
+      } else {
+        llOwnerSay("Requesting permissions");
+        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       }
-
-#endif
     }
-
-    llWhisper(-83744, (string)llGetUsedMemory());
   }
-  link_message(integer sender_num, integer num, string message, key id) {
+  link_message(integer sender_num, integer num, string message, key id)
+  {
     llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
   }
 }
