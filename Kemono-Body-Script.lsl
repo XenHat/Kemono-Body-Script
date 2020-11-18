@@ -12,7 +12,6 @@ integer g_Config_EnsureMaskingMode = 0;
 /* TODO: Remove no longer needed code toggles here */
 // #define BENCHMARK
 // #define PROFILE_BODY_SCRIPT
-// #define DISABLE_GITHUB_UPDATER
 /* End of debug defines */
 /* Normal Features that should be enabled */
 #define USE_DEFORM_ANIMS
@@ -35,9 +34,6 @@ string g_internal_version_s = "0.5.7";
   #else
     #define undeform_instead 0
   #endif
-#endif
-#ifndef DISABLE_GITHUB_UPDATER
-  #define GITHUB_UPDATER
 #endif
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
@@ -126,16 +122,16 @@ nipovrd:0
 // TODO: Remove entries that have the same values
 // TODO: Implement overridable faces and finish separating stock and fitted torso associations
 list names_assoc = [API_CMD_ANKLE_L, API_CMD_ANKLE_R,
-                    API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
-                    API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
-                    API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
-                    MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
-                    API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
-                    API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
-                    API_CMD_THIGH_U_R, API_CMD_WRIST_L,
-                    API_CMD_WRIST_R];
+                                     API_CMD_CALF_L, API_CMD_CALF_R, API_CMD_KNEE_L, API_CMD_KNEE_R,
+                                     API_CMD_SHIN_L_L, API_CMD_SHIN_L_R, API_CMD_ABS, API_CMD_ARM_L_L,
+                                     API_CMD_ARM_L_R, API_CMD_ARM_U_L, API_CMD_ARM_U_R, API_CMD_BELLY,
+                                     MESH_BODY, API_CMD_ELBOW_L, API_CMD_ELBOW_R, API_CMD_FOOT_L,
+                                     API_CMD_FOOT_R, MESH_HAND_LEFT, MESH_HAND_RIGHT, API_CMD_SHIN_U_L,
+                                     API_CMD_SHIN_U_R, API_CMD_SHOULDER_L_L, API_CMD_SHOULDER_U_R,
+                                     API_CMD_THIGH_U_R, API_CMD_WRIST_L,
+                                     API_CMD_WRIST_R];
 list faces_assoc = [5, 5, 4, 4, 1, 1, 4, 4, "6,7", 7, 2, 0, 6, "2,3", 0, 4, 5,
-                    0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
+                       0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
 list faceshumanmode = [1, 1, 2, 2, 5, 5, 2, 2];
 #define MESH_SK_NIPS "nips"
 #define MESH_SK_VAGOO "vagoo"
@@ -274,9 +270,6 @@ have to do instead. Anyway, toggle using XOR..
 #define compiled_name "xenhat.kemono.body.lsl"
 #define g_internal_repo_s "XenHat/"+script_name
 #define script_name "Kemono-Body-Script"
-#ifdef GITHUB_UPDATER
-  key g_internal_httprid_k = NULL_KEY;
-#endif
 /* TODO: Use a bitset if we run out of memory */
 #define g_DefaultFittedButState 1
 #define g_DefaultFittedNipAlpha 0
@@ -1610,11 +1603,11 @@ detectLinkSetMods()
   llSleep(0.25);
   xlProcessCommand(TRUE);
   list selftest = ["neck", "shoulderUL", "shoulderUR", "collar", "shoulderLL",
-                   "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
-                   "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
-                   "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
-                   "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
-                   "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
+                           "shoulderLR", "armUL", "armUR", "chest", "breast", "elbowL", "elbowR",
+                           "ribs", "armLL", "armLR", "abs", "wristL", "wristR", "belly", "handL", "handR",
+                           "pelvis", "hipL", "hipR", "thighUL", "thighUR", "thighLL",
+                           "thighLR", "kneeL", "kneeR", "calfL", "calfR", "shinUL", "shinUR",
+                           "shinLL", "shinLR", "ankleL", "ankleR", "footL", "footR"];
   integer id = 0;
   integer len = llGetListLength(selftest);
 
@@ -1680,9 +1673,9 @@ detectLinkSetMods()
   }
 }
 
-default
-{
-  changed(integer change) {
+default {
+  changed(integer change)
+  {
     if(change & CHANGED_OWNER) {
       llResetScript();
 
@@ -1691,7 +1684,8 @@ default
       detectLinkSetMods();
     }
   }
-  state_entry() {
+  state_entry()
+  {
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
@@ -1707,7 +1701,7 @@ default
 
       for(; aaa <= llGetNumberOfPrims(); aaa++) {
         llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE, ALL_SIDES,
-                                           PRIM_ALPHA_MODE_MASK, 3]);
+                                                            PRIM_ALPHA_MODE_MASK, 3]);
       }
     }
 
@@ -1757,23 +1751,16 @@ default
     }
 
     g_Owner_k = llGetOwner();
-#ifdef GITHUB_UPDATER
-    string request = "https://api.github.com/repos/"
-                     + g_internal_repo_s
-                     + "/releases/latest?access_token="
-                     + "603ee815cda6fb45fcc16876effbda017f158bef";
-    g_internal_httprid_k = llHTTPRequest(request, [HTTP_BODY_MAXLENGTH, 16384], "");
-#endif
     detectLinkSetMods();
 
     if(llGetAttached()) {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                   g_Config_BladeColor, 0.0]);
+                                               g_Config_BladeColor, 0.0]);
       llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
 
     } else {
       llSetLinkPrimitiveParamsFast(LINK_ROOT, [PRIM_COLOR, ALL_SIDES,
-                                   g_Config_BladeColor, 1.0]);
+                                               g_Config_BladeColor, 1.0]);
     }
 
     // #ifdef DEBUG_SELF_TEST
@@ -1801,7 +1788,8 @@ default
               "]/" + (string)llGetMemoryLimit() + "B", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
 #endif
   }
-  listen(integer channel, string name, key id, string message) {
+  listen(integer channel, string name, key id, string message)
+  {
 #ifdef XL_EKB_APPLIER_INCLUDED
     textureListener()
 #endif
@@ -1893,19 +1881,13 @@ default
 
 #endif
   }
-  on_rez(integer p) {
+  on_rez(integer p)
+  {
     /*Wait a few seconds in case we're still rezzing*/
     saveSettings();
-#ifdef GITHUB_UPDATER
-    llSleep(3);
-    g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
-                                         + g_internal_repo_s
-                                         + "/releases/latest?access_token="
-                                         + "603ee815cda6fb45fcc16876effbda017f158bef",
-                                         [HTTP_BODY_MAXLENGTH, 16384], "");
-#endif
   }
-  attach(key id) {
+  attach(key id)
+  {
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       //llOwnerSay("Updater mode detected.");
@@ -1948,7 +1930,8 @@ default
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, KM_HUD_RESET_CMD);
     }
   }
-  run_time_permissions(integer perm) {
+  run_time_permissions(integer perm)
+  {
     // What?
     //if(!g_HasAnimPerms){
     //  resetHands();
@@ -1968,7 +1951,8 @@ default
 #endif
     llSetTimerEvent(1);
   }
-  timer() {
+  timer()
+  {
     string text;
 
     if(llGetAttached()) {
@@ -1998,62 +1982,8 @@ default
 
     llWhisper(-83744, (string)llGetUsedMemory());
   }
-  link_message(integer sender_num, integer num, string message, key id) {
+  link_message(integer sender_num, integer num, string message, key id)
+  {
     llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
   }
-#ifdef GITHUB_UPDATER
-  http_response(key request_id, integer status, list metadata, string body) {
-    if(request_id != g_internal_httprid_k) {
-      return;  // exit if unknown
-    }
-
-    g_internal_httprid_k = NULL_KEY;
-    string new_version_s = llJsonGetValue(body, ["tag_name"]);
-
-    if(new_version_s == g_internal_version_s) {
-      return;
-    }
-
-    list cur_version_l = llParseString2List(g_internal_version_s, ["."], [""]);
-    list new_version_l = llParseString2List(new_version_s, ["."], [""]);
-
-    if(llList2Integer(new_version_l, 0) >= llList2Integer(cur_version_l, 0) &&
-        llList2Integer(new_version_l, 1) >= llList2Integer(cur_version_l, 1) &&
-        llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)) {
-      jump update;
-    }
-
-    return;
-    @update;
-    string update_title = llJsonGetValue(body, ["name"]);
-
-    if(update_title == "﷕") {
-      update_title = "";
-    }
-
-    string update_description = llJsonGetValue(body, ["body"]);
-
-    if(update_description == "﷕") {
-      update_description = "";
-    }
-
-    string changelog = update_description;
-    update_description = "\nAn update is avaible! (" + g_internal_version_s + "🡂"
-                         + new_version_s + ")\n\""
-                         + update_title + "\"\n" + changelog + "\n";
-    string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
-                  + g_internal_repo_s + "/" + new_version_s + "/compiled/" + compiled_name + " "
-                  + script_name + ".lsl]";
-
-    //llOwnerSay(update_description + link);
-    if(llStringLength(update_description) > (512 - llStringLength(link))) {
-      update_description = "Too many changes, see [" + "https://github.com/"
-                           + g_internal_repo_s
-                           + "/compare/" + g_internal_version_s + "..." + new_version_s + " Changes for "
-                           + g_internal_version_s + "🡂" + new_version_s + "]";
-    }
-
-    llDialog(g_Owner_k, update_description + link, [], -1);
-  }
-#endif
 }
