@@ -29,9 +29,9 @@ string g_internal_version_s = "0.5.7";
 // #define debugLogic(a)//llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
 // #define dSay(a)//llOwnerSay((string)a)
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
-+ "*" + (string)human_mode\
-+ "*" + (string)g_Config_BladeColor\
-)
+  + "*" + (string)human_mode\
+  + "*" + (string)g_Config_BladeColor\
+  )
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
@@ -284,8 +284,7 @@ string g_LastCommand_s;
 string g_AnimDeform;
 string g_AnimUndeform;
 #define xlStartAnimation(name) { \
-llOwnerSay("Playing animation '" + name + "'"); \
-llStartAnimation(name);\
+  llStartAnimation(name);\
 }
 list xlGetFacesByBladeName(string name)
 {
@@ -1235,7 +1234,7 @@ xlProcessCommand(integer send_params)
       /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
-,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
+        ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
       else if(llListFindList(nope, [command]) == -1)
         //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
 #endif
@@ -1333,7 +1332,7 @@ xlProcessCommand(integer send_params)
             if(!g_CurrentFittedNipAlpha) {
               {
                 i_make_visible =/*!g_CurrentFittedNipAlpha *
-!bwGet(g_RuntimeBodyStateSettings,mod_command) */
+                !bwGet(g_RuntimeBodyStateSettings,mod_command) */
                   (mesh_count_index == g_CurrentFittedNipState);
                 mesh_name = llList2String(s_FittedNipsMeshNames, mesh_count_index);
               }
@@ -1843,9 +1842,9 @@ default {
     g_LastCommand_s = message;
     g_Last_k = id;
     xlProcessCommandWrapper();
-#ifdef BENCHMARK
+    #ifdef BENCHMARK
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
-#endif
+    #endif
     g_Last_k = NULL_KEY;
 
     if(llGetAttached()) {
@@ -1853,7 +1852,7 @@ default {
         llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
 
       } else {
-        xlStartAnimation(g_AnimDeform);
+        // xlStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
@@ -1927,25 +1926,30 @@ default {
   // #undef SMART_DEFORM
   {
     if(llGetAttached()) {
-      if(g_HasAnimPerms) {
+      integer new_anim_count = llGetListLength(llGetAnimationList(g_Owner_k));
+
+      if(anim_count != new_anim_count) {
+        anim_count = new_anim_count;
+        if(g_HasAnimPerms) {
 #ifdef SMART_DEFORM
 
-        if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
-          xlStartAnimation(g_AnimUndeform);
-          llStopAnimation(g_AnimDeform);
+          if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
+            xlStartAnimation(g_AnimUndeform);
+            llStopAnimation(g_AnimDeform);
+
+          } else {
+#endif
+            xlStartAnimation(g_AnimDeform);
+            //llStopAnimation(g_AnimUndeform);
+#ifdef SMART_DEFORM
+          }
+
+#endif
 
         } else {
-#endif
-          xlStartAnimation(g_AnimDeform);
-          llStopAnimation(g_AnimUndeform);
-#ifdef SMART_DEFORM
+          // llOwnerSay("Requesting permissions");
+          llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
         }
-
-#endif
-
-      } else {
-        llOwnerSay("Requesting permissions");
-        llRequestPermissions(g_Owner_k, PERMISSION_TRIGGER_ANIMATION);
       }
     }
   }
