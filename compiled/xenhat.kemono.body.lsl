@@ -15,7 +15,6 @@ list faces_assoc = [5, 5, 4, 4, 1, 1, 4, 4, "6,7", 7, 2, 0, 6, "2,3", 0, 4, 5,
                        0, 0, -1, -1, 3, 3, 3, 4, 4, 3, 1];
 list faceshumanmode = [1, 1, 2, 2, 5, 5, 2, 2];
 integer s_KFTPelvisMeshes_size = 0;
-key g_internal_httprid_k = NULL_KEY;
 integer g_CurrentFittedButState = 1;
 integer g_CurrentFittedNipState = 1;
 integer g_CurrentFittedNipAlpha = 0;
@@ -1236,11 +1235,6 @@ default {
     }
 
     g_Owner_k = llGetOwner();
-    string request = "https://api.github.com/repos/"
-                     +  "XenHat/" + "Kemono-Body-Script"
-                     + "/releases/latest?access_token="
-                     + "603ee815cda6fb45fcc16876effbda017f158bef";
-    g_internal_httprid_k = llHTTPRequest(request, [HTTP_BODY_MAXLENGTH, 16384], "");
     detectLinkSetMods();
 
     if(llGetAttached()) {
@@ -1323,12 +1317,6 @@ default {
   {
     llSetObjectDesc(g_internal_version_s + "*" + (string)human_mode + "*" +
                     (string)g_Config_BladeColor) ;
-    llSleep(3);
-    g_internal_httprid_k = llHTTPRequest("https://api.github.com/repos/"
-                                         +  "XenHat/" + "Kemono-Body-Script"
-                                         + "/releases/latest?access_token="
-                                         + "603ee815cda6fb45fcc16876effbda017f158bef",
-                                         [HTTP_BODY_MAXLENGTH, 16384], "");
   }
   attach(key id)
   {
@@ -1386,59 +1374,5 @@ default {
   link_message(integer sender_num, integer num, string message, key id)
   {
     llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
-  }
-  http_response(key request_id, integer status, list metadata, string body)
-  {
-    if(request_id != g_internal_httprid_k) {
-      return;
-    }
-
-    g_internal_httprid_k = NULL_KEY;
-    string new_version_s = llJsonGetValue(body, ["tag_name"]);
-
-    if(new_version_s == g_internal_version_s) {
-      return;
-    }
-
-    list cur_version_l = llParseString2List(g_internal_version_s, ["."], [""]);
-    list new_version_l = llParseString2List(new_version_s, ["."], [""]);
-
-    if(llList2Integer(new_version_l, 0) >= llList2Integer(cur_version_l, 0) &&
-        llList2Integer(new_version_l, 1) >= llList2Integer(cur_version_l, 1) &&
-        llList2Integer(new_version_l, 2) > llList2Integer(cur_version_l, 2)) {
-      jump update;
-    }
-
-    return;
-    @update;
-    string update_title = llJsonGetValue(body, ["name"]);
-
-    if(update_title == "﷕") {
-      update_title = "";
-    }
-
-    string update_description = llJsonGetValue(body, ["body"]);
-
-    if(update_description == "﷕") {
-      update_description = "";
-    }
-
-    string changelog = update_description;
-    update_description = "\nAn update is avaible! (" + g_internal_version_s + "🡂"
-                         + new_version_s + ")\n\""
-                         + update_title + "\"\n" + changelog + "\n";
-    string link = "\nYour new script:\n[https://raw.githubusercontent.com/"
-                  +  "XenHat/" + "Kemono-Body-Script"  + "/" + new_version_s + "/compiled/" +
-                  "xenhat.kemono.body.lsl"  + " "
-                  +  "Kemono-Body-Script"  + ".lsl]";
-
-    if(llStringLength(update_description) > (512 - llStringLength(link))) {
-      update_description = "Too many changes, see [" + "https://github.com/"
-                           +  "XenHat/" + "Kemono-Body-Script"
-                           + "/compare/" + g_internal_version_s + "..." + new_version_s + " Changes for "
-                           + g_internal_version_s + "🡂" + new_version_s + "]";
-    }
-
-    llDialog(g_Owner_k, update_description + link, [], -1);
   }
 }
