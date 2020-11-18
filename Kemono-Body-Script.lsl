@@ -23,18 +23,6 @@ integer g_Config_EnsureMaskingMode = 0;
 // =============================== Script begins here =========================
 string g_internal_version_s = "0.5.7";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
-#ifdef SMART_DEFORM
-  /* UNDEFORM_BY_DEFAULT fixes most animation alignment issues, at a cost:
-  Your shoulders will appear larger than they should. Small price to pay to not
-  look stupid in all other cases
-  */
-  // #define UNDEFORM_BY_DEFAULT
-  #ifdef UNDEFORM_BY_DEFAULT
-    #define undeform_instead 1
-  #else
-    #define undeform_instead 0
-  #endif
-#endif
 #define PROCESS_LEGS_COMMANDS
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
@@ -1964,7 +1952,7 @@ default {
       } else {
 #ifdef SMART_DEFORM
 
-        if(undeform_instead || llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
+        if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
           llStartAnimation(g_AnimUndeform);
           llStopAnimation(g_AnimDeform);
 
