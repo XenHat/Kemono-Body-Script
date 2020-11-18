@@ -283,6 +283,10 @@ string g_LastCommand_s;
 /* Overridable deform animation */
 string g_AnimDeform;
 string g_AnimUndeform;
+#define xlStartAnimation(name) { \
+llOwnerSay("Playing animation '" + name + "'"); \
+llStartAnimation(name);\
+}
 list xlGetFacesByBladeName(string name)
 {
 #ifdef NEW_ASSOC_LOGIC
@@ -963,7 +967,7 @@ xlProcessCommandWrapper()
   /* TODO: move all this below inside the command processor */
   else if(g_LastCommand_s == "Rhand:1") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-R-relax");
+      xlStartAnimation("Kem-hand-R-relax");
       llStopAnimation("Kem-hand-R-fist");
       llStopAnimation("Kem-hand-R-hold");
       llStopAnimation("Kem-hand-R-horns");
@@ -974,7 +978,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Rhand:2") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-R-hold");
+      xlStartAnimation("Kem-hand-R-hold");
       llStopAnimation("Kem-hand-R-fist");
       llStopAnimation("Kem-hand-R-horns");
       llStopAnimation("Kem-hand-R-point");
@@ -985,7 +989,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Rhand:3") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-R-fist");
+      xlStartAnimation("Kem-hand-R-fist");
       llStopAnimation("Kem-hand-R-hold");
       llStopAnimation("Kem-hand-R-horns");
       llStopAnimation("Kem-hand-R-point");
@@ -996,7 +1000,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Rhand:4") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-R-point");
+      xlStartAnimation("Kem-hand-R-point");
       llStopAnimation("Kem-hand-R-fist");
       llStopAnimation("Kem-hand-R-hold");
       llStopAnimation("Kem-hand-R-horns");
@@ -1007,7 +1011,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Rhand:5") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-R-horns");
+      xlStartAnimation("Kem-hand-R-horns");
       llStopAnimation("Kem-hand-R-fist");
       llStopAnimation("Kem-hand-R-hold");
       llStopAnimation("Kem-hand-R-point");
@@ -1018,7 +1022,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Lhand:1") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-L-relax");
+      xlStartAnimation("Kem-hand-L-relax");
       llStopAnimation("Kem-hand-L-fist");
       llStopAnimation("Kem-hand-L-hold");
       llStopAnimation("Kem-hand-L-horns");
@@ -1029,7 +1033,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Lhand:2") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-L-hold");
+      xlStartAnimation("Kem-hand-L-hold");
       llStopAnimation("Kem-hand-L-fist");
       llStopAnimation("Kem-hand-L-horns");
       llStopAnimation("Kem-hand-L-point");
@@ -1040,7 +1044,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Lhand:3") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-L-fist");
+      xlStartAnimation("Kem-hand-L-fist");
       llStopAnimation("Kem-hand-L-hold");
       llStopAnimation("Kem-hand-L-horns");
       llStopAnimation("Kem-hand-L-point");
@@ -1051,7 +1055,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Lhand:4") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-L-point");
+      xlStartAnimation("Kem-hand-L-point");
       llStopAnimation("Kem-hand-L-fist");
       llStopAnimation("Kem-hand-L-hold");
       llStopAnimation("Kem-hand-L-horns");
@@ -1062,7 +1066,7 @@ xlProcessCommandWrapper()
 
   } else if(g_LastCommand_s == "Lhand:5") {
     if(g_HasAnimPerms) {
-      llStartAnimation("Kem-hand-L-horns");
+      xlStartAnimation("Kem-hand-L-horns");
       llStopAnimation("Kem-hand-L-fist");
       llStopAnimation("Kem-hand-L-hold");
       llStopAnimation("Kem-hand-L-point");
@@ -1479,15 +1483,15 @@ redeform()
 {
   if(g_HasAnimPerms) {
     //llOwnerSay("Redeform");
-    llStartAnimation(g_AnimDeform);
+    xlStartAnimation(g_AnimDeform);
     llStopAnimation(g_AnimUndeform);
   }
 }
 resetHands()
 {
   if(g_HasAnimPerms) {
-    llStartAnimation("Kem-hand-R-relax");
-    llStartAnimation("Kem-hand-L-relax");
+    xlStartAnimation("Kem-hand-R-relax");
+    xlStartAnimation("Kem-hand-L-relax");
     llStopAnimation("Kem-hand-L-fist");
     llStopAnimation("Kem-hand-L-hold");
     llStopAnimation("Kem-hand-L-horns");
@@ -1859,7 +1863,7 @@ default
       }
 
       if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimDeform);
+        xlStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
@@ -1890,8 +1894,8 @@ default
       // Don't bother asking for permissions if they were not given
       // The animations are 98% sure to not be applied in that case.
       if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimUndeform);
-        llStartAnimation("stand_1");
+        xlStartAnimation(g_AnimUndeform);
+        xlStartAnimation("stand_1");
         llStopAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
       }
@@ -1904,7 +1908,7 @@ default
 
       // Permissions auto-accepted, this will work immediately
       if(g_HasAnimPerms) {
-        llStartAnimation(g_AnimDeform);
+        xlStartAnimation(g_AnimDeform);
         llStopAnimation(g_AnimUndeform);
         llStopAnimation(g_AnimUndeform);
       }
@@ -1947,7 +1951,7 @@ default
 #ifdef SMART_DEFORM
 
         if(llGetAgentInfo(g_Owner_k)&AGENT_SITTING) {
-          llStartAnimation(g_AnimUndeform);
+          xlStartAnimation(g_AnimUndeform);
           llStopAnimation(g_AnimDeform);
 
         } else {
