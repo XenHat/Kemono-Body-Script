@@ -10,8 +10,6 @@ vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 0;
 /* Debugging */
 /* TODO: Remove no longer needed code toggles here */
-// #define BENCHMARK
-// #define PROFILE_BODY_SCRIPT
 /* End of debug defines */
 /* Normal Features that should be enabled */
 integer anim_count;
@@ -24,6 +22,13 @@ integer anim_count;
 string g_internal_version_s = "0.5.7";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #define PROCESS_LEGS_COMMANDS
+#define RESET_ON_PERMS
+#define PRINT_HEARD_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
+// #define BENCHMARK
+// #define PROFILE_BODY_SCRIPT
+// #define DEBUG_ENTIRE_BODY_ALPHA
+// #define NEW_ASSOC_LOGIC
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 // #define debugLogic(a)//llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
@@ -288,6 +293,9 @@ string g_AnimUndeform;
 }
 list xlGetFacesByBladeName(string name)
 {
+  /* TODO: Remove this function and inline handling every command by hand 
+      to account for other mods in-place instead of this spaghetti patchwork
+  */
 #ifdef NEW_ASSOC_LOGIC
   integer index = llListFindList(names_assoc, [name]);
 
@@ -868,12 +876,12 @@ list xlBladeNameToPrimNames(string name)
     return [MESH_PG_LAYER];
 
   } else if(name == API_CMD_VAG) {
-    if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
-      //if(g_TogglingPGMeshes)
-      //  return [llList2String(s_KFTPelvisMeshes,0)];
-      return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
-    }
-
+    /* TODO: Handle showing the right PG layer. Currently disabled */
+    //if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
+    //  //if(g_TogglingPGMeshes)
+    //  //  return [llList2String(s_KFTPelvisMeshes,0)];
+    //  return [llList2String(s_KFTPelvisMeshes, g_CurrentFittedVagState)];
+    //}
     return [MESH_PG_LAYER];
 
   } else if(name == API_CMD_THIGH_L_R) {
@@ -1183,6 +1191,7 @@ xlProcessCommand(integer send_params)
     command = llList2String(input_data, index);
 
     /* evaluate non-standard commands before looping through stock api */
+    /* TODO: Get rid of this spaghetti code and handle it nicely in one nice pass */
     if(0 == index/*-1==i_make_visible*/) {
       if("setnip" == command) {
         // Completely ignore nipple changes if alpha mode is on
@@ -1204,10 +1213,21 @@ xlProcessCommand(integer send_params)
         mod_command_2 = CMD_IS_MOD_HIJACK;
 
       } else if("setvag" == command) {
+        llOwnerSay("aaaaaa");
         mesh_count_index = s_KFTPelvisMeshes_size;
         mod_command_2 = CMD_IS_MOD_HIJACK;
         mod_command = STARBRIGHT_FKT_HUD_VAGN;
-
+        integer st = llList2Integer(input_data, 1);
+        llOwnerSay((string)st);
+        llSetLinkPrimitiveParamsFast(LINK_ROOT,[
+          PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState3"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 3 * g_Config_MaximumOpacity
+        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState2"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 2 * g_Config_MaximumOpacity
+        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState1"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 1 * g_Config_MaximumOpacity
+        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState0"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 0 * g_Config_MaximumOpacity]);
+        //string prevcmd = g_LastCommand_s;
+        //// g_LastCommand_s = "hide:pelvis";
+        //xlProcessCommand(TRUE);
+        //g_LastCommand_s = prevcmd;
       } else if("show" == command) {
         i_make_visible = TRUE;
 
@@ -1235,8 +1255,9 @@ xlProcessCommand(integer send_params)
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
         ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
-      else if(llListFindList(nope, [command]) == -1)
-        //llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
+      else if(llListFindList(nope, [command]) == -1){
+        llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
+      }
 #endif
 
       } else {
@@ -1346,9 +1367,9 @@ xlProcessCommand(integer send_params)
 
           } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
             g_CurrentFittedVagState = param;
-            i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) **/
-              (mesh_count_index == param);
-            mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
+            //i_make_visible = /*!bwGet(g_RuntimeBodyStateSettings,mod_command) **/
+            //  (mesh_count_index == param);
+            //mesh_name = llList2String(s_KFTPelvisMeshes, mesh_count_index);
 
           } else if(STARBRIGHT_FKT_HUD_BUTT == mod_command) {
             g_CurrentFittedButState = param;
@@ -1373,6 +1394,7 @@ xlProcessCommand(integer send_params)
 
             } else if(STARBRIGHT_FKT_HUD_VAGN == mod_command) {
               faces_l = xlGetFacesByBladeName(API_CMD_VAG);
+              llOwnerSay("cccccc");
 
             } else if(STARBRIGHT_FKT_HUD_NIPH == mod_command) {
               faces_l = xlGetFacesByBladeName(MESH_SK_NIPS);
@@ -1771,6 +1793,9 @@ default {
   }
   listen(integer channel, string name, key id, string message)
   {
+#ifdef PRINT_HEARD_COMMANDS
+    llOwnerSay(message);
+#endif
 #ifdef XL_EKB_APPLIER_INCLUDED
     textureListener()
 #endif
