@@ -23,8 +23,8 @@ string g_internal_version_s = "0.5.7";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #define PROCESS_LEGS_COMMANDS
 #define RESET_ON_PERMS
-#define PRINT_HEARD_COMMANDS
-#define PRINT_UNHANDLED_COMMANDS
+// #define PRINT_HEARD_COMMANDS
+// #define PRINT_UNHANDLED_COMMANDS
 // #define BENCHMARK
 // #define PROFILE_BODY_SCRIPT
 // #define DEBUG_ENTIRE_BODY_ALPHA
@@ -293,7 +293,7 @@ string g_AnimUndeform;
 }
 list xlGetFacesByBladeName(string name)
 {
-  /* TODO: Remove this function and inline handling every command by hand 
+  /* TODO: Remove this function and inline handling every command by hand
       to account for other mods in-place instead of this spaghetti patchwork
   */
 #ifdef NEW_ASSOC_LOGIC
@@ -1213,21 +1213,28 @@ xlProcessCommand(integer send_params)
         mod_command_2 = CMD_IS_MOD_HIJACK;
 
       } else if("setvag" == command) {
-        llOwnerSay("aaaaaa");
         mesh_count_index = s_KFTPelvisMeshes_size;
         mod_command_2 = CMD_IS_MOD_HIJACK;
         mod_command = STARBRIGHT_FKT_HUD_VAGN;
         integer st = llList2Integer(input_data, 1);
-        llOwnerSay((string)st);
-        llSetLinkPrimitiveParamsFast(LINK_ROOT,[
-          PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState3"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 3 * g_Config_MaximumOpacity
-        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState2"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 2 * g_Config_MaximumOpacity
-        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState1"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 1 * g_Config_MaximumOpacity
-        , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l, llListFindList(g_LinkDB_l, ["BitState0"]) + 1),PRIM_COLOR,-1,g_Config_BladeColor, st == 0 * g_Config_MaximumOpacity]);
+        llSetLinkPrimitiveParamsFast(LINK_ROOT, [
+                                PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                           llListFindList(g_LinkDB_l, ["BitState3"]) + 1), PRIM_COLOR, -1,
+                                g_Config_BladeColor, st == 3 * g_Config_MaximumOpacity
+                                , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                           llListFindList(g_LinkDB_l, ["BitState2"]) + 1), PRIM_COLOR, -1,
+                                g_Config_BladeColor, st == 2 * g_Config_MaximumOpacity
+                                , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                           llListFindList(g_LinkDB_l, ["BitState1"]) + 1), PRIM_COLOR, -1,
+                                g_Config_BladeColor, st == 1 * g_Config_MaximumOpacity
+                                , PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
+                                           llListFindList(g_LinkDB_l, ["BitState0"]) + 1), PRIM_COLOR, -1,
+                                g_Config_BladeColor, st == 0 * g_Config_MaximumOpacity]);
         //string prevcmd = g_LastCommand_s;
         //// g_LastCommand_s = "hide:pelvis";
         //xlProcessCommand(TRUE);
         //g_LastCommand_s = prevcmd;
+
       } else if("show" == command) {
         i_make_visible = TRUE;
 
@@ -1255,12 +1262,13 @@ xlProcessCommand(integer send_params)
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
         ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
-      else if(llListFindList(nope, [command]) == -1){
+      else if(llListFindList(nope, [command]) == -1) {
         llOwnerSay("Unhandled command '" + command + "' from " + llKey2Name(g_Last_k));
       }
+
 #endif
 
-      } else {
+    } else {
       /* non-standard command done or unhandled, and/or show/hide set,
       loop through the remaining parameters
       */
