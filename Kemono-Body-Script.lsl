@@ -1842,9 +1842,9 @@ default {
     g_LastCommand_s = message;
     g_Last_k = id;
     xlProcessCommandWrapper();
-    #ifdef BENCHMARK
+#ifdef BENCHMARK
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
-    #endif
+#endif
     g_Last_k = NULL_KEY;
 
     if(llGetAttached()) {
@@ -1930,6 +1930,7 @@ default {
 
       if(anim_count != new_anim_count) {
         anim_count = new_anim_count;
+
         if(g_HasAnimPerms) {
 #ifdef SMART_DEFORM
 
