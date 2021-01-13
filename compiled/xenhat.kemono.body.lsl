@@ -1,8 +1,8 @@
 float g_Config_MaximumOpacity = 1.00;
 vector g_Config_BladeColor = <1, 1, 1>;
-integer g_Config_EnsureMaskingMode = 0;
+integer g_Config_EnsureMaskingMode = 1;
 integer anim_count;
-string g_internal_version_s = "0.5.7";
+string g_internal_version_s = "0.5.8";
 list names_assoc = [ "ankleL" ,  "ankleR" ,
                      "calfL" ,  "calfR" ,  "kneeL" ,  "kneeR" ,
                      "shinLL" ,  "shinLR" ,  "abs" ,  "armLL" ,
@@ -1212,7 +1212,7 @@ default
 
       for(; aaa <= llGetNumberOfPrims(); aaa++) {
         llSetLinkPrimitiveParamsFast(aaa, [PRIM_ALPHA_MODE, ALL_SIDES,
-                                           PRIM_ALPHA_MODE_MASK, 3]);
+                                           PRIM_ALPHA_MODE_MASK, 75]);
       }
     }
 
