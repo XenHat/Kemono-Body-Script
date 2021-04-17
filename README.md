@@ -55,6 +55,6 @@ The UTILIZATOR Kemono and the Starbright Fitted Kemono Torso are good products, 
 
 Ahaha, no, I'm rather poor, actually. I do plan to profit from this product, mostly in the form of precompiled scripts, support, personalized modifications, and a closed-source version with an in-world updater and (in-house) applier support.
 
-If you are interested in participating in the development and improvement of this product, [hit me up in world](https://is.gd/xenhatslim) ([Alternate link](https://my.secondlife.com/xenhat.liamano)).
+If you are interested in participating in the development and improvement of this product, [hit me up in world](https://my.secondlife.com/Xenny.OwO)).
 
 Donations are welcome, just throw L$ at me. I also have a paypal. HMU in-world.
