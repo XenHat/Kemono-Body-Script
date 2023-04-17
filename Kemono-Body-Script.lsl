@@ -9,6 +9,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 1;
 /* Debugging */
+// #define DEBUG_SELF_TEST
 /* TODO: Remove no longer needed code toggles here */
 /* End of debug defines */
 /* Normal Features that should be enabled */
