@@ -9,7 +9,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 1;
 /* Debugging */
-// #define DEBUG_SELF_TEST
+#define DEBUG_SELF_TEST
 /* TODO: Remove no longer needed code toggles here */
 /* End of debug defines */
 /* Normal Features that should be enabled */
@@ -24,16 +24,14 @@ string g_internal_version_s = "0.5.8";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #define PROCESS_LEGS_COMMANDS
 #define RESET_ON_PERMS
-// #define PRINT_HEARD_COMMANDS
-// #define PRINT_UNHANDLED_COMMANDS
+#define PRINT_HEARD_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
 // #define BENCHMARK
 // #define PROFILE_BODY_SCRIPT
-// #define DEBUG_ENTIRE_BODY_ALPHA
+#define DEBUG_ENTIRE_BODY_ALPHA
 // #define NEW_ASSOC_LOGIC
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
-// #define debugLogic(a)//llOwnerSay(#a + " == " + (string)a);llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() + "]/" + (string)llGetMemoryLimit() + "B",HOVER_TEXT_COLOR,HOVER_TEXT_ALPHA)
-// #define dSay(a)//llOwnerSay((string)a)
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
   + "*" + (string)human_mode\
   + "*" + (string)g_Config_BladeColor\
@@ -612,6 +610,7 @@ list xlGetFacesByBladeName(string name)
 
   return [];
 }
+
 /* This function is like a "translator", it returns
 the specialized mesh name when a generic one is provided.
 i.e. When using the fitted torso. API_CMD_BREASTS => MESH_FITTED_TORSO_CHEST
@@ -918,6 +917,7 @@ list xlBladeNameToPrimNames(string name)
 
   return [name];
 }
+
 /* Stock Fitted Torso script:
 setnip0==NipState0
 setnip1==TorsoEtc[0,1]
@@ -1161,6 +1161,7 @@ xlProcessCommandWrapper()
     xlProcessCommand(TRUE);
   }
 }
+
 xlProcessCommand(integer send_params)
 {
   /*   == Some Information about the Kemono API spec ==
@@ -1430,7 +1431,7 @@ xlProcessCommand(integer send_params)
         /* TODO: inline as much as possible */
         local_params += [
                           PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                              llListFindList(g_LinkDB_l, prim_names) + 1)
+                            llListFindList(g_LinkDB_l, prim_names) + 1)
                         ];
         list faces_l = xlGetFacesByBladeName(command);
         integer faces_index = llGetListSize(faces_l);
@@ -1451,7 +1452,7 @@ xlProcessCommand(integer send_params)
             list snd_lvl_params = [
                                     // PG meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_0]) + 1),
+                                      llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_0]) + 1),
                                     PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
                                     i_make_visible
                                     && (g_CurrentFittedNipState == 0
@@ -1464,7 +1465,7 @@ xlProcessCommand(integer send_params)
                                        ),
                                     // nipple meshes
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_ETC]) + 1),
+                                      llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_ETC]) + 1),
                                     PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 1
@@ -1476,7 +1477,7 @@ xlProcessCommand(integer send_params)
                                     && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
                                     && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_1]) + 1),
+                                      llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_1]) + 1),
                                     PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
                                     i_make_visible
                                     && g_CurrentFittedNipState == 2
@@ -1488,7 +1489,7 @@ xlProcessCommand(integer send_params)
                                     && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS))
                                     && g_CurrentFittedNipAlpha < 1,
                                     PRIM_LINK_TARGET, llList2Integer(g_LinkDB_l,
-                                        llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_A]) + 1),
+                                      llListFindList(g_LinkDB_l, [MESH_FITTED_TORSO_NIP_A]) + 1),
                                     PRIM_COLOR, llList2Integer(faces, 1), g_Config_BladeColor,
                                     i_make_visible && g_CurrentFittedNipAlpha > 0
                                     && !(bwGet(g_RuntimeBodyStateSettings, KSB_PGNIPLS)),
@@ -1509,6 +1510,7 @@ xlProcessCommand(integer send_params)
     local_params = [];
   }
 }
+
 resetHands()
 {
   if(g_HasAnimPerms) {
@@ -1526,6 +1528,7 @@ resetHands()
     llStopAnimation(g_AnimUndeform);
   }
 }
+
 reset()
 {
   if(bwGet(g_RuntimeBodyStateSettings, FKT_PRESENT)) {
@@ -1540,6 +1543,7 @@ reset()
   xlProcessCommand(TRUE);
   resetHands();
 }
+
 detectLinkSetMods()
 {
   g_LinkDB_l = [];
@@ -1686,9 +1690,11 @@ detectLinkSetMods()
   }
 }
 
-default
-{
-  changed(integer change) {
+#define DEBUG_TRACE_BODY_STATE
+
+default {
+  changed(integer change)
+  {
     if(change & CHANGED_OWNER) {
       llResetScript();
 
@@ -1697,7 +1703,9 @@ default
       detectLinkSetMods();
     }
   }
-  state_entry() {
+
+  state_entry()
+  {
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
@@ -1791,6 +1799,13 @@ default
     // #endif
     llSetText("", ZERO_VECTOR, 0.0);
     llListen(KEMONO_COM_CH, "", "", "");
+#ifdef DEBUG_TRACE_BODY_STATE
+    llOwnerSay("TRACE: ObjectName=" + llGetObjectName());
+    llOwnerSay("TRACE: NipState=" + (string)g_CurrentFittedNipState);
+    llOwnerSay("TRACE: NipAlpha=" + (string)g_CurrentFittedNipAlpha);
+    llOwnerSay("TRACE: VagState=" + (string)g_CurrentFittedVagState);
+    llOwnerSay("TRACE: ButState=" + (string)g_CurrentFittedButState);
+#endif
     llWhisper(KEMONO_COM_CH, "reqCLdat");
 #ifdef XL_EKB_APPLIER_INCLUDED
     state_entry_applier_hook();
@@ -1800,7 +1815,9 @@ default
               "]/" + (string)llGetMemoryLimit() + "B", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
 #endif
   }
-  listen(integer channel, string name, key id, string message) {
+
+  listen(integer channel, string name, key id, string message)
+  {
 #ifdef PRINT_HEARD_COMMANDS
     llOwnerSay(message);
 #endif
@@ -1891,11 +1908,15 @@ default
       }
     }
   }
-  on_rez(integer p) {
+
+  on_rez(integer p)
+  {
     /*Wait a few seconds in case we're still rezzing*/
     saveSettings();
   }
-  attach(key id) {
+
+  attach(key id)
+  {
     if(llGetSubString(llGetObjectName(), 0,
                       llStringLength(UPDATER_NAME) - 1) == UPDATER_NAME) {
       //llOwnerSay("Updater mode detected.");
@@ -1932,7 +1953,9 @@ default
       llRegionSayTo(g_Owner_k, KEMONO_COM_CH, KM_HUD_RESET_CMD);
     }
   }
-  run_time_permissions(integer perm) {
+
+  run_time_permissions(integer perm)
+  {
     // What?
     //if(!g_HasAnimPerms){
     //  resetHands();
@@ -1952,6 +1975,7 @@ default
 #endif
     llSetTimerEvent(1);
   }
+
   timer()
   // #undef SMART_DEFORM
   {
@@ -1984,7 +2008,9 @@ default
       }
     }
   }
-  link_message(integer sender_num, integer num, string message, key id) {
+
+  link_message(integer sender_num, integer num, string message, key id)
+  {
     llOwnerSay("LINK MESSAGE[" + (string)id + "]: '" + message + "'");
   }
 }
