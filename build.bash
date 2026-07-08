@@ -1,6 +1,6 @@
 #!/bin/bash
 shopt -s globstar
-mcpp -P "Kemono-Body-Script.lsl" compiled/xenhat.kemono.body.lsl
+mcpp -P "Core.lsl" compiled/xenhat.kemono.body.lsl
 sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
 # see http://astyle.sourceforge.net/astyle.html#_General_Information
 style="--style=k&r --max-code-length=80 --indent=spaces=2 --convert-tabs  \
