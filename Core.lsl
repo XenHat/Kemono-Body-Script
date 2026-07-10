@@ -1692,6 +1692,64 @@ detectLinkSetMods()
 
 #define DEBUG_TRACE_BODY_STATE
 
+string escapeSlurlName(string input)
+{
+    string escaped = llEscapeURL(input);
+    list targets = ["[", "]", "+"];
+    list replaces = ["%5B", "%5D", "%2B"];
+
+    integer i;
+    for (i = 0; i < 3; ++i)
+    {
+        string target = llList2String(targets, i);
+        string replace = llList2String(replaces, i);
+        escaped = llDumpList2String(llParseString2List(escaped, [target], []), replace);
+    }
+    return escaped;
+}
+// Optimized robust version using a replace loop:
+string escapeSlurlNameRobust(string input)
+{
+    string escaped = llEscapeURL(input);
+
+    list targets = ["[", "]", "+"];
+    list replaces = ["%5B", "%5D", "%2B"];
+
+    integer i;
+    for (i = 0; i < llGetListLength(targets); ++i)
+    {
+        string target = llList2String(targets, i);
+        string replace = llList2String(replaces, i);
+
+        list parts = llParseString2List(escaped, [target], []);
+        escaped = llDumpList2String(parts, replace);
+    }
+
+    return escaped;
+}
+
+
+string xlObjectName2Link(string id) {
+string rawName = llKey2Name(id);
+        string escapedName = escapeSlurlName(rawName);
+
+        string objectUUID = id;
+        string ownerUUID = llGetOwnerKey(id);
+        string regionName = llGetRegionName();
+        vector pos = llList2Vector(llGetObjectDetails(id,[OBJECT_POS]),0);
+
+        // Construct the full URI
+        string slurl = "secondlife:///app/objectim/" + objectUUID
+            + "?name=" + escapedName
+            + "&owner=" + ownerUUID
+            + "&slurl=" + llEscapeURL(regionName) + "/" + (string)((integer)pos.x) + "/" + (string)((integer)pos.y) + "/" + (string)((integer)pos.z);
+
+        //llOwnerSay("Generated SLURL:\n" + slurl);
+        return slurl;
+}
+
+
+
 default {
   changed(integer change)
   {
@@ -1825,8 +1883,9 @@ default {
 
   listen(integer channel, string name, key id, string message)
   {
+    g_Last_k = id;
 #ifdef PRINT_HEARD_COMMANDS
-    llOwnerSay(message);
+    llOwnerSay("DEBUG: Heard '"+message+"' from " + xlObjectName2Link(id));
 #endif
 #ifdef XL_EKB_APPLIER_INCLUDED
     textureListener()
@@ -1897,7 +1956,6 @@ default {
     }
 
     g_LastCommand_s = message;
-    g_Last_k = id;
     xlProcessCommandWrapper();
 #ifdef BENCHMARK
     llOwnerSay("Took " + (string)llGetTime() + " (endof listen)");
