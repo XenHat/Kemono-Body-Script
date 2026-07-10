@@ -1706,9 +1706,19 @@ default {
 
   state_entry()
   {
+    // TODO: Merge all the face application commands that don't NEED to be done sequentially into a single command to send once at the start.
+    // TODO: Apply the same command minimization to the whole body script, to avoid repeated messages such as "fixup for the legs" and such. It should be fixed in the command before sending it at all.
 #ifdef PROFILE_BODY_SCRIPT
     llScriptProfiler(PROFILE_SCRIPT_MEMORY);
 #endif
+#ifdef PRINT_HEARD_COMMANDS
+    llOwnerSay("Script Startup");
+#endif
+    string self = llGetScriptName();
+    string basename = "Enhanced Kemono Body";
+    string tail = "MISSING_VERSION";
+    g_Last_k = llGetKey();
+
     s_KFTPelvisMeshes_size = s_KFTPelvisMeshes_size;
     bwClear(g_RuntimeBodyStateSettings, FKT_PRESENT);
     bwSet(g_RuntimeBodyStateSettings, FKT_PRESENT);
@@ -1725,9 +1735,6 @@ default {
       }
     }
 
-    string self = llGetScriptName();
-    string basename = "Enhanced Kemono Body";
-    string tail = "MISSING_VERSION";
 
     if(llSubStringIndex(self, " ") >= 0) {
       integer start = 2;
