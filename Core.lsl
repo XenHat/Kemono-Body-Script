@@ -9,7 +9,7 @@ float g_Config_MaximumOpacity = 1.00; // 0.8 // for goo
 vector g_Config_BladeColor = <1, 1, 1>;
 integer g_Config_EnsureMaskingMode = 1;
 /* Debugging */
-#define DEBUG_SELF_TEST
+//#define DEBUG_SELF_TEST
 /* TODO: Remove no longer needed code toggles here */
 /* End of debug defines */
 /* Normal Features that should be enabled */
@@ -24,11 +24,11 @@ string g_internal_version_s = "0.5.8";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #define PROCESS_LEGS_COMMANDS
 #define RESET_ON_PERMS
-#define PRINT_HEARD_COMMANDS
-#define PRINT_UNHANDLED_COMMANDS
+// #define PRINT_HEARD_COMMANDS
+// #define PRINT_UNHANDLED_COMMANDS
 // #define BENCHMARK
 // #define PROFILE_BODY_SCRIPT
-#define DEBUG_ENTIRE_BODY_ALPHA
+//#define DEBUG_ENTIRE_BODY_ALPHA
 // #define NEW_ASSOC_LOGIC
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
