@@ -35,9 +35,9 @@ string g_internal_version_s = "0.5.8";
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
 #define HOVER_TEXT_ALPHA 0.75
 #define saveSettings() llSetObjectDesc(g_internal_version_s\
-  + "*" + (string)human_mode\
-  + "*" + (string)g_Config_BladeColor\
-  )
+    + "*" + (string)human_mode\
+    + "*" + (string)g_Config_BladeColor\
+)
 // Set the mesh parameters to the world mesh
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
@@ -154,33 +154,33 @@ list faceshumanmode = [ 1, 1, 2, 2, 5, 5, 2, 2 ];
 // #define MESH_VAGINA_CLIT1 ""
 // #define MESH_VAGINA_CLIT2 ""
 #define g_supported_meshes [\
-	"BitState0",\
-"BitState1",\
-"BitState2",\
-"BitState3",\
-"cumButtS1",\
-"cumButtS2",\
-"cumButtS3",\
-MESH_ARMS,\
-MESH_BODY,\
-MESH_FITTED_TORSO,\
-MESH_FITTED_TORSO_CHEST,\
-MESH_FITTED_TORSO_ETC,\
-MESH_FITTED_TORSO_HLEGS,\
-MESH_FITTED_TORSO_NIP_0,\
-MESH_FITTED_TORSO_NIP_1,\
-MESH_FITTED_TORSO_NIP_A,\
-MESH_HAND_LEFT,\
-MESH_HAND_RIGHT,\
-MESH_HIPS,\
-MESH_LEG_LEFT_ANIMAL,\
-MESH_LEG_LEFT_HUMAN,\
-MESH_LEG_RIGHT_ANIMAL,\
-MESH_LEG_RIGHT_HUMAN,\
-MESH_NECK,\
-MESH_PG_LAYER,\
-MESH_ROOT,\
-MESH_ROOTALT\
+    "BitState0",\
+    "BitState1",\
+    "BitState2",\
+    "BitState3",\
+    "cumButtS1",\
+    "cumButtS2",\
+    "cumButtS3",\
+    MESH_ARMS,\
+    MESH_BODY,\
+    MESH_FITTED_TORSO,\
+    MESH_FITTED_TORSO_CHEST,\
+    MESH_FITTED_TORSO_ETC,\
+    MESH_FITTED_TORSO_HLEGS,\
+    MESH_FITTED_TORSO_NIP_0,\
+    MESH_FITTED_TORSO_NIP_1,\
+    MESH_FITTED_TORSO_NIP_A,\
+    MESH_HAND_LEFT,\
+    MESH_HAND_RIGHT,\
+    MESH_HIPS,\
+    MESH_LEG_LEFT_ANIMAL,\
+    MESH_LEG_LEFT_HUMAN,\
+    MESH_LEG_RIGHT_ANIMAL,\
+    MESH_LEG_RIGHT_HUMAN,\
+    MESH_NECK,\
+    MESH_PG_LAYER,\
+    MESH_ROOT,\
+    MESH_ROOTALT\
 ]
 // These go above. Can't comment out defined list parts.
 /*MESH_DERMAL_BACK0,\*/
@@ -198,16 +198,16 @@ MESH_ROOTALT\
 /*MESH_VAGINA_CLIT0,\*/
 /*MESH_BELLY_RING0,\*/
 #define s_FittedNipsMeshNames [\
-	MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
-MESH_FITTED_TORSO_ETC,/* 1 */\
-MESH_FITTED_TORSO_NIP_1, /* 2 */\
-MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
+    MESH_FITTED_TORSO_NIP_0,/* 0, visible: PG mesh, hidden: ALpha stage 2*/\
+    MESH_FITTED_TORSO_ETC,/* 1 */\
+    MESH_FITTED_TORSO_NIP_1, /* 2 */\
+    MESH_FITTED_TORSO_NIP_A /* alpha stage 1 */\
 ]
 #define s_KFTPelvisMeshes [\
-	"BitState0",\
-"BitState1",\
-"BitState2",\
-"BitState3"\
+    "BitState0",\
+    "BitState1",\
+    "BitState2",\
+    "BitState3"\
 ]
 integer s_KFTPelvisMeshes_size = 0;
 //#define s_NipplePiercingsNames [\
@@ -291,8 +291,8 @@ string g_LastCommand_s;
 string g_AnimDeform;
 string g_AnimUndeform;
 #define xlStartAnimation(name) { \
-	llStartAnimation(name);\
-}
+        llStartAnimation(name);\
+    }
 list xlGetFacesByBladeName( string name ) {
     /* TODO: Remove this function and inline handling every command by hand
        to account for other mods in-place instead of this spaghetti patchwork
@@ -1135,15 +1135,15 @@ xlProcessCommandWrapper() {
 
 xlProcessCommand( integer send_params ) {
     /*   == Some Information about the Kemono API spec ==
-    	 Generally speaking, command chaining is limited to same-state body parts;
-    	 it is not possible to combine show and hide commands together
-    	 (ie 'hide:abs:show:hipR').
-    	 Some examples:
-    	 'add:show:abs:hipL:remove' - Does not work
-    	 'add:show:abs:hipL' - Does not work
-    	 'add', then 'show:abs:hipL' - Works
-    	 It is currently unknown if "remove" can be chained as it does not seem to
-    	 block further messages from a "removed" uuid.
+         Generally speaking, command chaining is limited to same-state body parts;
+         it is not possible to combine show and hide commands together
+         (ie 'hide:abs:show:hipR').
+         Some examples:
+         'add:show:abs:hipL:remove' - Does not work
+         'add:show:abs:hipL' - Does not work
+         'add', then 'show:abs:hipL' - Works
+         It is currently unknown if "remove" can be chained as it does not seem to
+         block further messages from a "removed" uuid.
      */
     list input_data = llParseString2List( g_LastCommand_s, [ ":" ], [] );
     string command = llList2String( input_data, 0 );
@@ -1237,7 +1237,7 @@ xlProcessCommand( integer send_params ) {
             /* Add more commands here */
 #ifdef PRINT_UNHANDLED_COMMANDS
 #define nope ["tail","skin","FTExpReq","bitEditState","add","reqCLdat","clothState","FTExp01","FTExp02","FTExp03" /* not here! */\
-			,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
+    ,"eSize", "eRoll", "Anim", "LEye", "REye", "Exp", "Lash", "Brows", "FLight" /* Kemono M3 Head */]
             else if( llListFindList( nope, [ command ] ) == -1 )
                 llOwnerSay( "Unhandled command '" + command + "' from " + llKey2Name( g_Last_k ) );
 
@@ -1335,13 +1335,13 @@ xlProcessCommand( integer send_params ) {
 
                     if( STARBRIGHT_FKT_HUD_NIPS == mod_command ) {
                         // handle Fitted Torso nips here
-                        llOwnerSay("DEBUG: Handling FT Nips");
+                        llOwnerSay( "DEBUG: Handling FT Nips" );
                         g_CurrentFittedNipState = param;
 
                         if( !g_CurrentFittedNipAlpha ) {
                             {
                                 i_make_visible =/*!g_CurrentFittedNipAlpha *
-												  !bwGet(g_RuntimeBodyStateSettings,mod_command) */
+                                                  !bwGet(g_RuntimeBodyStateSettings,mod_command) */
                                     ( mesh_count_index == g_CurrentFittedNipState );
                                 mesh_name = llList2String( s_FittedNipsMeshNames, mesh_count_index );
                             }
