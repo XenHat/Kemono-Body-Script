@@ -24,8 +24,10 @@ string g_internal_version_s = "0.5.8";
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 #define PROCESS_LEGS_COMMANDS
 #define RESET_ON_PERMS
-// #define PRINT_HEARD_COMMANDS
-// #define PRINT_UNHANDLED_COMMANDS
+//#define PRINT_HEARD_COMMANDS
+#define PRINT_UNHANDLED_COMMANDS
+#define PRINT_SENT_COMMANDS
+//#define DEBUG_AUTH
 // #define BENCHMARK
 // #define PROFILE_BODY_SCRIPT
 //#define DEBUG_ENTIRE_BODY_ALPHA
@@ -1748,7 +1750,12 @@ string rawName = llKey2Name(id);
         return slurl;
 }
 
-
+xlSendAPICommand(string command) {
+#ifdef PRINT_SENT_COMMANDS
+    llOwnerSay("Sent '" + command + "'");
+#endif
+    llRegionSayTo(g_Owner_k,KEMONO_COM_CH,command);
+}
 
 default {
   changed(integer change)
@@ -1922,7 +1929,10 @@ default {
       // Most likely case, make handling other resident's attachments
       // as impactless as we can.
       if(object_owner_k != id) {
-        // someboey else's stuff
+        // somebody else's stuff
+#ifdef DEBUG_AUTH
+        llOwnerSay("Ignored command from "+ xlObjectName2Link(id) + " (different owner)");
+#endif
         return;
       }
 
