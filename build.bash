@@ -2,15 +2,9 @@
 shopt -s globstar
 mcpp -P "Core.lsl" compiled/xenhat.kemono.body.lsl
 sed -i '/^$/d' compiled/xenhat.kemono.body.lsl
-# see http://astyle.sourceforge.net/astyle.html#_General_Information
-style="--style=k&r --max-code-length=80 --indent=spaces=2 --convert-tabs  \
-	--delete-empty-lines --indent-switches --indent-preproc-block \
-	--unpad-paren --pad-oper --close-templates \
-	--break-blocks=all --indent-col1-comments --align-method-colon \
-	--pad-method-colon=all --close-templates -Q"
 for i in **/*.lsl; do # Whitespace-safe and recursive
 #shellcheck disable=SC2086
-		astyle $style "$i"
+		astyle --project=.astylerc "$i"
 done
 #shellcheck disable=SC2086
 # astyle $style compiled/xenhat.kemono.body.lsl

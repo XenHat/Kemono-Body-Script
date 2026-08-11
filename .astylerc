@@ -1,0 +1,16 @@
+--style=attach
+--unpad-brackets
+--break-blocks
+--break-closing-braces
+--break-one-line-headers
+--indent=spaces=4
+--indent-after-parens
+--keep-one-line-blocks
+--pad-brackets-in
+--pad-comma
+--pad-oper
+--remove-braces
+--squeeze-lines=1
+--break-after-logical
+--unpad-paren
+--squeeze-ws
