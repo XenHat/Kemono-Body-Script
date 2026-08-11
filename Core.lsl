@@ -25,11 +25,11 @@ string g_internal_version_s = "0.5.8";
 #define PROCESS_LEGS_COMMANDS
 #define RESET_ON_PERMS
 //#define PRINT_HEARD_COMMANDS
-#define PRINT_UNHANDLED_COMMANDS
-#define PRINT_SENT_COMMANDS
+//#define PRINT_UNHANDLED_COMMANDS
+//#define PRINT_SENT_COMMANDS
 //#define DEBUG_AUTH
 // #define BENCHMARK
-// #define PROFILE_BODY_SCRIPT
+#define PROFILE_BODY_SCRIPT
 //#define DEBUG_ENTIRE_BODY_ALPHA
 // #define NEW_ASSOC_LOGIC
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
@@ -38,6 +38,7 @@ string g_internal_version_s = "0.5.8";
   + "*" + (string)human_mode\
   + "*" + (string)g_Config_BladeColor\
   )
+// Set the mesh parameters to the world mesh
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
 :shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
@@ -973,116 +974,89 @@ xlProcessCommandWrapper()
     saveSettings();
   }
 
-  /* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
-  /* TODO: move all this below inside the command processor */
+  /* Helper function to consolidate hand animation handling */
+handleHandAnimation(string hand, string activeAnimation)
+{
+    list allAnimations = ["fist", "hold", "horns", "point", "relax"];
+    integer i;
+    
+    if(g_HasAnimPerms) {
+        // Start the active animation
+        xlStartAnimation("Kem-hand-" + hand + "-" + activeAnimation);
+        
+        // Stop all other animations
+        while(i < llGetListLength(allAnimations)) {
+            string anim = llList2String(allAnimations, i);
+            if(anim != activeAnimation) {
+                llStopAnimation("Kem-hand-" + hand + "-" + anim);
+            }
+            i++;
+        }
+    }
+    return;
+}
+
+/* TODO: FIXME: Kind of brutal, should probably store the last hand anim or something.*/
+  /* Consolidated hand gesture animations */
   else if(g_LastCommand_s == "Rhand:1") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-R-relax");
-      llStopAnimation("Kem-hand-R-fist");
-      llStopAnimation("Kem-hand-R-hold");
-      llStopAnimation("Kem-hand-R-horns");
-      llStopAnimation("Kem-hand-R-point");
+      llStopOtherHandAnim("R", "relax");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Rhand:2") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-R-hold");
-      llStopAnimation("Kem-hand-R-fist");
-      llStopAnimation("Kem-hand-R-horns");
-      llStopAnimation("Kem-hand-R-point");
-      llStopAnimation("Kem-hand-R-relax");
+      llStopOtherHandAnim("R", "hold");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Rhand:3") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-R-fist");
-      llStopAnimation("Kem-hand-R-hold");
-      llStopAnimation("Kem-hand-R-horns");
-      llStopAnimation("Kem-hand-R-point");
-      llStopAnimation("Kem-hand-R-relax");
+      llStopOtherHandAnim("R", "fist");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Rhand:4") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-R-point");
-      llStopAnimation("Kem-hand-R-fist");
-      llStopAnimation("Kem-hand-R-hold");
-      llStopAnimation("Kem-hand-R-horns");
-      llStopAnimation("Kem-hand-R-relax");
+      llStopOtherHandAnim("R", "point");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Rhand:5") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-R-horns");
-      llStopAnimation("Kem-hand-R-fist");
-      llStopAnimation("Kem-hand-R-hold");
-      llStopAnimation("Kem-hand-R-point");
-      llStopAnimation("Kem-hand-R-relax");
+      llStopOtherHandAnim("R", "horns");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Lhand:1") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-L-relax");
-      llStopAnimation("Kem-hand-L-fist");
-      llStopAnimation("Kem-hand-L-hold");
-      llStopAnimation("Kem-hand-L-horns");
-      llStopAnimation("Kem-hand-L-point");
+      llStopOtherHandAnim("L", "relax");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Lhand:2") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-L-hold");
-      llStopAnimation("Kem-hand-L-fist");
-      llStopAnimation("Kem-hand-L-horns");
-      llStopAnimation("Kem-hand-L-point");
-      llStopAnimation("Kem-hand-L-relax");
+      llStopOtherHandAnim("L", "hold");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Lhand:3") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-L-fist");
-      llStopAnimation("Kem-hand-L-hold");
-      llStopAnimation("Kem-hand-L-horns");
-      llStopAnimation("Kem-hand-L-point");
-      llStopAnimation("Kem-hand-L-relax");
+      llStopOtherHandAnim("L", "fist");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Lhand:4") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-L-point");
-      llStopAnimation("Kem-hand-L-fist");
-      llStopAnimation("Kem-hand-L-hold");
-      llStopAnimation("Kem-hand-L-horns");
-      llStopAnimation("Kem-hand-L-relax");
+      llStopOtherHandAnim("L", "point");
     }
-
     return;
-
   } else if(g_LastCommand_s == "Lhand:5") {
     if(g_HasAnimPerms) {
       xlStartAnimation("Kem-hand-L-horns");
-      llStopAnimation("Kem-hand-L-fist");
-      llStopAnimation("Kem-hand-L-hold");
-      llStopAnimation("Kem-hand-L-point");
-      llStopAnimation("Kem-hand-L-relax");
+      llStopOtherHandAnim("L", "horns");
     }
-
     return;
 
   } else if("reqFTdat" == g_LastCommand_s) {
@@ -1692,7 +1666,7 @@ detectLinkSetMods()
   }
 }
 
-#define DEBUG_TRACE_BODY_STATE
+//#define DEBUG_TRACE_BODY_STATE
 
 string escapeSlurlName(string input)
 {
@@ -1728,6 +1702,23 @@ string escapeSlurlNameRobust(string input)
     }
 
     return escaped;
+}
+
+
+// Helper function to stop all other hand animations except the active one
+void llStopOtherHandAnim(string hand, string active)
+{
+    list all = ["fist", "hold", "horns", "point", "relax"];
+    integer i = 0;
+    while(i < llGetListLength(all))
+    {
+        string anim = llList2String(all, i);
+        if(anim != active)
+        {
+            llStopAnimation(hand + "-" + anim);
+        }
+        i++;
+    }
 }
 
 
@@ -1884,7 +1875,8 @@ default {
 #endif
 #ifdef PROFILE_BODY_SCRIPT
     llSetText("U: " + (string)llGetUsedMemory() + "[" + (string)llGetSPMaxMemory() +
-              "]/" + (string)llGetMemoryLimit() + "B", HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
+              "]/" + (string)llGetMemoryLimit() + "B"+"\n\n.\n\n.\n.\n.\n.\n.\n.\n.\n."
+, HOVER_TEXT_COLOR, HOVER_TEXT_ALPHA);
 #endif
   }
 
