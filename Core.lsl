@@ -1715,7 +1715,7 @@ string escapeSlurlNameRobust(string input)
 
 
 // Helper function to stop all other hand animations except the active one
-void llStopOtherHandAnim(string hand, string active)
+llStopOtherHandAnim(string hand, string active)
 {
     list all = ["fist", "hold", "horns", "point", "relax"];
     integer i = 0;
