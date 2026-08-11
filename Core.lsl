@@ -1425,56 +1425,23 @@ xlProcessCommand( integer send_params ) {
                             llOwnerSay( "Warning: Missing mesh '" + MESH_FITTED_TORSO_NIP_1 + "'" );
 
 #endif
+                        // Handle FT Nips face associations here
                         bwChange( g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible );
                         list faces = xlGetFacesByBladeName( MESH_SK_NIPS );
-                        list snd_lvl_params = [
-                                // PG meshes
-                                PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l,
-                                    llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_0 ] ) + 1 ),
-                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor,
-                                i_make_visible
-                                && ( g_CurrentFittedNipState == 0
-                                    || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                ),
-                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor,
-                                i_make_visible
-                                && ( g_CurrentFittedNipState == 0
-                                    || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                ),
-                                // nipple meshes
-                                PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l,
-                                    llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_ETC ] ) + 1 ),
-                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor,
-                                i_make_visible
-                                && g_CurrentFittedNipState == 1
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                && g_CurrentFittedNipAlpha < 1,
-                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor,
-                                i_make_visible
-                                && g_CurrentFittedNipState == 1
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                && g_CurrentFittedNipAlpha < 1,
-                                PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l,
-                                    llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_1 ] ) + 1 ),
-                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor,
-                                i_make_visible
-                                && g_CurrentFittedNipState == 2
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                && g_CurrentFittedNipAlpha < 1,
-                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor,
-                                i_make_visible
-                                && g_CurrentFittedNipState == 2
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                                && g_CurrentFittedNipAlpha < 1,
-                                PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l,
-                                    llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_A ] ) + 1 ),
-                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor,
-                                i_make_visible && g_CurrentFittedNipAlpha > 0
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ),
-                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor,
-                                i_make_visible && g_CurrentFittedNipAlpha > 0
-                                && !( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) )
-                            ];
+                        list snd_lvl_params = [];
+                        // Set FT Nips
+                        // PG meshes
+                        snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_0 ] ) + 1 ),
+                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
+                        // small nipple meshes
+                        snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_ETC ] ) + 1 ),
+                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
+                        // big nipple meshes
+                        snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_1 ] ) + 1 ),
+                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
                         local_params += snd_lvl_params;
                     }
                 }
