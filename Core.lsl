@@ -1334,6 +1334,8 @@ xlProcessCommand( integer send_params ) {
                     }
 
                     if( STARBRIGHT_FKT_HUD_NIPS == mod_command ) {
+                        // handle Fitted Torso nips here
+                        llOwnerSay("DEBUG: Handling FT Nips");
                         g_CurrentFittedNipState = param;
 
                         if( !g_CurrentFittedNipAlpha ) {
@@ -1424,7 +1426,6 @@ xlProcessCommand( integer send_params ) {
                 }
 
                 if( API_CMD_BREASTS == command /*API_CMD_NIPS==command*/ ) {
-                    /* Manually hard-code this one for speed and simplicity*/
                     if( bwGet( g_RuntimeBodyStateSettings, FKT_PRESENT ) ) {
                         bwChange( g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible );
                         list faces = xlGetFacesByBladeName( MESH_SK_NIPS );
