@@ -900,11 +900,28 @@ handleHandAnimation( string hand, string activeAnimation ) {
     return;
 }
 
-/* Stock Fitted Torso script:
-   setnip0==NipState0
-   setnip1==TorsoEtc[0,1]
-   setnip2==NipState1
-   NipAlpha==????
+/* Stock Fitted Torso behavior:
+Hud commands needed to set state:
+PG Nips:
+  - setnip:0
+Small Nips:
+  - setnip:1
+Big Nips:
+  - setnip:2
+
+Transparency based on state:
+PG Nips:
+- MESH_FITTED_TORSO_ETC: 100
+- MESH_FITTED_TORSO_NIP_0: 0
+- MESH_FITTED_TORSO_NIP_1: 100
+Small Nips:
+- MESH_FITTED_TORSO_ETC: 0
+- MESH_FITTED_TORSO_NIP_0: 100
+- MESH_FITTED_TORSO_NIP_1: 100
+Big Nips:
+- MESH_FITTED_TORSO_ETC: 100
+- MESH_FITTED_TORSO_NIP_0: 100
+- MESH_FITTED_TORSO_NIP_1: 0
  */
 /* Note: The Starbright stock behavior is the following:
    Show PG layer when hiding nipples
