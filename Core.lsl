@@ -1427,7 +1427,7 @@ xlProcessCommand( integer send_params ) {
                         ];
                 }
 
-                if( API_CMD_BREASTS == command /*API_CMD_NIPS==command*/ ) {
+                if( API_CMD_BREASTS == command ) {
                     if( bwGet( g_RuntimeBodyStateSettings, FKT_PRESENT ) ) {
 #ifdef DEBUG_WARN_MISSING_FACES
 
