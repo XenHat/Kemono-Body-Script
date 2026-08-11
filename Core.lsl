@@ -1337,23 +1337,13 @@ xlProcessCommand( integer send_params ) {
                     if( STARBRIGHT_FKT_HUD_NIPS == mod_command ) {
                         //FIXME: This runs 4 times per command and we only have 3 nip states
                         // handle Fitted Torso nips here
-                        llOwnerSay( "DEBUG: Handling FT Nips" );
                         g_CurrentFittedNipState = param;
-
                         if( !g_CurrentFittedNipAlpha ) {
                             {
-                                i_make_visible =/*!g_CurrentFittedNipAlpha *
-                                                  !bwGet(g_RuntimeBodyStateSettings,mod_command) */
-                                    ( mesh_count_index == g_CurrentFittedNipState );
+                                i_make_visible =  ( mesh_count_index == g_CurrentFittedNipState );
                                 mesh_name = llList2String( s_FittedNipsMeshNames, mesh_count_index );
                             }
                         }
-
-                        //else
-                        //{
-                        //
-                        // i_make_visible=FALSE;
-                        //}
 
                     }
                     else if( STARBRIGHT_FKT_HUD_VAGN == mod_command ) {
