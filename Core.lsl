@@ -30,6 +30,7 @@ string g_internal_version_s = "0.5.8";
 //#define DEBUG_AUTH
 // #define BENCHMARK
 #define PROFILE_BODY_SCRIPT
+//#define DEBUG_WARN_MISSING_FACES
 //#define DEBUG_ENTIRE_BODY_ALPHA
 // #define NEW_ASSOC_LOGIC
 #define HOVER_TEXT_COLOR <0.925,0.925,0.925>
@@ -1334,6 +1335,7 @@ xlProcessCommand( integer send_params ) {
                     }
 
                     if( STARBRIGHT_FKT_HUD_NIPS == mod_command ) {
+                        //FIXME: This runs 4 times per command and we only have 3 nip states
                         // handle Fitted Torso nips here
                         llOwnerSay( "DEBUG: Handling FT Nips" );
                         g_CurrentFittedNipState = param;
@@ -1427,6 +1429,12 @@ xlProcessCommand( integer send_params ) {
 
                 if( API_CMD_BREASTS == command /*API_CMD_NIPS==command*/ ) {
                     if( bwGet( g_RuntimeBodyStateSettings, FKT_PRESENT ) ) {
+#ifdef DEBUG_WARN_MISSING_FACES
+
+                        if( -1 == llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_1 ] ) )
+                            llOwnerSay( "Warning: Missing mesh '" + MESH_FITTED_TORSO_NIP_1 + "'" );
+
+#endif
                         bwChange( g_RuntimeBodyStateSettings, KSB_HDBRSTS, !i_make_visible );
                         list faces = xlGetFacesByBladeName( MESH_SK_NIPS );
                         list snd_lvl_params = [
