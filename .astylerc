@@ -14,3 +14,5 @@
 --break-after-logical
 --unpad-paren
 --squeeze-ws
+-w
+--convert-tabs
