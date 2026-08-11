@@ -34,10 +34,11 @@ string g_internal_version_s = "0.5.8";
 
 #define RESET_ON_PERMS
 // #define NEW_ASSOC_LOGIC
-#define saveSettings() llSetObjectDesc(g_internal_version_s\
-    + "*" + (string)human_mode\
-    + "*" + (string)g_Config_BladeColor\
-)
+saveSettings() {
+  llSetObjectDesc(g_internal_version_s
+    + "*" + (string)human_mode
+    + "*" + (string)g_Config_BladeColor);
+}
 // Set the mesh parameters to the world mesh
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
 #define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
