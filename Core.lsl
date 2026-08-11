@@ -29,23 +29,20 @@ integer anim_count;
 /*-------------------------------------------------------------------------- */
 /* NO USER-EDITABLE VALUES BELOW THIS LINE */
 // =============================== Script begins here =========================
-string g_internal_version_s = "0.5.8";
+#define g_internal_version_s "0.5.8"
 #define UPDATER_NAME "[XenLab] Enhanced Kemono Updater"
 
 #define RESET_ON_PERMS
 // #define NEW_ASSOC_LOGIC
 saveSettings() {
-  llSetObjectDesc(g_internal_version_s
-    + "*" + (string)human_mode
-    + "*" + (string)g_Config_BladeColor);
+    llSetObjectDesc( g_internal_version_s
+        + "*" + ( string )human_mode
+        + "*" + ( string )g_Config_BladeColor );
 }
+
 // Set the mesh parameters to the world mesh
 #define xlSetLinkPrimitiveParamsFast(a,b) llSetLinkPrimitiveParamsFast(a,b)
-#define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL\
-	:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR\
-:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR\
-:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR\
-:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
+#define KM_HUD_RESET_CMD "show:neck:collar:shoulderUL:shoulderUR:shoulderLL:shoulderLR:chest:breast:ribs:abs:belly:pelvis:hipL:hipR:thighUL:thighUR:thighLL:thighLR:kneeL:kneeR:calfL:calfR:shinUL:shinUR:shinLL:shinLR:ankleL:ankleR:footL:footR:armUL:armUR:elbowL:elbowR:armLL:armLR:wristL:wristR:handL:handR"
 /* TODO:
    -  Set Nipple Override
    0 = Off : 1 = On
@@ -967,7 +964,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Rhand:1" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-R-relax" );
-            llStopOtherHandAnim( "R", "relax" );
+            llStopAnimation( "Kem-hand-R-fist" );
+            llStopAnimation( "Kem-hand-R-hold" );
+            llStopAnimation( "Kem-hand-R-point" );
+            llStopAnimation( "Kem-hand-R-horns" );
         }
 
         return;
@@ -976,7 +976,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Rhand:2" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-R-hold" );
-            llStopOtherHandAnim( "R", "hold" );
+            llStopAnimation( "Kem-hand-R-relax" );
+            llStopAnimation( "Kem-hand-R-fist" );
+            llStopAnimation( "Kem-hand-R-point" );
+            llStopAnimation( "Kem-hand-R-horns" );
         }
 
         return;
@@ -985,7 +988,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Rhand:3" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-R-fist" );
-            llStopOtherHandAnim( "R", "fist" );
+            llStopAnimation( "Kem-hand-R-relax" );
+            llStopAnimation( "Kem-hand-R-hold" );
+            llStopAnimation( "Kem-hand-R-point" );
+            llStopAnimation( "Kem-hand-R-horns" );
         }
 
         return;
@@ -994,7 +1000,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Rhand:4" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-R-point" );
-            llStopOtherHandAnim( "R", "point" );
+            llStopAnimation( "Kem-hand-R-relax" );
+            llStopAnimation( "Kem-hand-R-hold" );
+            llStopAnimation( "Kem-hand-R-fist" );
+            llStopAnimation( "Kem-hand-R-horns" );
         }
 
         return;
@@ -1003,7 +1012,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Rhand:5" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-R-horns" );
-            llStopOtherHandAnim( "R", "horns" );
+            llStopAnimation( "Kem-hand-R-relax" );
+            llStopAnimation( "Kem-hand-R-hold" );
+            llStopAnimation( "Kem-hand-R-fist" );
+            llStopAnimation( "Kem-hand-R-point" );
         }
 
         return;
@@ -1012,7 +1024,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Lhand:1" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-L-relax" );
-            llStopOtherHandAnim( "L", "relax" );
+            llStopAnimation( "Kem-hand-L-fist" );
+            llStopAnimation( "Kem-hand-L-hold" );
+            llStopAnimation( "Kem-hand-L-point" );
+            llStopAnimation( "Kem-hand-L-horns" );
         }
 
         return;
@@ -1021,7 +1036,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Lhand:2" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-L-hold" );
-            llStopOtherHandAnim( "L", "hold" );
+            llStopAnimation( "Kem-hand-L-relax" );
+            llStopAnimation( "Kem-hand-L-fist" );
+            llStopAnimation( "Kem-hand-L-point" );
+            llStopAnimation( "Kem-hand-L-horns" );
         }
 
         return;
@@ -1030,7 +1048,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Lhand:3" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-L-fist" );
-            llStopOtherHandAnim( "L", "fist" );
+            llStopAnimation( "Kem-hand-L-relax" );
+            llStopAnimation( "Kem-hand-L-hold" );
+            llStopAnimation( "Kem-hand-L-point" );
+            llStopAnimation( "Kem-hand-L-horns" );
         }
 
         return;
@@ -1039,7 +1060,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Lhand:4" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-L-point" );
-            llStopOtherHandAnim( "L", "point" );
+            llStopAnimation( "Kem-hand-L-relax" );
+            llStopAnimation( "Kem-hand-L-hold" );
+            llStopAnimation( "Kem-hand-L-fist" );
+            llStopAnimation( "Kem-hand-L-horns" );
         }
 
         return;
@@ -1048,7 +1072,10 @@ xlProcessCommandWrapper() {
     else if( g_LastCommand_s == "Lhand:5" ) {
         if( g_HasAnimPerms ) {
             xlStartAnimation( "Kem-hand-L-horns" );
-            llStopOtherHandAnim( "L", "horns" );
+            llStopAnimation( "Kem-hand-L-relax" );
+            llStopAnimation( "Kem-hand-L-hold" );
+            llStopAnimation( "Kem-hand-L-fist" );
+            llStopAnimation( "Kem-hand-L-point" );
         }
 
         return;
@@ -1338,9 +1365,10 @@ xlProcessCommand( integer send_params ) {
                         //FIXME: This runs 4 times per command and we only have 3 nip states
                         // handle Fitted Torso nips here
                         g_CurrentFittedNipState = param;
+
                         if( !g_CurrentFittedNipAlpha ) {
                             {
-                                i_make_visible =  ( mesh_count_index == g_CurrentFittedNipState );
+                                i_make_visible = ( mesh_count_index == g_CurrentFittedNipState );
                                 mesh_name = llList2String( s_FittedNipsMeshNames, mesh_count_index );
                             }
                         }
@@ -1432,16 +1460,16 @@ xlProcessCommand( integer send_params ) {
                         // Set FT Nips
                         // PG meshes
                         snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_0 ] ) + 1 ),
-                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
-                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
+                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 0 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
                         // small nipple meshes
                         snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_ETC ] ) + 1 ),
-                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
-                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
+                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 1 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
                         // big nipple meshes
                         snd_lvl_params += [ PRIM_LINK_TARGET, llList2Integer( g_LinkDB_l, llListFindList( g_LinkDB_l, [ MESH_FITTED_TORSO_NIP_1 ] ) + 1 ),
-                          PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
-                          PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
+                                PRIM_COLOR, llList2Integer( faces, 1 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ),
+                                PRIM_COLOR, llList2Integer( faces, 0 ), g_Config_BladeColor, i_make_visible && ( g_CurrentFittedNipState == 2 || ( bwGet( g_RuntimeBodyStateSettings, KSB_PGNIPLS ) ) ) ];
                         local_params += snd_lvl_params;
                     }
                 }
@@ -1666,19 +1694,6 @@ string escapeSlurlNameRobust( string input ) {
 }
 
 // Helper function to stop all other hand animations except the active one
-llStopOtherHandAnim( string hand, string active ) {
-    list all = [ "fist", "hold", "horns", "point", "relax" ];
-    integer i = 0;
-
-    while( i < llGetListLength( all ) ) {
-        string anim = llList2String( all, i );
-
-        if( anim != active )
-            llStopAnimation( hand + "-" + anim );
-
-        i++;
-    }
-}
 
 string xlObjectName2Link( string id ) {
     string rawName = llKey2Name( id );
